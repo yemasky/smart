@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]> <html class="lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]> <html class="lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Chunky Calculator</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+  <form class="calc">
+    <p class="calc-display">
+      <input type="text" name="res" id="res" value="" class="calc-display-input" onFocus="this.blur()">
+    </p>
+    <p class="calc-row">
+      <button type="button" class="calc-button calc-button-red calc-button-big" onClick="a('+')">+</button>
+      <button type="button" class="calc-button calc-button-red calc-button-big" onClick="a('-')">-</button>
+      <button type="button" class="calc-button calc-button-red calc-button-big" onClick="a('*')">x</button>
+      <button type="button" class="calc-button calc-button-red calc-button-big" onClick="a('/')">÷</button>
+    </p>
+    <p class="calc-row">
+      <button type="button" class="calc-button" onClick="a('7')">7</button>
+      <button type="button" class="calc-button" onClick="a('8')">8</button>
+      <button type="button" class="calc-button" onClick="a('9')">9</button>
+      <button type="button" class="calc-button calc-button-yellow calc-button-big" onClick="e()">=</button>
+    </p>
+    <p class="calc-row">
+      <button type="button" class="calc-button" onClick="a('4')">4</button>
+      <button type="button" class="calc-button" onClick="a('5')">5</button>
+      <button type="button" class="calc-button" onClick="a('6')">6</button>
+    </p>
+    <p class="calc-row">
+      <button type="button" class="calc-button" onClick="a('1')">1</button>
+      <button type="button" class="calc-button" onClick="a('2')">2</button>
+      <button type="button" class="calc-button" onClick="a('3')">3</button>
+    </p>
+    <p class="calc-row">
+      <button type="button" class="calc-button" onClick="a('0')">0</button>
+      <button type="button" class="calc-button" onClick="a('.')">.</button>
+      <button type="button" class="calc-button" onClick="s('')">C</button>
+    </p>
+  </form>
+  <script>
+    function s(v) { document.getElementById('res').value = v }
+    function a(v) { document.getElementById('res').value += v }
+    function e() { try { s(eval(document.getElementById('res').value)) } catch(e) { s('Error') } }
+  </script>
+</body>
+</html>

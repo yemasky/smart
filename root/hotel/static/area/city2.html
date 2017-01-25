@@ -1,0 +1,96 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <base href="<%=basePath%>">
+    <title>My JSP 'city.jsp' starting page</title>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+    <meta http-equiv="description" content="This is my page">
+    <!--
+    <link rel="stylesheet" type="text/css" href="styles.css">
+    -->
+    <script type="text/javascript" src="/resource/js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            //省
+            var xml_data;
+            $.ajax({url:"Area.xml",
+                success:function(xml){
+                    xml_data = xml;
+                    $(xml).find("province").each(function(){
+                        var t = $(this).attr("name");//this->
+                        $("#DropProvince").append("<option>"+t+"</option>");
+                    });
+                }
+            });
+            //市
+            $("#DropProvince").change(function(){
+                $("#sCity>option").remove();
+                $("#sArea>option").remove();
+                var pname = $("#DropProvince").val();
+                $(xml_data).find("province[name='"+pname+"']>city").each(function(){
+                    var city = $(this).attr("name");//this->
+                    $("#sCity").append("<option>"+city+"</option>");
+                });
+                ///查找<city>下的所有第一级子元素(即区域)
+                var cname = $("#sCity").val();
+                $(xml_data).find("city[name='"+cname+"']>country").each(function(){
+                    var area = $(this).attr("name");//this->
+                    $("#sArea").append("<option>"+area+"</option>");
+                });
+                /*$.ajax({url:"Area.xml",
+                    success:function(xml){
+                        ///查找<province>下的所有第一级子元素(即城市)
+                        $(xml).find("province[name='"+pname+"']>city").each(function(){
+                            var city = $(this).attr("name");//this->
+                            $("#sCity").append("<option>"+city+"</option>");
+                        });
+                        ///查找<city>下的所有第一级子元素(即区域)
+                        var cname = $("#sCity").val();
+                        $(xml).find("city[name='"+cname+"']>area").each(function(){
+                            var area = $(this).attr("name");//this->
+                            $("#sArea").append("<option>"+area+"</option>");
+                        });
+                    }
+                });*/
+            });
+            //区
+            $("#sCity").change(function(){
+                $("#sArea>option").remove();
+                var cname = $("#sCity").val();
+                $(xml_data).find("city[name='"+cname+"']>country").each(function(){
+                    var area = $(this).attr("name");//this->
+                    $("#sArea").append("<option>"+area+"</option>");
+                });
+                /*$.ajax({url:"Area.xml",
+                    success:function(xml){
+                        ///查找<city>下的所有第一级子元素(即区域)
+                        $(xml).find("city[name='"+cname+"']>country").each(function(){
+                            var area = $(this).attr("name");//this->
+                            $("#sArea").append("<option>"+area+"</option>");
+                        });
+                    }
+                });*/
+            });
+        });
+    </script>
+</head>
+<body>
+<form id="form1">
+    <div>
+        <select id="DropProvince" style="width:100px;">
+            <option>请选择</option>
+        </select>
+        <select id="sCity" style="width:100px;">
+            <option>请选择相应市</option>
+        </select>
+        <select id="sArea" style="width:100px;">
+            <option>请选择相应区</option>
+        </select>
+    </div>
+</form>
+</body>
+</html>
