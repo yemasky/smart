@@ -1,0 +1,1 @@
+<%include file="wise/inc/commonController.tpl"%>
