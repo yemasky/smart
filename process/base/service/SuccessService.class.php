@@ -68,7 +68,7 @@ class SuccessService {
         $this->data = $data;
     }
 
-    public function setSuccessService(bool $success, string $code, string $message, array $data) : SuccessService {
+    public function setSuccessService(bool $success, string $code, string $message, array $data = null) : SuccessService {
         $this->success = $success;
         $this->code = $code;
         $this->message = $message;

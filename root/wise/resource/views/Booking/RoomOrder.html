@@ -105,7 +105,7 @@
                     <tr><th colspan="{{colspan}}">{{employeeChannel[channel_id].channel_name}}</th></tr>
                     <tr ng-repeat="(i, layout) in layouts" ng-if="layout.item_type=='category'"><!--酒店房型列表 循环 i-->
                       <td>{{layout.item_name}}
-                        <i class="ti-angle-double-down small pull-right cursor" ng-show="layoutShow[layout.item_id]==0&&layoutSystemMore[layout.item_id]==1" ng-click="showLayout(layout.item_id, 1)"></i>
+                        <i class="ti-angle-double-down small pull-right cursor" ng-show="layoutShow[layout.item_id]==0&&layoutSystemMore[market_id][channel_id][layout.item_id]==1" ng-click="showLayout(layout.item_id, 1)"></i>
                         <i class="ti-angle-up small pull-right cursor" ng-show="layoutShow[layout.item_id]==1" ng-click="showLayout(layout.item_id, 0)"></i>
                       </td>
                       <td class="no-padding panel">
@@ -113,6 +113,7 @@
               				Action <span class="caret"></span>
             			  </button>-->
                           <table class="table no-margin">
+                            <!--酒店价格体系列表 循环 i-->
                             <tr ng-repeat="layout_system in marketSystemLayout[market_id][channel_id][layout.item_id] track by $index" ng-show="$index==0||layoutShow[layout.item_id]==1">
                                 <td>{{layout_system.price_system_name}}</td>
                             </tr>
@@ -126,7 +127,7 @@
                             <tr ng-repeat="layout_system in marketSystemLayout[market_id][channel_id][layout.item_id] track by $index" ng-show="$index==0||layoutShow[layout.item_id]==1">
                                 <td style="padding:1px 0px 2px 1px;">
                                     <div class="w-xs">
-                                      <ui-select ng-model="booking_room[channel_id][layout.item_id][layout_system.price_system_id][system_price[channel_id][layout.item_id]]" theme="bootstrap">
+                                      <ui-select ng-model="booking_room[channel_id][layout.item_id][layout_system.price_system_id]" theme="bootstrap">
                                           <ui-select-match placeholder="0　">{{$select.selected.value}}</ui-select-match>
                                           <ui-select-choices repeat="room in layout.select_room_num | filter: $select.search">
                                             <div ng-bind-html="room.value | highlight: $select.search"></div>

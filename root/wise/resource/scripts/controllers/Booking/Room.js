@@ -40,6 +40,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             var _nextDay = result.data.item.out_date;
             $scope.param["check_in"] = _thisDay;$scope.param["check_out"] = _nextDay;
             $scope.setBookingCalendar(_thisDay, _nextDay);
+            //时间控件
             $('.check_in').val(_thisDay);$('.check_out').val(_nextDay);
             $('.check_date').daterangepicker({
                 "autoApply": true,"startDate": _thisDay,"endDate": _nextDay,"locale":{"format" : 'YYYY-MM-DD hh:mm'}
@@ -132,6 +133,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     }
     //选择市场价格类别
     $scope.setPriceSystemMarket = function() {
+        $scope.marketSystemLayout = {};$scope.layoutShow = {};$scope.layoutSystemMore = {};//多个价格体系
         //marketSystemLayout：市场价格类别[市场有什么价格类别按layout排序]
         var priceSystemHash = $scope.priceSystemHash, marketSystemLayout = {}, k = {}, layoutShow = {}, layoutSystemMore = {};
         for(var system_id in priceSystemHash) {//价格类型
@@ -140,8 +142,10 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             var market_ids = angular.fromJson(priceSystemHash[system_id].market_ids);//价格类型包含的market
             for(var market_id in market_ids) {//历遍market
                 if(typeof(marketSystemLayout[market_id]) == 'undefined') marketSystemLayout[market_id] = {};
+                if(typeof(layoutSystemMore[market_id]) == 'undefined') layoutSystemMore[market_id] = {};
                 for(var channel_id in layout_item) {//历遍layout
                     if(typeof(marketSystemLayout[market_id][channel_id]) == 'undefined') marketSystemLayout[market_id][channel_id] = {};
+                    if(typeof(layoutSystemMore[market_id][channel_id]) == 'undefined') layoutSystemMore[market_id][channel_id] = {};
                     for(var layout_item_id in layout_item[channel_id]) {//历遍layout
                         layoutShow[layout_item_id] = 0;
                         var key = market_id + '-' + channel_id + '-' + layout_item_id;
@@ -149,10 +153,10 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                         if(!angular.isDefined(marketSystemLayout[market_id][channel_id][layout_item_id])) { 
                             marketSystemLayout[market_id][channel_id][layout_item_id] = [];
                             k[key] = 0;
-                            layoutSystemMore[layout_item_id] = 0;
+                            layoutSystemMore[market_id][channel_id][layout_item_id] = 0;
                         } else {
                             k[key]++;
-                            layoutSystemMore[layout_item_id] = 1;
+                            layoutSystemMore[market_id][channel_id][layout_item_id] = 1;
                         }
                         marketSystemLayout[market_id][channel_id][layout_item_id][k[key]] = priceSystemHash[system_id];
                         //此市场的价格
@@ -352,7 +356,6 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $scope.param['booking_data'] = {};
             var data_key = $scope.param.check_in + '|' + $scope.param.check_out;
             $scope.param['booking_data'][data_key] = {};
-            $scope.param['booking_data'][data_key]['system_price'] = $scope.system_price;
             $scope.param['booking_data'][data_key]['booking_room'] = $scope.booking_room;
             $httpService.header('method', 'bookingRoom');
             $scope.param['id'] = $rootScope.employeeChannel[$scope.param.channel_id].id;
