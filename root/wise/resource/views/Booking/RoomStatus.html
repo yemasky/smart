@@ -1,0 +1,149 @@
+<span ng-include="'/resource/views/Common/nav.tpl.html'"></span>
+<div class="p-md" ng-controller="RoomStatusController">
+    <div class="" append-source>
+        <form name="timepickerForm" class="form-inline" role="form">
+            <div class=""> 
+            
+            	<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵</label>
+                <div class="form-group">
+                  <input type="text" size="9" class="form-control check_in w-thumb-lg" style="float:left;" ng-model="param.check_in_date" readonly>
+                  <input type="text" size="6" class="form-control w-thumb-lg" style="" ng-model="param.check_in_time" data-autoclose="1" data-time-format="HH:mm" placeholder="14:00" bs-timepicker value="14:00">
+                </div>
+                <label class="control-label m-b"><i class="fa fa-clock-o"></i> 预离</label>
+                <div class="form-group">
+                  <input type="text" size="9" class="form-control check_out w-thumb-lg" style="float:left;" ng-model="param.check_out_date" readonly>
+                  <input type="text" size="6" class="form-control w-thumb-lg" style="" ng-model="param.check_out_time" data-autoclose="1" data-time-format="HH:mm" placeholder="14:00" bs-timepicker>
+                  <button class="btn btn-default check_date" type="button"><i class="fa fa-calendar text-info"> 选择日期</i></button>
+                </div>
+                <div class="form-group">    
+                    <aside class="app-aside bg-white lt">
+                    <nav>
+                      <ul class="nav">
+                      	<li>
+                        	<a class="btn btn-default customer_btn" style="padding:6px !important;" id="customer_ul">
+                                <span class="pull-right text-muted">
+                                  <i class="fa fa-caret-down"></i>
+                                </span>
+                                <i class="icon fa fa-users text-lt"></i>
+                                <span>{{market_name}}</span>
+                          	 </a>
+                             <ul class="nav nav-sub bg b">
+                             	<li ng-repeat="(i, father) in marketList">
+                                  <a class="">
+                                    <span class="pull-right text-muted" ng-if="father.children!=''">
+                                      <i class="fa fa-caret-down"></i>
+                                    </span>
+                                    <span class="font-normal">{{father.market_name}}</span>
+                                  </a>
+                                  <ul class="nav nav-sub bg b" ng-if="father.children!=''">
+                                    <li ng-repeat="(j, market) in father.children"><a ng-click="selectCustomerMarket(market)">{{market.market_name}}</a></li>
+                                  </ul>
+                                </li>
+                             </ul>
+                        </li>
+                      </ul>
+                    </nav>
+                    </aside>
+                </div>
+                <!--<button type="button" class="btn btn-default" data-animation="am-flip-x" bs-dropdown aria-haspopup="true" aria-expanded="false" data-trigger=""><i class="icon fa fa-users text-lt"></i> {{market_name}} <i class="fa fa-caret-down"></i></button>
+                    <ul class="dropdown-menu" role="menu" style="overflow:visible;">
+                      <li ng-repeat="(i, father) in marketList" class="dropdown-submenu">
+                        <a onClick="return false;"><span class="pull-right text-muted"><i class="fa fa-caret-down"></i></span> {{father.market_name}}</a>
+                        <ul class="dropdown-menu" role="menu" ng-if="father.children!=''">
+                            <li ng-repeat="(j, market) in father.children"><a class="" ng-click="selectCustomerMarket(market)">{{market.market_name}}</a></li>
+                        </ul>
+                      </li>
+                    </ul>-->
+                <div class="form-group">
+                  <i class="fa fa-user"></i> {{customer_name}}
+                  <input type="text" size="10" class="form-control" >
+                  <i class="ti-mobile"></i>手机/Email
+                  <div class="input-group">
+                  <input type="text" size="10" class="form-control" >
+                  <span class="input-group-btn">
+                  	<button class="btn btn-default"><i class="fa fa-search"> </i> 查看</button>
+                  </span>
+                  </div>
+                </div>
+                <hr>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped bg-white">
+                  <thead>
+                    <tr>
+                      <th class="w">房型\日期</th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="(i, layout) in layoutList" ng-if="layout.item_type=='category'">
+                      <td class="text-nowrap">{{layout.item_name}}</td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+             </div>
+        </form>
+    </div>
+</div>
+<script language="javascript" src="/resource/vendor/libs/moment.min.js"></script>
+<script language="javascript" src="/resource/vendor/libs/daterangepicker.js"></script>
+<script language="javascript">
+app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
+	//获取数据
+	var _channel = $scope.$stateParams.channel;
+	var _view = $scope.$stateParams.view,common = '';
+	var param = 'channel='+_channel+'&view='+_view;
+	var loading = $alert({content: 'Loading... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
+	$httpService.post('/app.do?'+param, $scope, function(result){
+		loading.hide();
+		if(result.data.success == '0') {
+			var message = $scope.getErrorByCode(result.data.code);
+			$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+		}
+		common = result.data.common;
+		$scope.setCommonSetting(common);
+		
+	});
+	//
+	var asideCustomerMarket = '';
+	$scope.addCustomerMarket = function(_this) {
+		$scope.param = {}; $scope.param["valid"] = "1";
+		if(_this != 0) $scope.param = _this;
+		$scope.action = '添加/编辑';
+		asideCustomerMarket = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketAddEdit.tpl.html'});
+		asideCustomerMarket.$promise.then(function() {
+			asideCustomerMarket.show();
+			$(document).ready(function(){
+				
+			});
+		})
+		
+	};
+	$scope.saveData = function() {
+		var param = this.param;
+		if(param == null || param == '' || !angular.isDefined(param.market_father_id)) {
+			$alert({title: 'Notice', content: '类型必须选择！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		}
+		loading = $alert({content: 'Saveing... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
+		$scope.param = param;
+		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+			loading.hide();
+			$scope.dataList = result.data.item;
+			asideCustomerMarket.hide();
+			
+		});
+	}
+	$httpService.deleteHeader('refresh');
+});
+
+</script>

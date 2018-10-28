@@ -1,0 +1,65 @@
+{
+"header" : {
+	"navbar" : {
+		"DASHBOARD" : "Dashboard",
+		"EMAIL" : "Email",
+		"UIKITS" : "UI Kits",
+		"PAGES" : "Pages"
+	}
+},
+"login" : {
+	"hint": {
+		"WORD":"Sign in with your Account",
+		"SIGN":"Sign in", 
+		"ERROR_MESSAGE":"login error, wrong login name and password!"
+	}
+},
+"common" : {
+	"hint": {
+		"LOADING":"Loading...",
+		"SAVE":"Save",
+		"date":"Date",
+		"manager":"Manager",
+		"edit":"Edit",
+		"config":"Config"
+	}
+},
+"error" : {
+	"code": {
+		"000000":"The connection server is timeout!",
+		"000001":"Success.",
+		"000002":"Error Login Info.",
+		"000003":"System Error!",
+		"000004":"Save Error, Duliccate Data!",
+		"000005":"No Permission!",
+		"000006":"No Module!",
+		"000007":"Update Error, Wrong Data!",
+		"000008":"Parameter Error.",
+		"000009":"Data not found.",
+		"000010":"No Data Update.",
+		"000011":"Login OverTime,Please Re-logon.",
+		"000012":"Beyond reasonable time.",
+        "100001":"no price!"
+	}
+},
+"module" : {
+	"channel" : {
+		"channel" : "Channel",
+		"member_of" : "Member Of",
+		"channel_name" : "Channel Name",
+		"channel_short_name" : "Short Name",
+		"channel_en_name" : "English Name",
+		"web" : "web",
+		"phone" : "phone",
+		"mobile" : "mobile",
+		"email" : "Email",
+		"fax" : "Fax",
+		"star" : "Star",
+		"phone" : "Phone",
+		"address" : "Address",
+		"arrtibute":"Arrtibute",
+		"market_name":"Customer Market"
+	}
+}
+	
+}

@@ -1,0 +1,12 @@
+.left_triangle{
+border-style: dashed;
+border-top-width: 0!important;
+border-left-color: #ef7601;
+border-bottom-style: solid;
+border-right-color: transparent!important;
+border-width: 20px;
+border-bottom-color: transparent!important;
+margin-top:-9px;
+margin-left:-15px;
+position:absolute;
+}
