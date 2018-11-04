@@ -803,7 +803,7 @@ class DBQuery {
 	public function getEntityTable() : string {
 		$entity_class = $this->entity_class;
 		if(empty($entity_class)) throw new Exception("entity_class is empty.");
-		return strtolower(str_replace('Entity', '', substr($entity_class, strpos($entity_class, '\\'))));
+		return strtolower(str_replace('Entity', '', substr($entity_class, strrpos($entity_class, '\\')+1)));
 	}
 
 	public function setKey($table_key) {
@@ -848,7 +848,9 @@ class DBQuery {
 
 	public function getEntity($fields = '*', WhereCriteria $whereCriteria) {
 		$result = $this->getEntityList($fields, $whereCriteria);
-		if(!empty($result)) return $result[0];
+		if(!empty($result)) {
+		    return $result[0];
+        }
 
 		return null;
 	}

@@ -5,18 +5,20 @@
  * Date: 2018/8/29
  * Time: 21:22
  */
+
 namespace wise;
 class LoginEmployeeModel extends \Entity {
-	protected $employeeInfo = null;
-	protected $employeeMenu = array();
-	protected $employeeChannel = array();
-	protected $channelSetting = array();
+    protected $employeeInfo = null;
+    protected $employeeMenu = array();
+    protected $employeeChannel = array();
+    protected $channelSettingList = array();
+    protected $channelSetting = null;
 
     /**
      * @return mixed
      */
-    public function getEmployeeInfo() : Employee {
-        if(empty($this->employeeInfo) || !is_object($this->employeeInfo)) $this->employeeInfo = new Employee();
+    public function getEmployeeInfo(): Employee {
+        if (empty($this->employeeInfo) || !is_object($this->employeeInfo)) $this->employeeInfo = new Employee();
         return $this->employeeInfo;
     }
 
@@ -58,31 +60,47 @@ class LoginEmployeeModel extends \Entity {
     /**
      * @return array
      */
-    public function getChannelSetting(): array {
-        return $this->channelSetting;
+    public function getChannelSettingList(): array {
+        return $this->channelSettingList;
     }
 
     /**
-     * @param array $channelSetting
+     * @param array $channelSettingList
      */
-    public function setChannelSetting($channelSetting) {
-        $this->channelSetting = $channelSetting;
+    public function setChannelSettingList(array $channelSettingList) {
+        $this->channelSettingList = $channelSettingList;
     }
+
+    /**
+     * @return null
+     */
+    public function getChannelSetting(int $channel_id) : Channel_settingEntity {
+        return new Channel_settingEntity($this->channelSettingList[$channel_id]);
+    }
+
+    /**
+     * @param null $channelSetting
+     */
+    public function setChannelSetting(Channel_settingEntity $ChannelSetting) {
+        $this->channelSettingList[$ChannelSetting->getChannelId()] = $ChannelSetting->getPrototype();
+    }
+
+
 
 
 
 }
 
 class Employee extends \Entity {
-	protected $employee_id = 0;
-	protected $company_id = 0;
-	protected $employee_name = '';
-	protected $photo = '';
+    protected $employee_id = 0;
+    protected $company_id = 0;
+    protected $employee_name = '';
+    protected $photo = '';
 
     /**
      * @return mixed
      */
-    public function getEmployeeId() : int {
+    public function getEmployeeId(): int {
         return $this->employee_id;
     }
 
@@ -96,7 +114,7 @@ class Employee extends \Entity {
     /**
      * @return mixed
      */
-    public function getCompanyId() : int {
+    public function getCompanyId(): int {
         return $this->company_id;
     }
 
@@ -124,7 +142,7 @@ class Employee extends \Entity {
     /**
      * @return mixed
      */
-    public function getPhoto() : string {
+    public function getPhoto(): string {
         return $this->photo;
     }
 
@@ -136,3 +154,4 @@ class Employee extends \Entity {
     }
 
 }
+

@@ -8,8 +8,13 @@
 
 abstract class Entity {
 
-	public function getPrototype() : array {
-		return get_object_vars($this);
+    public function __construct(array $array = array()) {
+        if(!empty($array)) return $this->setPrototype($array);
+    }
+
+    public function getPrototype($pname = null) {
+		if(empty($pname)) return get_object_vars($this);
+		return $this->{$pname};
 	}
 
 	public function setPrototype(array $array) {

@@ -171,7 +171,11 @@ class ChannelService extends \BaseService {
 		return ChannelDao::instance()->setTable('channel_cancellation_policy')->update($arrayUpdateData, $whereCriteria, $update_type);
 	}
 	//channel_setting
-    public function getChannelSetting(\WhereCriteria $whereCriteria, $field = null) {
+    public function getChannelSettingEntity(\WhereCriteria $whereCriteria, $field = null) : Channel_settingEntity {
+        return ChannelDao::instance()->setEntity('\wise\Channel_settingEntity')->getEntity($field, $whereCriteria);
+    }
+
+    public function getChannelSettingList(\WhereCriteria $whereCriteria, $field = null)  {
         return ChannelDao::instance()->setTable('channel_setting')->getList($field, $whereCriteria);
     }
 

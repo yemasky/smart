@@ -33,16 +33,20 @@ class BookingServiceImpl implements \BaseServiceImpl {
     }
 
     /*
-     * booking_room 数据结构
+     * booking_room 数据结构 单个时间段订房
      * [channel_id => layout_item_id => system_id => room_info]
      */
     public function bookHotelRoom(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
-        $objSuccess  = new \SuccessService();
-        $objEmployee = LoginServiceImpl::instance()->getLoginInfo();
-        $company_id  = $objEmployee->getCompanyId();
-        $channel_id  = $objRequest->id;
-        $channel_id  = !empty($channel_id) ? \Encrypt::instance()->decode($channel_id, getDay()) : '';
-        $arrayInput  = $objRequest->getInput();
+        $objSuccess       = new \SuccessService();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee();
+        $objEmployee      = $objLoginEmployee->getEmployeeInfo();
+        $company_id       = $objEmployee->getCompanyId();
+        $channel_id       = $objRequest->id;
+        $channel_id       = !empty($channel_id) ? \Encrypt::instance()->decode($channel_id, getDay()) : '';
+        $arrayInput       = $objRequest->getInput();
+        $check_in         = $objRequest->validInput('check_in');
+        $check_out        = $objRequest->validInput('check_out');
+
         //
         $channel_father_id = $objRequest->validInput('channel_father_id');
         $arrayBookingData  = $objRequest->validInput('booking_data');
@@ -76,15 +80,15 @@ class BookingServiceImpl implements \BaseServiceImpl {
         //
         //预订数据 每个房间1个BookingDetai，每个房间每天1个BookingConsume
         if (!empty($arrayBookingData)) {
-            $arraySystemId    = [];
-            $systemLayoutItem = [];
+            $arraySystemId    = [];//有效system_id
+            $systemLayoutItem = [];//有效layout
             $arrayLayoutRoom  = [];//有效的房型房间
             //查找过滤有效的价格体系
             foreach ($arrayBookingData as $dateKey => $arrayChannelData) {
                 foreach ($arrayChannelData['booking_room'][$channel_id] as $layout_item_id => $systemData) {//组合价格体系
                     foreach ($systemData as $system_id => $roomData) {
                         if (empty($roomData['value'])) continue;//房间数量为0 也直接跳过
-                        $arrayLayoutRoom[$layout_item_id][$system_id]['value'] = $roomData['value'];
+                        $arrayLayoutRoom[$layout_item_id][$system_id]['value'] = $roomData['value'];//预订的价格体系的房型数量
                         $arraySystemId[$system_id]                             = $system_id;//价格体系
                         if (isset($systemLayoutItem[$system_id])) {
                             $systemLayoutItem[$system_id]['item_ids'] .= ',' . $layout_item_id;
@@ -117,10 +121,8 @@ class BookingServiceImpl implements \BaseServiceImpl {
                 $arrayFormula       = [];
                 //时间矩阵
                 $arrayDateMatrix = [];
-                $startDate       = substr($BookingDetailEntity->getCheckIn(), 0, 10); //开始日期
-                $endDate         = substr($BookingDetailEntity->getCheckOut(), 0, 10); //结束日期
-                $startDateTime   = strtotime($startDate); //转换一下
-                $endDateTime     = strtotime($endDate); //转换一下
+                $startDateTime   = strtotime($check_in); //转换一下
+                $endDateTime     = strtotime($check_out); //转换一下
                 for ($i = $startDateTime; $i < $endDateTime; $i += 86400) {
                     $thisDate                          = date("Y-m-d", $startDateTime);
                     $day                               = substr($thisDate, 8, 2);
@@ -132,11 +134,11 @@ class BookingServiceImpl implements \BaseServiceImpl {
                         $arrayPriceSystemId[$priceSystem['price_system_father_id']]         = $priceSystem['price_system_father_id'];
                         $arrayFormula[$priceSystem['price_system_id']]['price_system_name'] = $priceSystem['price_system_name'];
                         $arrayFormula[$priceSystem['price_system_id']]['formula']           = $priceSystem['formula'];
-                        //父价格
+                        //父价格[父价格设置相应的layout_item才行]
                         $arrayFormula[$priceSystem['price_system_id']]['system_father_id'] = $priceSystem['price_system_father_id'];
                         $arrayFormula[$priceSystem['price_system_id']]['layout_item_id']   = $systemLayoutItem[$priceSystem['price_system_id']]['layout_item_id'];
-                        if(isset($systemLayoutItem[$priceSystem['price_system_father_id']])) {
-                            $systemLayoutItem[$priceSystem['price_system_father_id']]['item_ids'] .= ','. $systemLayoutItem[$priceSystem['price_system_id']]['item_ids'];
+                        if (isset($systemLayoutItem[$priceSystem['price_system_father_id']])) {
+                            $systemLayoutItem[$priceSystem['price_system_father_id']]['item_ids'] .= ',' . $systemLayoutItem[$priceSystem['price_system_id']]['item_ids'];
                         } else {
                             $systemLayoutItem[$priceSystem['price_system_father_id']]['item_ids'] = $systemLayoutItem[$priceSystem['price_system_id']]['item_ids'];
                         }
@@ -160,24 +162,25 @@ class BookingServiceImpl implements \BaseServiceImpl {
                 $arrayHashKey['fatherKey']   = 'item_id';
                 $arrayHashKey['childrenKey'] = 'layout_price_date';
                 //根据价格体系ID取出價格 包含子价格和父价格
-                $arrayPriceLayout = ChannelServiceImpl::instance()->getLayoutPrice(null, $channel_id, null, $BookingDetailEntity->getCheckIn(),
-                    $BookingDetailEntity->getCheckOut(), $whereSqlStr, $arrayHashKey);
+                $arrayPriceLayout = ChannelServiceImpl::instance()->getLayoutPrice(null, $channel_id, null, $check_in,
+                    $check_out, $whereSqlStr, $arrayHashKey);
                 if (empty($arrayPriceLayout)) {
                     return $objSuccess->setSuccessService(false, '100001', '价格体系没有设置价格', []);
                 }
                 //公式放盘計算價格
                 if (!empty($arrayFormula)) {//计算公式放盘价格
                     foreach ($arrayFormula as $price_system_id => $formulaData) {
-                        //BookingDetailEntity
+                        //设置system_id
+                        //每一间房//BookingDetailEntity
                         $BookingDetailEntity->setPriceSystemId($price_system_id);
-                        //BookingDetailConsumeEntity
+                        //消费//BookingDetailConsumeEntity
                         $BookingDetailConsumeEntity->setPriceSystemId($price_system_id);
                         //父价格
                         if (isset($arrayPriceLayout[$formulaData['system_father_id']])) {
                             $formulaLayout = json_decode($arrayFormula[$price_system_id]['formula'], true);//公式
                             foreach ($formulaData['layout_item_id'] as $layout_item_id => $item_id) {
                                 //判断是否存在$arrayLayoutRoom[$layout_item_id][$system_id]
-                                if(!isset($arrayLayoutRoom[$layout_item_id][$system_id])) continue;
+                                if (!isset($arrayLayoutRoom[$layout_item_id][$system_id])) continue;
                                 if (isset($arrayPriceLayout[$formulaData['system_father_id']][$item_id])) {
                                     if (isset($formulaLayout[$channel_id . '-' . $item_id])) {
                                         $formula = $formulaLayout[$channel_id . '-' . $item_id];
@@ -185,7 +188,8 @@ class BookingServiceImpl implements \BaseServiceImpl {
                                         $formula['formula_value']        = '';
                                         $formula['formula_second_value'] = '';
                                     }
-                                    //Booking_detail room number 房间数量
+                                    //每一间房
+                                    //设置房间数量Booking_detail room number
                                     $BookingDetailEntity->setItemCategoryId($layout_item_id);
                                     for ($i = 0; $i < $arrayLayoutRoom[$layout_item_id][$system_id]['value']; $i++) {
                                         $BookingDetailEntity->setItemId(0);
@@ -216,10 +220,11 @@ class BookingServiceImpl implements \BaseServiceImpl {
                                                 if ($formula['formula_second'] == '-') $price = $price - $formula['formula_second_value'];
                                             }
                                             //得到计算后价格
-                                            $price = sprintf("%.2f", $price);
+                                            $price = decimal($price, $objLoginEmployee->getChannelSetting($channel_id)->getDecimalPrice());
+                                            //sprintf("%.2f", $price);//小数点后2位
                                             //$bookPrice[$insert_key]['price'] = $price;//售卖价格
                                             for ($i = 0; $i < $arrayLayoutRoom[$layout_item_id][$system_id]['value']; $i++) {
-                                                //2018-08-
+                                                //消费//2018-08-
                                                 $BookingDetailConsumeEntity->setBusinessDay(substr($monthDate, 0, 8) . $day);
                                                 $BookingDetailConsumeEntity->setConsumePrice($price);
                                                 $BookingDetailConsumeEntity->setOriginalPrice($price);
@@ -244,7 +249,7 @@ class BookingServiceImpl implements \BaseServiceImpl {
                         if (isset($arraySystemId[$system_id])) {
                             foreach ($arraySystemPrice as $layout_item_id => $arrayMonthPrice) {
                                 //判断是否存在$arrayLayoutRoom[$layout_item_id][$system_id]
-                                if(!isset($arrayLayoutRoom[$layout_item_id][$system_id])) continue;
+                                if (!isset($arrayLayoutRoom[$layout_item_id][$system_id])) continue;
                                 if (isset($systemLayoutItem[$system_id]['layout_item_id'][$layout_item_id])) {
                                     //Booking_detail room number 房间数量
                                     $BookingDetailEntity->setItemCategoryId($layout_item_id);

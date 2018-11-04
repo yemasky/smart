@@ -425,6 +425,10 @@ if(!defined("INC_FUNC_COMMON")) {
 		}
 	}
 
+	function decimal($value, $decimal = 0) {
+		return sprintf("%.".$decimal."f", $value);//小数点后2位
+	}
+
 	function uuid($opt = true) {       //  Set to true/false as your default way to do this.
 		if(function_exists('com_create_guid')) {
 			if($opt) {
@@ -528,7 +532,7 @@ if(!defined("INC_FUNC_COMMON")) {
 			//		$cmd .= " 1>stdout.txt 2>stderr.txt &";
 		}
 		//log..
-		logInfo($cmd);
+		logDebug($cmd);
 		$ret = system($cmd);
 
 		return $ret;

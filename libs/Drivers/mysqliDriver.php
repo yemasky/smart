@@ -175,27 +175,27 @@ class mysqliDriver {
 			if(empty($fatherHash)) {
 				if(empty($childrenHash)) {
 					while($object = $result->fetch_object($modelEntityClass)) {
-						$arrayObject[$object->{$hashKey}][] = $object;
+						$arrayObject[$object->getPrototype($hashKey)][] = $object;
 					}
 				} else {
 					while($object = $result->fetch_object($modelEntityClass)) {
-						$arrayObject[$object->{$hashKey}][$object->{$childrenHash}][] = $object;
+						$arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($childrenHash)][] = $object;
 					}
 				}
 			} else {
 				if(empty($childrenHash)) {// 父类子类循环
 					while($object = $result->fetch_object($modelEntityClass)) {
-						if($object->{$hashKey} == $object->{$fatherHash} || $object->{$fatherHash} == '0') {//father 父 0父
-							$children                         = isset($arrayObject[$object->{$fatherHash}]['children']) ? $arrayObject[$object->{$fatherHash}]['children'] : '';
-							$arrayObject[$object->{$hashKey}]             = $object;
-							$arrayObject[$object->{$hashKey}]['children'] = $children;
+						if($object->getPrototype($hashKey) == $object->getPrototype($fatherHash) || $object->getPrototype($fatherHash) == '0') {//father 父 0父
+							$children                         = isset($arrayObject[$object->getPrototype($fatherHash)]['children']) ? $arrayObject[$object->getPrototype($fatherHash)]['children'] : '';
+							$arrayObject[$object->getPrototype($hashKey)]             = $object;
+							$arrayObject[$object->getPrototype($hashKey)]['children'] = $children;
 						} else {
-							$arrayObject[$object->{$fatherHash}]['children'][] = $object;//children 子
+							$arrayObject[$object->getPrototype($fatherHash)]['children'][] = $object;//children 子
 						}
 					}
 				} else {
 					while($object = $result->fetch_object($modelEntityClass)) {
-						$arrayObject[$object->{$hashKey}][$object->{$fatherHash}][$object->{$childrenHash}][] = $object;
+						$arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)][$object->getPrototype($childrenHash)][] = $object;
 					}
 				}
 			}
@@ -204,40 +204,40 @@ class mysqliDriver {
 			if(empty($fatherHash)) {
 				if(empty($childrenHash)) {
 					while($object = $result->fetch_object($modelEntityClass)) {
-						$arrayObject[$object->{$hashKey}] = $object;
+						$arrayObject[$object->getPrototype($hashKey)] = $object;
 					}
 				} else {
 					while($object = $result->fetch_object($modelEntityClass)) {
-						$arrayObject[$object->{$hashKey}][$object->{$childrenHash}] = $object;
+						$arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($childrenHash)] = $object;
 					}
 				}
 			} else {
 				if(empty($childrenHash)) {//
 					while($object = $result->fetch_object($modelEntityClass)) {
-						if($object->{$hashKey} == $object->{$fatherHash} || $object->{$fatherHash} == '0') {//father 父 0父
-							$children                         = isset($arrayObject[$object->{$fatherHash}]['children']) ? $arrayObject[$object->{$fatherHash}]['children'] : '';
-							$arrayObject[$object->{$hashKey}]             = $object;
-							$arrayObject[$object->{$hashKey}]['children'] = $children;
+						if($object->getPrototype($hashKey) == $object->getPrototype($fatherHash) || $object->getPrototype($fatherHash) == '0') {//father 父 0父
+							$children                         = isset($arrayObject[$object->getPrototype($fatherHash)]['children']) ? $arrayObject[$object->getPrototype($fatherHash)]['children'] : '';
+							$arrayObject[$object->getPrototype($hashKey)]             = $object;
+							$arrayObject[$object->getPrototype($hashKey)]['children'] = $children;
 						} else {
-							$arrayObject[$object->{$fatherHash}]['children'][$object->{$hashKey}] = $object;//children 子
+							$arrayObject[$object->getPrototype($fatherHash)]['children'][$object->getPrototype($hashKey)] = $object;//children 子
 						}
 					}
 				} else {
 					while($object = $result->fetch_object($modelEntityClass)) {
-						$arrayObject[$object->{$hashKey}][$object->{$fatherHash}][$object->{$childrenHash}] = $object;
+						$arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)][$object->getPrototype($childrenHash)] = $object;
 					}
 				}
 			}
 			//if(empty($hashKey))
 		} else {//$toHashArray != true && $toHashArray != false
 			while($object = $result->fetch_object($modelEntityClass)) {
-				if($object->{$fatherHash} == $object->{$childrenHash}) {//father
-					$children                                            = isset($arrayObject[$object->{$hashKey}][$object->{$fatherHash}]['children']) ?
-					$arrayObject[$object->{$hashKey}][$object->{$fatherHash}]['children'] : '';
-					$arrayObject[$object->{$hashKey}][$object->{$fatherHash}]             = $object;
-					$arrayObject[$object->{$hashKey}][$object->{$fatherHash}]['children'] = $children;
+				if($object->getPrototype($fatherHash) == $object->getPrototype($childrenHash)) {//father
+					$children                                            = isset($arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)]['children']) ?
+					$arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)]['children'] : '';
+					$arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)]             = $object;
+					$arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)]['children'] = $children;
 				} else {
-					$arrayObject[$object->{$hashKey}][$object->{$fatherHash}]['children'][] = $object;
+					$arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)]['children'][] = $object;
 				}
 			}
 		}

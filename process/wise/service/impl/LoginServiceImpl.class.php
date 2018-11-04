@@ -9,8 +9,8 @@ namespace wise;
 class LoginServiceImpl implements \BaseServiceImpl {
     private static $loginKey = 'employee';
     private static $objService = null;
-	private static $objEmployee;
-	private static $business_day = '';
+    private static $objEmployee;
+    private static $business_day = '';
 
     public static function instance() {
         if (is_object(self::$objService)) {
@@ -22,41 +22,42 @@ class LoginServiceImpl implements \BaseServiceImpl {
     }
 
     public function setLoginInfo(Employee $employee) {
-	    self::$objEmployee = $employee;
+        self::$objEmployee = $employee;
     }
-	public function getLoginInfo() : Employee {
-		return self::$objEmployee;
-	}
 
-	/**
-	 * @return string
-	 */
-	public static function getBusinessDay(): string {
-		return self::$business_day;
-	}
+    public function getLoginInfo(): Employee {
+        return self::$objEmployee;
+    }
 
-	/**
-	 * @param string $business_day
-	 */
-	public static function setBusinessDay(string $business_day) {
-		self::$business_day = $business_day;
-	}
+    /**
+     * @return string
+     */
+    public static function getBusinessDay(): string {
+        return self::$business_day;
+    }
 
-    public function doLoginEmployee(\HttpRequest $objRequest, \HttpResponse $objResponse) : LoginEmployeeModel {
+    /**
+     * @param string $business_day
+     */
+    public static function setBusinessDay(string $business_day) {
+        self::$business_day = $business_day;
+    }
+
+    public function doLoginEmployee(\HttpRequest $objRequest, \HttpResponse $objResponse): LoginEmployeeModel {
         $password = $objRequest->password;
         $username = $objRequest->email;
 
         $arrayLoginInfo['valid'] = 1;
         $whereCriteria           = new \WhereCriteria();
         $field                   = 'employee_id,company_id,employee_name,photo,password,password_salt';
-        $arrayEmployeeList = array();
+        $arrayEmployeeList       = array();
         if (strpos($username, '@') !== false) {
             $arrayLoginInfo['email'] = $username;//where($arrayLoginInfo)->
             $whereCriteria->EQ('valid', '1');
             $arrayEmployeeList = EmployeeService::instance()->getEmployee($whereCriteria, $field);
         }
-	    $loginEmployeeModel = new LoginEmployeeModel();
-        $lenght = count($arrayEmployeeList);
+        $loginEmployeeModel = new LoginEmployeeModel();
+        $lenght             = count($arrayEmployeeList);
         for ($i = 0; $i < $lenght; $i++) {
             //md5(1 . '`　-   `' . md5('14e1b600b1fd579f47433b88e8d85291') . md5('5483116858d36bd6d1f6c'))
             if (md5($arrayEmployeeList[$i]['company_id'] . '`　-   `' . md5($password) . md5($arrayEmployeeList[$i]['password_salt'])) == $arrayEmployeeList[$i]['password']) {//找到登录者
@@ -69,20 +70,20 @@ class LoginServiceImpl implements \BaseServiceImpl {
                 unset($arrayEmployeeList[$i]['password']);
 
                 $employeeChannel = EmployeeServiceImpl::instance()->getEmployeeChannel($company_id, $employee_id);
-	            $Employee                              = new Employee();
-	            $Employee->setEmployeeId($arrayEmployeeList[$i]['employee_id']);
-	            $Employee->setCompanyId($arrayEmployeeList[$i]['company_id']);
-	            $Employee->setEmployeeName($arrayEmployeeList[$i]['employee_name']);
-	            $Employee->setPhoto($arrayEmployeeList[$i]['photo']);
-	            self::$objEmployee = $Employee;
-	            $loginEmployeeModel->setEmployeeInfo($Employee);
+                $Employee        = new Employee();
+                $Employee->setEmployeeId($arrayEmployeeList[$i]['employee_id']);
+                $Employee->setCompanyId($arrayEmployeeList[$i]['company_id']);
+                $Employee->setEmployeeName($arrayEmployeeList[$i]['employee_name']);
+                $Employee->setPhoto($arrayEmployeeList[$i]['photo']);
+                self::$objEmployee = $Employee;
+                $loginEmployeeModel->setEmployeeInfo($Employee);
                 $loginEmployeeModel->setEmployeeMenu($arrayEmployeeModule);
-	            $loginEmployeeModel->setEmployeeChannel($employeeChannel);
-                //ChannelSetting
+                $loginEmployeeModel->setEmployeeChannel($employeeChannel);
+                //channelSettingList
                 $whereCriteria = new \WhereCriteria();
                 $whereCriteria->setHashKey('channel_id');
-                $channelSetting = ChannelService::instance()->getChannelSetting($whereCriteria->EQ('company_id', $Employee->getCompanyId()));
-                $loginEmployeeModel->setChannelSetting($channelSetting);
+                $channelSettingList = ChannelService::instance()->getChannelSettingList($whereCriteria->EQ('company_id', $Employee->getCompanyId()));
+                $loginEmployeeModel->setChannelSettingList($channelSettingList);
                 $this->setLoginEmployeeCookie($loginEmployeeModel);
                 break;
             }
@@ -129,7 +130,7 @@ class LoginServiceImpl implements \BaseServiceImpl {
             $arrayLoginEmployee['employeeInfo'] = $arrayEmployee;
             $employeeMenu                       = json_decode($objSession->employeeMenu, true);
             $employeeChannel                    = json_decode($objSession->employeeChannel, true);
-            $channelSetting                     = json_decode($objSession->channelSetting, true);
+            $channelSettingList                 = $objSession->channelSettingList;
             if (empty($employeeMenu)) {
                 $employeeMenu    = $this->getEmployeeModule($arrayEmployee['company_id'], $arrayEmployee['employee_id']);
                 $employeeChannel = EmployeeServiceImpl::instance()->getEmployeeChannel($arrayEmployee['company_id'], $arrayEmployee['employee_id']);
@@ -144,7 +145,7 @@ class LoginServiceImpl implements \BaseServiceImpl {
             $loginEmployeeModel->setEmployeeInfo($Employee);
             $loginEmployeeModel->setEmployeeMenu($employeeMenu);
             $loginEmployeeModel->setEmployeeChannel($employeeChannel);
-            $loginEmployeeModel->setChannelSetting($channelSetting);
+            $loginEmployeeModel->setChannelSettingList($channelSettingList);
         }
         return $loginEmployeeModel;
     }
@@ -158,7 +159,7 @@ class LoginServiceImpl implements \BaseServiceImpl {
         } else {
             $loginEmployeeModel = $this->getLoginEmployee(null, true);
         }
-	    self::$objEmployee = $loginEmployeeModel->getEmployeeInfo();
+        self::$objEmployee = $loginEmployeeModel->getEmployeeInfo();
         return $loginEmployeeModel;
     }
 
@@ -170,14 +171,14 @@ class LoginServiceImpl implements \BaseServiceImpl {
             $time = 2592000;//一个月
             $key  = $time;
         }
-        $objEmployee = $loginEmployeeModel->getEmployeeInfo();
+        $objEmployee    = $loginEmployeeModel->getEmployeeInfo();
         $cookieEmployee = $objEmployee->getEmployeeId() . '`--`' . $objEmployee->getCompanyId() . '`--`' . $objEmployee->getEmployeeName() . '`--`' .
-	        $objEmployee->getPhoto();
+            $objEmployee->getPhoto();
         $objCookie->setCookie(self::$loginKey . $key, $cookieEmployee, $time);
-        $objSession                  = new \Session();
-        $objSession->employeeMenu    = json_encode($loginEmployeeModel->getEmployeeMenu());
-        $objSession->employeeChannel = json_encode($loginEmployeeModel->getEmployeeChannel());
-        $objSession->channelSetting = json_encode($loginEmployeeModel->getChannelSetting());
+        $objSession                     = new \Session();
+        $objSession->employeeMenu       = json_encode($loginEmployeeModel->getEmployeeMenu());
+        $objSession->employeeChannel    = json_encode($loginEmployeeModel->getEmployeeChannel());
+        $objSession->channelSettingList = $loginEmployeeModel->getChannelSettingList();
     }
 
     public function logout() {

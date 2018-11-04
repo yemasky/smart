@@ -37,14 +37,15 @@ class Action {
 			$objEmployee               = $objLoginEmployee->getEmployeeInfo();
 			//根据切换来变换default_channel_father_id
             $arrayEmployeeChannel = $objLoginEmployee->getEmployeeChannel();
-			$default_channel_father_id = isset($arrayEmployeeChannel[0]) ? $arrayEmployeeChannel[0]['channel_id'] : '0';
+            $default_channel = count($arrayEmployeeChannel) > 0 ? current($arrayEmployeeChannel) : null;
+			$default_channel_father_id = $default_channel == null ? $default_channel[0]['channel_id'] : '0';
 			$objResponse->default_channel_father_id = $default_channel_father_id;
-            $channelSetting = $objLoginEmployee->getChannelSetting();
+            $channelSettingList = $objLoginEmployee->getChannelSettingList();
             //根据default_channel_father_id 来取得营业日
 			$business_day = getDay();//默认营业日
-            if(isset($channelSetting) && $default_channel_father_id > 0) {
-                $thisChannelSeting = $channelSetting[$default_channel_father_id];
-                if($thisChannelSeting['is_business_day'] == 1) {
+            if(isset($channelSettingList[$default_channel_father_id])) {
+                $thisChannelSeting = $objLoginEmployee->getChannelSetting($default_channel_father_id);
+                if($thisChannelSeting->getisBusinessDay() == 1) {
                     $business_day = ChannelServiceImpl::instance()->getBusinessDay($default_channel_father_id);
                 }
             }

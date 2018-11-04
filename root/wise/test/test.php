@@ -1,6 +1,122 @@
 <?php
 require_once ("../config.php");
 
+try {
+
+
+WhereCriteria::instance('s')->EQ('company_id', 1)->EQ('group_unified_settings', "0");
+
+//$sss=DBQuery::instance(\wise\DbConfig::dsnRead())->setEntityClass('\wise\CompanyEntity')->getEntityList("company_id,company_name", WhereCriteria::instance('s'));
+    //$sss=    \wise\ChannelDao::instance()->setEntity('\wise\Channel_settingEntity')->getEntity(null, WhereCriteria::instance('k'));
+//var_dump($sss);
+    $sss = \wise\ChannelService::instance()->getChannelSettingList(WhereCriteria::instance('k'));
+print_r(getChannelSetting($sss, 0));
+//$company = new \wise\CompanyEntity();
+
+//$company = $sss[0];
+
+//print_r($company->getCompanyId());
+} catch (Exception $e) {
+    print_r($e->getMessage());
+    print_r($e->getTrace());
+}
+
+function getChannelSetting($channelSettingList, $id) : \wise\Channel_settingEntity {
+    return new \wise\Channel_settingEntity($channelSettingList[$id]);
+}
+
+class company22 {
+    public $company_id;
+    public $company_group;
+    public $group_unified_settings;
+    public $company_name;
+    public $valid;
+
+    /**
+     * @param mixed $company_id
+     */
+    public function setCompanyId($company_id) {
+        $this->company_id = $company_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyId() {
+        return $this->company_id;
+    }
+
+    /**
+     * @param mixed $company_group
+     */
+    public function setCompanyGroup($company_group) {
+        $this->company_group = $company_group;
+
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyGroup() {
+        return $this->company_group;
+    }
+
+    /**
+     * @param mixed $company_name
+     */
+    public function setCompanyName($company_name) {
+        $this->company_name = $company_name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyName() {
+        return $this->company_name;
+    }
+
+    /**
+     * @param mixed $group_unified_settings
+     */
+    public function setGroupUnifiedSettings($group_unified_settings) {
+        $this->group_unified_settings = $group_unified_settings;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGroupUnifiedSettings() {
+        return $this->group_unified_settings;
+    }
+
+    /**
+     * @param mixed $valid
+     */
+    public function setValid($valid) {
+        $this->valid = $valid;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValid() {
+        return $this->valid;
+    }
+
+    public function toString() {
+        return 'company_id,company_group,group_unified_settings,company_name,valid';
+    }
+
+    public function getVars() {
+        $vars = [];
+        foreach ($this as $key => $val) {
+            $vars[$key] = $val;
+        }
+        return $vars;
+    }
+
+}
+return;
 
 $aaa = new company();
 $aaa ->setCompanyId(11111);
@@ -11,13 +127,7 @@ print_r($aaa->getVars());
 print_r(get_object_vars($aaa));
 return;
 
-WhereCriteria::instance('s')->EQ('company_id', 1)->EQ('group_unified_settings', "0");
 
-$sss=DBQuery::instance(\wise\DbConfig::dsnRead())->setEntityClass('company')->getEntityList("company_id,company_name", WhereCriteria::instance('s'));
-
-print_r($sss);
-
-return;
 
 
 class Prototype extends ArrayObject
@@ -161,97 +271,7 @@ $company = new company();
 $company->setCompanyGroup(1);
 $company->setCompanyId(222);
 
-class company {
-    public $company_id;
-    public $company_group;
-    public $group_unified_settings;
-    public $company_name;
-    public $valid;
 
-	/**
-	 * @param mixed $company_id
-	 */
-	public function setCompanyId($company_id) {
-		$this->company_id = $company_id;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getCompanyId() {
-		return $this->company_id;
-	}
-
-	/**
-	 * @param mixed $company_group
-	 */
-	public function setCompanyGroup($company_group) {
-		$this->company_group = $company_group;
-		
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getCompanyGroup() {
-		return $this->company_group;
-	}
-
-	/**
-	 * @param mixed $company_name
-	 */
-	public function setCompanyName($company_name) {
-		$this->company_name = $company_name;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getCompanyName() {
-		return $this->company_name;
-	}
-
-	/**
-	 * @param mixed $group_unified_settings
-	 */
-	public function setGroupUnifiedSettings($group_unified_settings) {
-		$this->group_unified_settings = $group_unified_settings;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getGroupUnifiedSettings() {
-		return $this->group_unified_settings;
-	}
-
-	/**
-	 * @param mixed $valid
-	 */
-	public function setValid($valid) {
-		$this->valid = $valid;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getValid() {
-		return $this->valid;
-	}
-
-	public function toString() {
-		return 'company_id,company_group,group_unified_settings,company_name,valid';
-	}
-
-    public function getVars() {
-	    $vars = [];
-        foreach ($this as $key => $val) {
-            $vars[$key] = $val;
-        }
-        return $vars;
-	}
-
-}
 print_r(get_object_vars($company));
 return;
 
