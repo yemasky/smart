@@ -84,7 +84,7 @@ class BookingServiceImpl implements \BaseServiceImpl {
             $arrayDateMatrix = [];
             $startDateTime   = strtotime($check_in); //转换一下
             $endDateTime     = strtotime($check_out); //转换一下
-            $total_day = ($endDateTime - $startDateTime)/86400;
+            $total_day       = ($endDateTime - $startDateTime) / 86400;
             for ($i = $startDateTime; $i < $endDateTime; $i += 86400) {
                 $thisDate                          = date("Y-m-d", $startDateTime);
                 $day                               = substr($thisDate, 8, 2);
@@ -108,7 +108,7 @@ class BookingServiceImpl implements \BaseServiceImpl {
                         }
                         $systemLayoutItem[$system_id]['layout_item_id'][$layout_item_id] = $layout_item_id;
                         //预订的房型房子
-                        for ($i = 0; $i < $roomData['value']; $i++)  {
+                        for ($i = 0; $i < $roomData['value']; $i++) {
                             $BookingDetailEntity->setItemId(0);//
                             $BookingDetailEntity->setItemName('');
                             $BookingDetailEntity->setItemCategoryId($layout_item_id);
@@ -145,16 +145,16 @@ class BookingServiceImpl implements \BaseServiceImpl {
                     return $objSuccess->setSuccessService(false, '000009', '找不到价格体系', []);
                 }
                 $arrayPriceSystemId = [];//手动放盘价格体系ID
-                $arrayFormula       = [];
+                $arrayFormulaSystem = [];//公式放盘价格体系ID
 
                 foreach ($arrayPriceSystem as $i => $priceSystem) {
                     if ($priceSystem['price_system_type'] == 'formula') {//公式放盘
-                        $arrayPriceSystemId[$priceSystem['price_system_father_id']]         = $priceSystem['price_system_father_id'];
-                        $arrayFormula[$priceSystem['price_system_id']]['price_system_name'] = $priceSystem['price_system_name'];
-                        $arrayFormula[$priceSystem['price_system_id']]['formula']           = $priceSystem['formula'];
+                        $arrayPriceSystemId[$priceSystem['price_system_father_id']]               = $priceSystem['price_system_father_id'];
+                        $arrayFormulaSystem[$priceSystem['price_system_id']]['price_system_name'] = $priceSystem['price_system_name'];
+                        $arrayFormulaSystem[$priceSystem['price_system_id']]['formula']           = $priceSystem['formula'];
                         //父价格[父价格设置相应的layout_item才行]
-                        $arrayFormula[$priceSystem['price_system_id']]['system_father_id'] = $priceSystem['price_system_father_id'];
-                        $arrayFormula[$priceSystem['price_system_id']]['layout_item_id']   = $systemLayoutItem[$priceSystem['price_system_id']]['layout_item_id'];
+                        $arrayFormulaSystem[$priceSystem['price_system_id']]['system_father_id'] = $priceSystem['price_system_father_id'];
+                        $arrayFormulaSystem[$priceSystem['price_system_id']]['layout_item_id']   = $systemLayoutItem[$priceSystem['price_system_id']]['layout_item_id'];
                         if (isset($systemLayoutItem[$priceSystem['price_system_father_id']])) {
                             $systemLayoutItem[$priceSystem['price_system_father_id']]['item_ids'] .= ',' . $systemLayoutItem[$priceSystem['price_system_id']]['item_ids'];
                         } else {
@@ -186,16 +186,11 @@ class BookingServiceImpl implements \BaseServiceImpl {
                     return $objSuccess->setSuccessService(false, '100001', '价格体系没有设置价格', []);
                 }
                 //計算價格
-                if (!empty($arrayFormula)) {//计算价格[公式放盘]
-                    foreach ($arrayFormula as $price_system_id => $formulaData) {
-                        //设置system_id
-                        //每一间房//BookingDetailEntity
-                        //$BookingDetailEntity->setPriceSystemId($price_system_id);
-                        //消费//BookingDetailConsumeEntity
-                        //$BookingDetailConsumeEntity->setPriceSystemId($price_system_id);
+                if (!empty($arrayFormulaSystem)) {//计算价格[公式放盘]
+                    foreach ($arrayFormulaSystem as $price_system_id => $formulaData) {
                         //父价格
                         if (isset($arrayPriceLayout[$formulaData['system_father_id']])) {
-                            $formulaLayout = json_decode($arrayFormula[$price_system_id]['formula'], true);//公式
+                            $formulaLayout = json_decode($arrayFormulaSystem[$price_system_id]['formula'], true);//公式
                             foreach ($formulaData['layout_item_id'] as $layout_item_id => $item_id) {
                                 //判断是否存在$arrayLayoutRoom[$layout_item_id][$system_id]
                                 if (!isset($arrayLayoutRoom[$layout_item_id][$system_id])) continue;
@@ -256,7 +251,7 @@ class BookingServiceImpl implements \BaseServiceImpl {
                         //$fatherPrice = $arrayPriceLayout[$formulaData['system_father_id']];
                         //计算本体系价格
                     }
-                } else {//价格
+                } else {//手动放盘价格
                     foreach ($arrayPriceLayout as $system_id => $arraySystemPrice) {
                         //有效的价格体系
                         if (isset($arraySystemId[$system_id])) {
