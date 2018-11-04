@@ -184,6 +184,9 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 	$scope.yearWeekDays = {};
 	$scope.checkHistoryPrice = function(layout_id, channel_id) {
 		var yearWeekDays = {};
+        var decimal_price = 0;
+        if(typeof($rootScope.channelSettingList[channel_id]) != 'undefined') 
+            decimal_price = $rootScope.channelSettingList[channel_id].decimal_price - 0;
 		$scope.param['price_system_type'] = $scope.thisPriceSystem.price_system_type;
 		$scope.param['price_system_father_id'] = $scope.thisPriceSystem.price_system_father_id;
 		$scope.param['layout_id'] = layout_id;$scope.param['channel_id'] = channel_id;
@@ -226,10 +229,10 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 							var day = i < 10 ? '0'+i : i;
 							var price = layoutPrice[date]['day_'+day];
 							if(_formula_value != '' && price != '' && price > 0) {
-								price = $scope.arithmetic(price,_formula,_formula_value);
+								price = $scope.arithmetic(price,_formula,_formula_value, decimal_price);
 							}
 							if(_formula_second_value != '' && price != '' && price > 0) {
-								price = $scope.arithmetic(price,_formula_second,_formula_second_value);
+								price = $scope.arithmetic(price,_formula_second,_formula_second_value, decimal_price);
 							}
 							layoutPrice[date]['day_'+day] = price;
 						}

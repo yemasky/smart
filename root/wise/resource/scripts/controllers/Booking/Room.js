@@ -221,7 +221,6 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         //if(_system_id == '0' || typeof(_system_id) == 'undefined') return;//为0时不做任何操作
         var market_id = $scope.market_id;
         if(typeof(thisMarketPrice[market_id]) == 'undefined') thisMarketPrice[market_id] = {};
-        
         var priceSystemHash = $scope.priceSystemHash;
         //var channel_id = 1,layout_item_id = 1;
         for(var _system_id in priceSystemHash) {
@@ -237,6 +236,10 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             if(system_type == 'formula') {//公式
                 for(var channel_id in channel_ids) {
                     if(typeof(layout_item[channel_id]) == 'undefined') continue;
+                    var decimal_price = 0;
+                    //console.log($rootScope.channelSettingList[channel_id]);
+                    if(typeof($rootScope.channelSettingList[channel_id]) != 'undefined') 
+                        decimal_price = $rootScope.channelSettingList[channel_id].decimal_price - 0;
                     if(typeof(thisMarketPrice[market_id][channel_id]) == 'undefined') thisMarketPrice[market_id][channel_id] = {};
                     for(var layout_item_id in layout_item[channel_id]) {
                         var key = channel_id + '-' + layout_item_id;
@@ -261,9 +264,9 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                                     var price = thisDayPrice - 0;
                                     if(typeof(price) != 'undefined' && price > 0) {
                                         if(layout_formula['formula_value'] - 0 > 0)
-                                            price = $scope.arithmetic(price, layout_formula['formula'], layout_formula['formula_value'], 2);
+                                            price = $scope.arithmetic(price, layout_formula['formula'], layout_formula['formula_value'], decimal_price);
                                         if(layout_formula['formula_second_value'] - 0 > 0)
-                                            price = $scope.arithmetic(price, layout_formula['formula_second'], layout_formula['formula_second_value'], 2);
+                                            price = $scope.arithmetic(price, layout_formula['formula_second'], layout_formula['formula_second_value'], decimal_price);
                                     } else {
                                         price = '';//未设置价格
                                     }

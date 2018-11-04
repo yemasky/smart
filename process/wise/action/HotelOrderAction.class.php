@@ -172,6 +172,7 @@ class HotelOrderAction extends \BaseAction {
 
 	protected function doMethodBookingRoom(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$objSuccess = BookingServiceImpl::instance()->bookHotelRoom($objRequest, $objResponse);
+		print_r($objSuccess->getData());
         if($objSuccess->isSuccess()) return $objResponse->successResponse($objSuccess->getCode(), $objSuccess->getData());
         return $objResponse->errorResponse($objSuccess->getCode(), $objSuccess->getData(), $objSuccess->getMessage());
 	}

@@ -460,6 +460,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				if(typeof(common.employeeInfo) != 'undefined') {
 					$rootScope.employeeInfo = common.employeeInfo;
 				}
+                if(typeof(common.channelSettingList) != 'undefined') {
+					$rootScope.channelSettingList = common.channelSettingList;
+				}
 				if(typeof(common.employeeChannel) != 'undefined') {
 					for(var i in common.employeeChannel) {
                         if(common.employeeChannel[i].default == 1) {
@@ -544,7 +547,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			var value = value - 0;var parameter = parameter - 0;
 			var result = eval('('+value+symbol+parameter+')');
 			result = parseFloat(result.toPrecision(12));
-			if(typeof(to_fixed) != 'undefined' && to_fixed > 0) result = result.toFixed(to_fixed);
+			if(typeof(to_fixed) != 'undefined' && to_fixed >= 0) result = result.toFixed(to_fixed);
 			return result;
 		}
 		$scope.weekday = new Array(7);
