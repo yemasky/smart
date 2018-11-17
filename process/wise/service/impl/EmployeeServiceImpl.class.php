@@ -6,7 +6,7 @@
  */
 
 namespace wise;
-class EmployeeServiceImpl implements \BaseServiceImpl {
+class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService  {
     private static $objService = null;
 
     public static function instance() {
@@ -26,7 +26,7 @@ class EmployeeServiceImpl implements \BaseServiceImpl {
         $field = 'channel_father_id, sector_id, sector_father_id, is_default';
         $whereCriteria->ORDER('is_default');
 
-        return EmployeeService::instance()->getEmployeeSector($whereCriteria, $field);
+        return EmployeeDao::instance()->getEmployeeSector($whereCriteria, $field);
     }
 
     public function getEmployeeCompanySector($company_id, $employee_id) {
@@ -39,7 +39,7 @@ class EmployeeServiceImpl implements \BaseServiceImpl {
                 $whereCriteria->ArrayIN('sector_id', $arraySectorId);
                 $field = 'sector_id, channel_father_id, sector_father_id, sector_name, sector_order, sector_type';
 
-                return CompanyService::instance()->getCompanySector($whereCriteria, $field);
+                return CompanyDao::instance()->getCompanySector($whereCriteria, $field);
             }
 
             return null;

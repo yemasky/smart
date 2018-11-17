@@ -6,7 +6,7 @@
  */
 
 namespace wise;
-class HotelOrderServiceImpl implements \BaseServiceImpl {
+class HotelOrderServiceImpl extends \BaseServiceImpl {
 	private static $objService = null;
 
 	public static function instance() {

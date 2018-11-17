@@ -5,13 +5,6 @@
  * Time: 23:55
  */
 namespace wise;
-class LoginService extends \BaseService {
-    private static $objService = null;
-    public static function instance() {
-        if(is_object(self::$objService)) {
-            return self::$objService;
-        }
-        self::$objService = new LoginService();
-        return self::$objService;
-    }
+interface LoginService extends \BaseService {
+
 }

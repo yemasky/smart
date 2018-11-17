@@ -6,7 +6,7 @@
  */
 
 namespace wise;
-class ModuleServiceImpl implements \BaseServiceImpl {
+class ModuleServiceImpl extends \BaseServiceImpl implements ModuleService {
     private static $objService = null;
 
     public static function instance() {
@@ -23,10 +23,10 @@ class ModuleServiceImpl implements \BaseServiceImpl {
         $cacheModuleId = CacheConfig::getCacheId('module', 'ALL');
         if ($isUpdate) {
             $whereCriteria->ORDER('module_father_id', 'ASC')->setHashKey('module_id');
-            $arrayModule = ModuleService::instance()->DBCache($cacheModuleId, -1)->getModule($whereCriteria);
+            $arrayModule = ModuleDao::instance()->DBCache($cacheModuleId, -1)->getModule($whereCriteria);
         } else {
             $whereCriteria->setHashKey('module_id');
-            $arrayModule = ModuleService::instance()->DBCache($cacheModuleId)->getModule($whereCriteria);
+            $arrayModule = ModuleDao::instance()->DBCache($cacheModuleId)->getModule($whereCriteria);
         }
 
         return $arrayModule;
@@ -39,7 +39,7 @@ class ModuleServiceImpl implements \BaseServiceImpl {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->ArrayIN('module_id', $arrayModuleId)->EQ('is_menu', '1')->EQ('is_release', '1');
         $whereCriteria->ORDER('module_order', 'ASC')->ORDER('action_order', 'ASC')->ORDER('module_id', 'ASC');
-        $arrayEmployeeModule = ModuleService::instance()->getModule($whereCriteria, $field);
+        $arrayEmployeeModule = ModuleDao::instance()->getModule($whereCriteria, $field);
         if (!empty($arrayEmployeeModule)) {
             foreach ($arrayEmployeeModule as $k => $v) {
                 $arrayEmployeeModule[$k]['url'] = \Encrypt::instance()->encode($v['module_id'], getDay());
@@ -51,7 +51,7 @@ class ModuleServiceImpl implements \BaseServiceImpl {
 
     //获取酒店模块
     public function getModuleCompany(\WhereCriteria $whereCriteria, $field) {
-        $arrayModuleCompany = ModuleService::instance()->getModuleCompany($whereCriteria, $field);
+        $arrayModuleCompany = ModuleDao::instance()->getModuleCompany($whereCriteria, $field);
 
         return $arrayModuleCompany;
     }
@@ -63,7 +63,7 @@ class ModuleServiceImpl implements \BaseServiceImpl {
 
     //update
     public function batchUpdateModule($arrayUpdate, \WhereCriteria $whereCriteria) {
-        ModuleService::instance()->batchUpdateModuleByKey($arrayUpdate, $whereCriteria);
+        ModuleDao::instance()->batchUpdateModuleByKey($arrayUpdate, $whereCriteria);
     }
 
 }

@@ -6,7 +6,7 @@
  */
 
 namespace wise;
-class LoginServiceImpl implements \BaseServiceImpl {
+class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
     private static $loginKey = 'employee';
     private static $objService = null;
     private static $objEmployee;
@@ -54,7 +54,7 @@ class LoginServiceImpl implements \BaseServiceImpl {
         if (strpos($username, '@') !== false) {
             $arrayLoginInfo['email'] = $username;//where($arrayLoginInfo)->
             $whereCriteria->EQ('valid', '1');
-            $arrayEmployeeList = EmployeeService::instance()->getEmployee($whereCriteria, $field);
+            $arrayEmployeeList = EmployeeDao::instance()->getEmployee($whereCriteria, $field);
         }
         $loginEmployeeModel = new LoginEmployeeModel();
         $lenght             = count($arrayEmployeeList);
@@ -82,7 +82,7 @@ class LoginServiceImpl implements \BaseServiceImpl {
                 //channelSettingList
                 $whereCriteria = new \WhereCriteria();
                 $whereCriteria->setHashKey('channel_id');
-                $channelSettingList = ChannelService::instance()->getChannelSettingList($whereCriteria->EQ('company_id', $Employee->getCompanyId()));
+                $channelSettingList = ChannelDao::instance()->getChannelSettingList($whereCriteria->EQ('company_id', $Employee->getCompanyId()));
                 $loginEmployeeModel->setChannelSettingList($channelSettingList);
                 $this->setLoginEmployeeCookie($loginEmployeeModel);
                 break;

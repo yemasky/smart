@@ -26,11 +26,27 @@ class ModuleDao extends CommonDao {
 		return $this->setDsnRead($this->getDsnRead())->setTable('module')->getList($field, $whereCriteria);
 	}
 
-	public function getModuleCompany($field = '', \WhereCriteria $whereCriteria) {
-		if($field == '') $field = '*';
+    //--------Module//-----------//
+
+    public function saveModule($arrayData, $insert_type = 'INSERT') {
+        return $this->setDsnRead($this->getDsnWrite())->setTable('module')->insert($arrayData, $insert_type);
+    }
+
+    public function updateModule(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return $this->setDsnRead($this->getDsnWrite())->setTable('module')->update($arrayUpdateData, $whereCriteria);
+    }
+
+    public function batchUpdateModuleByKey($arrayUpdate, \WhereCriteria $whereCriteria) {
+        return $this->setDsnRead($this->getDsnWrite())->setTable('module')->batchUpdateByKey($arrayUpdate, $whereCriteria);
+    }
+    //--------Module//-----------//
+
+    //ModuleCompany
+    public function getModuleCompany($field = '', \WhereCriteria $whereCriteria) {
+        if($field == '') $field = '*';
         if(empty($whereCriteria->getHashKey())) $whereCriteria->setHashKey('module_id');
 
-		return $this->setDsnRead($this->getDsnRead())->setTable('module_company')->getList($field, $whereCriteria);//DBCache($cacheId)->
-	}
+        return $this->setDsnRead($this->getDsnRead())->setTable('module_company')->getList($field, $whereCriteria);//DBCache($cacheId)->
+    }
 
 }

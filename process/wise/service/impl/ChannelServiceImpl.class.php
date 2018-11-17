@@ -6,7 +6,7 @@
  */
 
 namespace wise;
-class ChannelServiceImpl implements \BaseServiceImpl {
+class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 	private static $objService = null;
 
 	public static function instance() {
@@ -23,7 +23,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$whereCriteria->EQ('company_id', $company_id);
 		$cacheChannelId = CacheConfig::getCacheId('channel', $company_id);
 		$whereCriteria->setHashKey('channel_id');
-		$arrayChannelList = ChannelService::instance()->DBCache($cacheChannelId)->getChannel($whereCriteria);
+		$arrayChannelList = ChannelDao::instance()->DBCache($cacheChannelId)->getChannel($whereCriteria);
 		if(!empty($arrayChannelList)) {
 			if(empty($channel)) {
 				foreach($arrayChannelList as $channel_id => $value) {
@@ -53,13 +53,13 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 	public function saveChannel($arrayData, $insert_type = 'INSERT') {
 		$cacheChannelId = CacheConfig::getCacheId('channel', $arrayData['company_id']);
 
-		return ChannelService::instance()->DBCache($cacheChannelId, -1)->saveChannel($arrayData, $insert_type);
+		return ChannelDao::instance()->DBCache($cacheChannelId, -1)->saveChannel($arrayData, $insert_type);
 	}
 
 	public function updateChannel(\WhereCriteria $whereCriteria, $arrayUpdateData) {
 		$cacheChannelId = CacheConfig::getCacheId('channel', $arrayUpdateData['company_id']);
 
-		return ChannelService::instance()->DBCache($cacheChannelId, -1)->updateChannel($whereCriteria, $arrayUpdateData);
+		return ChannelDao::instance()->DBCache($cacheChannelId, -1)->updateChannel($whereCriteria, $arrayUpdateData);
 	}
 
 	//arrtibute
@@ -72,7 +72,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$cacheAttributeId = CacheConfig::getCacheId('attribute', $cacheAttributeId);
 		$whereCriteria->setHashKey('attribute_id');
 
-		return ChannelService::instance()->DBCache($cacheAttributeId)->getAttribute($whereCriteria);
+		return ChannelDao::instance()->DBCache($cacheAttributeId)->getAttribute($whereCriteria);
 	}
 
 	public function saveAttribute($arrayData, $insert_type = 'INSERT') {
@@ -81,7 +81,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$cacheAttributeId = $arrayData['company_id'] . '_' . $arrayData['channel_config'] . '_' . $channel_id . '_' . $item_id;
 		$cacheAttributeId = CacheConfig::getCacheId('attribute', $cacheAttributeId);
 
-		return ChannelService::instance()->DBCache($cacheAttributeId, -1)->saveAttribute($arrayData, $insert_type);
+		return ChannelDao::instance()->DBCache($cacheAttributeId, -1)->saveAttribute($arrayData, $insert_type);
 	}
 
 	public function updateAttribute(\WhereCriteria $whereCriteria, $arrayUpdateData) {
@@ -91,33 +91,33 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$cacheAttributeId = $whereCriteria->getWhere();
 		$cacheAttributeId = CacheConfig::getCacheId('attribute', $cacheAttributeId);
 
-		return ChannelService::instance()->DBCache($cacheAttributeId, -1)->updateAttribute($whereCriteria, $arrayUpdateData);
+		return ChannelDao::instance()->DBCache($cacheAttributeId, -1)->updateAttribute($whereCriteria, $arrayUpdateData);
 	}
 
 	//AttrValue
 	public function getAttributeValue(\WhereCriteria $whereCriteria, $field = null) {
-		return ChannelService::instance()->getAttributeValue($whereCriteria, $field);
+		return ChannelDao::instance()->getAttributeValue($whereCriteria, $field);
 	}
 
 	public function deleteAttributeValue(\WhereCriteria $whereCriteria) {
-		return ChannelService::instance()->deleteAttributeValue($whereCriteria);
+		return ChannelDao::instance()->deleteAttributeValue($whereCriteria);
 	}
 
 	public function batchInsertAttrValue($arrayData, $insert_type = 'INSERT') {
-		return ChannelService::instance()->batchInsertAttributeValue($arrayData, $insert_type);
+		return ChannelDao::instance()->batchInsertAttributeValue($arrayData, $insert_type);
 	}
 
 	//upload images
 	public function getUploadImages(\WhereCriteria $whereCriteria, $field = null) {
-		return ChannelService::instance()->getUploadImages($whereCriteria, $field);
+		return ChannelDao::instance()->getUploadImages($whereCriteria, $field);
 	}
 
 	public function getUploadImagesCount(\WhereCriteria $whereCriteria) {
-		return ChannelService::instance()->getUploadImagesCount($whereCriteria);
+		return ChannelDao::instance()->getUploadImagesCount($whereCriteria);
 	}
 
 	public function saveUploadImages($arrayData, $insert_type = 'INSERT') {
-		return ChannelService::instance()->saveUploadImages($arrayData, $insert_type);
+		return ChannelDao::instance()->saveUploadImages($arrayData, $insert_type);
 	}
 
 	//save channel_item
@@ -141,25 +141,25 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		if(!empty($fatherHash)) $whereCriteria->setFatherKey($fatherHash);
 		$childrenHash = $objRequest->childrenHash;
 		if(!empty($childrenHash)) $whereCriteria->setChildrenKey($childrenHash);
-		$arrayDataList = ChannelService::instance()->getChannelItem($whereCriteria, $field);
+		$arrayDataList = ChannelDao::instance()->getChannelItem($whereCriteria, $field);
 
 		return $arrayDataList;
 	}
 
 	public function getChannelItem(\WhereCriteria $whereCriteria, $field = null) {
-		return ChannelService::instance()->getChannelItem($whereCriteria, $field);
+		return ChannelDao::instance()->getChannelItem($whereCriteria, $field);
 	}
 
 	public function getChannelItemCount(\WhereCriteria $whereCriteria) {
-		return ChannelService::instance()->getChannelItemCount($whereCriteria);
+		return ChannelDao::instance()->getChannelItemCount($whereCriteria);
 	}
 
 	public function saveChannelItem($arrayData, $insert_type = 'INSERT') {
-		return ChannelService::instance()->saveChannelItem($arrayData, $insert_type);
+		return ChannelDao::instance()->saveChannelItem($arrayData, $insert_type);
 	}
 
 	public function updateChannelItem(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
-		return ChannelService::instance()->updateChannelItem($whereCriteria, $arrayUpdateData, $update_type);
+		return ChannelDao::instance()->updateChannelItem($whereCriteria, $arrayUpdateData, $update_type);
 	}
 
 	//payment_type
@@ -168,7 +168,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$whereCriteria->ArrayIN('company_id', [$company_id, '0']);
 		if(!empty($payment_name)) $whereCriteria->EQ('payment_name', $payment_name);
 		//if(!empty($payment_en_name)) $arrayCondition['where']['payment_en_name'] = $payment_en_name;
-		$arrayResult = ChannelService::instance()->getPaymentType($whereCriteria, 'payment_id');
+		$arrayResult = ChannelDao::instance()->getPaymentType($whereCriteria, 'payment_id');
 		if(!empty($arrayResult)) {
 			return false;
 		}
@@ -183,13 +183,13 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$cachePaymentTypeId = CacheConfig::getCacheId('paymentType', $company_id);
 		$whereCriteria->setHashKey('payment_id')->setMultiple(false)->setFatherKey('payment_father_id');
 
-		return ChannelService::instance()->DBCache($cachePaymentTypeId)->getPaymentType($whereCriteria, $field);
+		return ChannelDao::instance()->DBCache($cachePaymentTypeId)->getPaymentType($whereCriteria, $field);
 	}
 
 	public function savePaymentType($arrayData, $insert_type = 'INSERT') {
 		$cachePaymentTypeId = CacheConfig::getCacheId('paymentType', $arrayData['company_id']);
 
-		return ChannelService::instance()->DBCache($cachePaymentTypeId, -1)->savePaymentType($arrayData, $insert_type);
+		return ChannelDao::instance()->DBCache($cachePaymentTypeId, -1)->savePaymentType($arrayData, $insert_type);
 	}
 
 	public function updatePaymentType($company_id, $payment_id, $arrayUpdateData, $update_type = '') {
@@ -197,7 +197,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$whereCriteria->EQ('company_id', $company_id)->EQ('payment_id', $payment_id);
 		$cachePaymentTypeId = CacheConfig::getCacheId('paymentType', $company_id);
 
-		return ChannelService::instance()->DBCache($cachePaymentTypeId, -1)->updatePaymentType($whereCriteria, $arrayUpdateData, $update_type);
+		return ChannelDao::instance()->DBCache($cachePaymentTypeId, -1)->updatePaymentType($whereCriteria, $arrayUpdateData, $update_type);
 	}
 	//
 	//CustomerMarket
@@ -206,7 +206,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$whereCriteria->ArrayIN('company_id', [$company_id, '0']);
 		if(!empty($market_name)) $whereCriteria->EQ('market_name', $market_name);
 		//if(!empty($market_name)) $arrayCondition['where']['market_en_name'] = $market_en_name;
-		$arrayResult = ChannelService::instance()->getCustomerMarket($whereCriteria, 'market_id');
+		$arrayResult = ChannelDao::instance()->getCustomerMarket($whereCriteria, 'market_id');
 		if(!empty($arrayResult)) {
 			return false;
 		}
@@ -222,13 +222,13 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$cacheCustomerMarketId = CacheConfig::getCacheId('customer_market', $company_id);
 		$whereCriteria->setHashKey('market_id')->setMultiple(false)->setFatherKey('market_father_id');
 
-		return ChannelService::instance()->DBCache($cacheCustomerMarketId)->getCustomerMarket($whereCriteria, $field);
+		return ChannelDao::instance()->DBCache($cacheCustomerMarketId)->getCustomerMarket($whereCriteria, $field);
 	}
 
 	public function saveCustomerMarket($arrayData, $insert_type = 'INSERT') {
 		$cacheCustomerMarketId = CacheConfig::getCacheId('customer_market', $arrayData['company_id']);
 
-		return ChannelService::instance()->DBCache($cacheCustomerMarketId, -1)->saveCustomerMarket($arrayData, $insert_type);
+		return ChannelDao::instance()->DBCache($cacheCustomerMarketId, -1)->saveCustomerMarket($arrayData, $insert_type);
 	}
 
 	public function updateCustomerMarket($company_id, $market_id, $arrayUpdateData, $update_type = '') {
@@ -236,7 +236,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$whereCriteria->EQ('company_id', $company_id)->EQ('market_id', $market_id);
 		$cacheCustomerMarketId = CacheConfig::getCacheId('customer_market', $company_id);
 
-		return ChannelService::instance()->DBCache($cacheCustomerMarketId, -1)->updateCustomerMarket($whereCriteria, $arrayUpdateData, $update_type);
+		return ChannelDao::instance()->DBCache($cacheCustomerMarketId, -1)->updateCustomerMarket($whereCriteria, $arrayUpdateData, $update_type);
 	}
 
 	//channel_layout_price_system
@@ -245,7 +245,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$whereCriteria->EQ('company_id', $company_id);
 		if(!empty($price_system_name)) $whereCriteria->EQ('price_system_name', $price_system_name);
 		//if(!empty($price_system_en_name)) $arrayCondition['where']['price_system_en_name'] = $price_system_en_name;
-		$arrayResult = ChannelService::instance()->getLayoutPriceSystem($whereCriteria, 'price_system_id');
+		$arrayResult = ChannelDao::instance()->getLayoutPriceSystem($whereCriteria, 'price_system_id');
 		if(!empty($arrayResult)) {
 			return false;
 		}
@@ -258,7 +258,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 			$field = 'price_system_id, price_system_father_id, channel_ids, price_system_name, market_ids, layout_item, '
 				. 'formula,price_system_type, valid';
 
-		return ChannelService::instance()->getLayoutPriceSystem($whereCriteria, $field);
+		return ChannelDao::instance()->getLayoutPriceSystem($whereCriteria, $field);
 	}
 
 	public function getLayoutPriceSystemHash($company_id, $valid = '', $channel_id = '', $market_id = '', $layout_item_id = '') {
@@ -271,26 +271,26 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$whereCriteria->setHashKey('price_system_id');
 		$field = 'price_system_id, price_system_father_id, channel_ids, price_system_name,price_system_en_name, market_ids, layout_item, book_min_day, cancellation_policy,' . 'formula,price_system_type, valid';
 
-		return ChannelService::instance()->getLayoutPriceSystem($whereCriteria, $field);
+		return ChannelDao::instance()->getLayoutPriceSystem($whereCriteria, $field);
 	}
 
 	public function saveLayoutPriceSystem($arrayData, $insert_type = 'INSERT') {
-		return ChannelService::instance()->saveLayoutPriceSystem($arrayData, $insert_type);
+		return ChannelDao::instance()->saveLayoutPriceSystem($arrayData, $insert_type);
 	}
 
 	public function updateLayoutPriceSystem(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
-		return ChannelService::instance()->updateLayoutPriceSystem($whereCriteria, $arrayUpdateData, $update_type);
+		return ChannelDao::instance()->updateLayoutPriceSystem($whereCriteria, $arrayUpdateData, $update_type);
 	}
 
 	public function batchInsertPriceSystemLayout($arrayData) {
-		return ChannelService::instance()->batchInsertPriceSystemLayout($arrayData);
+		return ChannelDao::instance()->batchInsertPriceSystemLayout($arrayData);
 	}
 
 	public function getLayoutPriceSystemLayout($market_id, $field = null) {
 		$whereCriteria = new \WhereCriteria();
 		$whereCriteria->EQ('market_id', $market_id);
 
-		return ChannelService::instance()->getLayoutPriceSystemLayout($whereCriteria, $field);
+		return ChannelDao::instance()->getLayoutPriceSystemLayout($whereCriteria, $field);
 	}
 
 	public function getPriceSystemLayout($market_id, $price_system_id = '', $channel_id = '', $layout_item_id = '') {
@@ -300,11 +300,11 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		if($price_system_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
 		if($price_system_id > 0) $whereCriteria->EQ('layout_item_id', $layout_item_id);
 
-		return ChannelService::instance()->getLayoutPriceSystem($whereCriteria, 'price_system_id,channel_id,market_id,layout_item_id');
+		return ChannelDao::instance()->getLayoutPriceSystem($whereCriteria, 'price_system_id,channel_id,market_id,layout_item_id');
 	}
 
 	public function deletePriceSystemLayout(\WhereCriteria $whereCriteria) {
-		return ChannelService::instance()->deletePriceSystemLayout($whereCriteria);
+		return ChannelDao::instance()->deletePriceSystemLayout($whereCriteria);
 	}
 
 	//channel_layout_price
@@ -329,11 +329,11 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 			$whereCriteria->setHashKey('item_id')->setMultiple(false)->setFatherKey('price_system_id')
 				->setChildrenKey('layout_price_date');
 
-			return ChannelService::instance()->getLayoutPrice($whereCriteria, $field);
+			return ChannelDao::instance()->getLayoutPrice($whereCriteria, $field);
 		}
 		$whereCriteria->setHashKey('item_id')->setMultiple(false)->setChildrenKey('layout_price_date');
 
-		return ChannelService::instance()->getLayoutPrice($whereCriteria, $field);
+		return ChannelDao::instance()->getLayoutPrice($whereCriteria, $field);
 	}
 
 	public function getLayoutPrice($company_id, $channel_id, $arraySystemId = array(), $in_date, $out_date, $sql = '',
@@ -352,23 +352,23 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$whereCriteria->GE('layout_price_date', substr($in_date, 0, 8) . '01');
 		$whereCriteria->LE('layout_price_date', substr($out_date, 0, 8) . '01');
 
-		return ChannelService::instance()->getLayoutPrice($whereCriteria, $field);
+		return ChannelDao::instance()->getLayoutPrice($whereCriteria, $field);
 	}
 
 	public function saveLayoutPrice($arrayData, $insert_type = 'INSERT') {
-		return ChannelService::instance()->saveLayoutPrice($arrayData, $insert_type);
+		return ChannelDao::instance()->saveLayoutPrice($arrayData, $insert_type);
 	}
 
 	public function batchInsertLayoutPrice($arrayData, $insert_type = 'INSERT') {
-		return ChannelService::instance()->batchInsertLayoutPrice($arrayData, $insert_type);
+		return ChannelDao::instance()->batchInsertLayoutPrice($arrayData, $insert_type);
 	}
 
 	public function updateLayoutPrice(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
-		return ChannelService::instance()->updateLayoutPrice($whereCriteria, $arrayUpdateData, $update_type);
+		return ChannelDao::instance()->updateLayoutPrice($whereCriteria, $arrayUpdateData, $update_type);
 	}
 
 	public function batchUpdateLayoutPrice(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
-		return ChannelService::instance()->batchUpdateLayoutPrice($whereCriteria, $arrayUpdateData, $update_type);
+		return ChannelDao::instance()->batchUpdateLayoutPrice($whereCriteria, $arrayUpdateData, $update_type);
 	}
 
 	//channel_cancellation_policy
@@ -379,7 +379,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		if(!empty($policy_id) && $policy_id > 0) $whereCriteria->EQ('policy_id', $policy_id);
 		$field = 'policy_id,policy_name,policy_en_name,channel_id,rules,rules_value,rules_days,rules_time,begin_datetime,end_datetime,policy_type,valid';
 
-		return ChannelService::instance()->getCancellationPolicy($whereCriteria, $field);
+		return ChannelDao::instance()->getCancellationPolicy($whereCriteria, $field);
 	}
 
 	public function getCancellationPolicyCache($company_id, $channel_id = '', $policy_id = '') {
@@ -391,7 +391,7 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 		$whereCriteria->ArrayIN('company_id', [$company_id, '0']);
 		if(!empty($policy_name)) $whereCriteria->EQ('policy_name', $policy_name);
 		//if(!empty($policy_en_name)) $arrayCondition['where']['policy_en_name'] = $policy_en_name;
-		$arrayResult = ChannelService::instance()->getCancellationPolicy($whereCriteria, 'policy_id');
+		$arrayResult = ChannelDao::instance()->getCancellationPolicy($whereCriteria, 'policy_id');
 		if(!empty($arrayResult)) {
 			return false;
 		}
@@ -400,21 +400,21 @@ class ChannelServiceImpl implements \BaseServiceImpl {
 	}
 
 	public function saveCancellationPolicy($arrayData, $insert_type = 'INSERT') {
-		return ChannelService::instance()->saveCancellationPolicy($arrayData, $insert_type);
+		return ChannelDao::instance()->saveCancellationPolicy($arrayData, $insert_type);
 	}
 
 	public function updateCancellationPolicy($company_id, $policy_id, $arrayUpdateData, $update_type = '') {
 		$whereCriteria = new \WhereCriteria();
 		$whereCriteria->EQ('company_id', $company_id)->EQ('policy_id', $policy_id);
 
-		return ChannelService::instance()->updateCancellationPolicy($whereCriteria, $arrayUpdateData, $update_type);
+		return ChannelDao::instance()->updateCancellationPolicy($whereCriteria, $arrayUpdateData, $update_type);
 	}
 
 	//
 	public function getBusinessDay($channel_id) {
 		$whereCriteria = new \WhereCriteria();
 		$whereCriteria->EQ('channel_id', $channel_id)->ORDER('business_day_id')->LIMIT(0, 1);
-		$arrayBusinessDay = ChannelService::instance()->getBusinessDay($whereCriteria, 'business_day');
+		$arrayBusinessDay = ChannelDao::instance()->getBusinessDay($whereCriteria, 'business_day');
 		if(empty($arrayBusinessDay)) {
 			return getToDay();
 		}

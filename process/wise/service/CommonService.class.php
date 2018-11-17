@@ -5,25 +5,10 @@
  * Time: 23:55
  */
 namespace wise;
-class CommonService extends \BaseService {
-    private static $objService = null;
-    public static function instance() {
-        if(is_object(self::$objService)) {
-            return self::$objService;
-        }
-        self::$objService = new CommonService();
-        return self::$objService;
-    }
+interface CommonService extends \BaseService {
+    public function startTransaction();
 
-    public function startTransaction() {
-    	CommonDao::instance()->startTransaction();
-	}
+	public function commit();
 
-	public function commit() {
-    	CommonDao::instance()->commit();
-	}
-
-	public function rollback() {
-    	CommonDao::instance()->rollback();
-	}
+	public function rollback();
 }

@@ -13,6 +13,8 @@ abstract class BaseDao {
     protected $table_key = '*';
     protected $cache_id = '';
 
+    abstract public static function instance();
+
     abstract public function getDsnRead();
 
     abstract public function getDsnWrite();

@@ -21,4 +21,26 @@ class EmployeeDao extends CommonDao {
         return $this->setDsnRead($this->getDsnRead())->setTable('employee')->getList($field, $whereCriteria);
     }
 
+    //--------Employee//-----------//
+    public function saveEmployee($arrayData, $insert_type = 'INSERT') {
+        return $this->setDsnRead($this->getDsnWrite())->setTable('employee')->insert($arrayData, $insert_type);
+    }
+
+    public function updateEmployee(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return $this->setDsnRead($this->getDsnWrite())->setTable('employee')->update($arrayUpdateData, $whereCriteria);
+    }
+    //--------Employee//-----------//
+
+    //employee_sector
+    public function getEmployeeSector(\WhereCriteria $whereCriteria, $field = null) {
+        return $this->setDsnRead($this->getDsnRead())->setTable('employee_sector')->getList($field, $whereCriteria);
+    }
+
+    public function saveEmployeeSector($arrayData, $insert_type = 'INSERT') {
+        return $this->setDsnRead($this->getDsnWrite())->setTable('employee_sector')->insert($arrayData, $insert_type);
+    }
+
+    public function updateEmployeeSector(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return $this->setDsnRead($this->getDsnWrite())->setTable('employee_sector')->update($arrayUpdateData, $whereCriteria);
+    }
 }

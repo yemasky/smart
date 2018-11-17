@@ -6,7 +6,7 @@
  */
 
 namespace wise;
-class BookingServiceImpl implements \BaseServiceImpl {
+class BookingServiceImpl extends \BaseServiceImpl implements BookingService {
     private static $objService = null;
 
     public static function instance() {
@@ -19,7 +19,7 @@ class BookingServiceImpl implements \BaseServiceImpl {
     }
 
     public function getBooking(\WhereCriteria $whereCriteria, $field = null) {
-        return BookingService::instance()->getBooking($whereCriteria, $field);
+        return BookingDao::instance()->getBooking($whereCriteria, $field);
     }
 
     public function checkHotelBooking($company_id, $in_date, $out_date, $channel_id = '', $field = '') {
@@ -29,7 +29,7 @@ class BookingServiceImpl implements \BaseServiceImpl {
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         if ($field == '') $field = 'channel_id,item_id,check_in,check_out';
 
-        return BookingService::instance()->getBookingDetail($whereCriteria, $field);
+        return BookingDao::instance()->getBookingDetail($whereCriteria, $field);
     }
 
     /*
@@ -190,9 +190,9 @@ class BookingServiceImpl implements \BaseServiceImpl {
                     return $objSuccess->setSuccessService(false, '100001', '价格体系没有设置价格', []);
                 }
                 //计算消费
-                foreach () {
+                /*foreach () {
 
-                }
+                }*/
 
                 //計算價格
                 if (!empty($arrayFormulaSystem)) {//计算价格[公式放盘]

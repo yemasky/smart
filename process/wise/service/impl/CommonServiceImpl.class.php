@@ -6,7 +6,7 @@
  */
 
 namespace wise;
-class CommonServiceImpl implements \BaseServiceImpl {
+class CommonServiceImpl extends \BaseServiceImpl implements CommonService {
     private static $objService = null;
 
     public static function instance() {
@@ -19,15 +19,15 @@ class CommonServiceImpl implements \BaseServiceImpl {
     }
 
     public function startTransaction() {
-        CommonService::instance()->startTransaction();
+        CommonDao::instance()->startTransaction();
     }
 
     public function commit() {
-        CommonService::instance()->commit();
+        CommonDao::instance()->commit();
     }
 
     public function rollback() {
-        CommonService::instance()->rollback();
+        CommonDao::instance()->rollback();
     }
 
 }

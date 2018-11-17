@@ -6,7 +6,7 @@
  */
 
 namespace wise;
-class RoleServiceImpl implements \BaseServiceImpl {
+class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
 	private static $objService = null;
 
 	public static function instance() {
@@ -22,14 +22,14 @@ class RoleServiceImpl implements \BaseServiceImpl {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('employee_id', $employee_id);
 		$cacheRoleEmployeeId       = CacheConfig::getCacheId('role_employee', $company_id, $employee_id);
-		$arrayEmployeeRole         = RoleService::instance()->DBCache($cacheRoleEmployeeId)->getRoleEmployee($whereCriteria);
+		$arrayEmployeeRole         = RoleDao::instance()->DBCache($cacheRoleEmployeeId)->getRoleEmployee($whereCriteria);
 		$arrayEmployeeRoleModule   = array();
 		if(!empty($arrayEmployeeRole)) {
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->ArrayIN('role_id', array_column($arrayEmployeeRole,'role_id'));
             $whereCriteria->setHashKey('module_id');
 			$cacheRoleEmployeeModuleId = CacheConfig::getCacheId('employee_module', $company_id, $employee_id);
-			$arrayEmployeeRoleModule   = RoleService::instance()->DBCache($cacheRoleEmployeeModuleId)->getRoleMudule($whereCriteria);
+			$arrayEmployeeRoleModule   = RoleDao::instance()->DBCache($cacheRoleEmployeeModuleId)->getRoleMudule($whereCriteria);
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id);
             $whereCriteria->setHashKey('module_id');
