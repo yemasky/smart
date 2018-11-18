@@ -19,7 +19,7 @@ class ModuleDao extends CommonDao {
 		return self::$objDao;
 	}
 
-	public function getModule($field = '', \WhereCriteria $whereCriteria) {
+	public function getModule(\WhereCriteria $whereCriteria, $field = '') {
 		if(empty($field)) $field = '*';
         if(empty($whereCriteria->getHashKey())) $whereCriteria->setHashKey('module_id');
 
@@ -42,7 +42,7 @@ class ModuleDao extends CommonDao {
     //--------Module//-----------//
 
     //ModuleCompany
-    public function getModuleCompany($field = '', \WhereCriteria $whereCriteria) {
+    public function getModuleCompany(\WhereCriteria $whereCriteria, $field = '') {
         if($field == '') $field = '*';
         if(empty($whereCriteria->getHashKey())) $whereCriteria->setHashKey('module_id');
 

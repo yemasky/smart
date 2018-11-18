@@ -34,7 +34,7 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
             $whereCriteria->EQ('company_id', $company_id);
             $whereCriteria->setHashKey('module_id');
 			$cacheCompanyModuleId      = CacheConfig::getCacheId('module_company', $company_id, $employee_id);
-			$arrayModuleCompany        = ModuleService::instance()->DBCache($cacheCompanyModuleId)->getModuleCompany($whereCriteria, 'module_id');
+			$arrayModuleCompany        = ModuleDao::instance()->DBCache($cacheCompanyModuleId)->getModuleCompany($whereCriteria, 'module_id');
 			if(!empty($arrayEmployeeRoleModule) && !empty($arrayModuleCompany)) {
 				$arrayEmployeeRoleModule = array_intersect(array_keys($arrayEmployeeRoleModule), array_keys($arrayModuleCompany));
 			} else {

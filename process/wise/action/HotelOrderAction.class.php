@@ -55,7 +55,7 @@ class HotelOrderAction extends \BaseAction {
 	}
 
 	protected function doRoomStatus(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-		$arrayRoomStatus = HotelOrderServiceImpl::instance()->getRoomStatus();
+
 	}
 
 	protected function doRoomOrder(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -134,7 +134,11 @@ class HotelOrderAction extends \BaseAction {
 		//
 
 		//查找已住房间[远期房态]
-		$arrayResult['bookingRoom'] = BookingServiceImpl::instance()->checkHotelBooking($company_id, $in_date, $out_date, $channel_id);
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GT('check_in', $in_date)
+            ->LT('check_in', $out_date);
+        if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
+		$arrayResult['bookingRoom'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
 		//{:獲取價格
         $arraySystemId = null;
 		if($market_id > 0) {
@@ -171,9 +175,12 @@ class HotelOrderAction extends \BaseAction {
 	}
 
 	protected function doMethodBookingRoom(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-		$objSuccess = BookingServiceImpl::instance()->bookHotelRoom($objRequest, $objResponse);
-		print_r($objSuccess->getData());
-        if($objSuccess->isSuccess()) return $objResponse->successResponse($objSuccess->getCode(), $objSuccess->getData());
+		$objSuccess = BookingHotelServiceImpl::instance()->beginBooking($objRequest, $objResponse);
+        if($objSuccess->isSuccess()) {
+            $BookingData = new BookingDataModel($objSuccess->getData());
+
+            return $objResponse->successResponse($objSuccess->getCode(),'');
+        }
         return $objResponse->errorResponse($objSuccess->getCode(), $objSuccess->getData(), $objSuccess->getMessage());
 	}
 }

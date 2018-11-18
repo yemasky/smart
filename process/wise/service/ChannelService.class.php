@@ -8,6 +8,4 @@
 namespace wise;
 interface ChannelService extends \BaseService {
 
-
-
 }

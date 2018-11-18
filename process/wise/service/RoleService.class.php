@@ -8,6 +8,4 @@
 namespace wise;
 interface RoleService extends \BaseService {
 
-
-
 }

@@ -17,11 +17,11 @@ class CompanyDao extends CommonDao {
         return self::$objDao;
     }
 
-    public function getCompany($field = null, \WhereCriteria $whereCriteria){
+    public function getCompany(\WhereCriteria $whereCriteria, $field = null){
         return $this->setDsnRead($this->getDsnRead())->setTable('company')->getList($field, $whereCriteria);
     }
 
-	public function getCompanySector($field = null, \WhereCriteria $whereCriteria){
+	public function getCompanySector(\WhereCriteria $whereCriteria, $field = null){
 		return $this->setDsnRead($this->getDsnRead())->setTable('company_sector')->getList($field, $whereCriteria);
 	}
 

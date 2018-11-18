@@ -8,5 +8,4 @@
 namespace wise;
 interface EmployeeService extends \BaseService {
 
-
 }

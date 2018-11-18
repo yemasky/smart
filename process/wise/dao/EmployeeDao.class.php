@@ -17,7 +17,7 @@ class EmployeeDao extends CommonDao {
         return self::$objDao;
     }
 
-    public function getEmployee($field = null, \WhereCriteria $whereCriteria){
+    public function getEmployee(\WhereCriteria $whereCriteria, $field = null){
         return $this->setDsnRead($this->getDsnRead())->setTable('employee')->getList($field, $whereCriteria);
     }
 
