@@ -119,6 +119,10 @@ abstract class BaseDao {
         return DBQuery::instance($this->getDsnWrite())->setTable($this->table)->insert($arrayData, $insert_type)->getInsertId();
     }
 
+    public function insertEntity($objEntity, $insert_type = 'INSERT') {
+        return DBQuery::instance($this->getDsnWrite())->insertEntity($objEntity, $insert_type)->getInsertId();
+    }
+
     public function batchInsert($arrayValues, $insert_type = 'INSERT') {
         return DBQuery::instance($this->getDsnWrite())->setTable($this->table)->batchInsert($arrayValues, $insert_type);
     }

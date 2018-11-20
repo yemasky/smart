@@ -10,7 +10,7 @@ class SuccessService {
     private $success = true;
     private $code = '000001';
     private $message = '';
-    private $data = [];
+    private $data = null;
 
     /**
      * @return bool
@@ -57,18 +57,18 @@ class SuccessService {
     /**
      * @return array
      */
-    public function getData(): array {
+    public function getData() {
         return $this->data;
     }
 
     /**
      * @param array $data
      */
-    public function setData(array $data) {
+    public function setData($data) {
         $this->data = $data;
     }
 
-    public function setSuccessService(bool $success, string $code, string $message, array $data = null) : SuccessService {
+    public function setSuccessService(bool $success, string $code, string $message, $data = null) : SuccessService {
         $this->success = $success;
         $this->code = $code;
         $this->message = $message;

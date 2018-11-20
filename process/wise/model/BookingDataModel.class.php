@@ -24,7 +24,7 @@ class BookingDataModel extends \Entity {
     /**
      * @param null $BookingEntity
      */
-    public function setBookingEntity($BookingEntity): void {
+    public function setBookingEntity($BookingEntity) {
         $this->BookingEntity = $BookingEntity;
     }
 
@@ -38,7 +38,7 @@ class BookingDataModel extends \Entity {
     /**
      * @param array $BookDetailList
      */
-    public function setBookDetailList(array $BookDetailList): void {
+    public function setBookDetailList(array $BookDetailList) {
         $this->BookDetailList = $BookDetailList;
     }
 
@@ -52,7 +52,7 @@ class BookingDataModel extends \Entity {
     /**
      * @param array $BookingDetailConsumeList
      */
-    public function setBookingDetailConsumeList(array $BookingDetailConsumeList): void {
+    public function setBookingDetailConsumeList(array $BookingDetailConsumeList) {
         $this->BookingDetailConsumeList = $BookingDetailConsumeList;
     }
 

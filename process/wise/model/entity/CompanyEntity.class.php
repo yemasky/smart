@@ -10,7 +10,7 @@ namespace wise;
 
 
 class CompanyEntity extends \Entity {
-    private $company_id = 0;
+    private $company_id = null;
     private $company_group = 0;
     private $group_unified_settings = 0;
     private $company_name = '';

@@ -115,7 +115,11 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria->setHashKey($hashKey)->setMultiple(false)->setFatherKey('category_item_id')->setChildrenKey('item_id');
 		$arrayResult['layoutRoom'] = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, $field);
 		//查找已住房间[远期房态]
-		$arrayResult['bookingRoom'] = BookingServiceImpl::instance()->checkHotelBooking($company_id, $in_date, $out_date, $channel_id);
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GT('check_in', $in_date)
+            ->LT('check_in', $out_date);
+        if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
+		$arrayResult['bookingRoom'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
 		//
 		//$arrayResult['defaultChannel_id'] = $channel_id;
 
@@ -177,7 +181,7 @@ class HotelOrderAction extends \BaseAction {
 	protected function doMethodBookingRoom(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$objSuccess = BookingHotelServiceImpl::instance()->beginBooking($objRequest, $objResponse);
         if($objSuccess->isSuccess()) {
-            $BookingData = new BookingDataModel($objSuccess->getData());
+            $objSuccess = BookingHotelServiceImpl::instance()->saveBooking($objSuccess->getData());
 
             return $objResponse->successResponse($objSuccess->getCode(),'');
         }

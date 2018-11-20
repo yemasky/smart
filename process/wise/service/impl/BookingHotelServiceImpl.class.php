@@ -296,5 +296,11 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return $objSuccess->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '没有取到预订数据', []);
     }
 
+    public function saveBooking(BookingDataModel $BookingData): \SuccessService {
+        $BookingEntity = $BookingData->getBookingEntity();
+        $insert_id = BookingDao::instance()->insertEntity($BookingEntity);
+        $ojbSuccess = new \SuccessService();
+        return $ojbSuccess;
+    }
 }
 
