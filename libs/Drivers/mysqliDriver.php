@@ -46,7 +46,7 @@ class mysqliDriver {
     public function getQueryArrayResult($sql, WhereCriteria $whereCriteria): array {
         //$hashKey = '',  = false,  = '',  = ''
         //$result       = $this->execute($sql);
-        $result = $this->executePrepareStatement($sql, $whereCriteria->getStatement(), $whereCriteria->getParam());
+        $result = $this->selectPrepareStatement($sql, $whereCriteria->getStatement(), $whereCriteria->getParam());
 
         $rows         = array();
         $hashKey      = $whereCriteria->getHashKey();
@@ -160,7 +160,7 @@ class mysqliDriver {
     }
 
     public function getEntityArrayResult(string $sql, string $modelEntityClass, WhereCriteria $whereCriteria): array {
-        $result       = $this->executePrepareStatement($sql, $whereCriteria->getStatement(), $whereCriteria->getParam());
+        $result       = $this->selectPrepareStatement($sql, $whereCriteria->getStatement(), $whereCriteria->getParam());
         $arrayObject  = array();
         $hashKey      = $whereCriteria->getHashKey();
         $toHashArray  = $whereCriteria->isMultiple();
@@ -325,20 +325,29 @@ class mysqliDriver {
         throw new SQLException("{$sql}\r\n<br />执行错误:" . mysqli_error($this->conn));
     }
 
-    /**
-     * @return mixed prepared statement
-     */
-    public function executePrepareStatement($sql, $statement = '', $param = '') {
+    public function executePrepareStatementSql($sql, $statement = '', $param = '') {
         $objStatement = $this->prepareStatement($sql, $statement, $param);
         /* 执行查询 */
         if (!$objStatement->execute()) {
             throw new SQLException("{$sql}\r\n<br />执行错误:" . mysqli_error($this->conn));
         }
+        return $objStatement;
+    }
+
+    /**
+     * @return mixed prepared statement
+     */
+    public function executePrepareStatement($sql, $statement = '', $param = '') {
+        $objStatement = $this->executePrepareStatementSql($sql, $statement, $param);
+
+        /* 关于语句对象 */
+        $objStatement->close();
+    }
+
+    public function selectPrepareStatement($sql, $statement = '', $param = '') {
+        $objStatement = $this->executePrepareStatementSql($sql, $statement, $param);
         /* 将查询结果绑定到变量 */
         $result = $objStatement->get_result();
-        if (!$result) {
-            throw new SQLException("{$sql}\r\n<br />get_result 错误:" . mysqli_error($this->conn));
-        }
         //关闭结果集
         $objStatement->free_result();
         /* 获取查询结果值 */
@@ -347,7 +356,6 @@ class mysqliDriver {
         $objStatement->close();
 
         return $result;
-
     }
 
     private function prepareStatement($sql, $statement = '', $param = '') {

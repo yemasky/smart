@@ -138,9 +138,9 @@ if(!defined("INC_FUNC_COMMON")) {
 
 	function writeLog($filename, $msg) {
 		if(defined('__WWW_LOGS_PATH')) {
-			$fp = fopen(__WWW_LOGS_PATH . $filename . '.' . date("z") . '.log', "a+");
+			$fp = fopen(__WWW_LOGS_PATH . date("Ymd") . '.' . $filename . '.log', "a+");
 		} else {
-			$fp = fopen(__ROOT_LOGS_PATH . $filename . '.' . date("z") . '.log', "a+");
+			$fp = fopen(__ROOT_LOGS_PATH . date("Ymd") . '.' . $filename . '.log', "a+");
 		}
 		$uri = '';
 		if(isset($_SERVER['REQUEST_URI']))

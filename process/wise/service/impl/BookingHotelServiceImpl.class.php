@@ -297,7 +297,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     }
 
     public function saveBooking(BookingDataModel $BookingData): \SuccessService {
-        CommonServiceImpl::instance()->startTransaction();
+        //CommonServiceImpl::instance()->startTransaction();
         $bookingEntity = $BookingData->getBookingEntity();
         $bookDetailList = $BookingData->getBookDetailList();
         $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();
