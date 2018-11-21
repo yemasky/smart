@@ -297,8 +297,12 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     }
 
     public function saveBooking(BookingDataModel $BookingData): \SuccessService {
-        $BookingEntity = $BookingData->getBookingEntity();
-        $insert_id = BookingDao::instance()->insertEntity($BookingEntity);
+        $bookingEntity = $BookingData->getBookingEntity();
+        $bookDetailList = $BookingData->getBookDetailList();
+        $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();
+        $insert_id = BookingDao::instance()->saveBooking($bookingEntity);
+        BookingDao::instance()->saveBookingDetailList($bookDetailList);
+        BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
         $ojbSuccess = new \SuccessService();
         return $ojbSuccess;
     }
