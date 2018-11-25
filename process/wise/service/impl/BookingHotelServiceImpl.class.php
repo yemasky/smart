@@ -59,7 +59,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $arrayAllBookData                 = array_merge($arrayInput, $arrayCommonData);
         //预订人信息
         $BookingEntity = new BookingEntity($arrayAllBookData);
-        $BookingEntity->setBookNumber(0);
+        $BookingEntity->setBookingNumber(0);
         $BookingEntity->setBookingStatus('0');//初始状态为 0
         $BookingEntity->setBusinessDay($objResponse->business_day);
         $BookingEntity->setBookingTotalPrice(0);
@@ -301,7 +301,10 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $bookingEntity = $BookingData->getBookingEntity();
         $bookDetailList = $BookingData->getBookDetailList();
         $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();
-        $insert_id = BookingDao::instance()->saveBooking($bookingEntity);
+        $booking_id = BookingDao::instance()->saveBooking($bookingEntity);
+        foreach ($bookDetailList as $k => $bookDetail) {
+            $bookDetailList[$k]->setBookingNumber($booking_id);
+        }
         BookingDao::instance()->saveBookingDetailList($bookDetailList);
         BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
         $ojbSuccess = new \SuccessService();

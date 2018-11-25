@@ -13,6 +13,8 @@ class BookingDataModel extends \Entity {
     protected $BookingEntity = null;
     protected $BookDetailList = [];
     protected $BookingDetailConsumeList = [];
+    protected $BookingAccountsList = [];
+    protected $BookingDiscountList = [];
 
     /**
      * @return null
@@ -54,6 +56,34 @@ class BookingDataModel extends \Entity {
      */
     public function setBookingDetailConsumeList(array $BookingDetailConsumeList) {
         $this->BookingDetailConsumeList = $BookingDetailConsumeList;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBookingAccountsList(): array {
+        return $this->BookingAccountsList;
+    }
+
+    /**
+     * @param array $BookingAccountsList
+     */
+    public function setBookingAccountsList(array $BookingAccountsList) {
+        $this->BookingAccountsList = $BookingAccountsList;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBookingDiscountList(): array {
+        return $this->BookingDiscountList;
+    }
+
+    /**
+     * @param array $BookingDiscountList
+     */
+    public function setBookingDiscountList(array $BookingDiscountList) {
+        $this->BookingDiscountList = $BookingDiscountList;
     }
 
 

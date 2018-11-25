@@ -9,9 +9,9 @@
 namespace wise;
 
 class BookingEntity extends \Entity {
-	protected $book_id;
-	protected $book_number = 0;
-	protected $outer_book_number = '';
+	protected $booking_id = null;
+	protected $booking_number = 0;
+	protected $booking_number_ext = '';
 	protected $company_id;
 	protected $channel = 'Hotel';
 	protected $channel_id;
@@ -35,47 +35,47 @@ class BookingEntity extends \Entity {
 		return $this->setPrototype($arrayInput);
 	}
 
-	/**
-	 * @return mixed
-	 */
-	public function getBookId() {
-		return $this->book_id;
-	}
+    /**
+     * @return mixed
+     */
+    public function getBookingId() {
+        return $this->booking_id;
+    }
 
-	/**
-	 * @param mixed $book_id
-	 */
-	public function setBookId($book_id) {
-		$this->book_id = $book_id;
-	}
+    /**
+     * @param mixed $booking_id
+     */
+    public function setBookingId($booking_id) {
+        $this->booking_id = $booking_id;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getBookNumber(): int {
-		return $this->book_number;
-	}
+    /**
+     * @return int
+     */
+    public function getBookingNumber(): int {
+        return $this->booking_number;
+    }
 
-	/**
-	 * @param string $book_number
-	 */
-	public function setBookNumber(int $book_number) {
-		$this->book_number = $book_number;
-	}
+    /**
+     * @param int $booking_number
+     */
+    public function setBookingNumber(int $booking_number) {
+        $this->booking_number = $booking_number;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getOuterBookNumber(): string {
-		return $this->outer_book_number;
-	}
+    /**
+     * @return string
+     */
+    public function getBookingNumberExt(): string {
+        return $this->booking_number_ext;
+    }
 
-	/**
-	 * @param string $outer_book_number
-	 */
-	public function setOuterBookNumber(string $outer_book_number) {
-		$this->outer_book_number = $outer_book_number;
-	}
+    /**
+     * @param string $booking_number_ext
+     */
+    public function setBookingNumberExt(string $booking_number_ext) {
+        $this->booking_number_ext = $booking_number_ext;
+    }
 
 	/**
 	 * @return mixed

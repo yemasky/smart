@@ -9,7 +9,10 @@
 namespace wise;
 
 class Booking_consumeEntity extends \Entity {
-	protected $consume_id;
+	protected $consume_id = null;
+	protected $booking_detail_id = 0;
+	protected $booking_number = 0;
+	protected $booking_number_ext = '';
 	protected $company_id;
 	protected $channel;
 	protected $booking_type;
@@ -54,6 +57,48 @@ class Booking_consumeEntity extends \Entity {
 	public function setConsumeId($consume_id) {
 		$this->consume_id = $consume_id;
 	}
+
+    /**
+     * @return int
+     */
+    public function getBookingDetailId(): int {
+        return $this->booking_detail_id;
+    }
+
+    /**
+     * @param int $booking_detail_id
+     */
+    public function setBookingDetailId(int $booking_detail_id) {
+        $this->booking_detail_id = $booking_detail_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBookingNumber(): int {
+        return $this->booking_number;
+    }
+
+    /**
+     * @param int $booking_number
+     */
+    public function setBookingNumber(int $booking_number) {
+        $this->booking_number = $booking_number;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBookingNumberExt(): string {
+        return $this->booking_number_ext;
+    }
+
+    /**
+     * @param string $booking_number_ext
+     */
+    public function setBookingNumberExt(string $booking_number_ext) {
+        $this->booking_number_ext = $booking_number_ext;
+    }
 
 	/**
 	 * @return mixed
