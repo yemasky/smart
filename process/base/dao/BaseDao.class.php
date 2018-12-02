@@ -128,8 +128,8 @@ abstract class BaseDao {
     }
 
 
-    public function batchInsertEntity($arrayObjEntity, $insert_type = 'INSERT') {
-        return DBQuery::instance($this->getDsnWrite())->batchInsertEntity($arrayObjEntity, $insert_type)->getInsertId();
+    public function batchInsertEntity($arrayObjEntity, $field_key = '', $insert_type = 'INSERT') : array {
+        return DBQuery::instance($this->getDsnWrite())->batchInsertEntity($arrayObjEntity, $field_key, $insert_type);
     }
 
     public function update($row, \WhereCriteria $whereCriteria, $update_type = '') {//IGNORE

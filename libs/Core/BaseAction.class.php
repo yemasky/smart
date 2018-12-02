@@ -934,14 +934,17 @@ class DBQuery {
         return $this;
     }
 
-    public function batchInsertEntity($arrayEntityValues, $insert_type = 'INSERT') {
+    public function batchInsertEntity($arrayEntityValues, $field_key = '', $insert_type = 'INSERT') : array {
         if (!is_array($arrayEntityValues)) return false;
         if (empty($arrayEntityValues)) return false;
+        $insertId = [];
         foreach ($arrayEntityValues as $i => $objEntity) {
-            $this->insertEntity($objEntity, $insert_type);
+            $field_vaule = $i;
+            if($field_key != '') $field_vaule = $objEntity->getPrototype($field_key);
+            $insertId[$field_vaule] = $this->insertEntity($objEntity, $insert_type)->getInsertId();
         }
 
-        return $this;
+        return $insertId;
     }
 
     public function getInsertId() {

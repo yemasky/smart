@@ -31,11 +31,11 @@ class BookingDao extends CommonDao {
         return $this->setDsnRead($this->getDsnWrite())->insertEntity($BookingEntity);
     }
 
-    public function saveBookingDetailList($bookDetailList) {
-        return $this->setDsnRead($this->getDsnWrite())->batchInsertEntity($bookDetailList);
+    public function saveBookingDetailList($bookDetailList) : array {
+        return $this->setDsnRead($this->getDsnWrite())->batchInsertEntity($bookDetailList, 'item_id');
     }
 
-    public function saveBookingDetailConsumeList($bookingDetailConsumeList) {
+    public function saveBookingDetailConsumeList($bookingDetailConsumeList) : array {
         return $this->setDsnRead($this->getDsnWrite())->batchInsertEntity($bookingDetailConsumeList);
     }
 }

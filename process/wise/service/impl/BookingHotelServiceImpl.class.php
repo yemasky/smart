@@ -92,6 +92,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $systemLayoutItem = [];//layout
             $arrayLayoutRooms = [];//有效的房型房间
             //查找过滤有效的价格体系
+            $_item_key = substr(getMicrotime(), 2);//构造虚拟item_id
             foreach ($arrayBookingData as $dateKey => $arrayChannelData) {
                 foreach ($arrayChannelData['booking_room'][$channel_id] as $layout_item_id => $systemData) {//组合价格体系
                     foreach ($systemData as $system_id => $roomData) {
@@ -107,20 +108,25 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                         $systemLayoutItem[$system_id]['layout_item_id'][$layout_item_id] = $layout_item_id;
                         //预订的房型房子
                         for ($i = 0; $i < $roomData['value']; $i++) {
-                            $BookingDetailEntity->setItemId(0);//
-                            $BookingDetailEntity->setItemName('');
-                            $BookingDetailEntity->setItemCategoryId($layout_item_id);
-                            $BookingDetailEntity->setItemCategoryName('');
-                            $BookingDetailEntity->setPriceSystemId($system_id);
-                            $BookingDetailEntity->setPriceSystemName('');
-                            $arrayBookDetailList[] = $BookingDetailEntity;
+                            $_item_key++;
+                            $_item_id = '-'.$_item_key;
+                            $DetailEntity = clone $BookingDetailEntity;
+                            $DetailEntity->setItemId($_item_id);//
+                            $DetailEntity->setItemName('');
+                            $DetailEntity->setItemCategoryId($layout_item_id);
+                            $DetailEntity->setItemCategoryName('');
+                            $DetailEntity->setPriceSystemId($system_id);
+                            $DetailEntity->setPriceSystemName('');
+                            $arrayBookDetailList[] = $DetailEntity;
                             for ($j = 0; $j < $total_day; $j++) {
                                 //消费//2018-08-
                                 $consume_key = $system_id . '-' . $i . '-' . $arrayBusinessDay[$j];
-                                $BookingDetailConsumeEntity->setPriceSystemId($system_id);
-                                $BookingDetailConsumeEntity->setPriceSystemName('');
-                                $BookingDetailConsumeEntity->setBusinessDay($arrayBusinessDay[$j]);
-                                $BookingDetailConsumeList[$consume_key] = $BookingDetailConsumeEntity;
+                                $DetailConsumeEntity = clone $BookingDetailConsumeEntity;
+                                $DetailConsumeEntity->setItemId($_item_id);
+                                $DetailConsumeEntity->setPriceSystemId($system_id);
+                                $DetailConsumeEntity->setPriceSystemName('');
+                                $DetailConsumeEntity->setBusinessDay($arrayBusinessDay[$j]);
+                                $BookingDetailConsumeList[$consume_key] = $DetailConsumeEntity;
                             }
                         }
                     }
@@ -298,6 +304,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
 
     public function saveBooking(BookingDataModel $BookingData): \SuccessService {
         //CommonServiceImpl::instance()->startTransaction();
+        $ojbSuccess = new \SuccessService();
         $bookingEntity = $BookingData->getBookingEntity();
         $bookDetailList = $BookingData->getBookDetailList();
         $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();
@@ -305,9 +312,18 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         foreach ($bookDetailList as $k => $bookDetail) {
             $bookDetailList[$k]->setBookingNumber($booking_id);
         }
-        BookingDao::instance()->saveBookingDetailList($bookDetailList);
-        BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
-        $ojbSuccess = new \SuccessService();
+        $arrayBookDetailId = BookingDao::instance()->saveBookingDetailList($bookDetailList);
+        if(!empty($arrayBookDetailId)) {
+            foreach ($bookingDetailConsumeList as $k => $bookDetailConsume) {
+                $_item_id = $bookDetailConsume->getItemId();
+                $_detail_id = $arrayBookDetailId[$_item_id];
+                $bookingDetailConsumeList[$k]->setBookingDetailId($_detail_id);
+            }
+            BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
+            return $ojbSuccess;
+        }
+        $ojbSuccess->setSuccess(false);
+
         return $ojbSuccess;
     }
 }
