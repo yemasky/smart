@@ -23,6 +23,8 @@ class BookingEntity extends \Entity {
 	protected $cash_pledge = 0.00;
 	protected $employee_id;
 	protected $employee_name = '';
+	protected $check_in = '0000-00-00 00:00:00';
+	protected $check_out = '0000-00-00 00:00:00';
 	protected $business_day;
 	protected $sales_id = 0;
 	protected $sales_name = '';
@@ -230,6 +232,34 @@ class BookingEntity extends \Entity {
 	public function setEmployeeName(string $employee_name) {
 		$this->employee_name = $employee_name;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getCheckIn() {
+        return $this->check_in;
+    }
+
+    /**
+     * @param mixed $check_in
+     */
+    public function setCheckIn($check_in) {
+        $this->check_in = $check_in;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCheckOut() {
+        return $this->check_out;
+    }
+
+    /**
+     * @param mixed $check_out
+     */
+    public function setCheckOut($check_out) {
+        $this->check_out = $check_out;
+    }
 
 	/**
 	 * @return mixed

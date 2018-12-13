@@ -303,26 +303,36 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     }
 
     public function saveBooking(BookingDataModel $BookingData): \SuccessService {
+
         //CommonServiceImpl::instance()->startTransaction();
         $ojbSuccess = new \SuccessService();
         $bookingEntity = $BookingData->getBookingEntity();
         $bookDetailList = $BookingData->getBookDetailList();
         $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();
         $booking_id = BookingDao::instance()->saveBooking($bookingEntity);
+        $bookingNumber = BookingUtil::instanct()->getBookingNumber($booking_id);
         foreach ($bookDetailList as $k => $bookDetail) {
-            $bookDetailList[$k]->setBookingNumber($booking_id);
+            $bookDetailList[$k]->setBookingNumber($bookingNumber);
         }
         $arrayBookDetailId = BookingDao::instance()->saveBookingDetailList($bookDetailList);
         if(!empty($arrayBookDetailId)) {
+            $_max_detail_id = 0;
             foreach ($bookingDetailConsumeList as $k => $bookDetailConsume) {
                 $_item_id = $bookDetailConsume->getItemId();
                 $_detail_id = $arrayBookDetailId[$_item_id];
                 $bookingDetailConsumeList[$k]->setBookingDetailId($_detail_id);
+                $bookingDetailConsumeList[$k]->setBookingNumber($bookingNumber);
+                $_max_detail_id = $_max_detail_id < $_detail_id ? $_detail_id : $_max_detail_id;
             }
             BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
-            return $ojbSuccess;
+            //超订检查
+            $channel_id = $bookingEntity->getChannelId();
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->LE('booking_detail_id', $_max_detail_id)->EQ('channel_id', $channel_id);
+            $whereCriteria->LE('check_in', $bookingEntity->getCheckOut())->GE('check_out', $bookingEntity->getCheckIn());
+            BookingDao::instance()->getBookingDetail($whereCriteria, 'item_id, item_category_id');
+
         }
-        $ojbSuccess->setSuccess(false);
 
         return $ojbSuccess;
     }

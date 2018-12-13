@@ -19,7 +19,7 @@ class BookingDataModel extends \Entity {
     /**
      * @return null
      */
-    public function getBookingEntity() {
+    public function getBookingEntity() : BookingEntity {
         return $this->BookingEntity;
     }
 
