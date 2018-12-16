@@ -329,7 +329,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $check_in      = $bookingEntity->getCheckIn();
             $check_out     = $bookingEntity->getCheckOut();
             $whereCriteria = new \WhereCriteria();
-            $whereCriteria->LE('booking_detail_id', $_max_detail_id)->EQ('channel_id', $channel_id); 
+            $whereCriteria->LE('booking_detail_id', $_max_detail_id)->EQ('channel_id', $channel_id);
             $whereCriteria->LE('check_in', $check_out)->GE('check_out', $check_in);
             //已定房间
             $arrayHaveBook = BookingDao::instance()->getBookingDetail($whereCriteria, 'item_id, item_category_id, check_in, check_out');
