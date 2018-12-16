@@ -109,7 +109,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                         //预订的房型房子
                         for ($i = 0; $i < $roomData['value']; $i++) {
                             $_item_key++;
-                            $_item_id = '-'.$_item_key;
+                            $_item_id     = '-' . $_item_key;
                             $DetailEntity = clone $BookingDetailEntity;
                             $DetailEntity->setItemId($_item_id);//
                             $DetailEntity->setItemName('');
@@ -120,7 +120,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                             $arrayBookDetailList[] = $DetailEntity;
                             for ($j = 0; $j < $total_day; $j++) {
                                 //消费//2018-08-
-                                $consume_key = $system_id . '-' . $i . '-' . $arrayBusinessDay[$j];
+                                $consume_key         = $system_id . '-' . $i . '-' . $arrayBusinessDay[$j];
                                 $DetailConsumeEntity = clone $BookingDetailConsumeEntity;
                                 $DetailConsumeEntity->setItemId($_item_id);
                                 $DetailConsumeEntity->setPriceSystemId($system_id);
@@ -303,22 +303,21 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     }
 
     public function saveBooking(BookingDataModel $BookingData): \SuccessService {
-
         //CommonServiceImpl::instance()->startTransaction();
-        $ojbSuccess = new \SuccessService();
-        $bookingEntity = $BookingData->getBookingEntity();
-        $bookDetailList = $BookingData->getBookDetailList();
+        $ojbSuccess               = new \SuccessService();
+        $bookingEntity            = $BookingData->getBookingEntity();
+        $bookDetailList           = $BookingData->getBookDetailList();
         $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();
-        $booking_id = BookingDao::instance()->saveBooking($bookingEntity);
-        $bookingNumber = BookingUtil::instanct()->getBookingNumber($booking_id);
+        $booking_id               = BookingDao::instance()->saveBooking($bookingEntity);
+        $bookingNumber            = BookingUtil::instanct()->getBookingNumber($booking_id);
         foreach ($bookDetailList as $k => $bookDetail) {
             $bookDetailList[$k]->setBookingNumber($bookingNumber);
         }
         $arrayBookDetailId = BookingDao::instance()->saveBookingDetailList($bookDetailList);
-        if(!empty($arrayBookDetailId)) {
+        if (!empty($arrayBookDetailId)) {
             $_max_detail_id = 0;
             foreach ($bookingDetailConsumeList as $k => $bookDetailConsume) {
-                $_item_id = $bookDetailConsume->getItemId();
+                $_item_id   = $bookDetailConsume->getItemId();
                 $_detail_id = $arrayBookDetailId[$_item_id];
                 $bookingDetailConsumeList[$k]->setBookingDetailId($_detail_id);
                 $bookingDetailConsumeList[$k]->setBookingNumber($bookingNumber);
@@ -326,11 +325,31 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             }
             BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
             //超订检查
-            $channel_id = $bookingEntity->getChannelId();
+            $channel_id    = $bookingEntity->getChannelId();
+            $check_in      = $bookingEntity->getCheckIn();
+            $check_out     = $bookingEntity->getCheckOut();
             $whereCriteria = new \WhereCriteria();
-            $whereCriteria->LE('booking_detail_id', $_max_detail_id)->EQ('channel_id', $channel_id);
-            $whereCriteria->LE('check_in', $bookingEntity->getCheckOut())->GE('check_out', $bookingEntity->getCheckIn());
-            BookingDao::instance()->getBookingDetail($whereCriteria, 'item_id, item_category_id');
+            $whereCriteria->LE('booking_detail_id', $_max_detail_id)->EQ('channel_id', $channel_id); 
+            $whereCriteria->LE('check_in', $check_out)->GE('check_out', $check_in);
+            //已定房间
+            $arrayHaveBook = BookingDao::instance()->getBookingDetail($whereCriteria, 'item_id, item_category_id, check_in, check_out');
+            //查找现有房间数
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id)->setHashKey('item_id');
+            $field   = 'channel_id,category_item_id,item_id,attr_type';
+            //$hashKey = 'channel_id';
+            //$whereCriteria->setHashKey($hashKey)->setMultiple(false)->setFatherKey('category_item_id')->setChildrenKey('item_id');
+            $layoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, $field);
+            //矩阵化
+            $totalDay = (strtotime($check_out) - strtotime($check_in))/86400;
+            $totalRoomDay = [];
+            $check_in_time = strtotime($check_in);
+            for ($i = 0; $i < $totalDay; $i++) {
+                $thisDay = date("Y-m-d", $check_in_time + $i * 86400);
+                $totalRoomDay[$thisDay][] = $thisDay;
+
+            }
+
 
         }
 

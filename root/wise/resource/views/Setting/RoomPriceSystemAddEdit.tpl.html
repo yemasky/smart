@@ -26,6 +26,27 @@
                       </div>
                     </div>
                     <div class="form-group m-h-n clearfix">
+                        <div class="col-sm-12"><label>房型</label>
+                            <div ng-repeat="(i, hotel) in hotelLayoutHash" ng-show="selectChannel[hotel.channel_id]==true">
+                            	<label class="w"><span class="badge">{{employeeChannel[hotel.channel_id].channel_name}}</span></label>
+                                <label class="checkbox-inline ui-checks" ng-repeat="(i, layout) in hotel.item">
+                                	<input class="" type="checkbox" value="{{layout.item_id}}" ng-model="param.channel_layout[layout.item_id]" name="layout_item[{{hotel.channel_id}}][{{layout.item_id}}]"><i></i>{{layout.item_name}}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-h-n clearfix">
+                        <div class="col-sm-12"><label>{{market_name}}</label>
+                            <div class="checkbox">
+                            	<span ng-repeat="(i, father) in marketHash" ng-if="father.children!=''"><!--<label class="w-xs">{{father.market_name}}</label>-->
+                                    <label class="checkbox-inline ui-checks" ng-repeat="(j, market) in father.children">
+                                        <input class="" type="checkbox" value="{{market.market_id}}" ng-model="param.channel_market[market.market_id]" name="market_ids[{{market.market_id}}]"><i></i>{{market.market_name}}
+                                    </label>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group m-h-n clearfix">
                     	<div class="col-sm-3">
                         <label for="market_name">价格类型</label>
                         <input class="form-control w" name="price_system_name" value="" ng-model="param._price_system_name" required>
@@ -62,27 +83,6 @@
                             </button>
                             </div>
                          </div>
-                    </div>
-                    <div class="form-group m-h-n clearfix">
-                        <div class="col-sm-12"><label>{{market_name}}</label>
-                            <div class="checkbox">
-                            	<span ng-repeat="(i, father) in marketHash" ng-if="father.children!=''"><!--<label class="w-xs">{{father.market_name}}</label>-->
-                                    <label class="checkbox-inline ui-checks" ng-repeat="(j, market) in father.children">
-                                        <input class="" type="checkbox" value="{{market.market_id}}" ng-model="param.channel_market[market.market_id]" name="market_ids[{{market.market_id}}]"><i></i>{{market.market_name}}
-                                    </label>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-group m-h-n clearfix">
-                        <div class="col-sm-12"><label>房型</label>
-                            <div ng-repeat="(i, hotel) in hotelLayoutHash" ng-show="selectChannel[hotel.channel_id]==true">
-                            	<label class="w"><span class="badge">{{employeeChannel[hotel.channel_id].channel_name}}</span></label>
-                                <label class="checkbox-inline ui-checks" ng-repeat="(i, layout) in hotel.item">
-                                	<input class="" type="checkbox" value="{{layout.item_id}}" ng-model="param.channel_layout[layout.item_id]" name="layout_item[{{hotel.channel_id}}][{{layout.item_id}}]"><i></i>{{layout.item_name}}
-                                </label>
-                            </div>
-                        </div>
                     </div>
                     <div class="form-group">
                         <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param._valid" name="valid" checked> 有效</label>
