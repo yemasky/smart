@@ -332,22 +332,58 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $whereCriteria->LE('booking_detail_id', $_max_detail_id)->EQ('channel_id', $channel_id);
             $whereCriteria->LE('check_in', $check_out)->GE('check_out', $check_in);
             //已定房间
-            $arrayHaveBook = BookingDao::instance()->getBookingDetail($whereCriteria, 'item_id, item_category_id, check_in, check_out');
+            $arrayHaveBook = BookingDao::instance()->getBookingDetail($whereCriteria, 'item_id, item_category_id, check_in, check_out, price_system_id');
             //查找现有房间数
             $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id)->setHashKey('item_id');
-            $field   = 'channel_id,category_item_id,item_id,attr_type';
+            $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id);
+            //$whereCriteria->setHashKey('category_item_id');
+            $field = 'channel_id,category_item_id,item_id,attr_type';
             //$hashKey = 'channel_id';
-            //$whereCriteria->setHashKey($hashKey)->setMultiple(false)->setFatherKey('category_item_id')->setChildrenKey('item_id');
+            $whereCriteria->setHashKey('category_item_id')->setMultiple(false)->setChildrenKey('item_id');
             $layoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, $field);
-            //矩阵化
-            $totalDay = (strtotime($check_out) - strtotime($check_in))/86400;
-            $totalRoomDay = [];
-            $check_in_time = strtotime($check_in);
-            for ($i = 0; $i < $totalDay; $i++) {
-                $thisDay = date("Y-m-d", $check_in_time + $i * 86400);
-                $totalRoomDay[$thisDay][] = $thisDay;
-
+            //
+            $totalDay      = (strtotime($check_out) - strtotime($check_in)) / 86400;
+            $matrixRoomDay = [];
+            if (!empty($layoutRoom)) {
+                foreach ($layoutRoom as $category_id => $value) {
+                    $layoutRoom[$category_id]['room_num'] = count($value);
+                    //矩阵化
+                    $matrixDay = $check_in;
+                    for ($i = 0; $i < $totalDay; $i++) {
+                        if ($i > 0) $matrixDay = date("Y-m-d", strtotime("$matrixDay +24 HOUR"));
+                        $matrixRoomDay[$matrixDay][$category_id] = $layoutRoom[$category_id]['room_num'];
+                    }
+                }
+            }
+            //计算超定
+            $isOverBook    = false;
+            $overBook      = array();//超定
+            $overI         = 0;
+            $arrayLockRoom = null;
+            foreach ($arrayHaveBook as $i => $arrayBookRoomLayout) {
+                foreach ($matrixRoomDay as $matrixDay => $LayoutRoomNum) {
+                    if (isset($arrayLockRoom[$matrixDay][$arrayBookRoomLayout['item_category_id']])) {
+                        //锁房、维修房
+                        $matrixRoomDay[$matrixDay][$arrayBookRoomLayout['item_category_id']] -= $arrayLockRoom[$matrixDay][$arrayBookRoomLayout['item_category_id']];//全日房状态
+                        unset($arrayLockRoom[$matrixDay][$arrayBookRoomLayout['item_category_id']]);
+                    }
+                    $nCin  = substr($arrayBookRoomLayout['check_in'], 0, 10);
+                    $nCout = substr($arrayBookRoomLayout['check_out'], 0, 10);
+                    if ($nCin <= $matrixDay && $matrixDay < $nCout && $nCout != $matrixDay) {
+                        $matrixRoomDay[$matrixDay][$arrayBookRoomLayout['item_category_id']]--;//全日房状态
+                    }
+                    if ($nCin == $nCout) {
+                        $matrixRoomDay[$matrixDay][$arrayBookRoomLayout['item_category_id']]--;
+                    }
+                    if ($matrixRoomDay[$matrixDay][$arrayBookRoomLayout['item_category_id']] < 0) {
+                        $isOverBook                           = true;
+                        $overBook[$overI]['price_system_id']  = $arrayBookRoomLayout['price_system_id'];
+                        $overBook[$overI]['item_category_id'] = $arrayBookRoomLayout['item_category_id'];
+                        $overBook[$overI]['over_num']         = $matrixRoomDay[$matrixDay][$arrayBookRoomLayout['item_category_id']];
+                        $overBook[$overI]['day']              = $matrixDay;
+                        $overI++;
+                    }
+                }
             }
 
 
