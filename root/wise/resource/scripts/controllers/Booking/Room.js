@@ -365,10 +365,11 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $httpService.post('/app.do?'+param, $scope, function(result){
                 loading.hide();$httpService.deleteHeader('checkOrderData');
                 if(result.data.success == '0') {
-                    //var message = $scope.getErrorByCode(result.data.code);
-                    //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                    var message = $scope.getErrorByCode(result.data.code);
+                    $alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 } else {
-                    
+                    var message = $scope.getErrorByCode(result.data.code);
+                    $alert({title: '预订成功', content: message, templateUrl: '/modal-success.html', show: true});                    
                 }
             })
         }

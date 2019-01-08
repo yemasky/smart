@@ -303,7 +303,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     }
 
     public function saveBooking(BookingDataModel $BookingData): \SuccessService {
-        //CommonServiceImpl::instance()->startTransaction();
+        CommonServiceImpl::instance()->startTransaction();
         $ojbSuccess               = new \SuccessService();
         $bookingEntity            = $BookingData->getBookingEntity();
         $bookDetailList           = $BookingData->getBookDetailList();
@@ -385,8 +385,12 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                     }
                 }
             }
-
-
+            if($isOverBook) {
+                CommonServiceImpl::instance()->rollback();
+                $ojbSuccess->setSuccess(false);
+            } else {
+                CommonServiceImpl::instance()->commit();
+            }
         }
 
         return $ojbSuccess;

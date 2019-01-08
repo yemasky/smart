@@ -293,9 +293,10 @@ class ChannelConfigAction extends \BaseAction {
 			}
 			$sql_attr_type[] = 'images';
 		}
-        $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('category_item_id', $item_id);
+
 		if(!empty($sql_attr_type)) {
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('category_item_id', $item_id);
             $whereCriteria->ArrayIN('attr_type', $sql_attr_type);
 			ChannelServiceImpl::instance()->deleteAttributeValue($whereCriteria);
 			if(!empty($arrayInsertData)) ChannelServiceImpl::instance()->batchInsertAttrValue($arrayInsertData);
