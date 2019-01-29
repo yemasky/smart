@@ -55,8 +55,10 @@ class HotelOrderAction extends \BaseAction {
 	}
 
 	protected function doRoomStatus(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
 
-	}
+        $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], '');
+    }
 
 	protected function doRoomOrder(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$this->setDisplay();
