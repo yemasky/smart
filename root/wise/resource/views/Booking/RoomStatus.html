@@ -1,8 +1,97 @@
 <span ng-include="'/resource/views/Common/nav.tpl.html'"></span>
 <div class="app-content-inner" style="top:128px;" ng-controller="RoomStatusController">
   <div class="box">
-    <div class="col-md-4">
+    <div class="col-md-10">
       <div class="box b-r">
+        <div class="p p-v-sm b-b">
+          <script type="text/ng-template" id="label">
+            <ul tabindex="-1" class="dropdown-menu" role="menu">
+              <li><a >Sent</a></li>
+              <li><a >Trash</a></li>
+              <li><a >Work</a></li>
+              <li><a >Project</a></li>
+            </ul>
+          </script>
+          <div class="btn-group pull-right">
+            <button type="button" class="btn btn-xs btn-default"><i class="fa fa-fw fa-angle-left"></i></button>
+            <button type="button" class="btn btn-xs btn-default"><i class="fa fa-fw fa-angle-right"></i></button>
+          </div>
+          <button type="button" class="btn btn-default icon fa fa-building text-lt" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="{{defaultHotel}}" ng-change="selectChannel(param.channel_id)">
+              Action <span class="caret"></span>
+          </button>
+        </div>
+        <div class="box-row">
+          <div class="box-cell">
+            <div class="box-inner">
+              <!-- detail -->
+              <div class="p b-b tab-container ">
+                <ul class="nav nav-sm nav-tabs" ui-nav  ng-init="activeTab=1">
+                    <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
+                        <a>基本信息</a>
+                    </li>
+                    <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
+                        <a>属性</a>
+                    </li>
+                    <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
+                        <a>图片</a>
+                    </li>
+                    <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;getRoomItem()">
+                        <a>房间</a>
+                    </li>
+                 </ul>
+                 <div class="tab-content">
+                    <div ng-show="activeTab==1">
+                        <div class="form-group clearfix">
+                            <div class="buliding clear m-b" ng-repeat="(buliding_key, buliding) in roomList">
+                                <div class="m-b-xs"><i class="fa fa-building text-xs"> {{buliding_key}}楼栋</i></div>
+                                <div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
+                                    <span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
+                                    <div class="list-group no-radius">
+                                        <div class="list-group-item col-sm-2 m-xs" ng-repeat="(i, room) in floor">
+                                          <span class="pull-left w-thumb m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
+                                          <div class="clear">
+                                            <span class="font-bold block">房间号:<span>{{room.item_name}}</span> 
+                                            <label class="checkbox-inline ui-checks pull-right">
+                                                <input type="checkbox" id="item_room_{{room.item_id}}" ng-model="room[room.item_id]" ng-click="selectRoom($event, room.item_id);" value="{{room.item_id}}">
+                                                <i></i>
+                                            </label>
+                                                
+                                            </span> 
+                                            
+                                          </div>
+                                        </div>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div ng-show="activeTab==2">
+                        <div class="form-group m-h-n clearfix">2</div>
+                    </div>
+                    <div ng-show="activeTab==3">
+                        <div class="form-group m-h-n clearfix">3</div>
+                    </div>
+                    <div ng-show="activeTab==4">
+                        <div class="form-group m-h-n clearfix">4</div>
+                    </div>
+                 </div>
+              </div>  
+              
+              
+                   
+              <div class="p-xs">   
+                
+                        
+                
+              </div>
+              <!-- / detail -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-2">
+      <div class="box">
         <div class="p p-v-sm b-b">
           <script type="text/ng-template" id="filter">
             <ul tabindex="-1" class="dropdown-menu" role="menu">
@@ -104,67 +193,13 @@
         </div>
       </div>
     </div>
-    <div class="col-md-8">
-      <div class="box">
-        <div class="p p-v-sm b-b">
-          <script type="text/ng-template" id="label">
-            <ul tabindex="-1" class="dropdown-menu" role="menu">
-              <li><a >Sent</a></li>
-              <li><a >Trash</a></li>
-              <li><a >Work</a></li>
-              <li><a >Project</a></li>
-            </ul>
-          </script>
-          <div class="btn-group pull-right">
-            <button type="button" class="btn btn-xs btn-default"><i class="fa fa-fw fa-angle-left"></i></button>
-            <button type="button" class="btn btn-xs btn-default"><i class="fa fa-fw fa-angle-right"></i></button>
-          </div>
-          <a href class="btn btn-default btn-xs text-muted" bs-dropdown="dropdown" data-animation="am-flip-x" data-template="label">
-            Label <span class="caret"></span>
-          </a>
-          <a href class="btn btn-default btn-xs text-muted">More <span class="caret"></span></a>
-        </div>
-        <div class="box-row">
-          <div class="box-cell">
-            <div class="box-inner">
-              <!-- mail detail -->
-              <div class="p b-b">
-                <h4 class="no-margin font-bold">This is a short and opinionated review of the AngularJS</h4>
-                <div class="m-t-sm">
-                  <div class="pull-right">Oct 14</div>
-                  <div class="w-thumb-sm pull-left m-r-sm"><img src="images/a1.jpg" class="img-responsive"></div>
-                  <div class="clear l-h-1x">
-                    <div><strong>Eric Dane</strong> &lt;eric.dane@gmail.com></div>
-                    <div>to me</div>
-                  </div>
-                </div>
-              </div>       
-              <div class="p-lg">                
-                <p>Hey David,</p>
-                <p class="text-lt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi id neque quam. Aliquam sollicitudin venenatis ipsum ac feugiat. Vestibulum ullamcorper sodales nisi nec condimentum. Mauris convallis mauris at pellentesque volutpat.</p>
-                <blockquote>
-                  <em>Phasellus at ultricies neque, quis malesuada augue. Donec eleifend condimentum nisl eu consectetur. Integer eleifend, nisl venenatis consequat iaculis, lectus arcu malesuada sem, dapibus porta quam lacus eu neque.</em>
-                </blockquote>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi id neque quam. Aliquam sollicitudin venenatis ipsum ac feugiat. Vestibulum ullamcorper sodales nisi nec condimentum. Mauris convallis mauris at pellentesque volutpat. Phasellus at ultricies neque, quis malesuada augue. Donec eleifend condimentum nisl eu consectetur. Integer eleifend, nisl venenatis consequat iaculis, lectus arcu malesuada sem, dapibus porta quam lacus eu neque.</p>
-                <p>Duis non malesuada est, quis congue nibh. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-                <p>Morbi id neque quam. Aliquam sollicitudin venenatis ipsum ac feugiat. Vestibulum ullamcorper sodales nisi nec condimentum. Mauris convallis mauris at pellentesque volutpat. Phasellus at ultricies neque, quis malesuada augue. Donec eleifend condimentum nisl eu consectetur. Integer eleifend, nisl venenatis consequat iaculis, lectus arcu malesuada sem, dapibus porta quam lacus eu neque.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis non malesuada est, quis congue nibh. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
-                <p>Consectetur adipiscing elit. Morbi id neque quam. Aliquam sollicitudin venenatis ipsum ac feugiat. Vestibulum ullamcorper sodales nisi nec condimentum. Mauris convallis mauris at pellentesque volutpat. Phasellus at ultricies neque, quis malesuada augue. Donec eleifend</p>
-                <p>&nbsp;</p>
-                <p>Best Regards</p>
-              </div>
-              <!-- / mail detail -->
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 <script language="javascript" src="/resource/vendor/libs/moment.min.js"></script>
 <script language="javascript" src="/resource/vendor/libs/daterangepicker.js"></script>
 <script language="javascript">
 app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
+    $scope.param = {};
 	//获取数据
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
@@ -178,38 +213,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		}
 		common = result.data.common;
 		$scope.setCommonSetting(common);
-		
+		$scope.setThisChannel('Hotel');
+        $(document).ready(function(){
+            $scope.param["channel_id"] = $rootScope.defaultChannel["channel_id"];
+            $scope.param["channel_father_id"] = $rootScope.defaultChannel["channel_father_id"];
+            $scope.defaultHotel = $rootScope.defaultChannel["channel_name"];
+        });
+        $scope.roomList = result.data.item.roomList;
 	});
 	//
-	var asideCustomerMarket = '';
-	$scope.addCustomerMarket = function(_this) {
-		$scope.param = {}; $scope.param["valid"] = "1";
-		if(_this != 0) $scope.param = _this;
-		$scope.action = '添加/编辑';
-		asideCustomerMarket = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketAddEdit.tpl.html'});
-		asideCustomerMarket.$promise.then(function() {
-			asideCustomerMarket.show();
-			$(document).ready(function(){
-				
-			});
-		})
-		
-	};
-	$scope.saveData = function() {
-		var param = this.param;
-		if(param == null || param == '' || !angular.isDefined(param.market_father_id)) {
-			$alert({title: 'Notice', content: '类型必须选择！', templateUrl: '/modal-warning.html', show: true});
-			return;
-		}
-		loading = $alert({content: 'Saveing... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
-		$scope.param = param;
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
-			loading.hide();
-			$scope.dataList = result.data.item;
-			asideCustomerMarket.hide();
-			
-		});
-	}
 	$httpService.deleteHeader('refresh');
 });
 

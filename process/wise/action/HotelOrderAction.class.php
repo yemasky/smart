@@ -57,7 +57,12 @@ class HotelOrderAction extends \BaseAction {
 	protected function doRoomStatus(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
 
-        $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], '');
+        $objRequest->channel_config = 'room';
+        $objRequest->hashKey      = 'item_attr2_value';
+        $objRequest->childrenHash = 'item_attr1_value';
+        $objRequest->toHashArray  = true;
+        $arrayRoomList            = ChannelServiceImpl::instance()->getChannelItemHash($objRequest, $objResponse);
+        $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['roomList'=>$arrayRoomList]);
     }
 
 	protected function doRoomOrder(\HttpRequest $objRequest, \HttpResponse $objResponse) {
