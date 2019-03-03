@@ -67,7 +67,8 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 		$whereCriteria = new \WhereCriteria();
 		$whereCriteria->EQ('channel_config', $channel_config)->ArrayIN('company_id', [$company_id, '0']);
 		if($channel_id > 0) $whereCriteria->ArrayIN('channel_id', [$channel_id, '0']);
-		if($item_id > 0) $whereCriteria->ArrayIN('item_id', [$item_id, '0']);
+		if(!is_array($item_id) && $item_id > 0) $whereCriteria->ArrayIN('item_id', [$item_id, '0']);
+		if(is_array($item_id) && !empty($item_id)) $whereCriteria->ArrayIN('item_id', $item_id);
 		$cacheAttributeId = $company_id . '_' . $channel_config . '_' . $channel_id . '_' . $item_id;
 		$cacheAttributeId = CacheConfig::getCacheId('attribute', $cacheAttributeId);
 		$whereCriteria->setHashKey('attribute_id');
@@ -120,7 +121,7 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 		return ChannelDao::instance()->saveUploadImages($arrayData, $insert_type);
 	}
 
-	//save channel_item
+	//get channel_item
 	public function getChannelItemHash(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id     = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
 		$channel_id     = $objRequest->id;
