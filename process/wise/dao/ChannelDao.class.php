@@ -19,7 +19,7 @@ class ChannelDao extends CommonDao {
 		return self::$objDao;
 	}
 
-	public function getChannel(string $field = '*', \WhereCriteria $whereCriteria) {
+	public function getChannel(\WhereCriteria $whereCriteria, string $field = '*') {
 		if($field == '') $field = '*';
 		if(empty($whereCriteria->getHashKey())) $whereCriteria->setHashKey('channel_id');
 

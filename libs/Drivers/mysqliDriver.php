@@ -75,7 +75,7 @@ class mysqliDriver {
                 if (empty($childrenHash)) {// 父类子类循环
                     while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                         if ($row[$hashKey] == $row[$fatherHash] || $row[$fatherHash] == '0') {//father 父 0父
-                            $children                         = isset($rows[$row[$fatherHash]]['children']) ? $rows[$row[$fatherHash]]['children'] : '';
+                            $children                         = isset($rows[$row[$fatherHash]]['children']) ? $rows[$row[$fatherHash]]['children'] : [];
                             $rows[$row[$hashKey]]             = $row;
                             $rows[$row[$hashKey]]['children'] = $children;
                         } else {
@@ -104,11 +104,12 @@ class mysqliDriver {
                 if (empty($childrenHash)) {//
                     while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                         if ($row[$hashKey] == $row[$fatherHash] || $row[$fatherHash] == '0') {//father 父 0父
-                            $children                         = isset($rows[$row[$fatherHash]]['children']) ? $rows[$row[$fatherHash]]['children'] : '';
+                            $children                         = isset($rows[$row[$fatherHash]]['children']) ? $rows[$row[$fatherHash]]['children'] : [];
                             $rows[$row[$hashKey]]             = $row;
                             $rows[$row[$hashKey]]['children'] = $children;
                         } else {
-                            $rows[$row[$fatherHash]]['children'][$row[$hashKey]] = $row;//children 子
+                            $rows[$row[$fatherHash]]['children'][$row[$hashKey]] = $row;
+                            //children 子
                         }
                     }
                 } else {
@@ -121,7 +122,7 @@ class mysqliDriver {
         } else {//$toHashArray != true && $toHashArray != false
             while ($row = mysqli_fetch_array($result, MYSQLI_ASSOC)) {
                 if ($row[$fatherHash] == $row[$childrenHash]) {//father
-                    $children                                            = isset($rows[$row[$hashKey]][$row[$fatherHash]]['children']) ? $rows[$row[$hashKey]][$row[$fatherHash]]['children'] : '';
+                    $children                                            = isset($rows[$row[$hashKey]][$row[$fatherHash]]['children']) ? $rows[$row[$hashKey]][$row[$fatherHash]]['children'] : [];
                     $rows[$row[$hashKey]][$row[$fatherHash]]             = $row;
                     $rows[$row[$hashKey]][$row[$fatherHash]]['children'] = $children;
                 } else {
@@ -186,7 +187,7 @@ class mysqliDriver {
                 if (empty($childrenHash)) {// 父类子类循环
                     while ($object = $result->fetch_object($modelEntityClass)) {
                         if ($object->getPrototype($hashKey) == $object->getPrototype($fatherHash) || $object->getPrototype($fatherHash) == '0') {//father 父 0父
-                            $children                                                 = isset($arrayObject[$object->getPrototype($fatherHash)]['children']) ? $arrayObject[$object->getPrototype($fatherHash)]['children'] : '';
+                            $children                                                 = isset($arrayObject[$object->getPrototype($fatherHash)]['children']) ? $arrayObject[$object->getPrototype($fatherHash)]['children'] : null;
                             $arrayObject[$object->getPrototype($hashKey)]             = $object;
                             $arrayObject[$object->getPrototype($hashKey)]['children'] = $children;
                         } else {
@@ -215,7 +216,7 @@ class mysqliDriver {
                 if (empty($childrenHash)) {//
                     while ($object = $result->fetch_object($modelEntityClass)) {
                         if ($object->getPrototype($hashKey) == $object->getPrototype($fatherHash) || $object->getPrototype($fatherHash) == '0') {//father 父 0父
-                            $children                                                 = isset($arrayObject[$object->getPrototype($fatherHash)]['children']) ? $arrayObject[$object->getPrototype($fatherHash)]['children'] : '';
+                            $children                                                 = isset($arrayObject[$object->getPrototype($fatherHash)]['children']) ? $arrayObject[$object->getPrototype($fatherHash)]['children'] : null;
                             $arrayObject[$object->getPrototype($hashKey)]             = $object;
                             $arrayObject[$object->getPrototype($hashKey)]['children'] = $children;
                         } else {
@@ -233,7 +234,7 @@ class mysqliDriver {
             while ($object = $result->fetch_object($modelEntityClass)) {
                 if ($object->getPrototype($fatherHash) == $object->getPrototype($childrenHash)) {//father
                     $children                                                                                     = isset($arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)]['children']) ?
-                        $arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)]['children'] : '';
+                        $arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)]['children'] : null;
                     $arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)]             = $object;
                     $arrayObject[$object->getPrototype($hashKey)][$object->getPrototype($fatherHash)]['children'] = $children;
                 } else {

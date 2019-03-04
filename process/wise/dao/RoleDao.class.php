@@ -20,7 +20,7 @@ class RoleDao extends CommonDao {
 	}
 
     //--------RoleEmployee//-----------//
-    public function getRoleEmployee($field = '', \WhereCriteria $whereCriteria) {
+    public function getRoleEmployee(\WhereCriteria $whereCriteria, $field = '') {
         if(empty($field)) $field = 'role_id, employee_id';
 
         return $this->setDsnRead($this->getDsnRead())->setTable('role_employee')->getList($field, $whereCriteria);//->DBCache($cacheId)
