@@ -57,8 +57,10 @@ class HotelOrderAction extends \BaseAction {
 
     protected function doRoomStatus(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
+        //获取channel
         $channel_id = $objRequest->id;
         $channel_id = !empty($channel_id) ? \Encrypt::instance()->decode($channel_id, getDay()) : '';
+        //
         //房型
         $objRequest->channel_config = 'layout';
         $objRequest->hashKey        = 'item_id';
