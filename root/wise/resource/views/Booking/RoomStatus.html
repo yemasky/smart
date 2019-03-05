@@ -51,11 +51,10 @@
                                           <span class="pull-left w-thumb m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
                                           <div class="clear">
                                             <span class="font-bold block">房间号:<span>{{room.item_name}}</span> 
-                                            <label class="checkbox-inline ui-checks pull-right">
-                                                <input type="checkbox" id="item_room_{{room.item_id}}" ng-model="room[room.item_id]" ng-click="selectRoom($event, room.item_id);" value="{{room.item_id}}">
-                                                <i></i>
-                                            </label>
-                                                
+												<label class="checkbox-inline ui-checks pull-right">
+													<input type="checkbox" id="item_room_{{room.item_id}}" ng-model="room[room.item_id]" ng-click="selectRoom($event, room.item_id);" value="{{room.item_id}}">
+													<i></i>
+												</label>
                                             </span> 
                                             
                                           </div>
