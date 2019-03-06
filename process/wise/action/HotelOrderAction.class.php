@@ -60,6 +60,9 @@ class HotelOrderAction extends \BaseAction {
         //获取channel
         $channel_id = $objRequest->id;
         $channel_id = !empty($channel_id) ? \Encrypt::instance()->decode($channel_id, getDay()) : '';
+        if(empty($channel_id)) {
+            $objResponse->getResponse();
+        }
         //
         //房型
         $objRequest->channel_config = 'layout';
