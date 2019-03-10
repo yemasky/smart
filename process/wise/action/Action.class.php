@@ -21,6 +21,10 @@ class Action {
         $action         = $objRequest->action;
         $module         = $module_id == 'home' ? 'home' : '';
         $module_channel = 'Booking';
+        //
+        $channel_id = $objRequest->id;
+        $channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : '';
+        $objRequest->channel_id = $channel_id;
 
         $objResponse->__nav_name = '';
         $objLoginEmployee        = LoginServiceImpl::instance()->checkLoginEmployee();

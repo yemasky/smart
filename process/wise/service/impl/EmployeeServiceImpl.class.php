@@ -64,7 +64,7 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService  {
                         $arrayEmployeeChannel[$channel_id]['default'] = 0;
                     }
                     $arrayEmployeeChannel[$channel_id]['channel_id']        = $channel['channel_id'];
-                    $arrayEmployeeChannel[$channel_id]['id']                = \Encrypt::instance()->encode($channel['channel_id'], getDay());
+                    $arrayEmployeeChannel[$channel_id]['id']                = encode($channel['channel_id'], getDay());
                     $arrayEmployeeChannel[$channel_id]['channel']           = $channel['channel'];
                     $arrayEmployeeChannel[$channel_id]['channel_father_id'] = $channel['channel_father_id'];
                     $arrayEmployeeChannel[$channel_id]['channel_name']      = $channel['channel_name'];

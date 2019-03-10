@@ -36,8 +36,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee();
         $objEmployee      = $objLoginEmployee->getEmployeeInfo();
         $company_id       = $objEmployee->getCompanyId();
-        $channel_id       = $objRequest->id;
-        $channel_id       = !empty($channel_id) ? \Encrypt::instance()->decode($channel_id, getDay()) : '';
+        $channel_id       = $objRequest->channel_id;
         $arrayInput       = $objRequest->getInput();
         $check_in         = $objRequest->validInput('check_in');
         $check_out        = $objRequest->validInput('check_out');

@@ -58,11 +58,7 @@ class HotelOrderAction extends \BaseAction {
     protected function doRoomStatus(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         //获取channel
-        $channel_id = $objRequest->id;
-        $channel_id = !empty($channel_id) ? \Encrypt::instance()->decode($channel_id, getDay()) : '';
-        if(empty($channel_id)) {
-            $objResponse->getResponse();
-        }
+        $channel_id = $objRequest->channel_id;
         //
         //房型
         $objRequest->channel_config = 'layout';
@@ -90,8 +86,7 @@ class HotelOrderAction extends \BaseAction {
         }
         //
         $company_id              = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id              = $objRequest->id;
-        $channel_id              = !empty($channel_id) ? \Encrypt::instance()->decode($channel_id, getDay()) : '';
+        $channel_id              = $objRequest->channel_id;
         $item_id                 = $objRequest->item_id;
         $arrayResult['in_date']  = $in_date = LoginServiceImpl::getBusinessDay();
         $arrayResult['out_date'] = $out_date = getDay(24);
@@ -153,8 +148,7 @@ class HotelOrderAction extends \BaseAction {
     protected function doMethodCheckOrderData(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-        $channel_id = $objRequest->id;
-        $channel_id = !empty($channel_id) ? \Encrypt::instance()->decode($channel_id, getDay()) : '';
+        $channel_id = $objRequest->channel_id;
         $arrayInput = $objRequest->getInput();
         $market_id  = isset($arrayInput['market_id']) ? $arrayInput['market_id'] : 0;
         $in_date    = $arrayInput['check_in'] . ' ' . $arrayInput['in_time'];

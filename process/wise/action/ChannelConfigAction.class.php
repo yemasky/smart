@@ -53,8 +53,7 @@ class ChannelConfigAction extends \BaseAction {
 	 */
 	protected function doDefault(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-		$channel_id = $objRequest->id;
-		$channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : '';
+		$channel_id = $objRequest->channel_id;
 		if(empty($channel_id) || !is_numeric($channel_id)) {
 			return $objResponse->setResponse('error', '000008');
 		}
@@ -181,8 +180,7 @@ class ChannelConfigAction extends \BaseAction {
 
 	public function doSaveChannelItem(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-		$channel_id = $objRequest->id;
-		$channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : '';
+		$channel_id = $objRequest->channel_id;
 		$arrayData  = $objRequest->getInput();
 		if(empty($arrayData)) {
 			$objResponse->errorResponse('000009');
@@ -221,8 +219,7 @@ class ChannelConfigAction extends \BaseAction {
 
 	public function doSaveChannelItemExtend(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-		$channel_id = $objRequest->id;
-		$channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : '';
+		$channel_id = $objRequest->channel_id;
 		$item_id    = $objRequest->item_id;
 
 		$arrayAttr       = $objRequest->arrayAttr;
@@ -305,8 +302,7 @@ class ChannelConfigAction extends \BaseAction {
 
 	protected function getAttributeValue(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-		$channel_id       = $objRequest->id;
-		$channel_id       = !empty($channel_id) ? decode($channel_id, getDay()) : '';
+		$channel_id = $objRequest->channel_id;
 		$item_id          = $objRequest->item_id;
 		$category_item_id = $objRequest->category_item_id;
         $whereCriteria = new \WhereCriteria();

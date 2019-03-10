@@ -178,6 +178,7 @@
 					myArrtibute.hide();
 					$scope.itemList =  result.data.item;
 				} 
+                $httpService.deleteHeader('method');
 				loading.hide();
 			});
 		};

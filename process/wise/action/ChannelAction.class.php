@@ -58,8 +58,7 @@ class ChannelAction extends \BaseAction {
 
 	protected function doAddEdit(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-		$channel_id = $objRequest->id;
-		if(!empty($channel_id)) $channel_id = decode($channel_id, getDay());
+        $channel_id = $objRequest->channel_id;
 		$method = $objRequest->method;
 		if(!empty($method)) {
 			return $this->doMethod($objRequest, $objResponse);
@@ -113,8 +112,7 @@ class ChannelAction extends \BaseAction {
 
 	protected function doConfig(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-		$channel_id = $objRequest->id;
-		$channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : '';
+        $channel_id = $objRequest->channel_id;
 		if(empty($channel_id) || !is_numeric($channel_id)) {
 			return $objResponse->setResponse('error', '000008');
 		}
