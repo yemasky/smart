@@ -58,6 +58,7 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService  {
             foreach ($arrayChannel as $channel_id => $channel) {
                 if ($channel['valid'] == 0) continue;//无效排除
                 if (isset($arrayChannelId[$channel_id]) || isset($arrayChannelId[$channel['channel_father_id']])) {
+                    $arrayEmployeeChannel[$channel_id]['default_id'] = $defaultMember;
                     if ($defaultMember == $channel_id) {
                         $arrayEmployeeChannel[$channel_id]['default'] = 1;
                     } else {

@@ -29,6 +29,7 @@ class Action {
         $objResponse->__nav_name = '';
         $objLoginEmployee        = LoginServiceImpl::instance()->checkLoginEmployee();
         if (empty($objLoginEmployee->getEmployeeInfo()->getEmployeeId()) && $objRequest->getAction() != 'login') {
+            //登录action
             $action               = empty($action) ? 'login' : $action;
             $objResponse->noLogin = 1;
             if (isset($_SERVER['HTTP_AJAXREQUEST']) && $_SERVER['HTTP_AJAXREQUEST'] == true) {
@@ -41,13 +42,17 @@ class Action {
             $objEmployee          = $objLoginEmployee->getEmployeeInfo();
             //根据切换来变换default_channel_father_id
             $arrayEmployeeChannel                   = $objLoginEmployee->getEmployeeChannel();
-            $default_channel                        = count($arrayEmployeeChannel) > 0 ? current($arrayEmployeeChannel) : null;
-            $default_channel_father_id              = $default_channel == null ? $default_channel[0]['channel_id'] : '0';
+            $default                                = current($arrayEmployeeChannel);
+            $default_channel                        = $arrayEmployeeChannel[$default['default_id']];
+            $default_channel_father_id              = $default_channel['channel_id'];
             $objResponse->default_channel_father_id = $default_channel_father_id;
+            if(empty($channel_id)) $objRequest->channel_id = $default_channel['default_id'];
+
             $channelSettingList                     = $objLoginEmployee->getChannelSettingList();
             //根据default_channel_father_id 来取得营业日
             $business_day = getDay();//默认营业日
             if (isset($channelSettingList[$default_channel_father_id])) {
+                //设置默认的channel_id
                 $thisChannelSeting = $objLoginEmployee->getChannelSetting($default_channel_father_id);
                 if ($thisChannelSeting->getisBusinessDay() == 1) {
                     $business_day = ChannelServiceImpl::instance()->getBusinessDay($default_channel_father_id);

@@ -202,9 +202,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	//获取数据
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
-    console.log($rootScope);
-    //var id = $rootScope.employeeChannel[$rootScope.defaultChannel["channel_id"]].id;
-	var param = 'channel='+_channel+'&view='+_view+'&id='+1;
+	var param = 'channel='+_channel+'&view='+_view;
 	var loading = $alert({content: 'Loading... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
 	$httpService.post('/app.do?'+param, $scope, function(result){
 		loading.hide();
