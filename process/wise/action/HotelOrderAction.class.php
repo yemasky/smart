@@ -57,9 +57,16 @@ class HotelOrderAction extends \BaseAction {
 
     protected function doRoomStatus(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
+        $company_id              = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         //获取channel
         $channel_id = $objRequest->channel_id;
         //
+        $in_date = $objRequest->in_day;
+        $in_date = empty($in_date)? LoginServiceImpl::getBusinessDay() : $in_date;
+        $out_date = $objRequest->out_date;
+        $out_date = empty($out_date) ? getDay(24) : $out_date;
+        $arrayResult['in_date']  = $in_date;
+        $arrayResult['out_date'] = $out_date;
         //房型
         $objRequest->channel_config = 'layout';
         $objRequest->hashKey        = 'item_id';
@@ -74,7 +81,15 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id);
         $arrayLayoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, 'category_item_id,item_id');
-        $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom'=>$arrayLayoutRoom];
+        //获取当日订单量
+        //查找已住房间[远期房态]
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GT('check_in', $in_date)
+            ->LT('check_in', $out_date);
+        if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
+        $bookingRoom = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
+        $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom'=>$arrayLayoutRoom,
+            'bookList' => $bookingRoom];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 
