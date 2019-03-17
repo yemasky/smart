@@ -19,6 +19,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     }
 
     public function getBooking(\WhereCriteria $whereCriteria, $field = null) {
+        if(empty($field)) $field = '';
         return BookingDao::instance()->getBooking($whereCriteria, $field);
     }
 
@@ -26,6 +27,8 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         if ($field == '') $field = 'channel_id,item_id,check_in,check_out';
         return BookingDao::instance()->getBookingDetail($whereCriteria, $field);
     }
+
+
 
     /*
      * booking_room 数据结构 单个时间段订房
@@ -93,6 +96,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             //查找过滤有效的价格体系
             $_item_key = substr(getMicrotime(), 2);//构造虚拟item_id
             foreach ($arrayBookingData as $dateKey => $arrayChannelData) {
+                if(empty($arrayChannelData['booking_room'])) continue;//
                 foreach ($arrayChannelData['booking_room'][$channel_id] as $layout_item_id => $systemData) {//组合价格体系
                     foreach ($systemData as $system_id => $roomData) {
                         if (empty($roomData['value'])) continue;//房间数量为0 也直接跳过

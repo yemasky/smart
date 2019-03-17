@@ -84,10 +84,10 @@ class HotelOrderAction extends \BaseAction {
         //获取当日订单量
         //查找已住房间[远期房态]
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GT('check_in', $in_date)
-            ->LT('check_in', $out_date);
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
+            ->LE('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
-        $bookingRoom = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
+        $bookingRoom = BookingHotelServiceImpl::instance()->getBooking($whereCriteria);
         $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom'=>$arrayLayoutRoom,
             'bookList' => $bookingRoom];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
@@ -150,8 +150,8 @@ class HotelOrderAction extends \BaseAction {
         $arrayResult['layoutRoom'] = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, $field);
         //查找已住房间[远期房态]
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GT('check_in', $in_date)
-            ->LT('check_in', $out_date);
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
+            ->LE('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayResult['bookingRoom'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
         //

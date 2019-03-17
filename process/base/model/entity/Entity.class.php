@@ -28,8 +28,8 @@ abstract class Entity {
 		return $this;
 	}
 
-	public function getField() {
-		
+	public function getField() : string {
+        return implode(',', array_keys(get_object_vars($this)));
 	}
 
 }

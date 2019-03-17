@@ -803,13 +803,18 @@ class DBQuery {
     public function getEntityTable($entity_class = null): string {
         if(empty($entity_class)) $entity_class = $this->entity_class;
         if (empty($entity_class)) throw new Exception("entity_class is empty.");
-        return strtolower(str_replace('Entity', '', substr($entity_class, strrpos($entity_class, '\\') + 1)));
+
+        return strtolower(str_replace('Model', '',str_replace('Entity', '', substr($entity_class, strrpos($entity_class, '\\') + 1))));
     }
 
     public function setKey($table_key) {
         $this->table_key = $table_key;
 
         return $this;
+    }
+
+    private function getEntityField($entytyClass) {
+        return implode(',', array_keys(get_object_vars($entytyClass)));
     }
 
     /**
@@ -840,6 +845,13 @@ class DBQuery {
         if ($this->table_key != '*' && !empty($this->table_key) && empty($whereCriteria->getOrder()))
             $whereCriteria->ORDER($this->table_key);
 
+        if(empty($fields) || $fields == '*') {
+            if(!empty($this->getEntityClass())) {
+                $fields = $this->getEntityField($this->getEntityClass());
+            } else {
+                $fields = '*';
+            }
+        }
         $sql = "SELECT {$fields} FROM " . $this->getEntityTable() . $whereCriteria->getWhere();
         if ($whereCriteria->getLimit() != '') $sql = $this->conn->setlimit($sql, $whereCriteria->getLimit());
 

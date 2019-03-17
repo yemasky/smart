@@ -106,7 +106,6 @@ abstract class BaseDao {
     }
 
     public function getEntityList($field = '*', \WhereCriteria $whereCriteria): array {
-        if (empty($field)) $field = '*';
         $arrayResult = DBQuery::instance($this->getDsnRead())->setEntityClass($this->entity_class)->setKey($this->table_key)->getEntityList($field, $whereCriteria);
         return $arrayResult;
     }

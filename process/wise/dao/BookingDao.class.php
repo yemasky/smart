@@ -23,6 +23,10 @@ class BookingDao extends CommonDao {
 		return $this->setDsnRead($this->getDsnRead())->setTable('booking')->getList($field, $whereCriteria);
 	}
 
+	public function getBookingEntity($entityClass, \WhereCriteria $whereCriteria) {
+	    return $this->setDsnRead($this->getDsnRead())->setEntity($entityClass)->getEntityList(null, $whereCriteria);
+    }
+
     public function getBookingDetail(\WhereCriteria $whereCriteria, $field = null) {
         return $this->setDsnRead($this->getDsnRead())->setTable('booking_detail')->getList($field, $whereCriteria);
     }
