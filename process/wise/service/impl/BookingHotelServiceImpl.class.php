@@ -28,6 +28,9 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return BookingDao::instance()->getBookingDetail($whereCriteria, $field);
     }
 
+    public function getBookingDetailEntity(\WhereCriteria $whereCriteria) {
+        return BookingDao::instance()->getBookingDetailEntity($whereCriteria);
+    }
 
 
     /*

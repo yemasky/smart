@@ -814,7 +814,13 @@ class DBQuery {
     }
 
     private function getEntityField($entytyClass) {
-        return implode(',', array_keys(get_object_vars($entytyClass)));
+        $reflect = new ReflectionClass($entytyClass);
+        $props   = $reflect->getProperties();
+        $field = '';
+        foreach ($props as $prop) {
+            $field .= $prop->getName() . ",";
+        }
+        return trim($field, ',');
     }
 
     /**

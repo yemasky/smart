@@ -87,7 +87,7 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
             ->LE('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
-        $bookingRoom = BookingHotelServiceImpl::instance()->getBooking($whereCriteria);
+        $bookingRoom = BookingHotelServiceImpl::instance()->getBookingDetailEntity($whereCriteria);
         $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom'=>$arrayLayoutRoom,
             'bookList' => $bookingRoom];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
