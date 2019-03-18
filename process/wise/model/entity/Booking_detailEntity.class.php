@@ -26,7 +26,7 @@ class Booking_detailEntity extends \Entity {
 	protected $item_category_name = '';
 	protected $check_in;
 	protected $check_out;
-	protected $actual_chenk_in;
+	protected $actual_check_in;
 	protected $actual_check_out;
 	protected $booking_detail_status = '0';
 	protected $employee_id = 0;
@@ -288,15 +288,15 @@ class Booking_detailEntity extends \Entity {
 	/**
 	 * @return mixed
 	 */
-	public function getActualChenkIn() {
-		return $this->actual_chenk_in;
+	public function getActualCheckIn() {
+		return $this->actual_check_in;
 	}
 
 	/**
-	 * @param mixed $actual_chenk_in
+	 * @param mixed $actual_check_in
 	 */
-	public function setActualChenkIn($actual_chenk_in) {
-		$this->actual_chenk_in = $actual_chenk_in;
+	public function setActualCheckIn($actual_check_in) {
+		$this->actual_check_in = $actual_check_in;
 	}
 
 	/**
