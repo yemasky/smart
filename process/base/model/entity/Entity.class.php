@@ -26,7 +26,6 @@ abstract class Entity {
                 $this->{$key} = $value;
             }
 		}
-
 		return $this;
 	}
 
