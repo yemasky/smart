@@ -10,7 +10,7 @@ class SuccessService {
     private $success = true;
     private $code = '000001';
     private $message = '';
-    private $data = null;
+    private $data = '';
 
     /**
      * @return bool

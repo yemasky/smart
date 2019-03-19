@@ -12,7 +12,7 @@ abstract class Entity {
     //get_class() 返回对象的类名
     //get_class_vars() 返回由类的默认属性组成的数组
     public function __construct(array $array = array()) {
-        if(!empty($array)) return $this->setPrototype($array);
+        if(!empty($array)) $this->setPrototype($array);
     }
 
     public function getPrototype($pname = null) {

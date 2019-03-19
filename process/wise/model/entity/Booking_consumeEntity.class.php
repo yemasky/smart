@@ -42,7 +42,7 @@ class Booking_consumeEntity extends \Entity {
 	protected $valid = '1';
 	protected $add_datetime;
 
-	public function __construct(array $arrayInput) { return $this->setPrototype($arrayInput); }
+	public function __construct(array $arrayInput = []) { if(!empty($arrayInput))  $this->setPrototype($arrayInput); }
 
 	/**
 	 * @return mixed

@@ -44,7 +44,7 @@ class Booking_detailEntity extends \Entity {
 	protected $add_datetime;
 
 	public function __construct(array $arrayInput = []) {
-		if(empty($arrayInput)) return $this->setPrototype($arrayInput);
+		if(!empty($arrayInput)) $this->setPrototype($arrayInput);
 	}
 
 	/**

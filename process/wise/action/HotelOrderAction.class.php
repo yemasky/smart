@@ -176,7 +176,7 @@ class HotelOrderAction extends \BaseAction {
             ->LT('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayResult['bookingRoom'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
-        //{:獲取價格
+        //:獲取價格
         $arraySystemId = null;
         if ($market_id > 0) {
             $arraySystem = ChannelServiceImpl::instance()->getLayoutPriceSystemLayout($market_id, 'DISTINCT price_system_id,price_system_father_id');
@@ -191,7 +191,7 @@ class HotelOrderAction extends \BaseAction {
             }
         }
         $arrayResult['priceLayout'] = ChannelServiceImpl::instance()->getLayoutPrice($company_id, $channel_id, $arraySystemId, $in_date, $out_date);
-        //:};
+        //:;
 
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
@@ -215,8 +215,7 @@ class HotelOrderAction extends \BaseAction {
         $objSuccess = BookingHotelServiceImpl::instance()->beginBooking($objRequest, $objResponse);
         if ($objSuccess->isSuccess()) {
             $objSuccess = BookingHotelServiceImpl::instance()->saveBooking($objSuccess->getData());
-
-            return $objResponse->successResponse($objSuccess->getCode(), '');
+            if($objSuccess->isSuccess()) return $objResponse->successResponse($objSuccess->getCode(), '');
         }
         return $objResponse->errorResponse($objSuccess->getCode(), $objSuccess->getData(), $objSuccess->getMessage());
     }
