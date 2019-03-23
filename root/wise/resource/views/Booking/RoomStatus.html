@@ -30,7 +30,7 @@
                         <a>{{_self_module.module_name}}</a>
                     </li>
                     <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
-                        <a>属性</a>
+                        <a>远期房态</a>
                     </li>
                     <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
                         <a>图片</a>
@@ -219,9 +219,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.param["channel_father_id"] = $rootScope.defaultChannel["channel_father_id"];
             $scope.defaultHotel = $rootScope.defaultChannel["channel_name"];
         });
-        $scope.roomList = result.data.item.roomList;
+        $scope.roomList   = result.data.item.roomList;
         $scope.layoutList = result.data.item.layoutList;
 		$scope.layoutRoom = result.data.item.layoutRoom;
+		$scope.bookList   = result.data.item.bookList;
 		
 	});
 	//
