@@ -25,7 +25,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
 
     public function checkBooking(\WhereCriteria $whereCriteria, $field = null) {
         if ($field == '') $field = 'channel_id,item_id,check_in,check_out';
-        return BookingDao::instance()->getBookingDetail($whereCriteria, $field);
+        return BookingDao::instance()->getBookingDetailList($whereCriteria, $field);
     }
 
     public function getBookingDetailEntity(\WhereCriteria $whereCriteria) {
@@ -342,7 +342,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $whereCriteria->LE('booking_detail_id', $_max_detail_id)->EQ('channel_id', $channel_id);
             $whereCriteria->LE('check_in', $check_out)->GE('check_out', $check_in);
             //已定房间
-            $arrayHaveBook = BookingDao::instance()->getBookingDetail($whereCriteria, 'item_id, item_category_id, check_in, check_out, price_system_id');
+            $arrayHaveBook = BookingDao::instance()->getBookingDetailList($whereCriteria, 'item_id, item_category_id, check_in, check_out, price_system_id');
             //查找现有房间数
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id);
