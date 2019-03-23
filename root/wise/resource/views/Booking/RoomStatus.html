@@ -50,7 +50,8 @@
                                         <div class="list-group-item col-sm-2 m-xs" ng-repeat="(i, room) in floor">
                                           <span class="pull-left w-thumb m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
                                           <div class="clear">
-                                            <span class="font-bold block">房间号:<span>{{room.item_name}}</span> 
+                                            <span class="font-bold block">{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}
+												<div>{{room.item_name}}</div> 
 												<label class="checkbox-inline ui-checks pull-right">
 													<input type="checkbox" id="item_room_{{room.item_id}}" ng-model="room[room.item_id]" ng-click="selectRoom($event, room.item_id);" value="{{room.item_id}}">
 													<i></i>
@@ -220,6 +221,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         });
         $scope.roomList = result.data.item.roomList;
         $scope.layoutList = result.data.item.layoutList;
+		$scope.layoutRoom = result.data.item.layoutRoom;
+		
 	});
 	//
 	$httpService.deleteHeader('refresh');

@@ -19,7 +19,7 @@ class ErrorCodeConfig extends \ModulesConfig {
 		'no_data_update'=>'000010',
         'no_data_found'=>'000009',
         'parameter_error'=>'000008',
-        'over_booking'=>'000009'
+        'over_booking'=>'100002'
     ];
 
 	public static $successCode = ['success'=>'000001'];

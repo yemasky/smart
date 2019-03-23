@@ -79,7 +79,7 @@ class HotelOrderAction extends \BaseAction {
         $arrayRoomList              = ChannelServiceImpl::instance()->getChannelItemHash($objRequest, $objResponse);
         //
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id);
+        $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id)->setHashKey('item_id');
         $arrayLayoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, 'category_item_id,item_id');
         //获取当日订单量
         //查找已住房间[远期房态]
@@ -87,7 +87,7 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
             ->LE('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
-        $bookingRoom = BookingHotelServiceImpl::instance()->getBookingDetailEntity($whereCriteria);
+        $bookingRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
         $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom'=>$arrayLayoutRoom,
             'bookList' => $bookingRoom];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
