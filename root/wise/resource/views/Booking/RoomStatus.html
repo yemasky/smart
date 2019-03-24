@@ -25,11 +25,14 @@
             <div class="box-inner">
               <!-- detail -->
               <div class="p b-b tab-container ">
-				<span class="label bg-danger">F</span>
-			    <span class="label bg-warning">F</span>
-			    <span class="label bg-dark">F</span>
-			    <span class="label bg-success">F</span>
-			    <span class="label bg-inverse">F</span>
+                <div class="btn-group m-b">
+                    <span class="btn btn-xs btn-rounded bg-info">空净</span>
+                    <span class="btn btn-xs bg-inverse">住净</span>
+                    <span class="btn btn-xs bg-danger">住脏</span>
+                    <span class="btn btn-xs bg-warning">维修</span>
+                    <span class="btn btn-xs btn-rounded bg-dark">空脏</span>
+                    
+                </div>
                 <ul class="nav nav-sm nav-tabs" ui-nav  ng-init="activeTab=1">
                     <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
                         <a>{{_self_module.module_name}}</a>
@@ -44,7 +47,7 @@
                         <a>房间</a>
                     </li>
                  </ul>
-                 <div class="tab-content">
+                 <div class="tab-content"><!--<img class="img-responsive w-thumb-xs" ng-src="{{_resource}}images/room.png">-->
                     <div ng-show="activeTab==1">
                         <div class="form-group clearfix">
                             <div class="buliding clear m-b" ng-repeat="(buliding_key, buliding) in roomList">
@@ -53,7 +56,7 @@
                                     <span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
                                     <div class="list-group no-radius">
                                         <div class="list-group-item col-sm-2 m-xs" ng-repeat="(i, room) in floor">
-                                          <span class="pull-left w-thumb m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
+                                          <span class="pull-left w-thumb-xs m-r b-b-2x"><i class="ui-icon ti-user"></i></span>
                                           <div class="clear">
                                             <span class="font-bold block">{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}
 												<div>{{room.item_name}}</div> 
@@ -228,6 +231,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.layoutList = result.data.item.layoutList;
 		$scope.layoutRoom = result.data.item.layoutRoom;
 		$scope.bookList   = result.data.item.bookList;
+        if($scope.bookList != '') {
+            
+        }
 		
 	});
 	//
