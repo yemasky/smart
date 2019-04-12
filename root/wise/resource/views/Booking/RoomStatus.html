@@ -43,9 +43,9 @@
                     <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
                         <a>远期房态</a>
                     </li>
-                    <!--<li ng-class="{active:activeTab==4}" ng-click="activeTab=4;getRoomItem()">
-                        <a>房间</a>
-                    </li>-->
+                    <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;getRoomItem()">
+                        <a>在住列表</a>
+                    </li>
                  </ul>
                  <div class="tab-content"><!--<img class="img-responsive w-thumb-xs" ng-src="{{_resource}}images/room.png">-->
                     <div ng-show="activeTab==1">
@@ -85,20 +85,22 @@
 									  <th>房号</th>
 									  <th>客人名称</th>
 									  <th translate="module.channel.phone">电话</th>
-									  <th translate="module.channel.address">地址</th>
-									  <th translate="common.hint.date">日期</th>
-									  <th translate="common.hint.manager">管理</th>
+									  <th>预抵</th>
+									  <th>预离</th>
+									  <th>时间</th>
+									  <th></th>
 									</tr>
 								  </thead>
 								  <tbody>
-									<tr ng-repeat="(i, book) in bookList">
-									  <td class="text-nowrap">{{book.market_name}}</td>
-									  <td><span>{{book.market_name}}</span></td>
-									  <td><a ng-click="config(Channel.id)">{{Channel.channel_name}}</a></td>
-									  <td>{{Channel.channel_en_name}}</td>
-									  <td>{{Channel.phone}}</td>
-									  <td>{{Channel.address}}</td>
-									  <td>{{Channel.add_datetime}}</td>
+									<tr ng-repeat="(i, detail) in bookingDetailRoom">
+									  <td class="text-nowrap">{{detail.market_name}}</td>
+									  <td><span>{{detail.market_name}}</span></td>
+									  <td><a ng-click="config(Channel.id)">{{detail.item_name}}</a></td>
+									  <td>{{detail.member_name}}</td>
+									  <td>{{detail.member_mobile}}</td>
+									  <td>{{detail.check_in}}</td>
+									  <td>{{detail.check_out}}</td>
+									  <td>{{detail.add_datetime}}</td>
 									  <td>
 									  <button class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
 									  <button class="btn btn-sm btn-default" ng-click="config(Channel.id)"><span translate="common.hint.config" >配置</span></button>
@@ -149,7 +151,42 @@
 						</div>
                     </div>
                     <div ng-show="activeTab==4">
-                        <div class="form-group m-h-n clearfix">4</div>
+                        <div class="form-group m-h-n clearfix">
+							<div class="p-md">
+							  <h3><span translate="module.channel.channel"></span>列表</h3>
+							  <div class="table-responsive">
+								<table class="table table-bordered table-striped bg-white">
+								  <thead>
+									<tr>
+									  <th translate="module.channel.market_name">客源市场</th>
+									  <th>房型</th>
+									  <th>房号</th>
+									  <th>客人名称</th>
+									  <th translate="module.channel.phone">电话</th>
+									  <th translate="module.channel.address">地址</th>
+									  <th translate="common.hint.date">日期</th>
+									  <th translate="common.hint.manager">管理</th>
+									</tr>
+								  </thead>
+								  <tbody>
+									<tr ng-repeat="(i, book) in bookList">
+									  <td class="text-nowrap">{{book.market_name}}</td>
+									  <td><span>{{book.market_name}}</span></td>
+									  <td><a ng-click="config(Channel.id)">{{Channel.channel_name}}</a></td>
+									  <td>{{Channel.channel_en_name}}</td>
+									  <td>{{Channel.phone}}</td>
+									  <td>{{Channel.address}}</td>
+									  <td>{{Channel.add_datetime}}</td>
+									  <td>
+									  <button class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
+									  <button class="btn btn-sm btn-default" ng-click="config(Channel.id)"><span translate="common.hint.config" >配置</span></button>
+									  </td>
+									</tr>
+								  </tbody>
+								</table>
+							  </div>
+							</div>
+						</div>
                     </div>
                  </div>
               </div>  
@@ -299,9 +336,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.roomList   = result.data.item.roomList;
         $scope.layoutList = result.data.item.layoutList;
 		$scope.layoutRoom = result.data.item.layoutRoom;
-		$scope.bookList   = result.data.item.bookList;
+		$scope.bookingDetailRoom   = result.data.item.bookingDetailRoom;
         $scope.bookRoomStatus   =  [];
-        if($scope.bookList != '') {
+        if($scope.bookingDetailRoom != '') {
             
             
         }

@@ -81,15 +81,27 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id)->setHashKey('item_id');
         $arrayLayoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, 'category_item_id,item_id');
-        //获取当日订单量
-        //查找已住房间[远期房态]
+        //获取预订 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
-            ->LE('check_in', $out_date);
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel', 'Hotel')->EQ('valid', '1')
+            ->LE('check_in', $in_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
-        $bookingRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
+        $arrayBookList = BookingHotelServiceImpl::instance()->getBooking($whereCriteria);
+        //查找已住房间[今日房态] 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
+        $whereCriteria = new \WhereCriteria();
+        //$whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
+            //->LE('check_in', $out_date);
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1')
+            ->LE('check_in', $in_date);
+        if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
+        $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
+        //消费
+
+        //入账
+
+
         $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom'=>$arrayLayoutRoom,
-            'bookList' => $bookingRoom];
+            'bookingDetailRoom' => $bookingDetailRoom, 'bookList'=>$arrayBookList];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 
