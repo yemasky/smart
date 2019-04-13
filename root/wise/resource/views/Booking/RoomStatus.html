@@ -75,8 +75,13 @@
                     <div ng-show="activeTab==2">
                         <div class="form-group m-h-n clearfix">
 							<div class="p-md">
-							  <h3><span translate="module.channel.channel"></span>列表</h3>
 							  <div class="table-responsive">
+								<div class="form-inline form-group">
+									<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵</label>
+									<div class="form-group">
+									  <input type="text" size="9" class="form-control check_in w-thumb-lg" ng-model="selectedDateAsNumber" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date2" bs-datepicker>
+									</div>
+								</div>
 								<table class="table table-bordered table-striped bg-white">
 								  <thead>
 									<tr>
