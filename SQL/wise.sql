@@ -48,7 +48,7 @@ CREATE TABLE `booking` (
   `add_datetime` datetime DEFAULT NULL COMMENT '产生日期',
   `close_datetime` datetime DEFAULT NULL COMMENT '关闭日期',
   PRIMARY KEY (`booking_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking` */
 
@@ -130,7 +130,7 @@ CREATE TABLE `booking_consume` (
   `valid` enum('0','1') NOT NULL,
   `add_datetime` datetime NOT NULL,
   PRIMARY KEY (`consume_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking_consume` */
 
@@ -180,7 +180,7 @@ CREATE TABLE `booking_detail` (
   `add_datetime` datetime DEFAULT NULL COMMENT '产生日期',
   `close_datetime` datetime DEFAULT NULL COMMENT '关闭日期',
   PRIMARY KEY (`booking_detail_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking_detail` */
 
@@ -468,7 +468,7 @@ CREATE TABLE `channel_layout_price_system` (
 
 /*Data for the table `channel_layout_price_system` */
 
-insert  into `channel_layout_price_system`(`price_system_id`,`price_system_father_id`,`company_id`,`channel_father_id`,`channel_ids`,`price_system_name`,`price_system_en_name`,`market_ids`,`layout_item`,`book_min_day`,`cancellation_policy`,`price_system_type`,`formula`,`valid`,`add_datetime`) values (1,0,1,0,'{\"1\":\"1\",\"4\":\"4\"}','金卡会员 ','ti-eraser','{\"19\":\"19\"}','{\"1\":{\"4\":\"4\",\"8\":\"8\",\"17\":\"17\",\"18\":\"18\",\"21\":\"21\"},\"4\":{\"23\":\"23\"}}',1,'2','direct',NULL,'1','2018-06-08 13:15:33'),(2,1,1,0,'{\"1\":\"1\",\"4\":\"4\"}','携程现付','xiechengtejia','{\"11\":\"11\",\"13\":\"13\",\"24\":\"24\"}','{\"1\":{\"4\":\"4\",\"8\":\"8\",\"17\":\"17\",\"18\":\"18\"},\"4\":{\"23\":\"23\"}}',1,'1','formula','{\"1-4\":{\"formula\":\"*\",\"formula_value\":\"1\",\"formula_second\":\"+\",\"formula_second_value\":\"1\"},\"1-8\":{\"formula\":\"+\",\"formula_value\":\"2\",\"formula_second\":\"+\",\"formula_second_value\":\"2\"},\"1-17\":{\"formula\":\"-\",\"formula_value\":\"3\",\"formula_second\":\"*\",\"formula_second_value\":\"3\"},\"1-18\":{\"formula\":\"+\",\"formula_value\":\"\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"4-23\":{\"formula\":\"+\",\"formula_value\":\"0.01\",\"formula_second\":\"+\",\"formula_second_value\":\"\"}}','1','2018-06-11 17:28:53'),(3,1,1,0,'{\"1\":\"1\"}','散客单早','xiechengtejia','{\"2\":\"2\"}','{\"1\":{\"4\":\"4\",\"8\":\"8\",\"17\":\"17\"}}',1,'1','formula','{\"1-4\":{\"formula\":\"+\",\"formula_value\":\"0.01\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-8\":{\"formula\":\"+\",\"formula_value\":\"0.01\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-17\":{\"formula\":\"+\",\"formula_value\":\"0.01\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-18\":{\"formula\":\"+\",\"formula_value\":\"0.01\",\"formula_second\":\"+\",\"formula_second_value\":\"\"}}','1','2018-09-18 20:33:34'),(4,1,1,0,'{\"1\":\"1\"}','散客双早','xiechengtejia','{\"2\":\"2\"}','{\"1\":{\"4\":\"4\",\"8\":\"8\",\"17\":\"17\",\"18\":\"18\"}}',1,'','formula','{\"1-4\":{\"formula\":\"+\",\"formula_value\":\"\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-8\":{\"formula\":\"+\",\"formula_value\":\"\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-17\":{\"formula\":\"+\",\"formula_value\":\"\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-18\":{\"formula\":\"+\",\"formula_value\":\"\",\"formula_second\":\"+\",\"formula_second_value\":\"\"}}','1','2018-09-18 21:32:29'),(5,1,1,0,'{\"1\":\"1\"}','散客三早','san','{\"2\":\"2\",\"3\":\"3\"}','{\"1\":{\"4\":\"4\",\"17\":\"17\",\"18\":\"18\"}}',1,'1','formula',NULL,'1','2018-09-18 22:00:58'),(6,1,1,0,'{\"1\":\"1\"}','散客四早','si','{\"2\":\"2\"}','{\"1\":{\"4\":\"4\",\"17\":\"17\",\"18\":\"18\"}}',1,'1','formula',NULL,'1','2018-09-18 22:02:06');
+insert  into `channel_layout_price_system`(`price_system_id`,`price_system_father_id`,`company_id`,`channel_father_id`,`channel_ids`,`price_system_name`,`price_system_en_name`,`market_ids`,`layout_item`,`book_min_day`,`cancellation_policy`,`price_system_type`,`formula`,`valid`,`add_datetime`) values (1,0,1,0,'{\"1\":\"1\"}','金卡会员无早','ti-eraser','{\"19\":\"19\"}','{\"1\":{\"4\":\"4\",\"17\":\"17\",\"18\":\"18\",\"21\":\"21\"}}',1,'2','direct',NULL,'1','2018-06-08 13:15:33'),(2,1,1,0,'{\"1\":\"1\"}','携程现付双早','xiechengtejia','{\"11\":\"11\",\"13\":\"13\",\"24\":\"24\"}','{\"1\":{\"8\":\"8\"}}',1,'2','formula','{\"1-4\":{\"formula\":\"*\",\"formula_value\":\"1\",\"formula_second\":\"+\",\"formula_second_value\":\"1\"},\"1-8\":{\"formula\":\"+\",\"formula_value\":\"2\",\"formula_second\":\"+\",\"formula_second_value\":\"2\"},\"1-17\":{\"formula\":\"-\",\"formula_value\":\"3\",\"formula_second\":\"*\",\"formula_second_value\":\"3\"},\"1-18\":{\"formula\":\"+\",\"formula_value\":\"\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"4-23\":{\"formula\":\"+\",\"formula_value\":\"0.01\",\"formula_second\":\"+\",\"formula_second_value\":\"\"}}','1','2018-06-11 17:28:53'),(3,1,1,0,'{\"1\":\"1\"}','散客单早','xiechengtejia','{\"2\":\"2\"}','{\"1\":{\"4\":\"4\",\"8\":\"8\",\"17\":\"17\"}}',1,'1','formula','{\"1-4\":{\"formula\":\"+\",\"formula_value\":\"0.01\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-8\":{\"formula\":\"+\",\"formula_value\":\"0.01\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-17\":{\"formula\":\"+\",\"formula_value\":\"0.01\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-18\":{\"formula\":\"+\",\"formula_value\":\"0.01\",\"formula_second\":\"+\",\"formula_second_value\":\"\"}}','1','2018-09-18 20:33:34'),(4,1,1,0,'{\"1\":\"1\"}','散客双早','xiechengtejia','{\"2\":\"2\"}','{\"1\":{\"4\":\"4\",\"8\":\"8\",\"17\":\"17\",\"18\":\"18\"}}',1,'','formula','{\"1-4\":{\"formula\":\"+\",\"formula_value\":\"\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-8\":{\"formula\":\"+\",\"formula_value\":\"\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-17\":{\"formula\":\"+\",\"formula_value\":\"\",\"formula_second\":\"+\",\"formula_second_value\":\"\"},\"1-18\":{\"formula\":\"+\",\"formula_value\":\"\",\"formula_second\":\"+\",\"formula_second_value\":\"\"}}','1','2018-09-18 21:32:29'),(5,1,1,0,'{\"1\":\"1\"}','散客三早','san','{\"2\":\"2\",\"3\":\"3\"}','{\"1\":{\"4\":\"4\",\"17\":\"17\",\"18\":\"18\"}}',1,'1','formula',NULL,'1','2018-09-18 22:00:58'),(6,1,1,0,'{\"1\":\"1\"}','散客四早','si','{\"2\":\"2\"}','{\"1\":{\"4\":\"4\",\"17\":\"17\",\"18\":\"18\"}}',1,'1','formula',NULL,'1','2018-09-18 22:02:06');
 
 /*Table structure for table `channel_layout_price_system_layout` */
 
@@ -485,7 +485,7 @@ CREATE TABLE `channel_layout_price_system_layout` (
 
 /*Data for the table `channel_layout_price_system_layout` */
 
-insert  into `channel_layout_price_system_layout`(`price_system_id`,`price_system_father_id`,`channel_id`,`market_id`,`layout_item_id`) values (1,0,1,19,4),(1,0,1,19,8),(1,0,1,19,17),(1,0,1,19,18),(1,0,1,19,21),(1,0,1,19,23),(1,0,4,19,4),(1,0,4,19,8),(1,0,4,19,17),(1,0,4,19,18),(1,0,4,19,21),(1,0,4,19,23),(2,1,1,11,4),(2,1,1,11,8),(2,1,1,11,17),(2,1,1,11,18),(2,1,1,11,23),(2,1,1,13,4),(2,1,1,13,8),(2,1,1,13,17),(2,1,1,13,18),(2,1,1,13,23),(2,1,1,24,4),(2,1,1,24,8),(2,1,1,24,17),(2,1,1,24,18),(2,1,1,24,23),(2,1,4,11,4),(2,1,4,11,8),(2,1,4,11,17),(2,1,4,11,18),(2,1,4,11,23),(2,1,4,13,4),(2,1,4,13,8),(2,1,4,13,17),(2,1,4,13,18),(2,1,4,13,23),(2,1,4,24,4),(2,1,4,24,8),(2,1,4,24,17),(2,1,4,24,18),(2,1,4,24,23),(3,1,1,2,4),(3,1,1,2,8),(3,1,1,2,17),(4,1,1,2,4),(4,1,1,2,8),(4,1,1,2,17),(4,1,1,2,18),(5,1,1,2,4),(5,1,1,2,17),(5,1,1,2,18),(5,1,1,3,4),(5,1,1,3,17),(5,1,1,3,18),(6,1,1,2,4),(6,1,1,2,17),(6,1,1,2,18);
+insert  into `channel_layout_price_system_layout`(`price_system_id`,`price_system_father_id`,`channel_id`,`market_id`,`layout_item_id`) values (1,0,1,19,4),(1,0,1,19,17),(1,0,1,19,18),(1,0,1,19,21),(2,1,1,11,8),(2,1,1,13,8),(2,1,1,24,8),(3,1,1,2,4),(3,1,1,2,8),(3,1,1,2,17),(4,1,1,2,4),(4,1,1,2,8),(4,1,1,2,17),(4,1,1,2,18),(5,1,1,2,4),(5,1,1,2,17),(5,1,1,2,18),(5,1,1,3,4),(5,1,1,3,17),(5,1,1,3,18),(6,1,1,2,4),(6,1,1,2,17),(6,1,1,2,18);
 
 /*Table structure for table `channel_setting` */
 
