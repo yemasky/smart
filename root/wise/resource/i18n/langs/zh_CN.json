@@ -21,7 +21,8 @@
 		"date":"日期",
 		"manager":"管理",
 		"edit":"编辑",
-		"config":"配置"
+		"config":"配置",
+		"PayingTheBill":"结账"
 	}
 },
 "error" : {

@@ -44,7 +44,7 @@
                         <a>远期房态</a>
                     </li>
                     <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;getRoomItem()">
-                        <a>在住列表</a>
+                        <a>全部订单</a>
                     </li>
                  </ul>
                  <div class="tab-content"><!--<img class="img-responsive w-thumb-xs" ng-src="{{_resource}}images/room.png">-->
@@ -99,16 +99,18 @@
 								  <tbody>
 									<tr ng-repeat="(i, detail) in bookingDetailRoom">
 									  <td class="text-nowrap">{{detail.market_name}}</td>
-									  <td><span>{{detail.market_name}}</span></td>
+									  <td><span>{{detail.item_category_name}}</span></td>
 									  <td><a ng-click="config(Channel.id)">{{detail.item_name}}</a></td>
 									  <td>{{detail.member_name}}</td>
 									  <td>{{detail.member_mobile}}</td>
-									  <td>{{detail.check_in}}</td>
-									  <td>{{detail.check_out}}</td>
+									  <td>{{detail.check_in | limitTo:10}}</td>
+									  <td>{{detail.check_out | limitTo:10}}</td>
 									  <td>{{detail.add_datetime}}</td>
 									  <td>
-									  <button class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
-									  <button class="btn btn-sm btn-default" ng-click="config(Channel.id)"><span translate="common.hint.config" >配置</span></button>
+										  <div class="btn-group">
+											  <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail)"><span>入住</span></a>
+									  		  <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail)"><span translate="common.hint.PayingTheBill" >结账</span></a>
+										  </div>
 									  </td>
 									</tr>
 								  </tbody>
@@ -317,7 +319,7 @@
 <script language="javascript" src="/resource/vendor/libs/moment.min.js"></script>
 <script language="javascript" src="/resource/vendor/libs/daterangepicker.js"></script>
 <script language="javascript">
-app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
+app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
     $scope.param = {};
 	//获取数据
 	var _channel = $scope.$stateParams.channel;
@@ -344,6 +346,21 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.bookingDetailRoom   = result.data.item.bookingDetailRoom;
         $scope.bookRoomStatus   =  {};
         if($scope.roomList != '') {
+			//按当日计算预抵预离 过期忽略
+			var thisDay = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd');
+			var check_inRoom = {},check_outRoom = {};
+			if($scope.bookingDetailRoom != '') {
+				for(var i in $scope.bookingDetailRoom) {
+					var detail = $scope.bookingDetailRoom[i];
+					if(detail.check_in.substr(0, 10) == thisDay) {
+						check_inRoom[detail.item_id] = detail;
+					}
+					if(detail.check_out.substr(0, 10) == thisDay) {
+						check_outRoom[detail.item_id] = detail;
+					}
+				}
+			}
+			console.log(check_outRoom);console.log(check_inRoom);
 			var bookRoomStatus = {};
 		    for(var building in $scope.roomList) {
 			    for(var floor in $scope.roomList[building]) {
@@ -351,18 +368,30 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					for(var i in floorRoom) {
 						var room = floorRoom[i];
 						bookRoomStatus[room.item_id] = room;
-						//glyphicon-log-in 预抵 glyphicon-log-out 预离
-				   		bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-out';
+						//glyphicon-log-in 预抵 glyphicon-log-out 预离 
+						bookRoomStatus[room.item_id]['className'] = 'glyphicon-bed';
+				   		if(angular.isDefined(check_outRoom[room.item_id])) bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-out';
+						if(angular.isDefined(check_inRoom[room.item_id])) bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-in';
 					}
 			   }
 		    }
 			$scope.bookRoomStatus = bookRoomStatus;
-			console.log($scope.bookRoomStatus);
 		}
 	});
-    function setBookRoom() {
-        
-    }
+    var asideEditRoomBook = '';
+	$scope.editRoomBook = function(_this) {
+		$scope.param = {}; $scope.param["valid"] = "1";
+		if(_this != 0) $scope.param = _this;
+		$scope.action = '管理预订';
+		asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/EditRoomBook.html'});
+		asideEditRoomBook.$promise.then(function() {
+			asideEditRoomBook.show();
+			$(document).ready(function(){
+				
+			});
+		})
+		
+	};
 	//
 	$httpService.deleteHeader('refresh');
 });

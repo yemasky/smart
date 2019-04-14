@@ -301,7 +301,6 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 }
             }
         }
-        console.log(thisMarketPrice);
         $scope.marketChannelLayoutPrice = thisMarketPrice;
     }
     $scope.selectThisLayout = function($event) {}
@@ -362,6 +361,9 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $scope.param['booking_data'][data_key]['booking_room'] = $scope.booking_room;
             $httpService.header('method', 'bookingRoom');
             $scope.param['id'] = $rootScope.employeeChannel[$scope.param.channel_id].id;
+			if($scope.param['in_time'].length > 8) $scope.param['in_time'] = $filter('limitTo')($scope.param['in_time'], 8, 11);
+			if($scope.param['out_time'].length > 8)$scope.param['out_time'] = $filter('limitTo')($scope.param['out_time'], 8, 11);
+			console.log($scope.param);
             $httpService.post('/app.do?'+param, $scope, function(result){
                 loading.hide();$httpService.deleteHeader('checkOrderData');
                 if(result.data.success == '0') {

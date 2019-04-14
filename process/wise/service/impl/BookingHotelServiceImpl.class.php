@@ -50,6 +50,8 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $arrayInput       = $objRequest->getInput();
         $check_in         = $objRequest->validInput('check_in');
         $check_out        = $objRequest->validInput('check_out');
+        $in_time          = $objRequest->validInput('in_time');
+        $out_time         = $objRequest->validInput('out_time');
 
         //
         $channel_father_id = $objRequest->validInput('channel_father_id');
@@ -72,11 +74,15 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $BookingEntity->setBookingStatus('0');//初始状态为 0
         $BookingEntity->setBusinessDay($objResponse->business_day);
         $BookingEntity->setBookingTotalPrice(0);
+        $BookingEntity->setInTime($in_time);
+        $BookingEntity->setOutTime($out_time);
         //每一间房
         $arrayBookDetailList = array();
         $BookingDetailEntity = new Booking_detailEntity($arrayAllBookData);
         $BookingDetailEntity->setBusinessDay($objResponse->business_day);
         $BookingDetailEntity->setBookingDetailStatus('0');
+        $BookingDetailEntity->setInTime($in_time);
+        $BookingDetailEntity->setOutTime($out_time);
         //每一间房消费
         $BookingDetailConsumeList   = array();
         $BookingDetailConsumeEntity = new Booking_consumeEntity($arrayAllBookData);

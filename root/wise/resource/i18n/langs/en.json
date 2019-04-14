@@ -21,7 +21,8 @@
 		"date":"Date",
 		"manager":"Manager",
 		"edit":"Edit",
-		"config":"Config"
+		"config":"Config",
+		"PayingTheBill":"Paying the Bill"
 	}
 },
 "error" : {

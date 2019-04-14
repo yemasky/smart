@@ -24,7 +24,9 @@ class BookingEntity extends \Entity {
 	protected $employee_id;
 	protected $employee_name = '';
 	protected $check_in = '0000-00-00 00:00:00';
+	protected $in_time;
 	protected $check_out = '0000-00-00 00:00:00';
+	protected $out_time;
 	protected $business_day;
 	protected $sales_id = 0;
 	protected $sales_name = '';
@@ -32,6 +34,7 @@ class BookingEntity extends \Entity {
 	protected $client = 'pms';
 	protected $valid = '1';
 	protected $add_datetime;
+	protected $close_datetime;
 
 	public function __construct(array $arrayInput = []) {
         if(!empty($arrayInput))  $this->setPrototype($arrayInput);
@@ -250,6 +253,22 @@ class BookingEntity extends \Entity {
     /**
      * @return mixed
      */
+    public function getInTime()
+    {
+        return $this->in_time;
+    }
+
+    /**
+     * @param mixed $in_time
+     */
+    public function setInTime($in_time): void
+    {
+        $this->in_time = $in_time;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getCheckOut() {
         return $this->check_out;
     }
@@ -259,6 +278,22 @@ class BookingEntity extends \Entity {
      */
     public function setCheckOut($check_out) {
         $this->check_out = $check_out;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOutTime()
+    {
+        return $this->out_time;
+    }
+
+    /**
+     * @param mixed $out_time
+     */
+    public function setOutTime($out_time): void
+    {
+        $this->out_time = $out_time;
     }
 
 	/**
@@ -359,6 +394,20 @@ class BookingEntity extends \Entity {
 		$this->add_datetime = $add_datetime;
 	}
 
-	
+    /**
+     * @return mixed
+     */
+    public function getCloseDatetime()
+    {
+        return $this->close_datetime;
+    }
+
+    /**
+     * @param mixed $close_datetime
+     */
+    public function setCloseDatetime($close_datetime): void
+    {
+        $this->close_datetime = $close_datetime;
+    }
 	
 }
