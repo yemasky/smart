@@ -56,12 +56,12 @@
                                     <span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
                                     <div class="list-group no-radius">
                                         <div class="list-group-item col-sm-2 m-xs" ng-repeat="(i, room) in floor">
-                                          <span class="pull-left w-thumb-xs m-r b-b-2x"><i class="ui-icon ti-user {{bookRoomStatus[room.item_id].class}}"></i></span>
+                                          <!--<span class="pull-left w-thumb-xs m-r b-b-2x"><i class="ui-icon ti-user {{bookRoomStatus[room.item_id].className}}"></i></span>-->
                                           <div class="clear">
                                             <span class="font-bold block">{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}
 												<div>{{room.item_name}}</div> 
-												<label class="checkbox-inline ui-checks pull-right">
-													<i></i>
+												<label class="pull-right">
+													<i class="ui-icon glyphicon {{bookRoomStatus[room.item_id].className}}"></i>
 												</label>
                                             </span> 
                                             
@@ -79,7 +79,7 @@
 								<div class="form-inline form-group">
 									<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵</label>
 									<div class="form-group">
-									  <input type="text" size="9" class="form-control check_in w-thumb-lg" ng-model="selectedDateAsNumber" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-max-date="today" data-autoclose="1" name="date2" bs-datepicker>
+									  <input type="text" size="9" class="form-control check_in w-thumb-lg" ng-model="check_in_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="check_in_date" bs-datepicker>
 									</div>
 								</div>
 								<table class="table table-bordered table-striped bg-white">
@@ -342,12 +342,23 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.layoutList = result.data.item.layoutList;
 		$scope.layoutRoom = result.data.item.layoutRoom;
 		$scope.bookingDetailRoom   = result.data.item.bookingDetailRoom;
-        $scope.bookRoomStatus   =  [];
-        if($scope.bookingDetailRoom != '') {
-            
-            
-        }
-		
+        $scope.bookRoomStatus   =  {};
+        if($scope.roomList != '') {
+			var bookRoomStatus = {};
+		    for(var building in $scope.roomList) {
+			    for(var floor in $scope.roomList[building]) {
+				    var floorRoom = $scope.roomList[building][floor];
+					for(var i in floorRoom) {
+						var room = floorRoom[i];
+						bookRoomStatus[room.item_id] = room;
+						//glyphicon-log-in 预抵 glyphicon-log-out 预离
+				   		bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-out';
+					}
+			   }
+		    }
+			$scope.bookRoomStatus = bookRoomStatus;
+			console.log($scope.bookRoomStatus);
+		}
 	});
     function setBookRoom() {
         

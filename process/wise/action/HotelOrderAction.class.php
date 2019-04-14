@@ -92,7 +92,7 @@ class HotelOrderAction extends \BaseAction {
         //$whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
             //->LE('check_in', $out_date);
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1')
-            ->LE('check_in', $in_date);
+            ->LE('check_in', $in_date)->ORDER('check_in');
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
         //消费
