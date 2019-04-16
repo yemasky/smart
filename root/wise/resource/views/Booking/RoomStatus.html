@@ -2,7 +2,7 @@
 <div class="app-content-inner" style="top:128px;" ng-controller="RoomStatusController">
   <div class="box">
     <div class="col-md-10">
-      <div class="box b-r">
+      <div class="box b-r">RoomBookEdit
         <div class="p p-v-sm b-b">
           <script type="text/ng-template" id="label">
             <ul tabindex="-1" class="dropdown-menu" role="menu">
@@ -108,8 +108,8 @@
 									  <td>{{detail.add_datetime}}</td>
 									  <td>
 										  <div class="btn-group">
-											  <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail)"><span>入住</span></a>
-									  		  <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail)"><span translate="common.hint.PayingTheBill" >结账</span></a>
+											  <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail, 1)"><span>入住</span></a>
+									  		  <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail, 2)"><span translate="common.hint.PayingTheBill" >结账</span></a>
 										  </div>
 									  </td>
 									</tr>
@@ -360,7 +360,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					}
 				}
 			}
-			console.log(check_outRoom);console.log(check_inRoom);
 			var bookRoomStatus = {};
 		    for(var building in $scope.roomList) {
 			    for(var floor in $scope.roomList[building]) {
@@ -379,15 +378,16 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		}
 	});
     var asideEditRoomBook = '';
-	$scope.editRoomBook = function(_this) {
+	$scope.editRoomBook = function(_this, tab) {
 		$scope.param = {}; $scope.param["valid"] = "1";
 		if(_this != 0) $scope.param = _this;
-		$scope.action = '管理预订';
-		asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/EditRoomBook.html'});
+		$scope.actionEdit = '预订管理';
+		$scope.actionAccounts = '账务管理';
+		$scope.activeRoomBookEditTab = tab;
+		asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/RoomBookEdit.html'});
 		asideEditRoomBook.$promise.then(function() {
 			asideEditRoomBook.show();
 			$(document).ready(function(){
-				
 			});
 		})
 		

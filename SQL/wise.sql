@@ -48,7 +48,7 @@ CREATE TABLE `booking` (
   `add_datetime` datetime DEFAULT NULL COMMENT '产生日期',
   `close_datetime` datetime DEFAULT NULL COMMENT '关闭日期',
   PRIMARY KEY (`booking_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking` */
 
@@ -130,7 +130,7 @@ CREATE TABLE `booking_consume` (
   `valid` enum('0','1') NOT NULL,
   `add_datetime` datetime NOT NULL,
   PRIMARY KEY (`consume_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking_consume` */
 
@@ -180,7 +180,7 @@ CREATE TABLE `booking_detail` (
   `add_datetime` datetime DEFAULT NULL COMMENT '产生日期',
   `close_datetime` datetime DEFAULT NULL COMMENT '关闭日期',
   PRIMARY KEY (`booking_detail_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking_detail` */
 
