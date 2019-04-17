@@ -5,7 +5,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
     $ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.js"]);
-    $scope.param = {};$scope.booking_room = {};$scope.system_price = {};var priceLayout = {};
+    $scope.param = {};$scope.booking_room = {};$scope.booking_price = {}; $scope.system_price = {};var priceLayout = {};
     //选择客源市场
     $scope.market_name = '散客步入';$scope.market_id = '2';$scope.customer_name = '预订人';
     var _channel = $scope.$stateParams.channel;$scope.param.mobile_email = '';
@@ -103,7 +103,6 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             if(typeof(layoutList[channel_id]) == 'undefined') {layoutList[channel_id] = {};room_data[channel_id] = {};}
             if(typeof(layoutRoom[channel_id]) != 'undefined') thisLayoutRoom = layoutRoom[channel_id];
             for(var i in thisItemList) {
-            	console.log(thisItemList);
                 if(thisItemList[i].channel_config == 'room') {//房间
                     roomList[thisItemList[i]['item_id']] = thisItemList[i];
                 }
@@ -314,6 +313,10 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     $scope.selectChannel = function(channel_id) {
         $scope.param["channel_father_id"] = $rootScope.employeeChannel[channel_id].channel_father_id;
     };
+    //选择房间数量
+    $scope.select_room = function(_this) {
+    	console.log(_this);
+    };
     //开始预订
     $scope.beginBooking = function() {
         if($scope.market_father_id == '4') {//判断会员是否正确
@@ -364,6 +367,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             var data_key = $scope.param.check_in + '|' + $scope.param.check_out;
             $scope.param['booking_data'][data_key] = {};
             $scope.param['booking_data'][data_key]['booking_room'] = $scope.booking_room;
+            $scope.param['booking_data'][data_key]['booking_price'] = $scope.booking_price;
             $httpService.header('method', 'bookingRoom');
             $scope.param['id'] = $rootScope.employeeChannel[$scope.param.channel_id].id;
 			if($scope.param['in_time'].length > 8) $scope.param['in_time'] = $filter('limitTo')($scope.param['in_time'], 8, 11);
