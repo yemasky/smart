@@ -40,9 +40,10 @@
 						  </thead>
 						  <tbody>
 							<tr ng-repeat="(edit_i, rDetail) in roomDetail">
-							  <td class="text-nowrap" ng-mouseover="edit_i=true" ng-mouseleave="edit_i=false" ng-init="edit_i=false">{{rDetail.market_name}}
-                                <span ng-show="edit_i" class="fa fa-edit"></span></td>
-							  <td><span>{{rDetail.item_category_name}}</span></td>
+							  <td class="text-nowrap" ng-mouseover="market.edit_i=true" ng-mouseleave="market.edit_i=false" ng-init="market.edit_i=false">{{rDetail.market_name}}
+                                <span ng-show="market.edit_i" class="fa fa-edit pull-right"></span></td>
+							  <td ng-mouseover="category.edit_i=true" ng-mouseleave="category.edit_i=false" ng-init="category.edit_i=false"><span>{{rDetail.item_category_name}}</span>
+								<span ng-show="category.edit_i" class="fa fa-edit pull-right"></span></td>
 							  <td><a ng-click="config(Channel.id)">{{rDetail.channel_name}}</a></td>
 							  <td>{{rDetail.channel_en_name}}</td>
 							  <td>{{rDetail.phone}}</td>
