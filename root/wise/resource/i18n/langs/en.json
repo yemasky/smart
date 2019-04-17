@@ -52,7 +52,6 @@
 		"channel_short_name" : "Short Name",
 		"channel_en_name" : "English Name",
 		"web" : "web",
-		"phone" : "phone",
 		"mobile" : "mobile",
 		"email" : "Email",
 		"fax" : "Fax",
