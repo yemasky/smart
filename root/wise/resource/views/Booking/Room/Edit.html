@@ -39,8 +39,9 @@
 							</tr>
 						  </thead>
 						  <tbody>
-							<tr ng-repeat="(i, rDetail) in roomDetail">
-							  <td class="text-nowrap">{{rDetail.market_name}}</td>
+							<tr ng-repeat="(edit_i, rDetail) in roomDetail">
+							  <td class="text-nowrap" ng-mouseover="edit_i=true" ng-mouseleave="edit_i=false" ng-init="edit_i=false">{{rDetail.market_name}}
+                                <span ng-show="edit_i" class="fa fa-edit"></span></td>
 							  <td><span>{{rDetail.item_category_name}}</span></td>
 							  <td><a ng-click="config(Channel.id)">{{rDetail.channel_name}}</a></td>
 							  <td>{{rDetail.channel_en_name}}</td>
@@ -51,8 +52,8 @@
 							  <td>{{rDetail.check_out}}</td>
 							  <td>{{rDetail.add_datetime}}</td>
 							  <td>
-							  <button class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
-							  </td>
+							  <edit class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></edit>
+                              </td>
 							</tr>
 						  </tbody>
 						</table>
@@ -138,6 +139,34 @@
   </div>
 </div>
 <script language="javascript">
-
+app.directive("edit", function(){
+  return{
+    restrict: "E",
+    link: function(scope,element){
+      element.bind("click",function(e){
+        alert("I am clicked for editing");
+      });
+    }
+  }
+})
+app.directive("update",function($document){
+  return{
+    restrict: 'AE',
+    require: 'ngModel',
+    link: function(scope,element,attrs,ngModel){
+      element.bind("click",function(){
+         alert(ngModel.$modelValue + " is updated, Update your value here.");
+         var id = "txt_name_" +ngModel.$modelValue.id;
+         var obj = $("#"+id);
+         obj.removeClass("active");
+         obj.addClass("inactive");
+         obj.attr("readOnly",true);
+          scope.$apply(function(){
+           scope.showEdit = true;
+         })
+      })
+    }
+  }
+})
 
 </script>
