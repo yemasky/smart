@@ -123,6 +123,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                         }
                         $systemLayoutItem[$system_id]['layout_item_id'][$layout_item_id] = $layout_item_id;
                         //预订的房型房子
+                        $roomInfo = $roomData['room_info'];
                         for ($i = 0; $i < $roomData['value']; $i++) {
                             $_item_key++;
                             $_item_id     = '-' . $_item_key;
@@ -130,7 +131,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                             $DetailEntity->setItemId($_item_id);//
                             $DetailEntity->setItemName('');
                             $DetailEntity->setItemCategoryId($layout_item_id);
-                            $DetailEntity->setItemCategoryName('');
+                            $DetailEntity->setItemCategoryName($roomInfo['item_category_name']);
                             $DetailEntity->setPriceSystemId($system_id);
                             $DetailEntity->setPriceSystemName('');
                             $arrayBookDetailList[] = $DetailEntity;

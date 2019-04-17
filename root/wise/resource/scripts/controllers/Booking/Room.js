@@ -103,10 +103,11 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             if(typeof(layoutList[channel_id]) == 'undefined') {layoutList[channel_id] = {};room_data[channel_id] = {};}
             if(typeof(layoutRoom[channel_id]) != 'undefined') thisLayoutRoom = layoutRoom[channel_id];
             for(var i in thisItemList) {
-                if(thisItemList[i].channel_config == 'room') {
+            	console.log(thisItemList);
+                if(thisItemList[i].channel_config == 'room') {//房间
                     roomList[thisItemList[i]['item_id']] = thisItemList[i];
                 }
-                if(thisItemList[i].channel_config == "layout") {
+                if(thisItemList[i].channel_config == "layout") {//房型
                     layoutList[channel_id][i] = thisItemList[i];
                     var num = 0;
                     if(typeof(thisLayoutRoom[thisItemList[i]['item_id']]) != 'undefined') {
@@ -118,8 +119,12 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                     layoutList[channel_id][i]['room_num'] = num;
                     room_data[channel_id][thisItemList[i]['item_id']] = 0;
                     var select_room_num = [];
-                    for(var j = 0; j <= num; j++) {
-                        select_room_num[j] = {};select_room_num[j]['room_info'] = j;select_room_num[j]['value'] = j;
+                    for(var j = 0; j <= num; j++) {//房型下面的房间
+                        select_room_num[j] = {};
+                        select_room_num[j]['room_info'] = {};
+                        select_room_num[j]['room_info']['item_name'] = '';
+                        select_room_num[j]['room_info']['item_category_name'] = thisItemList[i].item_name;
+                        select_room_num[j]['value'] = j;
                     }
                     layoutList[channel_id][i]['select_room_num'] = select_room_num;
                 }

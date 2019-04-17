@@ -2,7 +2,7 @@
 <div class="app-content-inner" style="top:128px;" ng-controller="RoomStatusController">
   <div class="box">
     <div class="col-md-10">
-      <div class="box b-r">RoomBookEdit
+      <div class="box b-r">
         <div class="p p-v-sm b-b">
           <script type="text/ng-template" id="label">
             <ul tabindex="-1" class="dropdown-menu" role="menu">
@@ -344,11 +344,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.layoutList = result.data.item.layoutList;
 		$scope.layoutRoom = result.data.item.layoutRoom;
 		$scope.bookingDetailRoom   = result.data.item.bookingDetailRoom;
-        $scope.bookRoomStatus   =  {};
+        $scope.bookRoomStatus   =  {};$scope.roomDetailList   =  {};
         if($scope.roomList != '') {
 			//按当日计算预抵预离 过期忽略
 			var thisDay = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd');
-			var check_inRoom = {},check_outRoom = {};
+			var check_inRoom = {},check_outRoom = {},roomDetailList = {};
 			if($scope.bookingDetailRoom != '') {
 				for(var i in $scope.bookingDetailRoom) {
 					var detail = $scope.bookingDetailRoom[i];
@@ -358,8 +358,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					if(detail.check_out.substr(0, 10) == thisDay) {
 						check_outRoom[detail.item_id] = detail;
 					}
+					if(!angular.isDefined(roomDetailList[detail.booking_number])) {
+						roomDetailList[detail.booking_number] = {};
+					}
+					roomDetailList[detail.booking_number][detail.booking_detail_id] = detail;
 				}
 			}
+			$scope.roomDetailList = roomDetailList;
 			var bookRoomStatus = {};
 		    for(var building in $scope.roomList) {
 			    for(var floor in $scope.roomList[building]) {
@@ -380,11 +385,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     var asideEditRoomBook = '';
 	$scope.editRoomBook = function(_this, tab) {
 		$scope.param = {}; $scope.param["valid"] = "1";
-		if(_this != 0) $scope.param = _this;
 		$scope.actionEdit = '预订管理';
 		$scope.actionAccounts = '账务管理';
+		$scope.actionEditLog = '操作日志';
 		$scope.activeRoomBookEditTab = tab;
-		asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/RoomBookEdit.html'});
+		$scope.roomDetail = $scope.roomDetailList[_this.booking_number];
+		asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html'});
 		asideEditRoomBook.$promise.then(function() {
 			asideEditRoomBook.show();
 			$(document).ready(function(){
