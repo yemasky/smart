@@ -81,13 +81,13 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id)->setHashKey('item_id');
         $arrayLayoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, 'category_item_id,item_id');
-        //获取预订 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
+        //获取预订 条件未完结的所有订单 valid = 1 and check_in <= 今天
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel', 'Hotel')->EQ('valid', '1')
-            ->LE('check_in', $in_date);
+        ->LE('check_in', $in_date)->setHashKey('booking_number');
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayBookList = BookingHotelServiceImpl::instance()->getBooking($whereCriteria);
-        //查找已住房间[今日房态] 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
+        //查找[今日房态/今天预抵的] 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
         $whereCriteria = new \WhereCriteria();
         //$whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
             //->LE('check_in', $out_date);

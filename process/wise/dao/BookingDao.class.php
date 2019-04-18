@@ -23,16 +23,20 @@ class BookingDao extends CommonDao {
 		return $this->setDsnRead($this->getDsnRead())->setTable('booking')->getList($field, $whereCriteria);
 	}
 
-	public function getBookingDetailEntity(\WhereCriteria $whereCriteria) {
-	    return $this->setDsnRead($this->getDsnRead())->setEntity("\wise\Booking_detailEntity")->getEntityList(null, $whereCriteria);
-    }
-
-    public function getBookingDetailList(\WhereCriteria $whereCriteria, $field = null) {
-        return $this->setDsnRead($this->getDsnRead())->setTable('booking_detail')->getList($field, $whereCriteria);
-    }
-
     public function saveBooking(BookingEntity $BookingEntity) : int {
         return $this->setDsnRead($this->getDsnWrite())->insertEntity($BookingEntity);
+    }
+    
+    public function updateBooking(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
+        return $this->setDsnRead($this->getDsnWrite())->setTable('booking')->update($arrayUpdateData, $whereCriteria, $update_type);
+    }
+    
+    public function getBookingDetailEntity(\WhereCriteria $whereCriteria) {
+        return $this->setDsnRead($this->getDsnRead())->setEntity("\wise\Booking_detailEntity")->getEntityList(null, $whereCriteria);
+    }
+    
+    public function getBookingDetailList(\WhereCriteria $whereCriteria, $field = null) {
+        return $this->setDsnRead($this->getDsnRead())->setTable('booking_detail')->getList($field, $whereCriteria);
     }
 
     public function saveBookingDetailList($bookDetailList) : array {

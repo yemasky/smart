@@ -92,7 +92,6 @@
 									  <th>电话/email</th>
 									  <th>预抵</th>
 									  <th>预离</th>
-									  <th>时间</th>
 									  <th></th>
 									</tr>
 								  </thead>
@@ -100,13 +99,16 @@
 									<tr ng-repeat="(i, detail) in bookingDetailRoom">
 									  <td class="text-nowrap">{{detail.market_name}}</td>
 									  <td><span>{{detail.item_category_name}}</span></td>
-									  <td><a ng-click="config(Channel.id)">{{detail.item_name}}</a></td>
-									  <td>{{detail.member_name}}</td>
-									  <td>{{detail.member_mobile}}</td>
+									  <td>{{detail.item_name==''?'未排房':detail.item_name}}</td>
+									  <td>{{bookList[detail.booking_number].member_name}}</td>
+									  <td>{{bookList[detail.booking_number].member_mobile==''?bookList[detail.booking_number].member_email:bookList[detail.booking_number].member_mobile}}</td>
 									  <td>{{detail.check_in | limitTo:10}}</td>
 									  <td>{{detail.check_out | limitTo:10}}</td>
-									  <td>{{detail.add_datetime}}</td>
-									  <td><a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail, 1)"><span>入住</span></a></td>
+									  <td>
+                                          <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail, 1)">
+                                            <span>{{detail.item_name==''?'排房':'入住'}}</span>
+                                          </a>
+                                      </td>
 									</tr>
 								  </tbody>
 								</table>
@@ -325,7 +327,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
-			$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+			//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
 		}
 		common = result.data.common;
 		$scope.setCommonSetting(common);
@@ -335,10 +337,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.param["channel_father_id"] = $rootScope.defaultChannel["channel_father_id"];
             $scope.defaultHotel = $rootScope.defaultChannel["channel_name"];
         });
-        $scope.roomList   = result.data.item.roomList;
-        $scope.layoutList = result.data.item.layoutList;
-		$scope.layoutRoom = result.data.item.layoutRoom;
-		$scope.bookingDetailRoom   = result.data.item.bookingDetailRoom;
+        $scope.bookList   = result.data.item.bookList;//预订
+        $scope.roomList   = result.data.item.roomList;//客房
+        $scope.layoutList = result.data.item.layoutList;//房型
+		$scope.layoutRoom = result.data.item.layoutRoom;//房型房间
+		$scope.bookingDetailRoom   = result.data.item.bookingDetailRoom;//预订详情
         $scope.bookRoomStatus   =  {};$scope.roomDetailList   =  {};
         if($scope.roomList != '') {
 			//按当日计算预抵预离 过期忽略

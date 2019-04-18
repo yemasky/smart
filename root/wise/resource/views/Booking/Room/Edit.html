@@ -28,13 +28,8 @@
 							  <th translate="module.channel.market_name">客源市场</th>
 							  <th>房型</th>
 							  <th>房号</th>
-							  <th>客人名称</th>
-							  <th translate="module.channel.phone">电话</th>
-							  <th>性别</th>
-							  <th>证件号码</th>
 							  <th>预抵</th>
 							  <th>预离</th>
-							  <th translate="common.hint.date">日期</th>
 							  <th translate="common.hint.manager">管理</th>
 							</tr>
 						  </thead>
@@ -44,14 +39,9 @@
                                 <span ng-show="market.edit_i" class="fa fa-edit pull-right"></span></td>
 							  <td ng-mouseover="category.edit_i=true" ng-mouseleave="category.edit_i=false" ng-init="category.edit_i=false"><span>{{rDetail.item_category_name}}</span>
 								<span ng-show="category.edit_i" class="fa fa-edit pull-right"></span></td>
-							  <td><a ng-click="config(Channel.id)">{{rDetail.channel_name}}</a></td>
-							  <td>{{rDetail.channel_en_name}}</td>
-							  <td>{{rDetail.phone}}</td>
-							  <td></td>
-							  <td></td>
-							  <td>{{rDetail.check_in}}</td>
-							  <td>{{rDetail.check_out}}</td>
-							  <td>{{rDetail.add_datetime}}</td>
+							  <td>{{rDetail.item_name}}</td>
+							  <td>{{rDetail.check_in | limitTo:10}}</td>
+							  <td>{{rDetail.check_out | limitTo:10}}</td>
 							  <td>
 							  <edit class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></edit>
                               </td>

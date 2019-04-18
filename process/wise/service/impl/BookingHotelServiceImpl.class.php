@@ -19,7 +19,6 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     }
 
     public function getBooking(\WhereCriteria $whereCriteria, $field = null) {
-        if(empty($field)) $field = '';
         return BookingDao::instance()->getBooking($whereCriteria, $field);
     }
 
@@ -52,7 +51,13 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $check_out        = $objRequest->validInput('check_out');
         $in_time          = $objRequest->validInput('in_time');
         $out_time         = $objRequest->validInput('out_time');
-
+        //mobile_email
+        $mobile_email = $objRequest->validInput('mobile_email');
+        if(strlen($mobile_email) == 11 && is_numeric($mobile_email)) {//mobile
+            $arrayCommonData['member_mobile'] = $mobile_email;
+        } elseif (strpos($mobile_email,'@') !== false) {
+            $arrayCommonData['member_email'] = $mobile_email;
+        }
         //
         $channel_father_id = $objRequest->validInput('channel_father_id');
         $arrayBookingData  = $objRequest->validInput('booking_data');
@@ -327,6 +332,9 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();
         $booking_id               = BookingDao::instance()->saveBooking($bookingEntity);
         $bookingNumber            = BookingUtil::instanct()->getBookingNumber($booking_id);
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('booking_id', $booking_id);
+        BookingDao::instance()->updateBooking($whereCriteria, ['booking_number'=>$bookingNumber]);
         foreach ($bookDetailList as $k => $bookDetail) {
             $bookDetailList[$k]->setBookingNumber($bookingNumber);
         }
