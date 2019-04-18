@@ -6,7 +6,7 @@
  */
 
 namespace member;
-class MemberServiceImpl implements \BaseServiceImpl {
+class MemberServiceImpl extends \BaseServiceImpl {
 	private static $objService = null;
 
 	public static function instance() {

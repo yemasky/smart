@@ -67,7 +67,8 @@
                   <div class="input-group">
                   <input type="text" size="10" class="form-control" id="mobile_email" name="mobile_email" ng-model="param.mobile_email" >
                   <span class="input-group-btn">
-                  	<button class="btn btn-default" type="submit"><i class="fa fa-search"> </i> 预订</button>
+                      <button class="btn btn-default" type="button"><i class="fa fa-search"> </i> 会员</button>
+                  	  <button class="btn btn-default" type="submit"><i class="fa fa-save"> </i> 预订</button>
                   </span>
                   </div>
                 </div>
@@ -129,7 +130,7 @@
                                       <ui-select ng-model="booking_room[channel_id][layout.item_id][layout_system.price_system_id]" ng-change="select_room(this)" theme="bootstrap">
                                           <ui-select-match placeholder="0　">{{$select.selected.value}}</ui-select-match>
                                           <ui-select-choices repeat="room in layout.select_room_num | filter: $select.search">
-                                            <div ng-bind-html="room.value | highlight: $select.search"></div>
+                                            <div ng-bind-html="room.value | highlight: $select.search" ng-init="room.room_info.price_system_name=layout_system.price_system_name"></div>
                                           </ui-select-choices>
                                       </ui-select>
                                    </div>

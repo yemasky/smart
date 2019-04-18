@@ -23,7 +23,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         $scope.setThisChannel('Hotel');
         $(document).ready(function(){
             var channelItemList = result.data.item.arrayChannelItem;
-            var layoutRoom = result.data.item.layoutRoom;
+            var layoutRoom = result.data.item.layoutRoom;//房型房间
             if(angular.isDefined(channelItemList)) $scope.setLayoutList(channelItemList, layoutRoom);
             $scope.marketList = result.data.item.marketList;
             //
@@ -74,7 +74,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 $scope.customer_name = market.market_name;
             }
             $scope.setPriceSystemMarket();
-            if(ajax == true) $scope.checkOrderData();
+            if(ajax == true) $scope.checkOrderData();//取出客源市场价格及远期房态
         }
     };
     //设置房型价格
@@ -100,6 +100,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         var roomList = {},room_data = {};//房间
         for(var channel_id in channelItemList) {
             var thisItemList = channelItemList[channel_id], thisLayoutRoom = {};
+            console.log(thisItemList);
             if(typeof(layoutList[channel_id]) == 'undefined') {layoutList[channel_id] = {};room_data[channel_id] = {};}
             if(typeof(layoutRoom[channel_id]) != 'undefined') thisLayoutRoom = layoutRoom[channel_id];
             for(var i in thisItemList) {
@@ -118,7 +119,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                     layoutList[channel_id][i]['room_num'] = num;
                     room_data[channel_id][thisItemList[i]['item_id']] = 0;
                     var select_room_num = [];
-                    for(var j = 0; j <= num; j++) {//房型下面的房间
+                    for(var j = 0; j <= num; j++) {//房型的房间
                         select_room_num[j] = {};
                         select_room_num[j]['room_info'] = {};
                         select_room_num[j]['room_info']['item_name'] = '';

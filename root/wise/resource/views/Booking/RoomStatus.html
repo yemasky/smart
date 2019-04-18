@@ -87,6 +87,7 @@
 									<tr>
 									  <th translate="module.channel.market_name">客源市场</th>
 									  <th>房型</th>
+                                      <th>价格类型</th>
 									  <th>房号</th>
 									  <th>预订人</th>
 									  <th>电话/email</th>
@@ -99,6 +100,7 @@
 									<tr ng-repeat="(i, detail) in bookingDetailRoom">
 									  <td class="text-nowrap">{{detail.market_name}}</td>
 									  <td><span>{{detail.item_category_name}}</span></td>
+                                      <td><span>{{detail.price_system_name}}</span></td>
 									  <td>{{detail.item_name==''?'未排房':detail.item_name}}</td>
 									  <td>{{bookList[detail.booking_number].member_name}}</td>
 									  <td>{{bookList[detail.booking_number].member_mobile==''?bookList[detail.booking_number].member_email:bookList[detail.booking_number].member_mobile}}</td>
@@ -194,9 +196,7 @@
                     </div>
                  </div>
               </div>  
-              
-              
-                   
+
               <div class="p-xs">   
                 
                         
@@ -229,7 +229,7 @@
               <!-- mail list -->
               <div class="list-group list-group-md no-border no-radius no-margin">
                 <div class="list-group-item">
-                  <a href class="w-thumb-md pull-left m-r"><img src="images/a0.jpg" class="img-responsive"></a>
+                  <a href class="w-thumb-md pull-left m-r"><img src="{{__RESOURCE}}data/images/userimg/user_m.png" class="img-responsive"></a>
                   <div class="clear m-b-sm">
                     <span class="pull-right text-muted text-xs">
                       12:30 PM
@@ -388,6 +388,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.actionEditLog = '操作日志';
 		$scope.activeRoomBookEditTab = tab;
 		$scope.roomDetail = $scope.roomDetailList[_this.booking_number];
+        $scope.bookDetail = $scope.bookList[_this.booking_number];
 		asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html'});
 		asideEditRoomBook.$promise.then(function() {
 			asideEditRoomBook.show();

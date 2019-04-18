@@ -138,7 +138,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                             $DetailEntity->setItemCategoryId($layout_item_id);
                             $DetailEntity->setItemCategoryName($roomInfo['item_category_name']);
                             $DetailEntity->setPriceSystemId($system_id);
-                            $DetailEntity->setPriceSystemName('');
+                            $DetailEntity->setPriceSystemName($roomInfo['item_category_name']);
                             $arrayBookDetailList[] = $DetailEntity;
                             for ($j = 0; $j < $total_day; $j++) {
                                 //消费//2018-08-

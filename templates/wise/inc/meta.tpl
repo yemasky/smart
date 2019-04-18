@@ -6,6 +6,7 @@
 <!-- commom -->
 <script language="javascript" src="<%$__RESOURCE%>jquery-3.2.1.min.js?<%$__VERSION%>"></script>
 <script language="javascript">
+    var __RESOURCE = '<%$__RESOURCE%>';
 //jQuery 插件
 (function ($) {
     $.serializeFormat = function (id) {
@@ -364,6 +365,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			return unix_time - 0 + baseSeconds;
             //return baseDateTime.substr(0, 10);
 		};
+        $scope.__RESOURCE = __RESOURCE;
 		$scope._resource = '<%$__RESOURCE%>';
 		//
         $scope.switchChannel = function(channel_id) {

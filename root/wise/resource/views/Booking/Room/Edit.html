@@ -7,6 +7,16 @@
       </div>
       <form name="RoomBookEditForm" class="form-validation" id="thisForm" ng-submit="saveData()">
       <div class="aside-body h-8x scrollable">
+		  <div class="list-group-item">
+			  <a href class="w-thumb-md pull-left m-r"><img src="/data/images/userimg/user_m.png" class="img-responsive"></a>
+			  <div class="clear m-b-sm">
+				  <div>{{bookDetail.member_name}}</div>
+				  <span>{{bookDetail.member_mobile}} {{bookDetail.member_email}}</span>
+				  <span class="text-muted text-xs">
+                      {{bookDetail.check_in}} {{bookDetail.check_out}}
+				  </span>
+			  </div>
+		  </div>
         <div class="tab-container ng-scope ng-valid ng-dirty">
             <ul class="nav nav-tabs">
                 <li ng-class="{active:activeRoomBookEditTab==1}" ng-click="activeRoomBookEditTab=1">
