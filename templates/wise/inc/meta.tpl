@@ -47,7 +47,8 @@
 <script language="javascript" src="<%$__RESOURCE%>angular-lib-extend.min.js?<%$__VERSION%>"></script>
 <script language="javascript" src="<%$__RESOURCE%>vendor/modules/angular-strap/angular-strap.min.js?<%$__VERSION%>"></script>
 <script language="javascript">//'ui.jp',,'angular-popups', 'ui.select'
-var app = angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource','ngRoute','ngSanitize','ngTouch','pascalprecht.translate','ngStorage','ui.router','ui.utils','mgcrea.ngStrap','oc.lazyLoad','ui.load','angular-loading-bar']).config(["$controllerProvider","$compileProvider","$filterProvider","$provide", "$ocLazyLoadProvider",
+var app = angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource','ngRoute','ngSanitize','ngTouch','pascalprecht.translate','ngStorage','ui.router','ui.utils','mgcrea.ngStrap','oc.lazyLoad','ui.load','angular-loading-bar'
+]).config(["$controllerProvider","$compileProvider","$filterProvider","$provide", "$ocLazyLoadProvider",
 	function($controllerProvider, $compileProvider, $filterProvider, $provide) {
 		app.controller = $controllerProvider.register, 
 		app.directive  = $compileProvider.directive, 
@@ -235,7 +236,16 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
 	//$httpProvider.defaults.headers.common = {'refresh' : '0'};
 	//<%/if%>
 	//
-}]).config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function($stateProvider, $urlRouterProvider, $httpProvider) {
+}]).config(function($controllerProvider,$compileProvider,$filterProvider,$provide){        
+    app.register = {
+        //得到$controllerProvider的引用
+        controller : $controllerProvider.register,
+        //同样的，这里也可以保存directive／filter／service的引用
+        directive: $compileProvider.directive,
+        filter: $filterProvider.register,
+        service: $provide.service
+    };
+}).config(["$stateProvider", "$urlRouterProvider", "$httpProvider", function($stateProvider, $urlRouterProvider, $httpProvider) {
 	//$urlRouterProvider.otherwise("/app/dashboard"),
 	$httpProvider.defaults.headers.common = {'ajaxRequest' : true};
 	function randomUrl(channel) {

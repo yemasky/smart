@@ -261,7 +261,7 @@ class BookingEntity extends \Entity {
     /**
      * @param mixed $in_time
      */
-    public function setInTime($in_time): void
+    public function setInTime($in_time)
     {
         $this->in_time = $in_time;
     }
@@ -291,7 +291,7 @@ class BookingEntity extends \Entity {
     /**
      * @param mixed $out_time
      */
-    public function setOutTime($out_time): void
+    public function setOutTime($out_time)
     {
         $this->out_time = $out_time;
     }
@@ -405,7 +405,7 @@ class BookingEntity extends \Entity {
     /**
      * @param mixed $close_datetime
      */
-    public function setCloseDatetime($close_datetime): void
+    public function setCloseDatetime($close_datetime)
     {
         $this->close_datetime = $close_datetime;
     }

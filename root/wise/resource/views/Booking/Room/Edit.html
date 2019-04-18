@@ -170,6 +170,15 @@ app.directive("update",function($document){
       })
     }
   }
-})
+}).controller('RoomBookEditController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
+    var _channel = $scope.$stateParams.channel;
+	var _view = $scope.$stateParams.view,common = '';
+	var param = 'channel='+_channel+'&view='+_view;
+    alert(2222);
+    $httpService.post('/app.do?'+param, $scope, function(result){
+    });
+	//
+	$httpService.deleteHeader('refresh');
+});
 
 </script>

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="app">
 <head>
 <%include file="wise/inc/meta.tpl"%>
 </head>
-<body ng-app="app">
+<body>
 <div class="app" ng-class="{'app-header-fixed':app.settings.headerFixed, 'app-aside-top':app.settings.asideTop}" ui-view ng-controller="MainController"></div>
 <!--<div ui-view="header_menu"></div>-->
 <%include file="wise/inc/header.tpl"%>
