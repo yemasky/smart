@@ -138,15 +138,17 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                             $DetailEntity->setItemCategoryId($layout_item_id);
                             $DetailEntity->setItemCategoryName($roomInfo['item_category_name']);
                             $DetailEntity->setPriceSystemId($system_id);
-                            $DetailEntity->setPriceSystemName($roomInfo['item_category_name']);
+                            $DetailEntity->setPriceSystemName($roomInfo['price_system_name']);
                             $arrayBookDetailList[] = $DetailEntity;
                             for ($j = 0; $j < $total_day; $j++) {
                                 //消费//2018-08-
                                 $consume_key         = $system_id . '-' . $i . '-' . $arrayBusinessDay[$j];
                                 $DetailConsumeEntity = clone $BookingDetailConsumeEntity;
                                 $DetailConsumeEntity->setItemId($_item_id);
+                                $DetailConsumeEntity->setItemCategoryId($layout_item_id);
+                                $DetailConsumeEntity->setItemCategoryName($roomInfo['item_category_name']);
                                 $DetailConsumeEntity->setPriceSystemId($system_id);
-                                $DetailConsumeEntity->setPriceSystemName('');
+                                $DetailConsumeEntity->setPriceSystemName($roomInfo['price_system_name']);
                                 $DetailConsumeEntity->setBusinessDay($arrayBusinessDay[$j]);
                                 $BookingDetailConsumeList[$consume_key] = $DetailConsumeEntity;
                             }
