@@ -336,6 +336,13 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
         },
 		controller: function() {
 		}
+    }).state('app.Test', {
+        url: "/Test/:test", //url: "/role/edit?id",
+        templateUrl: function($routeParams) {
+            return 'resource/views/Test/'+$routeParams.test+'.html?<%$__VERSION%>';
+        },
+		controller: function() {
+		}
     }),
 	$stateProvider.state("login", {
         url: "/login",templateUrl: "/login.html",
