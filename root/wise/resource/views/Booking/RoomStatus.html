@@ -199,7 +199,7 @@
 
               <div class="p-xs">   
                 
-                        
+                    ppppppppppppppppppppppp
                 
               </div>
               <!-- / detail -->
@@ -316,8 +316,16 @@
 <script language="javascript" src="/resource/vendor/libs/moment.min.js"></script>
 <script language="javascript" src="/resource/vendor/libs/daterangepicker.js"></script>
 <script language="javascript">
-app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
+app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter) {
     $scope.param = {};
+    $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
+        $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
+    $ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.js"]);
+    //初始化数据
+    //选择入住房
+    var selectLayoutRoom = {};$scope.selectLayoutRoom = {};
+    var allLayoutRoom = {};
+    var liveLayoutRoom = {};
 	//获取数据
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
@@ -398,6 +406,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		})
 		
 	};
+
 	//
 	$httpService.deleteHeader('refresh');
 });

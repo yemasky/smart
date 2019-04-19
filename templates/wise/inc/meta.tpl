@@ -157,6 +157,21 @@ var app = angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource
 		});
     }
   };
+}).directive('toggleClass', function(){
+    return {
+        restrict: 'A',
+        scope: {
+            toggleClass: '@'
+        },
+        link: function($scope, $element){
+            $element.on('mouseover', function(){
+                $element.addClass($scope.toggleClass);
+            });
+            $element.on('mouseout', function(){
+                $element.removeClass($scope.toggleClass);
+            });
+        }
+    };
 });
 app.filter('propsFilter', function() {
     return function(items, props) {

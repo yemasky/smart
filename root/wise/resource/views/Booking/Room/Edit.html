@@ -49,9 +49,12 @@
 							  <td class="text-nowrap" ng-mouseover="market.edit_i=true" ng-mouseleave="market.edit_i=false" ng-init="market.edit_i=false">{{rDetail.market_name}}
                                 <span ng-show="market.edit_i" class="fa fa-edit pull-right"></span></td>
 							  <td ng-mouseover="category.edit_i=true" ng-mouseleave="category.edit_i=false" ng-init="category.edit_i=false"><span>{{rDetail.item_category_name}}</span>
-								<span ng-show="category.edit_i" class="fa fa-edit pull-right"></span></td>
-							  <td>{{rDetail.price_system_name}}</td>
-							  <td>{{rDetail.item_name==''?'未排房':rDetail.item_name}}</td>
+								<span ng-show="category.edit_i" class="fa fa-edit pull-right"></span>
+							  </td>
+							  <td>{{rDetail.price_system_name}}
+								  <span ng-class="{fa-edit : system.edit_i.active}" ng-mouseover="system.edit_i.active = !system.edit_i.active" class="fa pull-right"></span>
+							  </td>
+							  <td toggle-class="fa fa-edit">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</td>
 							  <td>{{rDetail.check_in | limitTo:10}}</td>
 							  <td>{{rDetail.check_out | limitTo:10}}</td>
 							  <td>
