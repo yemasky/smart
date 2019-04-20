@@ -38,6 +38,7 @@
 							  <th class="col-xs-2" translate="module.channel.market_name">客源市场</th>
 							  <th class="col-xs-2">房型</th>
 							  <th class="col-xs-2">价格类型</th>
+                              <th class="col-xs-1">价格</th>
 							  <th class="col-xs-2">房号</th>
 							  <th>预抵</th>
 							  <th>预离</th>
@@ -49,10 +50,11 @@
 							  <td toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
                                 <a class="pull-right" ng-click="showEditBookRoomModal(this, 'market')"></a></td>
 							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.item_category_name}}
-                                <a class="pull-right" ng-click="showEditBookRoomModal(this, 'category')"></a>
-							  </td>
+                                <a class="pull-right" ng-click="showEditBookRoomModal(this, 'category')"></a></td>
 							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
                                 <a class="pull-right" ng-click="showEditBookRoomModal(this, 'system')"></a></td>
+                              <td toggle-class="fa fa-angle-double-down" class-target="a">{{rDetail.price_system_name}}
+                                <a class="pull-right" ng-click="showEditBookRoomModal(this, 'price')"></a></td>
 							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}} 
                                 <a class="fa pull-right" ng-click="showEditBookRoomModal(this, 'room')"></a></td>
 							  <td>{{rDetail.check_in | limitTo:10}}</td>
@@ -64,6 +66,9 @@
 								  </button>
                               </td>
 							</tr>
+                            <tr class="hide">
+                                <td colspan="8"></td>
+                            </tr>
 						  </tbody>
 						</table>
                     </div>
