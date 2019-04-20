@@ -400,12 +400,21 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.bookDetail = $scope.bookList[_this.booking_number];
 		asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html'});
 		asideEditRoomBook.$promise.then(function() {
-			asideEditRoomBook.show();asideEditRoomBook.controller = 'BookRoomEditController';
+			asideEditRoomBook.show();
 			$(document).ready(function(){
 			});
-               
 		});
 	};
+	//
+	$scope.modal = {
+        "title": "Title",
+        "content": "Hello Modal<br />This is a multiline message!"
+    };
+    var editBookRoomModal = $modal({scope: $scope, templateUrl: '/resource/views/Booking/Room/EditRoom.html', show: false});
+    // Show when some event occurs (use $promise property to ensure the template has been loaded)
+    $scope.showEditBookRoomModal = function(_this, tab) {
+        editBookRoomModal.$promise.then(editBookRoomModal.show);
+    };
 	//
 	$httpService.deleteHeader('refresh');
 });

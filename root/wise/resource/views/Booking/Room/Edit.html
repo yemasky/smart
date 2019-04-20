@@ -176,16 +176,4 @@ app.directive("edit", function(){
     }
   }
 });
-app.controller('BookRoomEditController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
-    $scope.modal = {
-        "title": "Title",
-        "content": "Hello Modal<br />This is a multiline message!"
-    };
-    var editBookRoomModal = $modal({scope: $scope, templateUrl: '/resource/views/Booking/Room/EditRoom.html', show: false});
-    // Show when some event occurs (use $promise property to ensure the template has been loaded)
-    $scope.showEditBookRoomModal = function(_this, tab) {
-        editBookRoomModal.$promise.then(editBookRoomModal.show);
-    };
-});
-
 </script>
