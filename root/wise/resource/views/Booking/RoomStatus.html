@@ -388,6 +388,16 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			$scope.bookRoomStatus = bookRoomStatus;
 		}
 	});
+	//
+    $scope.BookRoomEditType = [
+        {value: 'Gear', label: '<i class="fa fa-gear"></i> 升级'},
+        {value: 'Globe', label: '<i class="fa fa-globe"></i> 换房'},
+        {value: 'Heart', label: '<i class="fa fa-heart"></i> 时间'}
+    ];
+
+    $scope.selectedMonth = 0;
+    $scope.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
     var asideEditRoomBook = '';
 	$scope.editRoomBook = function(_this, tab) {
 		$scope.param["valid"] = "1";

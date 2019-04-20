@@ -163,12 +163,21 @@ var app = angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource
         scope: {
             toggleClass: '@'
         },
-        link: function($scope, $element){
+        link: function($scope, $element, $attr){
+            var toggleTarget = $attr.classTarget;
             $element.on('mouseover', function(){
-                $element.addClass($scope.toggleClass);
+                if(typeof toggleTarget == 'undefined' || toggleTarget == '') {
+                    $element.addClass($scope.toggleClass);
+                } else {
+                    $element.find(toggleTarget).addClass($scope.toggleClass);
+                }
             });
             $element.on('mouseout', function(){
-                $element.removeClass($scope.toggleClass);
+                if(typeof toggleTarget == 'undefined' || toggleTarget == '') {
+                    $element.removeClass($scope.toggleClass);
+                } else {
+                    $element.find(toggleTarget).removeClass($scope.toggleClass);
+                }
             });
         }
     };

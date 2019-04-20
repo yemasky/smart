@@ -35,7 +35,7 @@
 						<table class="table table-bordered table-striped bg-white">
 						  <thead>
 							<tr>
-							  <th  class="col-xs-2" translate="module.channel.market_name">客源市场</th>
+							  <th class="col-xs-2" translate="module.channel.market_name">客源市场</th>
 							  <th class="col-xs-2">房型</th>
 							  <th class="col-xs-2">价格类型</th>
 							  <th class="col-xs-2">房号</th>
@@ -52,13 +52,16 @@
 								<span ng-show="category.edit_i" class="fa fa-edit pull-right"></span>
 							  </td>
 							  <td>{{rDetail.price_system_name}}
-								  <span ng-class="{fa-edit : system.edit_i.active}" ng-mouseover="system.edit_i.active = !system.edit_i.active" class="fa pull-right"></span>
+								  <span class="fa fa-edit pull-right">是</span>
 							  </td>
-							  <td toggle-class="fa fa-edit">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</td>
+							  <td toggle-class="fa fa-edit" class-target="span">{{rDetail.item_name==''?'未排房':rDetail.item_name}} <span class="fa pull-right"></span></td>
 							  <td>{{rDetail.check_in | limitTo:10}}</td>
 							  <td>{{rDetail.check_out | limitTo:10}}</td>
 							  <td>
-							  <edit class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></edit>
+								  <button type="button" class="btn btn-default" ng-model="selectedIcon" data-placement="left-middle" data-html="1" data-toggle="true" bs-options="edit.value as edit.label for edit in BookRoomEditType"
+										  placeholder="<i class='fa fa-gear'></i> 操作" bs-select>
+									  Action <span class="caret"></span>
+								  </button>
                               </td>
 							</tr>
 						  </tbody>
