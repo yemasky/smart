@@ -46,15 +46,15 @@
 						  </thead>
 						  <tbody>
 							<tr ng-repeat="(edit_i, rDetail) in roomDetail">
-							  <td class="text-nowrap" ng-mouseover="market.edit_i=true" ng-mouseleave="market.edit_i=false" ng-init="market.edit_i=false">{{rDetail.market_name}}
-                                <span ng-show="market.edit_i" class="fa fa-edit pull-right"></span></td>
-							  <td ng-mouseover="category.edit_i=true" ng-mouseleave="category.edit_i=false" ng-init="category.edit_i=false"><span>{{rDetail.item_category_name}}</span>
-								<span ng-show="category.edit_i" class="fa fa-edit pull-right"></span>
+							  <td toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
+                                <a class="pull-right" ng-click="showEditBookRoomModal(this, 'market')"></a></td>
+							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.item_category_name}}
+                                <a class="pull-right" ng-click="showEditBookRoomModal(this, 'category')"></a>
 							  </td>
-							  <td>{{rDetail.price_system_name}}
-								  <span class="fa fa-edit pull-right">是</span>
-							  </td>
-							  <td toggle-class="fa fa-edit" class-target="span">{{rDetail.item_name==''?'未排房':rDetail.item_name}} <span class="fa pull-right"></span></td>
+							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
+                                <a class="pull-right" ng-click="showEditBookRoomModal(this, 'system')"></a></td>
+							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}} 
+                                <a class="fa pull-right" ng-click="showEditBookRoomModal(this, 'room')"></a></td>
 							  <td>{{rDetail.check_in | limitTo:10}}</td>
 							  <td>{{rDetail.check_out | limitTo:10}}</td>
 							  <td>
@@ -157,8 +157,7 @@ app.directive("edit", function(){
       });
     }
   }
-})
-app.directive("update",function($document){
+}).directive("update",function($document){
   return{
     restrict: 'AE',
     require: 'ngModel',
@@ -176,15 +175,17 @@ app.directive("update",function($document){
       })
     }
   }
-}).controller('RoomBookEditController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
-    var _channel = $scope.$stateParams.channel;
-	var _view = $scope.$stateParams.view,common = '';
-	var param = 'channel='+_channel+'&view='+_view;
-    alert(2222);
-    $httpService.post('/app.do?'+param, $scope, function(result){
-    });
-	//
-	$httpService.deleteHeader('refresh');
+});
+app.controller('BookRoomEditController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
+    $scope.modal = {
+        "title": "Title",
+        "content": "Hello Modal<br />This is a multiline message!"
+    };
+    var editBookRoomModal = $modal({scope: $scope, templateUrl: '/resource/views/Booking/Room/EditRoom.html', show: false});
+    // Show when some event occurs (use $promise property to ensure the template has been loaded)
+    $scope.showEditBookRoomModal = function(_this, tab) {
+        editBookRoomModal.$promise.then(editBookRoomModal.show);
+    };
 });
 
 </script>

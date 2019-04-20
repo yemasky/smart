@@ -197,11 +197,7 @@
                  </div>
               </div>  
 
-              <div class="p-xs">   
-                
-                    ppppppppppppppppppppppp
-                
-              </div>
+              <div class="p-xs"></div>
               <!-- / detail -->
             </div>
           </div>
@@ -316,7 +312,7 @@
 <script language="javascript" src="/resource/vendor/libs/moment.min.js"></script>
 <script language="javascript" src="/resource/vendor/libs/daterangepicker.js"></script>
 <script language="javascript">
-app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter) {
+app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
     $scope.param = {};
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
         $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
@@ -390,14 +386,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	});
 	//
     $scope.BookRoomEditType = [
-        {value: 'Gear', label: '<i class="fa fa-gear"></i> 升级'},
-        {value: 'Globe', label: '<i class="fa fa-globe"></i> 换房'},
-        {value: 'Heart', label: '<i class="fa fa-heart"></i> 时间'}
+        {value: 'Gear', label: '<i class="fa fa-gear"></i> 换房/升级'},
+        {value: 'Heart', label: '<i class="glyphicon glyphicon-time"></i> 修改日期'}
     ];
-
-    $scope.selectedMonth = 0;
-    $scope.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
     var asideEditRoomBook = '';
 	$scope.editRoomBook = function(_this, tab) {
 		$scope.param["valid"] = "1";
@@ -409,14 +400,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.bookDetail = $scope.bookList[_this.booking_number];
 		asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html'});
 		asideEditRoomBook.$promise.then(function() {
-			asideEditRoomBook.show();
+			asideEditRoomBook.show();asideEditRoomBook.controller = 'BookRoomEditController';
 			$(document).ready(function(){
 			});
                
-		})
-		
+		});
 	};
-
 	//
 	$httpService.deleteHeader('refresh');
 });
