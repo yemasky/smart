@@ -1,22 +1,27 @@
 <div class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header" ng-show="modal.title">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="modal-title" ng-bind-html="modal.title"></h4>
       </div>
       <div class="modal-body" ng-show="modal.content">
-
-        <div class="list-group no-radius clear" id="selectRoom">
+        <div class="clearfix">
+        <div class="list-group no-radius">
             <div class="list-group-item col-sm-2 m-xs" ng-repeat="(room_id, room) in layoutSelectRoom">
-                <span class="pull-left w-thumb m-r b-b-2x"><img class="img-responsive" ng-src="/resource/images/room.png" src="/resource/images/room.png"></span>
-                {{room.item_name}}  
-                <label class="checkbox-inline ui-checks pull-right">
-                    <input type="checkbox" name="channel_item_multipe[{{room.item_id}}]" ng-click="selectRoom($event, room_id)" value="{{room.item_id}}" checked>
-                    <i></i>
-                </label>
+              <span class="pull-left w-thumb-xs m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
+              <div class="clear">
+                <span class="font-bold block">{{room.item_name}}
+                    <label class="checkbox-inline ui-checks pull-right">
+                        <input type="radio" id="item_room_{{room.item_id}}" name="item_room" ng-model="room[room.item_id]" ng-click="selectRoom($event, room.item_id);" value="{{room.item_id}}">
+                        <i></i>
+                    </label>
+                </span> 
+                <span data-title="{{room.describe}}" bs-tooltip>{{room.describe | limitTo:5}}..</span>
+              </div>
             </div>
-        </div>
+        </div> 
+        </div>  
 
       </div>
       <div class="modal-footer">

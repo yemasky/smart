@@ -22,10 +22,13 @@
                 <li ng-class="{active:activeRoomBookEditTab==1}" ng-click="activeRoomBookEditTab=1">
                     <a ng-bind-html="actionEdit"></a>
                 </li>
-				<li ng-class="{active:activeRoomBookEditTab==2}" ng-click="activeRoomBookEditTab=2">
+                <li ng-class="{active:activeRoomBookEditTab==2}" ng-click="activeRoomBookEditTab=2">
+                    <a ng-bind-html="actionConsume"></a>
+                </li>
+				<li ng-class="{active:activeRoomBookEditTab==3}" ng-click="activeRoomBookEditTab=3">
                     <a ng-bind-html="actionAccounts"></a>
                 </li>
-                <li ng-class="{active:activeRoomBookEditTab==3}" ng-click="activeRoomBookEditTab=3">
+                <li ng-class="{active:activeRoomBookEditTab==4}" ng-click="activeRoomBookEditTab=4">
                     <a ng-bind-html="actionEditLog"></a>
                 </li>
             </ul>
@@ -107,6 +110,39 @@
                     </div>
                 </div>
                 <div ng-show="activeRoomBookEditTab==3">
+                      <div class="table-responsive">
+						<table class="table table-bordered table-striped bg-white">
+						  <thead>
+							<tr>
+							  <th translate="module.channel.market_name">客源市场</th>
+							  <th>房型</th>
+							  <th>房号</th>
+							  <th>客人名称</th>
+							  <th translate="module.channel.phone">电话</th>
+							  <th translate="module.channel.address">地址</th>
+							  <th translate="common.hint.date">日期</th>
+							  <th translate="common.hint.manager">管理</th>
+							</tr>
+						  </thead>
+						  <tbody>
+							<tr ng-repeat="(i, rDetail) in roomDetail">
+							  <td class="text-nowrap">{{rDetail.market_name}}</td>
+							  <td><span>{{rDetail.market_name}}</span></td>
+							  <td><a ng-click="config(Channel.id)">{{rDetail.channel_name}}</a></td>
+							  <td>{{rDetail.channel_en_name}}</td>
+							  <td>{{rDetail.phone}}</td>
+							  <td>{{rDetail.address}}</td>
+							  <td>{{rDetail.add_datetime}}</td>
+							  <td>
+							  <button class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
+							  <button class="btn btn-sm btn-default" ng-click="config(Channel.id)"><span translate="common.hint.config" >配置</span></button>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+                    </div>
+                </div>
+                <div ng-show="activeRoomBookEditTab==4">
                       <div class="table-responsive">
 						<table class="table table-bordered table-striped bg-white">
 						  <thead>
