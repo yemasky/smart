@@ -53,14 +53,14 @@
                                 <a class="pull-right" ng-click="showEditBookRoomModal(this, 'category')"></a></td>
 							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
                                 <a class="pull-right" ng-click="showEditBookRoomModal(this, 'system')"></a></td>
-                              <td toggle-class="fa fa-angle-double-down" class-target="a">{{rDetail.price_system_name}}
-                                <a class="pull-right" ng-click="showEditBookRoomModal(this, 'price')"></a></td>
+                              <td show-bookroom-price="close">{{rDetail.price_system_name}}
+                                <a class="pull-right"></a></td>
 							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}} 
                                 <a class="fa pull-right" ng-click="showEditBookRoomModal(this, 'room')"></a></td>
 							  <td>{{rDetail.check_in | limitTo:10}}</td>
 							  <td>{{rDetail.check_out | limitTo:10}}</td>
 							  <td>
-								  <button type="button" class="btn btn-default" ng-model="selectedIcon" data-placement="left-middle" data-html="1" data-toggle="true" bs-options="edit.value as edit.label for edit in BookRoomEditType"
+								  <button type="button" class="btn btn-default btn-xs" ng-model="selectedIcon" data-placement="left-middle" data-html="1" data-toggle="true" bs-options="edit.value as edit.label for edit in BookRoomEditType"
 										  placeholder="<i class='fa fa-gear'></i> 操作" bs-select>
 									  Action <span class="caret"></span>
 								  </button>
@@ -180,5 +180,41 @@ app.directive("edit", function(){
       })
     }
   }
-});
+}).directive("showBookroomPrice", function(){
+  return{
+    restrict: "A",
+    link: function($scope, $element, $attr){
+        var show = $attr.showBookroomPrice;
+        $element.on('mouseout', function(){
+            if(show == 'close') {
+                $element.find('a').removeClass('fa fa-angle-double-down');
+            } else {
+                $element.find('a').removeClass('fa fa-angle-up');
+            }
+        });
+        $element.on('mouseover', function(){
+            if(show == 'close') {
+                $element.find('a').addClass('fa fa-angle-double-down');
+            } else {
+                $element.find('a').addClass('fa fa-angle-up');
+            }
+        });
+        $element.find('a').on("click",function(){
+            if(show == 'close') {
+                $element.parent().after('<tr><td colspan="8"></td></tr>');
+                $attr.showBookroomPrice = show = 'on';
+                $element.find('a').removeClass('fa fa-angle-double-down');
+                $element.find('a').addClass('fa fa-angle-up');
+            } else {
+                $element.parent().next().remove();
+                $attr.showBookroomPrice = show = 'close';
+                $element.find('a').removeClass('fa fa-angle-up');
+                $element.find('a').addClass('fa fa-angle-double-down');
+            }
+        })
+    }
+  }
+})
+
+;
 </script>

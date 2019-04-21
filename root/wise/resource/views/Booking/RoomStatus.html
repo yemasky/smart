@@ -416,6 +416,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         editBookRoomModal.$promise.then(editBookRoomModal.show);
     };
 	//
+    $scope.showBookRoomPrice = function(_this, tab) {console.log($(_this));
+        var priceTr = '<tr><td colspan="8"></td></tr>';
+        console.log($(_this).parent().parent().html());
+        $(_this).parent().parent().append(priceTr);
+    };
+    //
 	$httpService.deleteHeader('refresh');
 });
 
