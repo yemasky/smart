@@ -389,7 +389,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         {value: 'Gear', label: '<i class="fa fa-gear"></i> 换房/升级'},
         {value: 'Heart', label: '<i class="glyphicon glyphicon-time"></i> 修改日期'}
     ];
-    var asideEditRoomBook = '';
+    var asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
+    app.controller('EditBookController', function(){});//给aside注册controller
 	$scope.editRoomBook = function(_this, tab) {
 		$scope.param["valid"] = "1";
 		$scope.actionEdit = '预订管理';
@@ -398,15 +399,14 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.activeRoomBookEditTab = tab;
 		$scope.roomDetail = $scope.roomDetailList[_this.booking_number];
         $scope.bookDetail = $scope.bookList[_this.booking_number];
-		asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html'});
 		asideEditRoomBook.$promise.then(function() {
 			asideEditRoomBook.show();
 			$(document).ready(function(){
 			});
 		});
 	};
-	//
-	$scope.modal = {
+    //
+    $scope.modal = {
         "title": "Title",
         "content": "Hello Modal<br />This is a multiline message!"
     };
@@ -414,12 +414,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
     $scope.showEditBookRoomModal = function(_this, tab) {
         editBookRoomModal.$promise.then(editBookRoomModal.show);
-    };
-	//
-    $scope.showBookRoomPrice = function(_this, tab) {console.log($(_this));
-        var priceTr = '<tr><td colspan="8"></td></tr>';
-        console.log($(_this).parent().parent().html());
-        $(_this).parent().parent().append(priceTr);
     };
     //
 	$httpService.deleteHeader('refresh');

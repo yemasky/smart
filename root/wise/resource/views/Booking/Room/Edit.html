@@ -1,4 +1,4 @@
-<div class="aside box-shadow h-10x" tabindex="-1" role="dialog">
+<div class="aside box-shadow h-10x" tabindex="-1" role="dialog" ng-controller="EditBookController">
   <div class="aside-dialog">
     <div class="aside-content">
       <div class="aside-header" ng-show="title">
@@ -214,7 +214,8 @@ app.directive("edit", function(){
         })
     }
   }
-})
+});
+app.controller('EditBookController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
 
-;
+});
 </script>
