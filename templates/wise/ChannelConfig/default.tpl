@@ -183,7 +183,7 @@
 			});
 		};
         <!--end common保存-->
-        <!--房间操作卡斯-->
+        <!--房间操作开始-->
 		$scope.roomList = '';
 		$scope.getRoomItem = function() {
 			if($scope.roomList != '') {setAttrRoom($scope.roomList);return;}
@@ -204,6 +204,7 @@
 			} else {
 				delete $scope.haveSelectRoom[item_id];
 			}
+            $('#channel_item_multipe_delete').attr('name', 'channel_item_multipe[0]');
 		};
 		function setAttrRoom (roomList) {
 			var attrSelectRoom = $scope.attrSelectRoom;

@@ -6,9 +6,8 @@
       	<a class="pull-right fa fa-edit" ng-click=""> </a>
       </div>
       <div class="panel-body">
-        <p class="m-b-lg text-muted">Many maps of the world, world regions, countries and cities are available for download from <a href="http://jvectormap.com/">http://jvectormap.com/</a>. All of them are made from the data in public domain or data licensed under the free licenses, so you can use them for any purpose without of charge.</p>
-        <div class="m-b-lg">叮叮
-        </div>
+        <p class="m-b-lg text-muted">详细配置各项基础设施</p>
+        <div class="m-b-lg">配置页面</div>
       </div>
     </div>
     <div class="col-md-2 b-l no-border-sm">

@@ -334,21 +334,23 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
 			//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+			return;//错误返回
 		}
 		common = result.data.common;
 		$scope.setCommonSetting(common);
-		$scope.setThisChannel('Hotel');
+		$scope.setThisChannel('Hotel');//酒店频道
         $(document).ready(function(){
             $scope.param["channel_id"] = $rootScope.defaultChannel["channel_id"];
             $scope.param["channel_father_id"] = $rootScope.defaultChannel["channel_father_id"];
             $scope.defaultHotel = $rootScope.defaultChannel["channel_name"];
         });
-        $scope.bookList   = result.data.item.bookList;//预订
-        $scope.roomList   = result.data.item.roomList;//客房
-        $scope.layoutList = result.data.item.layoutList;//房型
-		$scope.layoutRoom = result.data.item.layoutRoom;//房型房间
+        $scope.bookList   = result.data.item.bookList;//预订列表
+        $scope.roomList   = result.data.item.roomList;//客房列表
+        $scope.layoutList = result.data.item.layoutList;//房型列表
+		$scope.layoutRoom = result.data.item.layoutRoom;//房型房间对应关系
 		$scope.bookingDetailRoom   = result.data.item.bookingDetailRoom;//预订详情
         $scope.bookRoomStatus   =  {};$scope.roomDetailList   =  {};
+        console.log($scope.layoutRoom);
         if($scope.roomList != '') {
 			//按当日计算预抵预离 过期忽略
 			var thisDay = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd');

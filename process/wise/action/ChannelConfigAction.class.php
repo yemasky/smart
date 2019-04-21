@@ -151,7 +151,7 @@ class ChannelConfigAction extends \BaseAction {
 		}
 		if($method == 'save') {
 			$arrayAttr       = $objRequest->getInput('attr_value');
-			$arrayMultipe    = $objRequest->getInput('channel_item_multipe');
+			$arrayMultipe    = $objRequest->getInput('channel_item_multipe');//
 			$arrayItemImages = $objRequest->getInput('item_images');
 			$objRequest->unsetInput('attr_value');
 			$objRequest->unsetInput('channel_item_multipe');
@@ -217,6 +217,7 @@ class ChannelConfigAction extends \BaseAction {
 		}
 	}
 
+	//保存属性值
 	public function doSaveChannelItemExtend(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
 		$channel_id = $objRequest->channel_id;
@@ -228,7 +229,7 @@ class ChannelConfigAction extends \BaseAction {
 		$arrayInsertData = [];
 		$k               = 0;
 		$sql_attr_type   = array();
-		if(!empty($arrayAttr)) {
+		if(!empty($arrayAttr)) {//属性值
 			foreach($arrayAttr as $attribute_id => $value) {
 				if(is_array($value)) {
 					foreach($value as $j => $v) {
@@ -260,8 +261,9 @@ class ChannelConfigAction extends \BaseAction {
 			}
 			$sql_attr_type[] = 'attr_value';
 		}
-		if(!empty($arrayMultipe)) {
+		if(!empty($arrayMultipe)) {//客房
 			foreach($arrayMultipe as $room_item_id => $value) {
+			    if($room_item_id == 0) continue;
 				$arrayInsertData[$k]['attribute_id']     = '0';
 				$arrayInsertData[$k]['company_id']       = $company_id;
 				$arrayInsertData[$k]['channel_id']       = $channel_id;
@@ -275,7 +277,7 @@ class ChannelConfigAction extends \BaseAction {
 			}
 			$sql_attr_type[] = 'multipe_room';
 		}
-		if(!empty($arrayItemImages)) {
+		if(!empty($arrayItemImages)) {//图片
 			foreach($arrayItemImages as $image_url => $value) {
 				$arrayInsertData[$k]['attribute_id']     = '0';
 				$arrayInsertData[$k]['company_id']       = $company_id;
