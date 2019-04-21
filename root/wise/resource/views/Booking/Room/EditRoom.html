@@ -7,15 +7,16 @@
       </div>
       <div class="modal-body" ng-show="modal.content">
 
-        <h4>Text in a modal</h4>
-        <p ng-bind-html="content"></p>
-        <pre>2 + 3 = {{ 2 + 3 }}</pre>
-
-        <h4>Popover in a modal</h4>
-        <p>This <a href="#" role="button" class="btn btn-default popover-test" data-title="A Title" data-content="And here's some amazing content. It's very engaging. right?" bs-popover>button</a> should trigger a popover on click.</p>
-
-        <h4>Tooltips in a modal</h4>
-        <p><a href="#" class="tooltip-test" data-title="Tooltip" bs-tooltip>This link</a> and <a href="#" class="tooltip-test" data-title="Tooltip" bs-tooltip>that link</a> should have tooltips on hover.</p>
+        <div class="list-group no-radius clear" id="selectRoom">
+            <div class="list-group-item col-sm-2 m-xs" ng-repeat="(room_id, room) in layoutSelectRoom">
+                <span class="pull-left w-thumb m-r b-b-2x"><img class="img-responsive" ng-src="/resource/images/room.png" src="/resource/images/room.png"></span>
+                {{room.item_name}}  
+                <label class="checkbox-inline ui-checks pull-right">
+                    <input type="checkbox" name="channel_item_multipe[{{room.item_id}}]" ng-click="selectRoom($event, room_id)" value="{{room.item_id}}" checked>
+                    <i></i>
+                </label>
+            </div>
+        </div>
 
       </div>
       <div class="modal-footer">
@@ -26,8 +27,5 @@
   </div>
  </div>
 <script language="javascript">
-app.controller('ssss', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
-    alert(1);
- });
 
 </script>
