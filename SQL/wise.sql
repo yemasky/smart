@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v12.08 (64 bit)
-MySQL - 10.1.38-MariaDB : Database - wise
+MySQL - 10.1.37-MariaDB : Database - wise
 *********************************************************************
 */
 
@@ -12,7 +12,7 @@ MySQL - 10.1.38-MariaDB : Database - wise
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`wise` /*!40100 DEFAULT CHARACTER SET utf8 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`wise` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
 
 USE `wise`;
 
@@ -103,7 +103,7 @@ CREATE TABLE `booking_consume` (
   `booking_number_ext` varchar(64) NOT NULL DEFAULT '',
   `company_id` int(11) NOT NULL COMMENT '品牌 公司ID',
   `channel` enum('Hotel','Meal','Meeting','Shop','Service','Tour','Sport') NOT NULL COMMENT '频道',
-  `booking_type` enum('room_hour','room_day','goods') NOT NULL,
+  `booking_type` enum('room_hour','room_day','goods') NOT NULL DEFAULT 'room_day',
   `channel_id` int(11) NOT NULL,
   `member_id` int(11) NOT NULL COMMENT '会员',
   `market_father_id` int(11) NOT NULL COMMENT '市场大类',
@@ -184,7 +184,7 @@ CREATE TABLE `booking_detail` (
 
 /*Data for the table `booking_detail` */
 
-insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1904188915901,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',-55559623,'',4,'标准间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',3,'',0.00,0.00,'pms','1','2019-04-18 11:53:42',NULL),(2,1904188915901,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',-55559624,'',4,'标准间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',4,'',0.00,0.00,'pms','1','2019-04-18 11:53:42',NULL),(14,1904183231012,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',-55577030,'',8,'双人间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',3,'',0.00,0.00,'pms','1','2019-04-18 16:43:49',NULL);
+insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1904188915901,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',2,'102',4,'标准间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',3,'',0.00,0.00,'pms','1','2019-04-18 11:53:42',NULL),(2,1904188915901,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',3,'201',4,'标准间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',4,'',0.00,0.00,'pms','1','2019-04-18 11:53:42',NULL),(14,1904183231012,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',-55577030,'',8,'双人间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',3,'',0.00,0.00,'pms','1','2019-04-18 16:43:49',NULL);
 
 /*Table structure for table `booking_discount` */
 
