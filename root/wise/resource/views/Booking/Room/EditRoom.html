@@ -5,43 +5,57 @@
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="modal-title" ng-bind-html="modal.title"></h4>
       </div>
+      <form name="form-layout" class="form-validation ng-pristine ng-valid ng-valid-required" id="setEditRoomForm" ng-submit="saveEditRoomForm(roomDetailEdit)">
+          <input type="hidden" ng-model="param.detail_id" value="{{roomDetailEdit.booking_detail_id}}">
       <div class="modal-body tab-container" ng-show="modal.content">
           <ul class="nav nav-tabs">
-              <li ng-class="{active:activeRoomBookTab==1}" ng-click="activeRoomBookTab=1">
+              <li ng-class="{active:activeRoomBookTab=='market'}" ng-click="activeRoomBookTab='market'">
                   <a translate="module.channel.market_name">客源市场</a>
               </li>
-              <li ng-class="{active:activeRoomBookTab==2}" ng-click="activeRoomBookTab=2">
+              <li ng-class="{active:activeRoomBookTab=='category'}" ng-click="activeRoomBookTab='category'">
                   <a>房型</a>
               </li>
-              <li ng-class="{active:activeRoomBookTab==3}" ng-click="activeRoomBookTab=3">
+              <li ng-class="{active:activeRoomBookTab=='system'}" ng-click="activeRoomBookTab='system'">
                   <a>价格</a>
               </li>
-              <li ng-class="{active:activeRoomBookTab==4}" ng-click="activeRoomBookTab=4">
+              <li ng-class="{active:activeRoomBookTab=='Room'}" ng-click="activeRoomBookTab='Room'">
                   <a>房号</a>
               </li>
           </ul>
-        <div class="clearfix">
-            <div class="list-group no-radius">
-                <div class="list-group-item col-sm-2 m-xs" ng-repeat="(room_id, room) in layoutSelectRoom">
-                  <span class="pull-left w-thumb-xs m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
-                  <div class="clear">
-                    <span class="font-bold block">{{room.item_name}}
-                        <label class="checkbox-inline ui-checks pull-right">
-                            <input type="radio" id="item_room_{{room.item_id}}" name="item_room" ng-model="room[room.item_id]" ng-click="selectRoom($event, room.item_id);" value="{{room.item_id}}">
-                            <i></i>
-                        </label>
-                    </span>
-                    <span data-title="{{room.describe}}" bs-tooltip>{{room.describe | limitTo:5}}..</span>
-                  </div>
+          <div class="clearfix">
+            <div class="tab">
+                <div ng-show="activeRoomBookTab=='market'">
+                </div>
+                <div ng-show="activeRoomBookTab=='category'">
+                </div>
+                <div ng-show="activeRoomBookTab=='system'">
+                </div>
+                <div ng-show="activeRoomBookTab=='Room'">
+                    <div class="table-responsive">
+                        <div class="list-group no-radius">
+                            <div class="list-group-item col-sm-2 m-xs" ng-repeat="(room_id, room) in layoutSelectRoom">
+                              <span class="pull-left w-thumb-xs m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
+                              <div class="clear">
+                                <span class="font-bold block">{{room.item_name}}
+                                    <label class="checkbox-inline ui-checks pull-right">
+                                        <input type="radio" ng-click="setEditItemRoomName(room.item_name)" ng-checked="roomDetailEdit.item_id==room.item_id" name="item_room" ng-model="param.item_room" value="{{room.item_id}}">
+                                        <i></i>
+                                    </label>
+                                </span>
+                                <span data-title="{{room.describe}}" bs-tooltip>{{room.describe | limitTo:5}}..</span>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>  
-
+        </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
-        <button type="button" class="btn btn-primary" ng-click="$hide()">Save changes</button>
+        <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
       </div>
+      </form>
     </div>
   </div>
  </div>

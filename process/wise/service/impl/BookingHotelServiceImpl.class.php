@@ -35,6 +35,9 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return BookingDao::instance()->getBookingDetailList($whereCriteria, $field);
     }
 
+    public function updateBookingDetail(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
+        return BookingDao::instance()->updateBookingDetail($whereCriteria, $arrayUpdateData, $update_type);
+    }
 
     /*
      * booking_room 数据结构 单个时间段订房

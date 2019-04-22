@@ -57,6 +57,10 @@ class HotelOrderAction extends \BaseAction {
 
     protected function doRoomStatus(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
+        $method = $objRequest->method;
+        if (!empty($method)) {
+            return $this->doMethod($objRequest, $objResponse);
+        }
         $company_id              = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         //获取channel
         $channel_id = $objRequest->channel_id;
@@ -95,6 +99,11 @@ class HotelOrderAction extends \BaseAction {
             ->LE('check_in', $in_date)->ORDER('check_in');
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
+        if(!empty($bookingDetailRoom)) {
+            foreach ($bookingDetailRoom as $k => $v) {
+                $bookingDetailRoom[$k]['detail_id'] = encode($v['booking_detail_id']);
+            }
+        }
         //消费
         $arrayBookingNumber = array_keys($arrayBookList);
         $arrayConsume = null;
@@ -244,5 +253,26 @@ class HotelOrderAction extends \BaseAction {
             if($objSuccess->isSuccess()) return $objResponse->successResponse($objSuccess->getCode(), '');
         }
         return $objResponse->errorResponse($objSuccess->getCode(), $objSuccess->getData(), $objSuccess->getMessage());
+    }
+
+    protected function doMethodEditBookRoom(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+        $company_id              = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        //
+        $detail_id = decode($objRequest->getInput('detail_id'));
+        $item_room_name = $objRequest->getInput('item_room_name');
+        $item_room = $objRequest->getInput('item_room');
+        if($detail_id > 0) {
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
+            $arrayUpdate['item_name'] = $item_room_name;
+            $arrayUpdate['item_id'] = $item_room;
+            BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $arrayUpdate);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+        }
+
+        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
 }

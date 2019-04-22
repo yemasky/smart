@@ -56,6 +56,8 @@ class ModulesConfig extends \ModulesConfig {
         'CancellationPolicy'=>['PolicyAddEdit'=>32]
 		];
 
+	public static $module_method = [];
+
     public static $defaultMarket = [];
 
 }

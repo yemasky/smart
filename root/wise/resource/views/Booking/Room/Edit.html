@@ -1,4 +1,4 @@
-<div class="aside box-shadow h-10x" tabindex="-1" role="dialog" ng-controller="EditBookController">
+<div class="aside box-shadow h-10x" tabindex="-1" role="dialog">
   <div class="aside-dialog">
     <div class="aside-content">
       <div class="aside-header" ng-show="title">
@@ -59,7 +59,7 @@
                               <td show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{consumeList[rDetail.booking_number][rDetail.booking_detail_id][0].consume_price}}
                                 <a class="pull-right"></a></td>
 							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}} 
-                                <a class="fa pull-right" ng-click="showEditBookRoomModal(this, 'room')"></a></td>
+                                <a class="fa pull-right" ng-click="showEditBookRoomModal(rDetail, 'Room')"></a></td>
 							  <td>{{rDetail.check_in | limitTo:10}}</td>
 							  <td>{{rDetail.check_out | limitTo:10}}</td>
 							  <td>
@@ -221,7 +221,6 @@ app.directive("edit", function(){
     restrict: "A",
 	require: 'ngModel',
     link: function($scope, $element, $attr, $ngModel){
-    	console.log($ngModel);
         var show = $attr.showBookroomPrice;
         $element.on('mouseout', function(){
             if(show == 'close') {
@@ -260,7 +259,4 @@ app.directive("edit", function(){
   }
 });
 //modal controller
-app.controller('EditBookRoomController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
-
-});
 </script>

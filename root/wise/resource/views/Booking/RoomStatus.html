@@ -407,7 +407,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.actionAccounts = '账务项';
     $scope.actionEditLog = '操作日志';
     var asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
-    app.controller('EditBookController', function(){});//给aside注册controller
 	$scope.editRoomBook = function(_this, tab) {
         $scope.layoutSelectRoom = layoutRoomList[_this.item_category_id];
 		$scope.param["valid"] = "1";
@@ -426,12 +425,40 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         "title": "Title",
         "content": "Hello Modal<br />This is a multiline message!"
     };
-    var editBookRoomModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',show: false,controller:'EditBookRoomController'});
+    var editBookRoomModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',show: false});
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
     $scope.showEditBookRoomModal = function(_this, tab) {
         $scope.activeRoomBookTab = tab;
+        $scope.roomDetailEdit = _this;
+        editBookRoomModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',show: false});
         editBookRoomModal.$promise.then(editBookRoomModal.show);
     };
+    $scope.saveEditRoomForm = function (_this) {console.log(_this);
+        $httpService.header('method', 'editBookRoom');
+        $scope.beginLoading =! $scope.beginLoading;
+        $scope.param.detail_id = _this.detail_id;
+        $httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+            _this.item_id = $scope.param.item_room;
+            _this.item_name = $scope.param.item_room_name;
+            $scope.roomDetail.item_id = $scope.param.item_room;
+            $scope.roomDetail.item_name = $scope.param.item_room_name;
+            $scope.roomDetailList[_this.booking_number] = $scope.roomDetail;
+            var message = $scope.getErrorByCode(result.data.code);
+            editBookRoomModal.$promise.then(editBookRoomModal.hide);
+            var myAlert = $alert({title: 'Success', content: message, placement: 'top-right', duration: 3, type: 'success', show: true});
+
+        });
+    };
+    $scope.setEditItemRoomName = function(item_name) {
+        $scope.param.item_room_name = item_name;
+    }
     //
 	$httpService.deleteHeader('refresh');
 });

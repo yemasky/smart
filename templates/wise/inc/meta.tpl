@@ -553,7 +553,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.redirect = function(url) {
 			$location.path(url);
 		};
-		$scope._function = function(){},$scope._param = {},
+		$scope._function = function(){};$scope._param = {};
 		$scope.setController = function(_function, _param) {
 			$scope._function = _function; $scope._param = _param;
 		};
@@ -564,6 +564,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			var height = window.screen.height;
 			var newHeight = height * h;
 		}
+		//日历
 		$scope.setCalendar = function (year, month) {
 			var days = {}, k = 0;days[k] = {};
 			//得到表示指定年和月的1日的那个时间对象
