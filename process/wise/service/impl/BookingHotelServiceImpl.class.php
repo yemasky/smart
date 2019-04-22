@@ -423,5 +423,16 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
 
         return $objSuccess;
     }
+
+    //取得消费记录
+    public function getBookingConsume(\WhereCriteria $whereCriteria, $field = '*') {
+        if($field == '*' || empty($field))
+            $field = 'consume_id,booking_detail_id,booking_number,booking_number_ext,item_id,item_name,original_price,consume_price,business_day';
+        return BookingDao::instance()->getBookingConsume($whereCriteria, $field);
+    }
+    //取得账务
+    public function getBookingAccounts(\WhereCriteria $whereCriteria, $field = '*') {
+        return BookingDao::instance()->getBookingAccounts($whereCriteria, $field);
+    }
 }
 

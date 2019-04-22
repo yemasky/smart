@@ -46,4 +46,12 @@ class BookingDao extends CommonDao {
     public function saveBookingDetailConsumeList($bookingDetailConsumeList) : array {
         return $this->setDsnRead($this->getDsnWrite())->batchInsertEntity($bookingDetailConsumeList);
     }
+    //获取消费
+    public function getBookingConsume(\WhereCriteria $whereCriteria, $field = null) : array {
+        return $this->setDsnRead($this->getDsnRead())->setTable('booking_consume')->getList($field, $whereCriteria);
+    }
+    //取得账务
+    public function getBookingAccounts(\WhereCriteria $whereCriteria, $field = null) : array {
+        return $this->setDsnRead($this->getDsnRead())->setTable('booking_accounts')->getList($field, $whereCriteria);
+    }
 }

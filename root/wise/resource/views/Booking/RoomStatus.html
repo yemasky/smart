@@ -77,10 +77,13 @@
 							<div class="p-md">
 							  <div class="table-responsive">
 								<div class="form-inline form-group">
-									<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵</label>
-									<div class="form-group">
-									  <input type="text" size="9" class="form-control check_in w-thumb-lg" ng-model="check_in_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="check_in_date" bs-datepicker>
-									</div>
+									<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵日期</label>
+                                    <div class="input-group">
+                                        <input type="text" size="9" class="form-control check_in w-thumb-lg" ng-model="check_in_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="check_in_date" bs-datepicker>
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button">Go!</button>
+                                        </span>
+                                    </div>
 								</div>
 								<table class="table table-bordered table-striped bg-white table-hover">
 								  <thead>
@@ -96,7 +99,7 @@
 									  <th></th>
 									</tr>
 								  </thead>
-								  <tbody>
+								  <tbody><!-- bookingDetail -->
 									<tr ng-repeat="(i, detail) in bookingDetailRoom">
 									  <td class="text-nowrap">{{detail.market_name}}</td>
 									  <td><span>{{detail.item_category_name}}</span></td>
@@ -344,13 +347,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.param["channel_father_id"] = $rootScope.defaultChannel["channel_father_id"];
             $scope.defaultHotel = $rootScope.defaultChannel["channel_name"];
         });
-        $scope.bookList   = result.data.item.bookList;//预订列表
-        $scope.roomList   = result.data.item.roomList;//客房列表
-        $scope.layoutList = result.data.item.layoutList;//房型列表
-		$scope.layoutRoom = result.data.item.layoutRoom;//房型房间对应关系
-		$scope.bookingDetailRoom   = result.data.item.bookingDetailRoom;//预订详情
-        $scope.bookRoomStatus   =  {};$scope.roomDetailList   =  {};
-        console.log($scope.layoutRoom);
+        $scope.bookList          = result.data.item.bookList;//预订列表
+        $scope.roomList          = result.data.item.roomList;//客房列表
+        $scope.layoutList        = result.data.item.layoutList;//房型列表
+		$scope.layoutRoom        = result.data.item.layoutRoom;//房型房间对应关系
+        $scope.consumeList       = result.data.item.consumeList;//消费
+		$scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
+        $scope.bookRoomStatus    =  {}; $scope.roomDetailList    =  {};
         if($scope.roomList != '') {
 			//按当日计算预抵预离 过期忽略
 			var thisDay = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd');
@@ -407,9 +410,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     app.controller('EditBookController', function(){});//给aside注册controller
 	$scope.editRoomBook = function(_this, tab) {
         $scope.layoutSelectRoom = layoutRoomList[_this.item_category_id];
-        console.log($scope.layoutSelectRoom);console.log(layoutRoomList);console.log(_this.item_category_id);
 		$scope.param["valid"] = "1";
-		
 		$scope.activeRoomBookEditTab = tab;
 		$scope.roomDetail = $scope.roomDetailList[_this.booking_number];
         $scope.bookDetail = $scope.bookList[_this.booking_number];
@@ -428,6 +429,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     var editBookRoomModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',show: false,controller:'EditBookRoomController'});
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
     $scope.showEditBookRoomModal = function(_this, tab) {
+        $scope.activeRoomBookTab = tab;
         editBookRoomModal.$promise.then(editBookRoomModal.show);
     };
     //
