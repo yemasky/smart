@@ -36,7 +36,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param null $live_in_id
      */
-    public function setLiveInId($live_in_id): void {
+    public function setLiveInId($live_in_id) {
         $this->live_in_id = $live_in_id;
     }
 
@@ -50,7 +50,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $company_id
      */
-    public function setCompanyId($company_id): void {
+    public function setCompanyId($company_id) {
         $this->company_id = $company_id;
     }
 
@@ -64,7 +64,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $channel_id
      */
-    public function setChannelId($channel_id): void {
+    public function setChannelId($channel_id) {
         $this->channel_id = $channel_id;
     }
 
@@ -78,7 +78,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $booking_detail_id
      */
-    public function setBookingDetailId($booking_detail_id): void {
+    public function setBookingDetailId($booking_detail_id) {
         $this->booking_detail_id = $booking_detail_id;
     }
 
@@ -92,7 +92,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $booking_number
      */
-    public function setBookingNumber($booking_number): void {
+    public function setBookingNumber($booking_number) {
         $this->booking_number = $booking_number;
     }
 
@@ -106,7 +106,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $item_id
      */
-    public function setItemId($item_id): void {
+    public function setItemId($item_id) {
         $this->item_id = $item_id;
     }
 
@@ -120,7 +120,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $item_name
      */
-    public function setItemName($item_name): void {
+    public function setItemName($item_name) {
         $this->item_name = $item_name;
     }
 
@@ -134,7 +134,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $member_id
      */
-    public function setMemberId($member_id): void {
+    public function setMemberId($member_id) {
         $this->member_id = $member_id;
     }
 
@@ -148,7 +148,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $member_name
      */
-    public function setMemberName($member_name): void {
+    public function setMemberName($member_name) {
         $this->member_name = $member_name;
     }
 
@@ -162,7 +162,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $member_mobile
      */
-    public function setMemberMobile($member_mobile): void {
+    public function setMemberMobile($member_mobile) {
         $this->member_mobile = $member_mobile;
     }
 
@@ -176,7 +176,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $member_email
      */
-    public function setMemberEmail($member_email): void {
+    public function setMemberEmail($member_email) {
         $this->member_email = $member_email;
     }
 
@@ -190,7 +190,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $member_sex
      */
-    public function setMemberSex($member_sex): void {
+    public function setMemberSex($member_sex) {
         $this->member_sex = $member_sex;
     }
 
@@ -204,7 +204,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $member_idcard_type
      */
-    public function setMemberIdcardType($member_idcard_type): void {
+    public function setMemberIdcardType($member_idcard_type) {
         $this->member_idcard_type = $member_idcard_type;
     }
 
@@ -218,7 +218,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $member_idcard_number
      */
-    public function setMemberIdcardNumber($member_idcard_number): void {
+    public function setMemberIdcardNumber($member_idcard_number) {
         $this->member_idcard_number = $member_idcard_number;
     }
 
@@ -232,7 +232,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $live_in_datetime
      */
-    public function setLiveInDatetime($live_in_datetime): void {
+    public function setLiveInDatetime($live_in_datetime) {
         $this->live_in_datetime = $live_in_datetime;
     }
 
@@ -246,7 +246,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $live_out_datetime
      */
-    public function setLiveOutDatetime($live_out_datetime): void {
+    public function setLiveOutDatetime($live_out_datetime) {
         $this->live_out_datetime = $live_out_datetime;
     }
 
@@ -260,7 +260,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $employee_id
      */
-    public function setEmployeeId($employee_id): void {
+    public function setEmployeeId($employee_id) {
         $this->employee_id = $employee_id;
     }
 
@@ -274,7 +274,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $employee_name
      */
-    public function setEmployeeName($employee_name): void {
+    public function setEmployeeName($employee_name) {
         $this->employee_name = $employee_name;
     }
 
@@ -288,7 +288,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $valid
      */
-    public function setValid($valid): void {
+    public function setValid($valid) {
         $this->valid = $valid;
     }
 
@@ -302,7 +302,7 @@ class Booking_live_inEntity extends \Entity {
     /**
      * @param mixed $add_datetime
      */
-    public function setAddDatetime($add_datetime): void {
+    public function setAddDatetime($add_datetime) {
         $this->add_datetime = $add_datetime;
     }
 

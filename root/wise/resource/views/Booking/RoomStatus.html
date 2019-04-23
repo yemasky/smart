@@ -406,6 +406,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.actionConsume = '消费项';
     $scope.actionAccounts = '账务项';
     $scope.actionEditLog = '操作日志';
+    $scope.bookDetail = {};$scope.roomDetail = {};
     var asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
 	$scope.editRoomBook = function(_this, tab) {
         $scope.layoutSelectRoom = layoutRoomList[_this.item_category_id];
@@ -468,6 +469,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.saveAddGuestLiveIn = function() {
         $httpService.header('method', 'saveGuestLiveIn');
         $scope.beginLoading =! $scope.beginLoading;
+        $scope.param.book_id = $scope.bookDetail.book_id;
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');

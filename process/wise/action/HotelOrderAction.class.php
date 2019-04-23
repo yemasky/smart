@@ -93,6 +93,12 @@ class HotelOrderAction extends \BaseAction
             ->EQ('valid', '1')->LE('check_in', $in_date)->setHashKey('booking_number');
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayBookList = BookingHotelServiceImpl::instance()->getBooking($whereCriteria);
+        //加密
+        if(!empty($arrayBookList)) {
+            foreach ($arrayBookList as $booking_number => $v) {
+                $arrayBookList[$booking_number]['book_id'] = encode($booking_number);
+            }
+        }
         //查找[今日房态/今天预抵的] 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
         $whereCriteria = new \WhereCriteria();
         //$whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
@@ -202,7 +208,7 @@ class HotelOrderAction extends \BaseAction
 
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
-
+    //查询订房数据
     protected function doMethodCheckOrderData(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
@@ -237,7 +243,7 @@ class HotelOrderAction extends \BaseAction
 
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
-
+    //查询会员数据
     protected function doMethodCheckMember(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $field = 'member_id';
         $arrayMember = \member\MemberServiceImpl::instance()->getMember($objRequest, $field);
@@ -294,7 +300,7 @@ class HotelOrderAction extends \BaseAction
         //
         $arrayInput = $objRequest->getInput();
         $member_name = $objRequest->validInput('member_name');
-
+        $booking_number = decode($objRequest->getInput('book_id'));
         $detail_id = decode($objRequest->getInput('detail_id'));
 
         if ($detail_id > 0) {
@@ -307,16 +313,16 @@ class HotelOrderAction extends \BaseAction
             //检查客房是否能入住
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_type', 'item')->EQ('item_id', $Booking_live_inEntity->getItemId());
-            $arrayChannelItemStatus = ChannelServiceImpl::instance()->getChannelItem($whereCriteria, 'status,clean,lock');
+            $arrayChannelItemStatus = ChannelServiceImpl::instance()->getChannelItem($whereCriteria, 'booking_number,status,clean,lock');
             if(!empty($arrayChannelItemStatus)) {
                 $arrayChannelItemStatus = $arrayChannelItemStatus[0];
-                if($arrayChannelItemStatus['status'] != '0') {
+                if($arrayChannelItemStatus['status'] != '0' && $arrayChannelItemStatus['booking_number'] != $booking_number) {
                     return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['status']]);
                 }
-                if($arrayChannelItemStatus['clean'] != '0') {
+                if($arrayChannelItemStatus['clean'] != '0' && $arrayChannelItemStatus['booking_number'] != $booking_number) {
                     return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['clean']]);
                 }
-                if($arrayChannelItemStatus['lock'] != '0') {
+                if($arrayChannelItemStatus['lock'] != '0' && $arrayChannelItemStatus['booking_number'] != $booking_number) {
                     return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['lock']]);
                 }
             } else {
@@ -336,6 +342,7 @@ class HotelOrderAction extends \BaseAction
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_type', 'item')->EQ('item_id', $Booking_live_inEntity->getItemId());
             $arrayUpdate['status'] = 'live_in';
+            $arrayUpdate['booking_number'] = $booking_number;
             ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $arrayUpdate);
             CommonServiceImpl::instance()->commit();
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
