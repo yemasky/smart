@@ -1,6 +1,6 @@
 /*
 SQLyog Ultimate v12.08 (64 bit)
-MySQL - 10.1.37-MariaDB : Database - wise
+MySQL - 10.1.38-MariaDB : Database - wise
 *********************************************************************
 */
 
@@ -12,7 +12,7 @@ MySQL - 10.1.37-MariaDB : Database - wise
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`wise` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`wise` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
 USE `wise`;
 
@@ -184,7 +184,7 @@ CREATE TABLE `booking_detail` (
 
 /*Data for the table `booking_detail` */
 
-insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1904188915901,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',2,'102',4,'标准间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',3,'',0.00,0.00,'pms','1','2019-04-18 11:53:42',NULL),(2,1904188915901,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',3,'201',4,'标准间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',4,'',0.00,0.00,'pms','1','2019-04-18 11:53:42',NULL),(14,1904183231012,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',-55577030,'',8,'双人间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',3,'',0.00,0.00,'pms','1','2019-04-18 16:43:49',NULL);
+insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1904188915901,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',2,'102',4,'标准间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','2019-04-23 16:55:26','0000-00-00 00:00:00','1',1,'有个员工','2019-04-18',0,'','0',3,'',0.00,0.00,'pms','1','2019-04-18 11:53:42',NULL),(2,1904188915901,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',3,'201',4,'标准间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',4,'',0.00,0.00,'pms','1','2019-04-18 11:53:42',NULL),(14,1904183231012,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',-55577030,'',8,'双人间','2019-04-18 00:00:00','14:00:00','2019-04-19 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-04-18',0,'','0',3,'',0.00,0.00,'pms','1','2019-04-18 16:43:49',NULL);
 
 /*Table structure for table `booking_discount` */
 
@@ -219,12 +219,13 @@ CREATE TABLE `booking_live_in` (
   `booking_detail_id` int(11) NOT NULL,
   `booking_number` varchar(64) NOT NULL,
   `item_id` int(11) NOT NULL,
+  `item_name` varchar(50) NOT NULL DEFAULT '',
   `member_id` int(11) NOT NULL,
   `member_name` varchar(50) NOT NULL,
   `member_mobile` varchar(100) NOT NULL DEFAULT '',
   `member_email` varchar(100) NOT NULL DEFAULT '',
   `member_sex` enum('0','1') NOT NULL DEFAULT '1',
-  `member_idcard_type` enum('idcard') NOT NULL DEFAULT 'idcard',
+  `member_idcard_type` enum('idcard','passport','certificate_officers','MTP','HK_M','other') NOT NULL DEFAULT 'idcard',
   `member_idcard_number` varchar(100) NOT NULL DEFAULT '',
   `check_in_datetime` datetime DEFAULT NULL,
   `check_out_datetime` datetime DEFAULT NULL,
@@ -233,9 +234,11 @@ CREATE TABLE `booking_live_in` (
   `valid` enum('0','1','2') DEFAULT NULL,
   `add_datetime` datetime NOT NULL,
   PRIMARY KEY (`live_in_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking_live_in` */
+
+insert  into `booking_live_in`(`live_in_id`,`company_id`,`channel_id`,`booking_detail_id`,`booking_number`,`item_id`,`item_name`,`member_id`,`member_name`,`member_mobile`,`member_email`,`member_sex`,`member_idcard_type`,`member_idcard_number`,`check_in_datetime`,`check_out_datetime`,`employee_id`,`employee_name`,`valid`,`add_datetime`) values (1,0,1,1,'',2,'102',0,'111','','','1','idcard','11111',NULL,NULL,0,'','1','0000-00-00 00:00:00');
 
 /*Table structure for table `booking_operation` */
 
@@ -400,7 +403,7 @@ CREATE TABLE `channel_item` (
 
 /*Data for the table `channel_item` */
 
-insert  into `channel_item`(`item_id`,`channel_config`,`item_father_id`,`item_type`,`company_id`,`channel_id`,`item_name`,`item_en_name`,`item_unit`,`item_number`,`item_attr1_value`,`item_attr2_value`,`item_attr3_value`,`item_attr4_value`,`item_attr5_value`,`number_max`,`number_min`,`describe`,`describe_en`,`image_src`,`status`,`clean`,`lock`,`begin_datetime`,`end_datetime`,`valid`,`add_datetime`) values (1,'room',0,'item',1,1,'103','','','22','1','1','3','4','东南',1,2,'朝街房,城景房,园景房','','','0','0','0',NULL,NULL,'1','0000-00-00 00:00:00'),(2,'room',0,'item',1,1,'102','','','22','1','1','1','1','南',1,1,'朝街房,背街房','','','0','0','0',NULL,NULL,'1','2018-04-29 13:41:08'),(3,'room',0,'item',1,1,'201','','','22','2','1','1','1','西',1,1,'园景房,海景房,湖景房','','','0','0','0',NULL,NULL,'1','2018-04-30 01:35:20'),(4,'layout',0,'category',1,1,'标准间','7777','','','','','1','','',1,1,'','','/data/images/2018/0418/20180418003841_88090.png','0','0','0',NULL,NULL,'1','2018-05-08 09:06:10'),(8,'layout',0,'category',1,1,'双人间','ewqeqweqw','','','','','0','','',2,3,'erqr33','wrqwrqwrqwer','/data/images/2018/0429/20180429140906_41456.jpg','0','0','0',NULL,NULL,'1','2018-05-08 14:17:24'),(17,'layout',0,'category',1,1,'园景房','SFQERFWEQR','','','','','0','','',2,2,'ADFASDF','ASDFASDFAS','/data/images/2018/0501/20180501224018_82795.jpg','0','0','0',NULL,NULL,'1','2018-05-08 21:32:09'),(18,'layout',0,'category',1,1,'背街房','7777','','','','','0','','',1,0,'ADFASDF','4se5rd6ft7gy8hjopk[l]','/data/images/2018/0429/20180429140906_41456.jpg','0','0','0',NULL,NULL,'1','2018-05-13 22:05:06'),(21,'layout',0,'category',1,1,'豪华间','7777','','','','','0','','',1,0,'暗室逢灯','','/data/images/2018/0429/20180429140906_41456.jpg','0','0','0',NULL,NULL,'1','2018-05-13 23:22:23'),(22,'layout',0,'category',1,5,'经济单人间','jijidanrenjian','','','','','1','','',2,2,'','','/resource/images/a10.jpg','0','0','0',NULL,NULL,'1','2018-06-07 13:22:38'),(23,'layout',0,'category',1,4,'海景房','haijingfang','','','','','1','','',1,1,'','','/resource/images/a10.jpg','0','0','0',NULL,NULL,'1','2018-06-07 15:24:53'),(24,'room',0,'item',1,4,'1001','','','1','1','1','1','2','南',1,1,'朝街房,背街房,城景房','','','0','0','0',NULL,NULL,'1','2019-03-05 15:16:42');
+insert  into `channel_item`(`item_id`,`channel_config`,`item_father_id`,`item_type`,`company_id`,`channel_id`,`item_name`,`item_en_name`,`item_unit`,`item_number`,`item_attr1_value`,`item_attr2_value`,`item_attr3_value`,`item_attr4_value`,`item_attr5_value`,`number_max`,`number_min`,`describe`,`describe_en`,`image_src`,`status`,`clean`,`lock`,`begin_datetime`,`end_datetime`,`valid`,`add_datetime`) values (1,'room',0,'item',1,1,'103','','','22','1','1','3','4','东南',1,2,'朝街房,城景房,园景房','','','0','0','0',NULL,NULL,'1','0000-00-00 00:00:00'),(2,'room',0,'item',1,1,'102','','','22','1','1','1','1','南',1,1,'朝街房,背街房','','','live_in','0','0',NULL,NULL,'1','2018-04-29 13:41:08'),(3,'room',0,'item',1,1,'201','','','22','2','1','1','1','西',1,1,'园景房,海景房,湖景房','','','0','0','0',NULL,NULL,'1','2018-04-30 01:35:20'),(4,'layout',0,'category',1,1,'标准间','7777','','','','','1','','',1,1,'','','/data/images/2018/0418/20180418003841_88090.png','0','0','0',NULL,NULL,'1','2018-05-08 09:06:10'),(8,'layout',0,'category',1,1,'双人间','ewqeqweqw','','','','','0','','',2,3,'erqr33','wrqwrqwrqwer','/data/images/2018/0429/20180429140906_41456.jpg','0','0','0',NULL,NULL,'1','2018-05-08 14:17:24'),(17,'layout',0,'category',1,1,'园景房','SFQERFWEQR','','','','','0','','',2,2,'ADFASDF','ASDFASDFAS','/data/images/2018/0501/20180501224018_82795.jpg','0','0','0',NULL,NULL,'1','2018-05-08 21:32:09'),(18,'layout',0,'category',1,1,'背街房','7777','','','','','0','','',1,0,'ADFASDF','4se5rd6ft7gy8hjopk[l]','/data/images/2018/0429/20180429140906_41456.jpg','0','0','0',NULL,NULL,'1','2018-05-13 22:05:06'),(21,'layout',0,'category',1,1,'豪华间','7777','','','','','0','','',1,0,'暗室逢灯','','/data/images/2018/0429/20180429140906_41456.jpg','0','0','0',NULL,NULL,'1','2018-05-13 23:22:23'),(22,'layout',0,'category',1,5,'经济单人间','jijidanrenjian','','','','','1','','',2,2,'','','/resource/images/a10.jpg','0','0','0',NULL,NULL,'1','2018-06-07 13:22:38'),(23,'layout',0,'category',1,4,'海景房','haijingfang','','','','','1','','',1,1,'','','/resource/images/a10.jpg','0','0','0',NULL,NULL,'1','2018-06-07 15:24:53'),(24,'room',0,'item',1,4,'1001','','','1','1','1','1','2','南',1,1,'朝街房,背街房,城景房','','','0','0','0',NULL,NULL,'1','2019-03-05 15:16:42');
 
 /*Table structure for table `channel_item_attribute_value` */
 
@@ -422,6 +425,16 @@ CREATE TABLE `channel_item_attribute_value` (
 /*Data for the table `channel_item_attribute_value` */
 
 insert  into `channel_item_attribute_value`(`company_id`,`channel_id`,`category_item_id`,`item_id`,`item_images_src`,`attribute_id`,`attr_value`,`attr_en_value`,`attr_type`) values (1,1,4,2,'',0,'','','multipe_room'),(1,1,4,3,'',0,'','','multipe_room'),(1,1,8,1,'',0,'','','multipe_room'),(1,1,8,8,'/data/images/2018/0429/20180429140906_41456.jpg',0,'','','images'),(1,1,17,17,'/data/images/2018/0429/20180429140906_41456.jpg',0,'','','images'),(1,1,18,18,'/data/images/2018/0501/20180501224018_82795.jpg',0,'匹配','','images'),(1,4,23,24,'',0,'','','multipe_room'),(1,1,8,8,'',1,'单人间','','attr_value'),(1,1,8,8,'',1,'山景房','','attr_value'),(1,1,8,8,'',1,'朝街房','','attr_value'),(1,1,8,8,'',1,'经济间','','attr_value'),(1,1,17,17,'',1,'单人间','','attr_value'),(1,1,17,17,'',1,'朝街房','','attr_value'),(1,1,17,17,'',1,'经济间','','attr_value'),(1,1,18,18,'',1,'双人间','','attr_value'),(1,1,18,18,'',1,'普通间','','attr_value'),(1,1,18,18,'',1,'背街房','','attr_value'),(1,1,21,21,'',1,'三人间','','attr_value'),(1,1,21,21,'',1,'四人间','','attr_value'),(1,1,21,21,'',1,'园景房','','attr_value'),(1,1,21,21,'',1,'豪华间','','attr_value'),(1,4,23,23,'',1,'海景房','','attr_value'),(1,5,22,22,'',1,'单人间','','attr_value'),(1,5,22,22,'',1,'双人间','','attr_value'),(1,5,22,22,'',1,'城景房','','attr_value'),(1,5,22,22,'',1,'大床间','','attr_value'),(1,5,22,22,'',1,'背街房','','attr_value'),(1,5,22,22,'',1,'高级间','','attr_value'),(1,1,4,4,'',3,'圆床','','attr_value'),(1,1,4,4,'',3,'情调床','','attr_value'),(1,1,4,4,'',3,'标准床','','attr_value'),(1,1,8,8,'',3,'圆床','','attr_value'),(1,1,8,8,'',3,'标准床','','attr_value'),(1,1,21,21,'',3,'标准床','','attr_value'),(1,1,4,4,'',4,'1.2米','','attr_value'),(1,1,4,4,'',4,'1.5米','','attr_value'),(1,1,4,4,'',5,'1','','attr_value'),(1,1,21,21,'',5,'1','','attr_value'),(1,1,8,8,'',6,'000','','attr_value'),(1,1,8,8,'',6,'中央空调','','attr_value'),(1,1,8,8,'',6,'分体空调','','attr_value'),(1,1,21,21,'',6,'中央空调','','attr_value'),(1,1,4,4,'',7,'1','','attr_value'),(1,1,8,8,'',7,'1','','attr_value'),(1,1,17,17,'',7,'1','','attr_value'),(1,1,18,18,'',7,'1','','attr_value'),(1,1,21,21,'',7,'1','','attr_value'),(1,4,23,23,'',7,'1','','attr_value'),(1,5,22,22,'',7,'1','','attr_value'),(1,1,8,8,'',8,'独立卫生间','','attr_value'),(1,1,21,21,'',8,'独立卫生间','','attr_value'),(1,1,8,8,'',9,'落地窗','','attr_value'),(1,1,8,8,'',10,'111','','attr_value'),(1,1,8,8,'',10,'222','','attr_value'),(1,1,8,8,'',10,'333','','attr_value');
+
+/*Table structure for table `channel_item_log` */
+
+DROP TABLE IF EXISTS `channel_item_log`;
+
+CREATE TABLE `channel_item_log` (
+  `item_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `channel_item_log` */
 
 /*Table structure for table `channel_layout_price` */
 

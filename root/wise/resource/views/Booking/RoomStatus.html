@@ -396,7 +396,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			$scope.bookRoomStatus = bookRoomStatus;
 		}
 	});
-	//
+	//预订编辑开始
     $scope.BookRoomEditType = [
         {value: 'Gear', label: '<i class="fa fa-gear"></i> 换房/升级'},
         {value: 'Heart', label: '<i class="glyphicon glyphicon-time"></i> 修改日期'}
@@ -411,8 +411,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.layoutSelectRoom = layoutRoomList[_this.item_category_id];
 		$scope.param["valid"] = "1";
 		$scope.activeRoomBookEditTab = tab;
-		$scope.roomDetail = $scope.roomDetailList[_this.booking_number];
-        $scope.bookDetail = $scope.bookList[_this.booking_number];
+		$scope.roomDetail = $scope.roomDetailList[_this.booking_number];//单个订单下面得房间
+        $scope.bookDetail = $scope.bookList[_this.booking_number];//订单详情
         asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
 		asideEditRoomBook.$promise.then(function() {
 			asideEditRoomBook.show();
@@ -482,6 +482,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 
         });
     };
+    $scope.setLiveInItemName = function(_this) {
+        $scope.param.item_name = $('#live_in_item_id').find('option:selected').text();
+        $scope.param.detail_id = $('#live_in_item_id').find('option:selected').attr('detail_id');
+    }
     //读取身份证
     $scope.readGuestIdCard = function() {
 

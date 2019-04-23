@@ -437,5 +437,9 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     public function getBookingAccounts(\WhereCriteria $whereCriteria, $field = '*') {
         return BookingDao::instance()->getBookingAccounts($whereCriteria, $field);
     }
+    //入住信息
+    public function saveGuestLiveIn(Booking_live_inEntity $Booking_live_inEntity) {
+        return BookingDao::instance()->saveGuestLiveIn($Booking_live_inEntity);
+    }
 }
 
