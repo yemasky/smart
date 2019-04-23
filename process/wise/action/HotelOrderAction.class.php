@@ -275,4 +275,21 @@ class HotelOrderAction extends \BaseAction {
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
+
+    protected function doMethodSaveGuestLiveIn(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+        $company_id              = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        //
+        $detail_id = decode($objRequest->getInput('detail_id'));
+
+        if($detail_id > 0) {
+            $whereCriteria = new \WhereCriteria();
+
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+        }
+
+        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+    }
 }

@@ -459,6 +459,33 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.setEditItemRoomName = function(item_name) {
         $scope.param.item_room_name = item_name;
     }
+    //保存入住客人
+    var addGuestLiveInModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',show: false});
+    $scope.addGuestLiveIn = function() {
+        addGuestLiveInModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',show: false});
+        addGuestLiveInModal.$promise.then(addGuestLiveInModal.show);
+    };
+    $scope.saveAddGuestLiveIn = function() {
+        $httpService.header('method', 'saveGuestLiveIn');
+        $scope.beginLoading =! $scope.beginLoading;
+        $httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+            var message = $scope.getErrorByCode(result.data.code);
+            editBookRoomModal.$promise.then(addGuestLiveInModal.hide);
+            var myAlert = $alert({title: 'Success', content: message, placement: 'top-right', duration: 3, type: 'success', show: true});
+
+        });
+    };
+    //读取身份证
+    $scope.readGuestIdCard = function() {
+
+    }
     //
 	$httpService.deleteHeader('refresh');
 });

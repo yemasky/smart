@@ -1,0 +1,69 @@
+<div class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" ng-show="modal.title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4 class="modal-title" ng-bind-html="modal.title"></h4>
+      </div>
+      <form name="form-layout" class="form-validation ng-pristine ng-valid ng-valid-required" id="saveAddGuestLiveInForm" ng-submit="saveAddGuestLiveIn()">
+      <div class="modal-body ng-show="modal.content">
+          <div class="clearfix">
+            <div class="panel panel-default">
+                <div class="panel-heading">详细填写入住客人信息 <button class="btn btn-sm btn-addon btn-default" ng-click="readGuestIdCard()"><i class="fa fa-plus"></i>读取身份证</button></div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>房号</th>
+                            <th>姓名</th>
+                            <th>性别</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <input ng-model="param.item_name" id="live_in_item_name" value="" type="hidden">
+                                <select class="form-control" ng-model="param.item_id">
+                                    <option value="1">男</option>
+                                    <option value="0">女</option>
+                                </select>
+                            </td>
+                            <td><input name="" value="" class="form-control w-thumb-lg" ng-model="param.member_name"></td>
+                            <td>
+                                <select class="form-control" ng-model="param.member_sex">
+                                    <option value="1">男</option>
+                                    <option value="0">女</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>证件</th>
+                            <th>证件号</th>
+                            <th>电话</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <select class="form-control" ng-model="param.member_idcard_type">
+                                    <option value="idcard">身份证</option>
+                                    <option value="passport">护照</option>
+                                    <option value="certificate_officers">军官证</option>
+                                    <option value="MTP">台胞证</option>
+                                    <option value="HK_M">港澳通行证</option>
+                                    <option value="other">其它</option>
+                                </select>
+                            </td>
+                            <td><input name="" value="" class="form-control" ng-model="param.member_idcard_number"></td>
+                            <td><input name="" value="" class="form-control w-thumb-lg" size="15" ng-model="param.member_mobile"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+        <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
+      </div>
+      </form>
+    </div>
+  </div>
+ </div>
