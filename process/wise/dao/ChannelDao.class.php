@@ -19,8 +19,7 @@ class ChannelDao extends CommonDao {
 		return self::$objDao;
 	}
 
-	public function getChannel(\WhereCriteria $whereCriteria, string $field = '') {
-		if($field == '') $field = '*';
+	public function getChannel(\WhereCriteria $whereCriteria, string $field = '*') {
 		if(empty($whereCriteria->getHashKey())) $whereCriteria->setHashKey('channel_id');
 
 		return $this->setDsnRead($this->getDsnRead())->setTable('channel')->getList($field, $whereCriteria);//DBCache($cacheId)->

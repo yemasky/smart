@@ -840,7 +840,10 @@ class DBQuery {
     public function getList($fields = '*', WhereCriteria $whereCriteria) {
         if ($this->table_key != '*' && !empty($this->table_key) && empty($whereCriteria->getOrder()))
             $whereCriteria->ORDER($this->table_key);
-
+        if($fields != '*' && strpos($fields, '`') === false) {
+            $fields = str_replace(' ', '', $fields);
+            $fields = '`' . str_replace(',', '`,`', $fields) . '`';
+        }
         $sql = "SELECT {$fields} FROM {$this->table_name} " . $whereCriteria->getWhere();
         if ($whereCriteria->getLimit() != '') $sql = $this->conn->setlimit($sql, $whereCriteria->getLimit());
 

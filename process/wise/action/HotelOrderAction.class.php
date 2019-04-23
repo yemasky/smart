@@ -282,14 +282,30 @@ class HotelOrderAction extends \BaseAction
         $detail_id = decode($objRequest->getInput('detail_id'));
 
         if ($detail_id > 0) {
-            //检查客房是否能入住
-
-            //
+            //整合数据
             $Booking_live_inEntity = new Booking_live_inEntity($arrayInput);
             $Booking_live_inEntity->setBookingDetailId($detail_id);
             $Booking_live_inEntity->setLiveInDatetime(getDateTime());
             $Booking_live_inEntity->setChannelId($channel_id);
             $Booking_live_inEntity->setCompanyId($company_id);
+            //检查客房是否能入住
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_type', 'item')->EQ('item_id', $Booking_live_inEntity->getItemId());
+            $arrayChannelItemStatus = ChannelServiceImpl::instance()->getChannelItem($whereCriteria, 'status,clean,lock');
+            if(!empty($arrayChannelItemStatus)) {
+                $arrayChannelItemStatus = $arrayChannelItemStatus[0];
+                if($arrayChannelItemStatus['status'] != '0') {
+                    return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['status']]);
+                }
+                if($arrayChannelItemStatus['clean'] != '0') {
+                    return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['clean']]);
+                }
+                if($arrayChannelItemStatus['lock'] != '0') {
+                    return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['lock']]);
+                }
+            } else {
+                return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+            }
             //插入
             CommonServiceImpl::instance()->startTransaction();
             BookingHotelServiceImpl::instance()->saveGuestLiveIn($Booking_live_inEntity);
