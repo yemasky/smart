@@ -22,10 +22,14 @@ class MemberServiceImpl extends \BaseServiceImpl {
 	public function getMember(\HttpRequest $objRequest, $field = null) {
         $member_email  = $objRequest->getInput('member_email');
         $member_mobile = $objRequest->getInput('member_mobile');
+        $member_idcard_type = $objRequest->getInput('member_idcard_type');
+        $member_idcard_number = $objRequest->getInput('member_idcard_number');
 
         $whereCriteria = new \WhereCriteria();
         if(!empty($email)) $whereCriteria->EQ('member_email', $member_email);
         if(!empty($email)) $whereCriteria->EQ('member_mobile', $member_mobile);
+        if(!empty($member_idcard_type)) $whereCriteria->EQ('id_type', $member_idcard_type);
+        if(!empty($member_idcard_number)) $whereCriteria->EQ('id_number', $member_idcard_number);
 		return MemberDao::instance()->getMember($field, $whereCriteria);
 	}
 

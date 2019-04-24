@@ -22,9 +22,9 @@
                 <li ng-class="{active:activeRoomBookEditTab==1}" ng-click="activeRoomBookEditTab=1">
                     <a ng-bind-html="actionEdit"></a>
                 </li>
-                <li ng-class="{active:activeRoomBookEditTab==2}" ng-click="activeRoomBookEditTab=2">
+                <!--<li ng-class="{active:activeRoomBookEditTab==2}" ng-click="activeRoomBookEditTab=2">
                     <a ng-bind-html="actionConsume"></a>
-                </li>
+                </li>-->
 				<li ng-class="{active:activeRoomBookEditTab==3}" ng-click="activeRoomBookEditTab=3">
                     <a ng-bind-html="actionAccounts"></a>
                 </li>
@@ -42,11 +42,11 @@
 						  <thead>
 							<tr>
 							  <th class="col-xs-1">状态</th>
+							  <th class="col-xs-1">房号</th>
 							  <th class="col-xs-2" translate="module.channel.market_name">客源市场</th>
 							  <th class="col-xs-2">房型</th>
 							  <th class="col-xs-2">价格类型</th>
                               <th class="col-xs-1">价格</th>
-							  <th class="col-xs-1">房号</th>
 							  <th class="col-xs-1">预抵</th>
 							  <th class="col-xs-1">预离</th>
 							  <th translate="common.hint.manager">管理</th>
@@ -61,6 +61,8 @@
 											  <span ng-if="rDetail.booking_detail_status==1">入住</span>
 											  <span ng-if="rDetail.booking_detail_status==0">预抵</span>
 										  </td>
+                                          <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
+											<a class="fa pull-right" ng-click="showEditBookRoomModal(rDetail, 'Room')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
 											<a class="pull-right" ng-click="showEditBookRoomModal(this, 'market')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_category_name}}
@@ -69,8 +71,6 @@
 											<a class="pull-right" ng-click="showEditBookRoomModal(this, 'system')"></a></td>
 										  <td class="col-xs-1" show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{consumeList[rDetail.booking_number][rDetail.booking_detail_id][0].consume_price}}
 											<a class="pull-right"></a></td>
-										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
-											<a class="fa pull-right" ng-click="showEditBookRoomModal(rDetail, 'Room')"></a></td>
 										  <td>{{rDetail.check_in | limitTo:10}}</td>
 										  <td>{{rDetail.check_out | limitTo:10}}</td>
 										  <td>
@@ -80,25 +80,29 @@
 											  </button>
 										  </td>
 									  </tr>
-									  <tr ng-repeat="(number, LiveIn) in guestLiveInList[rDetail.booking_number][rDetail.booking_detail_id]">
-										  <td></td>
-										  <td><i class="fa fa-user" ng-click="addGuestLiveIn(LiveIn)"></i></td>
-										  <td>{{LiveIn.member_name}}</td>
-										  <td>{{LiveIn.member_sex==1?'男':'女'}}</td>
-										  <td>{{LiveIn.member_mobile}}</td>
-										  <td>
-											  {{LiveIn.member_idcard_type=='idcard'?'身份证':''}}
-											  {{LiveIn.member_idcard_type=='passport'?'护照':''}}
-											  {{LiveIn.member_idcard_type=='certificate_officers'?'军官证':''}}
-											  {{LiveIn.member_idcard_type=='MTP'?'台胞证':''}}
-											  {{LiveIn.member_idcard_type=='HK_M'?'港澳台通行证':''}}
-											  {{LiveIn.member_idcard_type=='other'?'其它':''}}
-										  </td>
-										  <td>{{LiveIn.member_idcard_number}}</td>
-										  <td colspan="2">
-
-										  </td>
-									  </tr>
+                                      <tr>
+                                          <td colspan="9" class="no-padding panel">
+                                              <table class="table no-margin">
+                                                  <tr ng-repeat="(number, LiveIn) in guestLiveInList[rDetail.booking_number][rDetail.booking_detail_id]">
+                                                      <td class="col-xs-1"></td>
+                                                      <td  class="col-xs-1" toggle-class="fa fa-edit" class-target="a"><i class="fa fa-user" ng-click="addGuestLiveIn(LiveIn)"></i><a class="pull-right" ng-click="addGuestLiveIn(LiveIn)"></a></td>
+                                                      <td class="col-xs-1">{{LiveIn.member_name}}</td>
+                                                      <td class="col-xs-1">{{LiveIn.member_sex==1?'男':'女'}}</td>
+                                                      <td class="col-xs-1">{{LiveIn.member_mobile}}</td>
+                                                      <td class="col-xs-1">
+                                                          {{LiveIn.member_idcard_type=='id_card'?'身份证':''}}
+                                                          {{LiveIn.member_idcard_type=='passport'?'护照':''}}
+                                                          {{LiveIn.member_idcard_type=='officer_permit'?'军官证':''}}
+                                                          {{LiveIn.member_idcard_type=='tw_permit'?'台胞证':''}}
+                                                          {{LiveIn.member_idcard_type=='hk_permit'?'港澳台通行证':''}}
+                                                          {{LiveIn.member_idcard_type=='other_permit'?'其它':''}}
+                                                      </td>
+                                                      <td>{{LiveIn.member_idcard_number}}</td>
+                                                      <td colspan="2"></td>
+                                                  </tr>
+                                                </table>
+                                            </td>
+                                      </tr>
 								  </table>
 								</td>
 							</tr>
@@ -108,35 +112,7 @@
                 </div>
 				<div ng-show="activeRoomBookEditTab==2">
                       <div class="table-responsive">
-						<table class="table table-bordered table-striped bg-white">
-						  <thead>
-							<tr>
-							  <th translate="module.channel.market_name">客源市场</th>
-							  <th>房型</th>
-							  <th>房号</th>
-							  <th>客人名称</th>
-							  <th translate="module.channel.phone">电话</th>
-							  <th translate="module.channel.address">地址</th>
-							  <th translate="common.hint.date">日期</th>
-							  <th translate="common.hint.manager">管理</th>
-							</tr>
-						  </thead>
-						  <tbody>
-							<tr ng-repeat="(i, rDetail) in roomDetail">
-							  <td class="text-nowrap">{{rDetail.market_name}}</td>
-							  <td><span>{{rDetail.market_name}}</span></td>
-							  <td><a ng-click="config(Channel.id)">{{rDetail.channel_name}}</a></td>
-							  <td>{{rDetail.channel_en_name}}</td>
-							  <td>{{rDetail.phone}}</td>
-							  <td>{{rDetail.address}}</td>
-							  <td>{{rDetail.add_datetime}}</td>
-							  <td>
-							  <button class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
-							  <button class="btn btn-sm btn-default" ng-click="config(Channel.id)"><span translate="common.hint.config" >配置</span></button>
-							  </td>
-							</tr>
-						  </tbody>
-						</table>
+						
                     </div>
                 </div>
                 <div ng-show="activeRoomBookEditTab==3">

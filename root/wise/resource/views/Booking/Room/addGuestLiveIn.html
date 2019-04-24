@@ -10,23 +10,26 @@
           <div class="clearfix">
             <div class="panel panel-default">
                 <table class="table">
-                    <thead>
-                        <tr>
-                            <th>房号</th>
-                            <th>姓名 <button class="btn btn-sm btn-default fa fa-plus" ng-click="readGuestIdCard()"> 读取身份证</button></th>
-                            <th>性别</th>
-                        </tr>
-                    </thead>
                     <tbody>
                         <tr>
+                            <th>房号</th>
                             <td>
                                 <input ng-model="param.item_name" id="live_in_item_name" value="" type="hidden">
                                 <select class="form-control" id="live_in_item_id" ng-model="param.item_id" ng-change="setLiveInItemName()" required>
                                     <option value="">选择房号</option>
-                                    <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" ng-repeat="(room_id, rDetail) in roomDetail">{{rDetail.item_name}}</option>
+                                    <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}"  ng-repeat="(room_id, rDetail) in roomDetail">{{rDetail.item_name}}</option>
                                 </select>
                             </td>
-                            <td><input name="member_name" id="live_in_member_name" value="" class="form-control w-thumb-lg" ng-model="param.member_name" required></td>
+                            <th>姓名</th>
+                            <td class="input-group">
+                                <input name="member_name" id="live_in_member_name" value="" class="w-thumb-lg form-control" ng-model="param.member_name" required>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-rounded btn-default" type="button" ng-click="readGuestIdCard()"><span class="ti-id-badge"></span> 读卡</button>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>性别</th>
                             <td>
                                 <select class="form-control" id="live_in_member_sex" ng-model="param.member_sex" required>
                                     <option value="">请选择</option>
@@ -34,26 +37,24 @@
                                     <option value="0">女</option>
                                 </select>
                             </td>
+                            <th>电话</th>
+                            <td><input name="" value="" class="form-control w-thumb-lg" id="live_in_member_mobile" size="15" ng-model="param.member_mobile"></td>
                         </tr>
                         <tr>
                             <th>证件</th>
-                            <th>证件号</th>
-                            <th>电话</th>
-                        </tr>
-                        <tr>
                             <td>
                                 <select class="form-control" id="live_in_member_idcard_type" ng-model="param.member_idcard_type" required>
                                     <option value="">请选择</option>
-                                    <option value="idcard">身份证</option>
+                                    <option value="id_card">身份证</option>
                                     <option value="passport">护照</option>
-                                    <option value="certificate_officers">军官证</option>
-                                    <option value="MTP">台胞证</option>
-                                    <option value="HK_M">港澳通行证</option>
-                                    <option value="other">其它</option>
+                                    <option value="officer_permit">军官证</option>
+                                    <option value="tw_permit">台胞证</option>
+                                    <option value="hk_permit">港澳通行证</option>
+                                    <option value="other_permit">其它</option>
                                 </select>
                             </td>
+                            <th>证件号</th>
                             <td><input name="" value="" class="form-control" id="live_in_member_idcard_number" ng-model="param.member_idcard_number" required></td>
-                            <td><input name="" value="" class="form-control w-thumb-lg" id="live_in_member_mobile" size="15" ng-model="param.member_mobile"></td>
                         </tr>
                     </tbody>
                 </table>

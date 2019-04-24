@@ -492,12 +492,21 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             var message = $scope.getErrorByCode(result.data.code);
             editBookRoomModal.$promise.then(addGuestLiveInModal.hide);
             var myAlert = $alert({title: 'Success', content: message, placement: 'top-right', duration: 3, type: 'success', show: true});
-
+            console.log($scope.roomDetail);
+            var booking_detail_id=$scope.param.booking_detail_id;
+            var booking_number=$scope.bookDetail.booking_number;
+            if(angular.isUndefined($scope.guestLiveInList[booking_number]))
+                $scope.guestLiveInList[booking_number] = {};
+            if(angular.isUndefined($scope.guestLiveInList[booking_number][booking_detail_id]))
+                $scope.guestLiveInList[booking_number][booking_detail_id] = {};
+            var length = $scope.guestLiveInList[booking_number][booking_detail_id].length;
+            $scope.guestLiveInList[booking_number][booking_detail_id][length] = $scope.param;
         });
     };
     $scope.setLiveInItemName = function(_this) {
         $scope.param.item_name = $('#live_in_item_id').find('option:selected').text();
         $scope.param.detail_id = $('#live_in_item_id').find('option:selected').attr('detail_id');
+        $scope.param.booking_detail_id = $('#live_in_item_id').find('option:selected').attr('booking_detail_id');
     }
     //读取身份证
     $scope.readGuestIdCard = function() {

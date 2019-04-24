@@ -292,7 +292,8 @@ class HotelOrderAction extends \BaseAction
     //保存入住客人
     protected function doMethodSaveGuestLiveIn(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = $objLoginEmployee->getCompanyId();
         //获取channel
         $channel_id = $objRequest->channel_id;
         //
@@ -329,6 +330,17 @@ class HotelOrderAction extends \BaseAction
             } else {
                 return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
             }
+            //找寻会员 更具手机或身份证
+            $member_id = 0;
+            $arrayMember = \member\MemberServiceImpl::instance()->getMember($objRequest, 'member_id');
+            if(!empty($arrayMember)) {
+                $member_id = $arrayMember[0]['member_id'];
+            }
+            $Booking_live_inEntity->setMemberId($member_id);
+            //
+            $Booking_live_inEntity->setEmployeeId($objLoginEmployee->getEmployeeId());
+            $Booking_live_inEntity->setEmployeeName($objLoginEmployee->getEmployeeName());
+            $Booking_live_inEntity->setAddDatetime(getDateTime());
             //插入
             CommonServiceImpl::instance()->startTransaction();
             BookingHotelServiceImpl::instance()->saveGuestLiveIn($Booking_live_inEntity);
