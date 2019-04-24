@@ -34,90 +34,76 @@
             </ul>
             <div class="tab-content">
                 <div ng-show="activeRoomBookEditTab==1">
+					<div class="panel-heading">
+						<button class="btn btn-sm btn-addon btn-default" ng-click="addGuestLiveIn('')"><i class="fa fa-users"></i>添加住客</button>
+					</div>
                       <div class="table-responsive">
 						<table class="table">
 						  <thead>
 							<tr>
+							  <th class="col-xs-1">状态</th>
 							  <th class="col-xs-2" translate="module.channel.market_name">客源市场</th>
 							  <th class="col-xs-2">房型</th>
 							  <th class="col-xs-2">价格类型</th>
                               <th class="col-xs-1">价格</th>
-							  <th class="col-xs-2">房号</th>
-							  <th>预抵</th>
-							  <th>预离</th>
+							  <th class="col-xs-1">房号</th>
+							  <th class="col-xs-1">预抵</th>
+							  <th class="col-xs-1">预离</th>
 							  <th translate="common.hint.manager">管理</th>
 							</tr>
 						  </thead>
 						  <tbody><!-- 单个订单 roomDetail -->
 							<tr ng-repeat="(edit_i, rDetail) in roomDetail">
-							  <td toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
-                                <a class="pull-right" ng-click="showEditBookRoomModal(this, 'market')"></a></td>
-							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.item_category_name}}
-                                <a class="pull-right" ng-click="showEditBookRoomModal(this, 'category')"></a></td>
-							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
-                                <a class="pull-right" ng-click="showEditBookRoomModal(this, 'system')"></a></td>
-                              <td show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{consumeList[rDetail.booking_number][rDetail.booking_detail_id][0].consume_price}}
-                                <a class="pull-right"></a></td>
-							  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}} 
-                                <a class="fa pull-right" ng-click="showEditBookRoomModal(rDetail, 'Room')"></a></td>
-							  <td>{{rDetail.check_in | limitTo:10}}</td>
-							  <td>{{rDetail.check_out | limitTo:10}}</td>
-							  <td>
-								  <button type="button" class="btn btn-default btn-xs" ng-model="selectedIcon" data-placement="left-middle" data-html="1" data-toggle="true" bs-options="edit.value as edit.label for edit in BookRoomEditType"
-										  placeholder="<i class='fa fa-gear'></i> 操作" bs-select>
-									  Action <span class="caret"></span>
-								  </button>
-                              </td>
+								<td colspan="9" class="no-padding panel">
+								  <table class="table no-margin">
+									  <tr>
+										  <td class="col-xs-1">
+											  <span ng-if="rDetail.booking_detail_status==1">入住</span>
+											  <span ng-if="rDetail.booking_detail_status==0">预抵</span>
+										  </td>
+										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
+											<a class="pull-right" ng-click="showEditBookRoomModal(this, 'market')"></a></td>
+										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_category_name}}
+											<a class="pull-right" ng-click="showEditBookRoomModal(this, 'category')"></a></td>
+										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
+											<a class="pull-right" ng-click="showEditBookRoomModal(this, 'system')"></a></td>
+										  <td class="col-xs-1" show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{consumeList[rDetail.booking_number][rDetail.booking_detail_id][0].consume_price}}
+											<a class="pull-right"></a></td>
+										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
+											<a class="fa pull-right" ng-click="showEditBookRoomModal(rDetail, 'Room')"></a></td>
+										  <td>{{rDetail.check_in | limitTo:10}}</td>
+										  <td>{{rDetail.check_out | limitTo:10}}</td>
+										  <td>
+											  <button type="button" class="btn btn-default btn-xs" ng-model="selectedIcon" data-placement="left-middle" data-html="1" data-toggle="true" bs-options="edit.value as edit.label for edit in BookRoomEditType"
+													  placeholder="<i class='fa fa-gear'></i> 操作" bs-select>
+												  Action <span class="caret"></span>
+											  </button>
+										  </td>
+									  </tr>
+									  <tr ng-repeat="(number, LiveIn) in guestLiveInList[rDetail.booking_number][rDetail.booking_detail_id]">
+										  <td></td>
+										  <td><i class="fa fa-user" ng-click="addGuestLiveIn(LiveIn)"></i></td>
+										  <td>{{LiveIn.member_name}}</td>
+										  <td>{{LiveIn.member_sex==1?'男':'女'}}</td>
+										  <td>{{LiveIn.member_mobile}}</td>
+										  <td>
+											  {{LiveIn.member_idcard_type=='idcard'?'身份证':''}}
+											  {{LiveIn.member_idcard_type=='passport'?'护照':''}}
+											  {{LiveIn.member_idcard_type=='certificate_officers'?'军官证':''}}
+											  {{LiveIn.member_idcard_type=='MTP'?'台胞证':''}}
+											  {{LiveIn.member_idcard_type=='HK_M'?'港澳台通行证':''}}
+											  {{LiveIn.member_idcard_type=='other'?'其它':''}}
+										  </td>
+										  <td>{{LiveIn.member_idcard_number}}</td>
+										  <td colspan="2">
+
+										  </td>
+									  </tr>
+								  </table>
+								</td>
 							</tr>
-                            <tr class="hide">
-                                <td colspan="8"></td>
-                            </tr>
 						  </tbody>
 						</table>
-                        <div class="panel panel-default">
-                            <div class="panel-heading"><i class="fa fa-users"></i> 入住客人
-								<button class="btn btn-sm btn-addon btn-default" ng-click="addGuestLiveIn(roomDetail)"><i class="fa fa-plus"></i>添加住客</button>
-							</div>
-                            <table class="table table-bordered table-striped bg-white">
-                              <thead>
-                                <tr>
-                                  <th>房号</th>
-                                  <th>姓名</th>
-                                  <th>性别</th>
-                                  <th>证件</th>
-                                  <th>证件号</th>
-                                  <th>电话</th>
-                                  <th>会员</th>
-                                  <th translate="common.hint.manager">管理</th>
-                                </tr>
-                              </thead>
-                              <tbody><!-- 单个订单 roomDetail -->
-                                <tr ng-repeat="(edit_i, rDetail) in roomLiveIn">
-                                  <td toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
-                                    <a class="pull-right" ng-click="showEditBookRoomModal(this, 'market')"></a></td>
-                                  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.item_category_name}}
-                                    <a class="pull-right" ng-click="showEditBookRoomModal(this, 'category')"></a></td>
-                                  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
-                                    <a class="pull-right" ng-click="showEditBookRoomModal(this, 'system')"></a></td>
-                                  <td show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{consumeList[rDetail.booking_number][rDetail.booking_detail_id][0].consume_price}}
-                                    <a class="pull-right"></a></td>
-                                  <td toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}} 
-                                    <a class="fa pull-right" ng-click="showEditBookRoomModal(rDetail, 'Room')"></a></td>
-                                  <td>{{rDetail.check_in | limitTo:10}}</td>
-                                  <td>{{rDetail.check_out | limitTo:10}}</td>
-                                  <td>
-                                      <button type="button" class="btn btn-default btn-xs" ng-model="selectedIcon" data-placement="left-middle" data-html="1" data-toggle="true" bs-options="edit.value as edit.label for edit in BookRoomEditType"
-                                              placeholder="<i class='fa fa-gear'></i> 操作" bs-select>
-                                          Action <span class="caret"></span>
-                                      </button>
-                                  </td>
-                                </tr>
-                                <tr class="hide">
-                                    <td colspan="8"></td>
-                                </tr>
-                              </tbody>
-                            </table>
-                         </div>
                     </div>
                 </div>
 				<div ng-show="activeRoomBookEditTab==2">

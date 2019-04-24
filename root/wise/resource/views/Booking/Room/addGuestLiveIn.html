@@ -1,20 +1,19 @@
 <div class="modal" tabindex="-1" role="dialog">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header" ng-show="modal.title">
+      <div class="modal-header">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
-        <h4 class="modal-title" ng-bind-html="modal.title"></h4>
+        <h4 class="modal-title">详细填写入住客人信息</h4>
       </div>
       <form name="form-layout" class="form-validation ng-pristine ng-valid ng-valid-required" id="saveAddGuestLiveInForm" ng-submit="saveAddGuestLiveIn()">
-      <div class="modal-body ng-show="modal.content">
+      <div class="modal-body">
           <div class="clearfix">
             <div class="panel panel-default">
-                <div class="panel-heading">详细填写入住客人信息 <button class="btn btn-sm btn-addon btn-default" ng-click="readGuestIdCard()"><i class="fa fa-plus"></i>读取身份证</button></div>
                 <table class="table">
                     <thead>
                         <tr>
                             <th>房号</th>
-                            <th>姓名</th>
+                            <th>姓名 <button class="btn btn-sm btn-default fa fa-plus" ng-click="readGuestIdCard()"> 读取身份证</button></th>
                             <th>性别</th>
                         </tr>
                     </thead>
@@ -27,9 +26,9 @@
                                     <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" ng-repeat="(room_id, rDetail) in roomDetail">{{rDetail.item_name}}</option>
                                 </select>
                             </td>
-                            <td><input name="member_name" value="" class="form-control w-thumb-lg" ng-model="param.member_name" required></td>
+                            <td><input name="member_name" id="live_in_member_name" value="" class="form-control w-thumb-lg" ng-model="param.member_name" required></td>
                             <td>
-                                <select class="form-control" ng-model="param.member_sex" required>
+                                <select class="form-control" id="live_in_member_sex" ng-model="param.member_sex" required>
                                     <option value="">请选择</option>
                                     <option value="1">男</option>
                                     <option value="0">女</option>
@@ -43,7 +42,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <select class="form-control" ng-model="param.member_idcard_type" required>
+                                <select class="form-control" id="live_in_member_idcard_type" ng-model="param.member_idcard_type" required>
                                     <option value="">请选择</option>
                                     <option value="idcard">身份证</option>
                                     <option value="passport">护照</option>
@@ -53,8 +52,8 @@
                                     <option value="other">其它</option>
                                 </select>
                             </td>
-                            <td><input name="" value="" class="form-control" ng-model="param.member_idcard_number" required></td>
-                            <td><input name="" value="" class="form-control w-thumb-lg" size="15" ng-model="param.member_mobile"></td>
+                            <td><input name="" value="" class="form-control" id="live_in_member_idcard_number" ng-model="param.member_idcard_number" required></td>
+                            <td><input name="" value="" class="form-control w-thumb-lg" id="live_in_member_mobile" size="15" ng-model="param.member_mobile"></td>
                         </tr>
                     </tbody>
                 </table>
