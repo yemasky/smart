@@ -384,9 +384,24 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 						var room = floorRoom[i];
 						bookRoomStatus[room.item_id] = room;
 						//glyphicon-log-in 预抵 glyphicon-log-out 预离 
-						bookRoomStatus[room.item_id]['className'] = 'glyphicon-bed';
-				   		if(angular.isDefined(check_outRoom[room.item_id])) bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-out';
-						if(angular.isDefined(check_inRoom[room.item_id])) bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-in';
+						bookRoomStatus[room.item_id]['className'] = 'glyphicon-bed bg-info';//空净
+                        if(room.status == 'live_in') {//在住
+                            bookRoomStatus[room.item_id]['className'] = 'glyphicon-bed bg-inverse';//住净
+                            if(room.clean == 'dirty') bookRoomStatus[room.item_id]['className'] = 'glyphicon-bed bg-danger';//住脏
+                        } else {
+                            if(room.clean == 'dirty') bookRoomStatus[room.item_id]['className'] = 'glyphicon-bed bg-dark';//空脏
+                        }
+				   		if(angular.isDefined(check_outRoom[room.item_id])) {
+                            bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-out bg-info';//预离 空净
+                            if(room.clean == 'dirty') bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-out bg-danger';//住脏
+                        }
+						if(angular.isDefined(check_inRoom[room.item_id])) {
+                            bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-in bg-info';//预抵 空净
+                            if(room.clean == 'dirty') bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-in bg-dark';//预抵 空脏
+                            if(room.status == 'live_in') {//在住
+                                if(room.clean == 'dirty') bookRoomStatus[room.item_id]['className'] = 'glyphicon-log-in bg-danger';//预抵 住脏
+                            } 
+                        }
                         if(!angular.isDefined(layoutRoomList[$scope.layoutRoom[room.item_id].category_item_id])) {
                             layoutRoomList[$scope.layoutRoom[room.item_id].category_item_id] = {};
                         }
