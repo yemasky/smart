@@ -38,7 +38,7 @@
                         <a>{{_self_module.module_name}}</a>
                     </li>
                     <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
-                        <a>今日预抵</a>
+                        <a>今日预抵<b class="badge bg-info badge-xs m-l-xs" ng-bind-html="bookAta">0</b></a>
                     </li>
                     <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
                         <a>远期房态</a>
@@ -59,10 +59,11 @@
                                           <!--<span class="pull-left w-thumb-xs m-r b-b-2x"><i class="ui-icon ti-user {{bookRoomStatus[room.item_id].className}}"></i></span>-->
                                           <div class="clear">
                                             <span class="font-bold block">{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}
-												<div>{{room.item_name}}</div> 
-												<label class="pull-right">
-													<i class="ui-icon glyphicon {{bookRoomStatus[room.item_id].className}}"></i>
-												</label>
+												<div>{{room.item_name}}
+                                                    <label class="pull-right">
+                                                        <i class="ui-icon glyphicon {{bookRoomStatus[room.item_id].className}}"></i>
+                                                    </label>
+                                                </div>     
                                             </span> 
                                             
                                           </div>
@@ -124,7 +125,15 @@
                     <div ng-show="activeTab==3">
                         <div class="form-group m-h-n clearfix">
 							<div class="p-md">
-							  <h3><span translate="module.channel.channel"></span>列表</h3>
+							  <div class="form-inline form-group">
+                                <label class="control-label m-b"><i class="fa fa-clock-o"></i> 月份</label>
+                                <div class="input-group">
+                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="eta_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="eta_date" bs-datepicker>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button">Go!</button>
+                                    </span>
+                                </div>
+                              </div>
 							  <div class="table-responsive">
 								<table class="table table-bordered table-striped bg-white">
 								  <thead>
@@ -327,6 +336,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     var liveLayoutRoom = {};
     //按房型选择房间 全部房型房间
     var layoutRoomList = {};
+    $scope.bookAta = '0';//预抵人数
 	//获取数据
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
@@ -359,11 +369,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			//按当日计算预抵预离 过期忽略
 			var thisDay = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd');
 			var check_inRoom = {},check_outRoom = {},roomDetailList = {};
+            var bookAta = 0;
 			if($scope.bookingDetailRoom != '') {
 				for(var i in $scope.bookingDetailRoom) {
 					var detail = $scope.bookingDetailRoom[i];
 					if(detail.check_in.substr(0, 10) == thisDay) {
-						check_inRoom[detail.item_id] = detail;
+						check_inRoom[detail.item_id] = detail; 
+                        bookAta++;
 					}
 					if(detail.check_out.substr(0, 10) == thisDay) {
 						check_outRoom[detail.item_id] = detail;
@@ -373,6 +385,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					}
 					roomDetailList[detail.booking_number][detail.booking_detail_id] = detail;
 				}
+                $scope.bookAta = bookAta;
 			}
 			$scope.roomDetailList = roomDetailList;
             //房间状态
@@ -527,7 +540,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.readGuestIdCard = function() {
 
     }
-    //
+    //begin/////////////////////////////////////////远期房态//////////////////
+    
+    //end//////////////////////////////////////////远期房态///////////////////
 	$httpService.deleteHeader('refresh');
 });
 

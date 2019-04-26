@@ -64,20 +64,17 @@
                                           <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
 											<a class="fa pull-right" ng-click="showEditBookRoomModal(rDetail, 'Room')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
-											<a class="pull-right" ng-click="showEditBookRoomModal(this, 'market')"></a></td>
+											<a class="pull-right" ng-click="showEditBookRoomModal(rDetail, 'market')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_category_name}}
-											<a class="pull-right" ng-click="showEditBookRoomModal(this, 'category')"></a></td>
+											<a class="pull-right" ng-click="showEditBookRoomModal(rDetail, 'category')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
-											<a class="pull-right" ng-click="showEditBookRoomModal(this, 'system')"></a></td>
+											<a class="pull-right" ng-click="showEditBookRoomModal(rDetail, 'system')"></a></td>
 										  <td class="col-xs-1" show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{consumeList[rDetail.booking_number][rDetail.booking_detail_id][0].consume_price}}
 											<a class="pull-right"></a></td>
 										  <td>{{rDetail.check_in | limitTo:10}}</td>
 										  <td>{{rDetail.check_out | limitTo:10}}</td>
 										  <td>
-											  <button type="button" class="btn btn-default btn-xs" ng-model="selectedIcon" data-placement="left-middle" data-html="1" data-toggle="true" bs-options="edit.value as edit.label for edit in BookRoomEditType"
-													  placeholder="<i class='fa fa-gear'></i> 操作" bs-select>
-												  Action <span class="caret"></span>
-											  </button>
+											  <button class="btn btn-sm btn-addon btn-default" ng-click="showEditBookRoomModal(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i>编辑</button>
 										  </td>
 									  </tr>
                                       <tr>
