@@ -60,6 +60,7 @@
 										  <td class="col-xs-1">
 											  <span ng-if="rDetail.booking_detail_status==1">入住</span>
 											  <span ng-if="rDetail.booking_detail_status==0">预抵</span>
+                                              <a class="fas fa-user-plus" ng-click="addGuestLiveIn('')"></a>
 										  </td>
                                           <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
 											<a class="fa pull-right" ng-click="showEditBookRoomModal(rDetail, 'Room')"></a></td>

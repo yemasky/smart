@@ -17,7 +17,7 @@
                                 <input ng-model="param.item_name" id="live_in_item_name" value="" type="hidden">
                                 <select class="form-control" id="live_in_item_id" ng-model="param.item_id" ng-change="setLiveInItemName()" required>
                                     <option value="">选择房号</option>
-                                    <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}"  ng-repeat="(room_id, rDetail) in roomDetail">{{rDetail.item_name}}</option>
+                                    <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}"  ng-repeat="(room_id, rDetail) in roomDetail">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
                                 </select>
                             </td>
                             <th>姓名</th>

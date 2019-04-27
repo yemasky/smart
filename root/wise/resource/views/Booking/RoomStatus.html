@@ -73,24 +73,16 @@
                         <div class="form-group m-h-n clearfix">
                             <ul class="nav nav-tabs" ng-init="activeAtaTab=1">
                                 <li ng-class="{active:activeAtaTab==0}"><a>　</a></li>
-                                <li ng-class="{active:activeAtaTab==2}" ng-click="activeAtaTab=2">
-                                    <a>所有订单</a>
-                                </li>
                                 <li ng-class="{active:activeAtaTab==1}" ng-click="activeAtaTab=1">
                                     <a>今日预抵</a>
+                                </li>
+                                <li ng-class="{active:activeAtaTab==2}" ng-click="activeAtaTab=2">
+                                    <a>所有订单</a>
                                 </li>
                             </ul>
 							<div class="p-md" ng-show="activeAtaTab==1">
 							  <div class="table-responsive">
 								<div class="form-inline form-group">
-									<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵日期</label>
-                                    <div class="input-group">
-                                        <input type="text" size="9" class="form-control check_in w-thumb-lg" ng-model="check_in_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="check_in_date" bs-datepicker>
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="button">Go!</button>
-                                        </span>
-                                    </div>
-								</div>
 								<table class="table table-bordered table-striped bg-white table-hover">
 								  <thead>
 									<tr>
@@ -123,10 +115,18 @@
 									</tr>
 								  </tbody>
 								</table>
+							    </div>
 							  </div>
-							</div>
-                            <div class="p-md" ng-show="activeAtaTab==2">
                             </div>
+                            <div class="p-md" ng-show="activeAtaTab==2">
+                               <label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵日期</label>
+                                <div class="input-group">
+                                    <input type="text" size="9" class="form-control check_in w-thumb-lg" ng-model="check_in_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="check_in_date" bs-datepicker>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button">Go!</button>
+                                    </span>
+                                </div>
+				            </div>
 						</div>
                     </div>
                     <div ng-show="activeTab==3">
@@ -416,10 +416,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                         }
                         //附加
 				   		if(angular.isDefined(check_outRoom[room.item_id])) {//预离
-                            roomStatus = roomStatus + '<i class="glyphicon glyphicon-log-out" title="预离"></i>';
+                            roomStatus = roomStatus + '<i class="fas fa-sign-out-alt" title="预离"></i>';
                         }
 						if(angular.isDefined(check_inRoom[room.item_id])) {//预抵
-                            roomStatus = '<i class="glyphicon glyphicon-log-in" title="预抵"></i>'+roomStatus;
+                            roomStatus = '<i class="fas fa-sign-in-alt" title="预抵"></i>'+roomStatus;
                         }
                         bookRoomStatus[room.item_id]['roomStatus'] = roomStatus;
                         if(!angular.isDefined(layoutRoomList[$scope.layoutRoom[room.item_id].category_item_id])) {

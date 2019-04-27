@@ -33,6 +33,7 @@ class BookingEntity extends \Entity {
 	protected $booking_total_price = 0.00;
 	protected $client = 'pms';
 	protected $valid = '1';
+	protected $node = '';
 	protected $add_datetime;
 	protected $close_datetime;
 
@@ -379,6 +380,20 @@ class BookingEntity extends \Entity {
 	public function setValid(string $valid) {
 		$this->valid = $valid;
 	}
+
+    /**
+     * @return string
+     */
+    public function getNode(): string {
+        return $this->node;
+    }
+
+    /**
+     * @param string $node
+     */
+    public function setNode(string $node) {
+        $this->node = $node;
+    }
 
 	/**
 	 * @return mixed

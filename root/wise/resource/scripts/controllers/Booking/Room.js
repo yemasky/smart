@@ -100,7 +100,6 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         var roomList = {},room_data = {};//房间
         for(var channel_id in channelItemList) {
             var thisItemList = channelItemList[channel_id], thisLayoutRoom = {};
-            console.log(thisItemList);
             if(typeof(layoutList[channel_id]) == 'undefined') {layoutList[channel_id] = {};room_data[channel_id] = {};}
             if(typeof(layoutRoom[channel_id]) != 'undefined') thisLayoutRoom = layoutRoom[channel_id];
             for(var i in thisItemList) {
@@ -316,11 +315,11 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     };
     //选择房间数量
     $scope.select_room = function(_this) {
-    	console.log(_this);
+    	//console.log(_this);
     };
     //开始预订
-    $scope.beginBooking = function() {
-        if($scope.market_father_id == '4') {//判断会员是否正确
+    $scope.beginBooking = function(search) {
+        if($scope.market_father_id == '4' || search == 'member') {//判断会员是否正确
             var mobile_email = $scope.param.mobile_email, member_mobile = '', member_email = '';
             if(mobile_email.indexOf("@") != -1) {
                 var emailRegexp = /^([0-9a-zA-Z\.\-\_]+)@([0-9a-zA-Z\.\-\_]+)\.([a-zA-Z]{2,5})$/i;
@@ -345,7 +344,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $checkMember.param['member_mobile']     = member_mobile;
             $checkMember.param['channel_father_id'] = $scope.param.channel_father_id;
             $httpService.post('/app.do?'+param, $checkMember, function(result){
-                loading.hide();$httpService.deleteHeader('checkMember');
+                loading.hide();$httpService.deleteHeader('method');
                 if(result.data.success == '0') {
                     var message = $scope.getErrorByCode(result.data.code);
                     var message_ext = '.没有找到"'+mobile_email+'"的会员记录！';
@@ -353,7 +352,26 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 } else {
                     $scope.market_id = result.data.item.market_id;
                     $scope.param.member_id = result.data.item.member_id;
-                    booking();
+                    if(search == 'member') {
+                        //找出markey
+                        var market = '';
+                        for(var mi in $scope.marketList) {
+                            for(mii in $scope.marketList[mi]['children']) {
+                                if($scope.market_id == $scope.marketList[mi]['children'][mii].market_id) {
+                                    market = $scope.marketList[mi]['children'][mii];
+                                    break;
+                                }
+                            }
+                        }
+                        if(market != '') {
+                            $scope.selectCustomerMarket(market, true);
+                        } else {
+                            var message_ext = '没有找到"'+mobile_email+'"的会员记录！';
+                            $alert({title: 'Notice', content: message_ext, templateUrl: '/modal-warning.html', show: true});
+                        }
+                    } else {
+                        booking();
+                    }
                 }
             });
         } else {
