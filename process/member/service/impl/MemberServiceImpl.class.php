@@ -6,7 +6,7 @@
  */
 
 namespace member;
-class MemberServiceImpl extends \BaseServiceImpl {
+class MemberServiceImpl extends \BaseServiceImpl implements MemberService {
 	private static $objService = null;
 
 	public static function instance() {
@@ -34,17 +34,30 @@ class MemberServiceImpl extends \BaseServiceImpl {
 	}
 
 	public function saveMember($arrayData, $insert_type = 'INSERT') {
-        return MemberService::instance()->saveMember($arrayData, $insert_type);
+        return MemberDao::instance()->saveMember($arrayData, $insert_type);
 	}
 
-	public function updateMember(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-		return MemberService::instance()->updateMember($whereCriteria, $arrayUpdateData);
+	public function updateMember(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
+		return MemberDao::instance()->updateMember($whereCriteria, $arrayUpdateData);
 	}
 	//
-    public function getMemberLevel($member_id, $channel_father_id, $field = 'market_id') {
+    public function getMemberLevelByMemberId($member_id, $channel_father_id, $field = 'market_id') {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('member_id', $member_id)->EQ('channel_father_id', $channel_father_id);
-        return MemberService::instance()->getMemberLevel($whereCriteria, $field);
+        return MemberDao::instance()->getMemberLevel($whereCriteria, $field);
+    }
+
+    public function getMemberLevel(\WhereCriteria $whereCriteria, $field = null) {
+        // TODO: Implement getMemberLevel() method.
+        return MemberDao::instance()->getMemberLevel($whereCriteria, $field);
+    }
+
+    public function saveMemberLevel($arrayData, $insert_type = 'INSERT') {
+        return MemberDao::instance()->setTable('member_level')->insert($arrayData, $insert_type);
+    }
+
+    public function updateMemberLevel(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
+        return MemberDao::instance()->setTable('member_level')->update($arrayUpdateData, $whereCriteria, $update_type);
     }
 
 

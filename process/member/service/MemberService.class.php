@@ -6,42 +6,21 @@
  */
 
 namespace member;
-class MemberService extends \BaseService {
-	private static $objService = null;
-
-	public static function instance() {
-		if(is_object(self::$objService)) {
-		} else {
-			self::$objService = new MemberService();
-		}
-		
-		return self::$objService;
-	}
-
+interface MemberService extends \BaseService {
 	//--------member//-----------//
-	public function getMember(\WhereCriteria $whereCriteria, $field = null) {
-        return MemberDao::instance()->getMember($field, $whereCriteria);
-	}
+	public function getMember(\HttpRequest $objRequest, $field = null);
 
-	public function saveMember($arrayData, $insert_type = 'INSERT') {
-		return MemberDao::instance()->setTable('member')->insert($arrayData, $insert_type);
-	}
+	public function saveMember($arrayData, $insert_type = 'INSERT');
 
-	public function updateMember(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
-		return MemberDao::instance()->setTable('member')->update($arrayUpdateData, $whereCriteria, $update_type);
-	}
+	public function updateMember(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '');
 	//--------member//-----------//
     //--------member level//-----------//
-    public function getMemberLevel(\WhereCriteria $whereCriteria, $field = null) {
-        return MemberDao::instance()->setTable('member_level')->getList($field, $whereCriteria);
-    }
+    public function getMemberLevelByMemberId($member_id, $channel_father_id, $field = null);
 
-    public function saveMemberLevel($arrayData, $insert_type = 'INSERT') {
-        return MemberDao::instance()->setTable('member_level')->insert($arrayData, $insert_type);
-    }
+    public function getMemberLevel(\WhereCriteria $whereCriteria, $field = null);
 
-    public function updateMemberLevel(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
-        return MemberDao::instance()->setTable('member_level')->update($arrayUpdateData, $whereCriteria, $update_type);
-    }
+    public function saveMemberLevel($arrayData, $insert_type = 'INSERT');
+
+    public function updateMemberLevel(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '');
     //--------member//-----------//
 }

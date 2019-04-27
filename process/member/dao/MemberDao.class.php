@@ -23,4 +23,16 @@ class MemberDao extends CommonDao {
 		return $this->setDsnRead($this->getDsnRead())->setTable('member')->getList($field, $whereCriteria);//DBCache($cacheId)->
 	}
 
+	public function saveMember($arrayData, $insert_type = 'INSERT') {
+        return $this->setDsnRead($this->getDsnWrite())->setTable('member')->insert($arrayData, $insert_type);
+    }
+
+    public function updateMember(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('member')->update($arrayUpdateData, $whereCriteria, $update_type);
+    }
+
+	public function getMemberLevel($whereCriteria, $field = null) {
+        return $this->setDsnRead($this->getDsnRead())->setTable('member_level')->getList($field, $whereCriteria);
+    }
+
 }

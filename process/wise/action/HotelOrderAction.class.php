@@ -248,7 +248,7 @@ class HotelOrderAction extends \BaseAction
         if (!empty($arrayMember)) {
             $member_id = $arrayMember[0]['member_id'];
             $channel_father_id = $objRequest->validInput('channel_father_id');
-            $arrayMemberLevel = \member\MemberServiceImpl::instance()->getMemberLevel($member_id, $channel_father_id);
+            $arrayMemberLevel = \member\MemberServiceImpl::instance()->getMemberLevelByMemberId($member_id, $channel_father_id);
             if (!empty($arrayMemberLevel)) {
                 $arrayMemberLevel[0]['member_id'] = $member_id;
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayMemberLevel[0]);
