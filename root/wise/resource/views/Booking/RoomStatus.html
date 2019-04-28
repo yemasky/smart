@@ -537,15 +537,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     }
     //保存入住客人
     var addGuestLiveInModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',show: false});
-    $scope.addGuestLiveIn = function(_this) {
+    $scope.addGuestLiveIn = function(liveInGuest) {
         addGuestLiveInModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',show: false});
         addGuestLiveInModal.$promise.then(addGuestLiveInModal.show);
-        if(_this != '') {console.log(_this);
+        if(liveInGuest != '') {console.log(liveInGuest);
             $(document).ready(function(){
-                for (var key in _this) {
+                for (var key in liveInGuest) {
                     if(key.substr(0,1) == '$') continue;
                     if($('#live_in_'+key)) {
-                        $('#live_in_'+key).val(_this[key]);
+                        $('#live_in_'+key).val(liveInGuest[key]);
                     }
                 }
             });
@@ -577,7 +577,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.guestLiveInList[booking_number][booking_detail_id][length] = $scope.param;
         });
     };
-    $scope.setLiveInItemName = function(_this) {
+    $scope.setLiveInItemName = function() {
         $scope.param.item_name = $('#live_in_item_id').find('option:selected').text();
         $scope.param.detail_id = $('#live_in_item_id').find('option:selected').attr('detail_id');
         $scope.param.booking_detail_id = $('#live_in_item_id').find('option:selected').attr('booking_detail_id');
