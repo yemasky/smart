@@ -60,7 +60,7 @@
                                           <div class="clear">
                                             <span class="font-bold block">{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}</span>
                                             <div>{{room.item_name}}
-                                                <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus"></label>
+                                                <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="editRoomBook(bookRoomStatus[room.item_id], 1)"></label>
                                             </div>
                                           </div>
                                         </div>
@@ -77,6 +77,9 @@
                                     <a>今日预抵</a>
                                 </li>
                                 <li ng-class="{active:activeAtaTab==2}" ng-click="activeAtaTab=2">
+                                    <a>今日预离 <span class="badge badge-xs" ng-bind="dueOut">0</span></a>
+                                </li>
+                                <li ng-class="{active:activeAtaTab==3}" ng-click="activeAtaTab=3">
                                     <a>所有订单</a>
                                 </li>
                             </ul>
@@ -119,6 +122,44 @@
 							  </div>
                             </div>
                             <div class="p-md" ng-show="activeAtaTab==2">
+                               <div class="table-responsive">
+								<div class="form-inline form-group">
+								<table class="table table-bordered table-striped bg-white table-hover">
+								  <thead>
+									<tr>
+									  <th translate="module.channel.market_name">客源市场</th>
+									  <th>房型</th>
+                                      <th>价格类型</th>
+									  <th>房号</th>
+									  <th>预订人</th>
+									  <th>电话/email</th>
+									  <th>预抵</th>
+									  <th>预离</th>
+									  <th></th>
+									</tr>
+								  </thead>
+								  <tbody><!-- bookingDetail -->
+									<tr ng-repeat="(i, detail) in bookingDetailRoom" ng-if="detail.booking_detail_status!=0">
+									  <td class="text-nowrap">{{detail.market_name}}</td>
+									  <td><span>{{detail.item_category_name}}</span></td>
+                                      <td><span>{{detail.price_system_name}}</span></td>
+									  <td>{{detail.item_name==''?'未排房':detail.item_name}}</td>
+									  <td>{{bookList[detail.booking_number].member_name}}</td>
+									  <td>{{bookList[detail.booking_number].member_mobile==''?bookList[detail.booking_number].member_email:bookList[detail.booking_number].member_mobile}}</td>
+									  <td>{{detail.check_in | limitTo:10}}</td>
+									  <td>{{detail.check_out | limitTo:10}}</td>
+									  <td>
+                                          <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail, 1)">
+                                            <span>离店</span>
+                                          </a>
+                                      </td>
+									</tr>
+								  </tbody>
+								</table>
+							    </div>
+							  </div>
+				            </div>
+                            <div class="p-md" ng-show="activeAtaTab==3">
                                <label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵日期</label>
                                 <div class="input-group">
                                     <input type="text" size="9" class="form-control check_in w-thumb-lg" ng-model="check_in_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="check_in_date" bs-datepicker>
@@ -344,6 +385,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     //按房型选择房间 全部房型房间
     var layoutRoomList = {};
     $scope.bookAta = '0';//预抵人数
+    $scope.dueOut = '0';//预离人数
 	//获取数据
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
@@ -376,7 +418,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			//按当日计算预抵预离 过期忽略
 			var thisDay = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd');
 			var check_inRoom = {},check_outRoom = {},roomDetailList = {};
-            var bookAta = 0;
+            var bookAta = 0,dueOut = 0;
 			if($scope.bookingDetailRoom != '') {
 				for(var i in $scope.bookingDetailRoom) {
 					var detail = $scope.bookingDetailRoom[i];
@@ -386,6 +428,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					}
 					if(detail.check_out.substr(0, 10) == thisDay) {
 						check_outRoom[detail.item_id] = detail;
+                        dueOut++;
 					}
 					if(!angular.isDefined(roomDetailList[detail.booking_number])) {
 						roomDetailList[detail.booking_number] = {};
@@ -393,6 +436,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					roomDetailList[detail.booking_number][detail.booking_detail_id] = detail;
 				}
                 $scope.bookAta = bookAta;
+                $scope.dueOut = dueOut;
 			}
 			$scope.roomDetailList = roomDetailList;
             //房间状态
@@ -405,21 +449,21 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 						bookRoomStatus[room.item_id] = room;
 						//glyphicon-log-in 预抵 glyphicon-log-out 预离 
 						bookRoomStatus[room.item_id]['className'] = 'glyphicon-bed bg-info';//空净
-                        var roomStatus = '<i class="ui-icon glyphicon glyphicon-bed bg-info" title="空净"></i>';//空净
+                        var roomStatus = '<i class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></i>';//空净
                         if(room.status == 'live_in') {//在住
-                            roomStatus = '<i class="ui-icon glyphicon glyphicon-user bg-inverse" title="住净"></i>';//住净
+                            roomStatus = '<i class="ui-icon glyphicon glyphicon-user bg-inverse" title="住净 &#8226; 查看订单"></i>';//住净
                             if(room.clean == 'dirty')
-                                roomStatus = '<i class="ui-icon glyphicon glyphicon-user bg-danger" title="住脏"></i>';//住脏
+                                roomStatus = '<i class="ui-icon glyphicon glyphicon-user bg-danger" title="住脏 &#8226; 查看订单"></i>';//住脏
                         } else {
                             if(room.clean == 'dirty')
                                 roomStatus = '<i class="ui-icon glyphicon glyphicon-bed bg-dark" title="空脏"></i>';//空脏
                         }
                         //附加
 				   		if(angular.isDefined(check_outRoom[room.item_id])) {//预离
-                            roomStatus = roomStatus + '<i class="fas fa-sign-out-alt" title="预离"></i>';
+                            roomStatus = roomStatus + '<i class="fas fa-sign-out-alt text-warning" title="预离 &#8226; 查看订单"></i>';
                         }
 						if(angular.isDefined(check_inRoom[room.item_id])) {//预抵
-                            roomStatus = '<i class="fas fa-sign-in-alt" title="预抵"></i>'+roomStatus;
+                            roomStatus = '<i class="fas fa-sign-in-alt text-success" title="预抵 &#8226; 查看订单"></i>'+roomStatus;
                         }
                         bookRoomStatus[room.item_id]['roomStatus'] = roomStatus;
                         if(!angular.isDefined(layoutRoomList[$scope.layoutRoom[room.item_id].category_item_id])) {
