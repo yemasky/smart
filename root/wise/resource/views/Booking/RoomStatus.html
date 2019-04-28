@@ -60,7 +60,7 @@
                                           <div class="clear">
                                             <span class="font-bold block">{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}</span>
                                             <div>{{room.item_name}}
-                                                <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="editRoomBook(bookRoomStatus[room.item_id], 1)"></label>
+                                                <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id])"></label>
                                             </div>
                                           </div>
                                         </div>
@@ -448,7 +448,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 						var room = floorRoom[i];
 						bookRoomStatus[room.item_id] = room;
 						//glyphicon-log-in 预抵 glyphicon-log-out 预离 
-						bookRoomStatus[room.item_id]['className'] = 'glyphicon-bed bg-info';//空净
                         var roomStatus = '<i class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></i>';//空净
                         if(room.status == 'live_in') {//在住
                             roomStatus = '<i class="ui-icon glyphicon glyphicon-user bg-inverse" title="住净 &#8226; 查看订单"></i>';//住净
@@ -477,10 +476,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		}
 	});
 	//预订编辑开始
-    $scope.BookRoomEditType = [
-        {value: 'Gear', label: '<i class="fa fa-gear"></i> 换房/升级'},
-        {value: 'Heart', label: '<i class="glyphicon glyphicon-time"></i> 修改日期'}
-    ];
     $scope.layoutSelectRoom = {};
     $scope.actionEdit = '订单管理';
     $scope.actionConsume = '消费项';
@@ -488,12 +483,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.actionEditLog = '操作日志';
     $scope.bookDetail = {};$scope.roomDetail = {};
     var asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
-	$scope.editRoomBook = function(_this, tab) {
-        $scope.layoutSelectRoom = layoutRoomList[_this.item_category_id];
+	$scope.editRoomBook = function(detailBookRoom, tab) {
+        $scope.layoutSelectRoom = layoutRoomList[detailBookRoom.item_category_id];
 		$scope.param["valid"] = "1";
 		$scope.activeRoomBookEditTab = tab;
-		$scope.roomDetail = $scope.roomDetailList[_this.booking_number];//单个订单下面得房间
-        $scope.bookDetail = $scope.bookList[_this.booking_number];//订单详情
+		$scope.roomDetail = $scope.roomDetailList[detailBookRoom.booking_number];//单个订单下面得房间
+        $scope.bookDetail = $scope.bookList[detailBookRoom.booking_number];//订单详情
         asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
 		asideEditRoomBook.$promise.then(function() {
 			asideEditRoomBook.show();
@@ -501,23 +496,23 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 		});
 	};
+	$scope.roomStatusBook = function(detailBookRoom) {
+        console.log(detailBookRoom);
+        $scope.editRoomBook(detailBookRoom, 1);
+    }
     //
-    $scope.modal = {
-        "title": "Title",
-        "content": "Hello Modal<br />This is a multiline message!"
-    };
     var editBookRoomModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',show: false});
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
-    $scope.showEditBookRoomModal = function(_this, tab) {
+    $scope.showEditBookRoomModal = function(rDetail, tab) {
         $scope.activeRoomBookTab = tab;
-        $scope.roomDetailEdit = _this;
+        $scope.roomDetailEdit = rDetail;
         editBookRoomModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',show: false});
         editBookRoomModal.$promise.then(editBookRoomModal.show);
     };
-    $scope.saveEditRoomForm = function (_this) {console.log(_this);
+    $scope.saveEditRoomForm = function (roomDetailEdit) {console.log(roomDetailEdit);
         $httpService.header('method', 'editBookRoom');
         $scope.beginLoading =! $scope.beginLoading;
-        $scope.param.detail_id = _this.detail_id;
+        $scope.param.detail_id = roomDetailEdit.detail_id;
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');
@@ -526,11 +521,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
-            _this.item_id = $scope.param.item_room;
-            _this.item_name = $scope.param.item_room_name;
+            roomDetailEdit.item_id = $scope.param.item_room;
+            roomDetailEdit.item_name = $scope.param.item_room_name;
             $scope.roomDetail.item_id = $scope.param.item_room;
             $scope.roomDetail.item_name = $scope.param.item_room_name;
-            $scope.roomDetailList[_this.booking_number] = $scope.roomDetail;
+            $scope.roomDetailList[roomDetailEdit.booking_number] = $scope.roomDetail;
             var message = $scope.getErrorByCode(result.data.code);
             editBookRoomModal.$promise.then(editBookRoomModal.hide);
             var myAlert = $alert({title: 'Success', content: message, placement: 'top-right', duration: 3, type: 'success', show: true});
