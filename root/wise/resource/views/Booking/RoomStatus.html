@@ -57,16 +57,16 @@
                                     <div class="list-group no-radius">
                                         <div class="list-group-item col-sm-2 p-xs m-r-xs" ng-repeat="(i, room) in floor">
                                           <!--<span class="pull-left w-thumb-xs m-r b-b-2x"><i class="ui-icon ti-user {{bookRoomStatus[room.item_id].className}}"></i></span>-->
-                                          <div class="clear">
+                                          <div class="">
                                             <span class="font-bold block">{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}</span>
                                             <div>{{room.item_name}}
                                                 <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id])"></label>
                                             </div>
                                               <aside class="app-aside bg-white lt">
                                                 <nav>
-                                                  <ul class="nav">
-                                                    <li>
-                                                        <a class="btn btn-default customer_btn" style="padding:6px !important;" id="customer_ul">
+                                                  <ul>
+                                                    <li class="col-xs-12">
+                                                        <a class="">
                                                             <span class="pull-right text-muted">
                                                               <i class="fa fa-caret-down"></i>
                                                             </span>
@@ -76,14 +76,8 @@
                                                          <ul class="nav nav-sub bg b">
                                                             <li>
                                                               <a class="">
-                                                                <span class="pull-right text-muted">
-                                                                  <i class="fa fa-caret-down"></i>
-                                                                </span>
                                                                 <span class="font-normal">--------</span>
                                                               </a>
-                                                              <ul class="nav nav-sub bg b">
-                                                                <li><a ng-click="selectCustomerMarket(market, true)">-------</a></li>
-                                                              </ul>
                                                             </li>
                                                          </ul>
                                                     </li>
@@ -397,8 +391,6 @@
     </div>
   </div>
 </div>
-<script language="javascript" src="/resource/vendor/libs/moment.min.js"></script>
-<script language="javascript" src="/resource/vendor/libs/daterangepicker.js"></script>
 <script language="javascript">
 app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
     $scope.param = {};

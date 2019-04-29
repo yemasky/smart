@@ -635,3 +635,5 @@ app.controller("LoginController",function($rootScope, $scope, $httpService, $mod
 	}
 });	
 </script>
+<script language="javascript" src="<%$__RESOURCE%>vendor/libs/moment.min.js?<%$__VERSION%>"></script>
+<script language="javascript" src="<%$__RESOURCE%>vendor/libs/daterangepicker.js?<%$__VERSION%>"></script>
