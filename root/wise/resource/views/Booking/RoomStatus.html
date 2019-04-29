@@ -38,7 +38,7 @@
                         <a>{{_self_module.module_name}}</a>
                     </li>
                     <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
-                        <a>订单●预抵<b class="badge bg-info badge-xs m-l-xs" ng-bind-html="bookAta">0</b></a>
+                        <a>订单&#8226;预抵<b class="badge bg-info badge-xs m-l-xs" ng-bind-html="bookAta">0</b></a>
                     </li>
                     <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
                         <a>当日夜审</a>
@@ -50,41 +50,33 @@
                  <div class="tab-content"><!--<img class="img-responsive w-thumb-xs" ng-src="{{_resource}}images/room.png">-->
                     <div ng-show="activeTab==1">
                         <div class="form-group clearfix">
-                            <div class="buliding clear m-b" ng-repeat="(buliding_key, buliding) in roomList">
+                            <div class="buliding m-b" ng-repeat="(buliding_key, buliding) in roomList">
                                 <div class="m-b-xs"><i class="fa fa-building text-xs"> {{buliding_key}}楼栋</i></div>
                                 <div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
                                     <span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
                                     <div class="list-group no-radius">
-                                        <div class="list-group-item col-sm-2 p-xs m-r-xs" ng-repeat="(i, room) in floor">
+                                        <div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, room) in floor">
                                           <!--<span class="pull-left w-thumb-xs m-r b-b-2x"><i class="ui-icon ti-user {{bookRoomStatus[room.item_id].className}}"></i></span>-->
-                                          <div class="">
+                                          <div class="clear p-xs">
                                             <span class="font-bold block">{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}</span>
                                             <div>{{room.item_name}}
                                                 <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id])"></label>
                                             </div>
-                                              <aside class="app-aside bg-white lt">
-                                                <nav>
-                                                  <ul>
-                                                    <li class="col-xs-12">
-                                                        <a class="">
-                                                            <span class="pull-right text-muted">
-                                                              <i class="fa fa-caret-down"></i>
-                                                            </span>
-                                                            <i class="icon fa fa-users text-lt"></i>
-                                                            <span>------</span>
-                                                         </a>
-                                                         <ul class="nav nav-sub bg b">
-                                                            <li>
-                                                              <a class="">
-                                                                <span class="font-normal">--------</span>
-                                                              </a>
-                                                            </li>
-                                                         </ul>
-                                                    </li>
-                                                  </ul>
-                                                </nav>
-                                             </aside>
                                           </div>
+                                          <aside class="app-aside bg-white lt">
+                                            <nav>
+                                              <ul class="no-margin no-padding">
+                                                <li class="col-xs-12 no-padding">
+                                                        <span class="pull-right text-muted"><i class="fa fa-caret-down"></i></span>
+                                                        <i class="icon fa fa-users text-lt"></i>
+                                                        <span>------</span>
+                                                     <ul class="nav nav-sub bg b" style="min-width:101% !important; margin-left:-1px;">
+                                                        <li><span class="font-normal">--------</span></li>
+                                                     </ul>
+                                                </li>
+                                              </ul>
+                                            </nav>
+                                         </aside>
                                         </div>
                                     </div> 
                                 </div>
