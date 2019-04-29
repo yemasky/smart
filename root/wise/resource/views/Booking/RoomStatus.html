@@ -55,13 +55,41 @@
                                 <div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
                                     <span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
                                     <div class="list-group no-radius">
-                                        <div class="list-group-item col-sm-2 m-xs" ng-repeat="(i, room) in floor">
+                                        <div class="list-group-item col-sm-2 p-xs m-r-xs" ng-repeat="(i, room) in floor">
                                           <!--<span class="pull-left w-thumb-xs m-r b-b-2x"><i class="ui-icon ti-user {{bookRoomStatus[room.item_id].className}}"></i></span>-->
                                           <div class="clear">
                                             <span class="font-bold block">{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}</span>
                                             <div>{{room.item_name}}
                                                 <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id])"></label>
                                             </div>
+                                              <aside class="app-aside bg-white lt">
+                                                <nav>
+                                                  <ul class="nav">
+                                                    <li>
+                                                        <a class="btn btn-default customer_btn" style="padding:6px !important;" id="customer_ul">
+                                                            <span class="pull-right text-muted">
+                                                              <i class="fa fa-caret-down"></i>
+                                                            </span>
+                                                            <i class="icon fa fa-users text-lt"></i>
+                                                            <span>------</span>
+                                                         </a>
+                                                         <ul class="nav nav-sub bg b">
+                                                            <li>
+                                                              <a class="">
+                                                                <span class="pull-right text-muted">
+                                                                  <i class="fa fa-caret-down"></i>
+                                                                </span>
+                                                                <span class="font-normal">--------</span>
+                                                              </a>
+                                                              <ul class="nav nav-sub bg b">
+                                                                <li><a ng-click="selectCustomerMarket(market, true)">-------</a></li>
+                                                              </ul>
+                                                            </li>
+                                                         </ul>
+                                                    </li>
+                                                  </ul>
+                                                </nav>
+                                             </aside>
                                           </div>
                                         </div>
                                     </div> 
@@ -420,6 +448,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			var check_inRoom = {},check_outRoom = {},roomDetailList = {};
             var bookAta = 0,dueOut = 0;
 			if($scope.bookingDetailRoom != '') {
+                var thisDayTimestamp = Date.parse(new Date(thisDay)); 
 				for(var i in $scope.bookingDetailRoom) {
 					var detail = $scope.bookingDetailRoom[i];
 					if(detail.check_in.substr(0, 10) == thisDay) {
@@ -430,6 +459,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 						check_outRoom[detail.item_id] = detail;
                         dueOut++;
 					}
+                    var checkOutTimestamp = Date.parse(new Date(detail.check_out)); 
+                    if(checkOutTimestamp <= thisDayTimestamp) {
+                        check_outRoom[detail.item_id] = detail;
+                        dueOut++;
+                    }
 					if(!angular.isDefined(roomDetailList[detail.booking_number])) {
 						roomDetailList[detail.booking_number] = {};
 					}
