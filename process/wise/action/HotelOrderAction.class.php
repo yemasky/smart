@@ -87,6 +87,11 @@ class HotelOrderAction extends \BaseAction
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id)->setHashKey('item_id');
         $arrayLayoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, 'category_item_id,item_id');
+        if(!empty($arrayLayoutRoom)) {
+            foreach ($arrayLayoutRoom as $room_id => $value) {
+                $arrayLayoutRoom[$room_id]['r_id'] = encode($room_id);
+            }
+        }
         //获取预订 条件未完结的所有订单 valid = 1 and check_in <= 今天
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('channel', 'Hotel')->EQ('valid', '1')->LE('check_in', $in_date)->setHashKey('booking_number');
@@ -365,6 +370,63 @@ class HotelOrderAction extends \BaseAction
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
         }
 
+        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+    }
+
+    //编辑房间状态
+    protected function doMethodSaveRoomStatusEdit(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = $objLoginEmployee->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        //
+        $arrayInput = $objRequest->getInput();
+        $item_id = decode($objRequest->getInput('r_id'));
+        $editType = $objRequest->getInput('editType');
+        if ($item_id > 0) {
+            CommonServiceImpl::instance()->startTransaction();
+            if($editType == 'lock' || $editType == 'repair') {
+                $Booking_evenEntity = new Booking_evenEntity($arrayInput);
+                //
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel_config', 'room')
+                    ->EQ('item_type', 'item')->EQ('item_id', $item_id);
+                if($editType == 'lock') $arrayUpdate['lock'] = 'lock';
+                if($editType == 'repair') $arrayUpdate['lock'] = 'repair';
+                $arrayUpdate['begin_datetime'] = $Booking_evenEntity->getBeginDatetime();
+                $arrayUpdate['end_datetime'] = $Booking_evenEntity->getEndDatetime();
+                ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $arrayUpdate);
+                //
+                $Booking_evenEntity->setAddDatetime(getDateTime());
+                $Booking_evenEntity->setCompanyId($company_id);
+                $Booking_evenEntity->setChannelId($channel_id);
+                $Booking_evenEntity->setEmployeeId($objLoginEmployee->getEmployeeId());
+                $Booking_evenEntity->setEmployeeName($objLoginEmployee->getEmployeeName());
+                $Booking_evenEntity->setItemId($item_id);
+                $Booking_evenEntity->setBookingEvenType($editType);
+                BookingHotelServiceImpl::instance()->saveRoomEven($Booking_evenEntity);
+            } else {
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel_config', 'room')
+                    ->EQ('item_type', 'item')->EQ('item_id', $item_id);
+                if($editType == 'unlock'){$arrayUpdate['lock'] = '0';}
+                if($editType == 'repair_ok'){$arrayUpdate['lock'] = '0';}
+                if($editType == 'dirty'){$arrayUpdate['clean'] = 'dirty';}
+                if($editType == 'clean'){$arrayUpdate['clean'] = '0';}
+                ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $arrayUpdate);
+                //
+                if($editType == 'lock' || $editType == 'repair') {
+                    $whereCriteria = new \WhereCriteria();
+                    $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_id', $item_id)
+                        ->EQ('valid', '1');
+                    BookingHotelServiceImpl::instance()->updateRoomEven($whereCriteria, ['valid'=>2]);
+                }
+
+            }
+            CommonServiceImpl::instance()->commit();
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+        }
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
 }

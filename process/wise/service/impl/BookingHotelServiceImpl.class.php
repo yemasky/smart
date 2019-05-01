@@ -445,5 +445,14 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     public function getGuestLiveIn(\WhereCriteria $whereCriteria, $field = null) : array {
         return BookingDao::instance()->getGuestLiveIn($whereCriteria, $field);
     }
+
+    //房间状态操作
+    public function saveRoomEven(Booking_evenEntity $booking_evenEntity) {
+        return BookingDao::instance()->saveRoomEven($booking_evenEntity);
+    }
+
+    public function updateRoomEven($whereCriteria, $arrayUpdateData, $update_type = '') {
+        return BookingDao::instance()->updateRoomEven($whereCriteria, $arrayUpdateData, $update_type);
+    }
 }
 

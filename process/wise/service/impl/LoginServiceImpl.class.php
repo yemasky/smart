@@ -47,15 +47,16 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
         $password = $objRequest->password;
         $username = $objRequest->email;
 
-        $arrayLoginInfo['valid'] = 1;
         $whereCriteria           = new \WhereCriteria();
-        $field                   = 'employee_id,company_id,employee_name,photo,password,password_salt';
+        $field                   = 'employee_id,company_id,employee_name,photo,`password`,password_salt';
         $arrayEmployeeList       = array();
         if (strpos($username, '@') !== false) {
-            $arrayLoginInfo['email'] = $username;//where($arrayLoginInfo)->
-            $whereCriteria->EQ('valid', '1');
-            $arrayEmployeeList = EmployeeDao::instance()->getEmployee($whereCriteria, $field);
+            $whereCriteria->EQ('email', $username);
+        } elseif(is_numeric($username) && strlen($username) == 11) {
+            $whereCriteria->EQ('mobile', $username);
         }
+        $whereCriteria->EQ('valid', '1');
+        $arrayEmployeeList = EmployeeDao::instance()->getEmployee($whereCriteria, $field);
         $loginEmployeeModel = new LoginEmployeeModel();
         $lenght             = count($arrayEmployeeList);
         for ($i = 0; $i < $lenght; $i++) {

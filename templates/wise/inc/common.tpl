@@ -11,11 +11,11 @@
   <div class="center-block w-xl w-auto-xs m-b-lg">
     <div class="text-2x m-v-lg text-primary"><i class="glyphicon glyphicon-th-large text-xl"></i> {{app.name}}</div>
     <div class="m-b text-sm" translate="login.hint.WORD">Sign in with your Account</div>
-    <form name="login_form" ng-submit="login()" ng-controller="LoginController">
+    <form name="login_form" class="form-validation" ng-submit="login(login_form.$valid)" ng-controller="LoginController">
       <div class="form-group m-b-xs">
         <label class="hide">Email</label>
-		<!--ng-pattern="/[a-zA-Z\.\-_]@[a-zA-Z\.\-_]\.[a-z]{2,3}/"-->
-        <input type="email" id="email" name="email" placeholder="Someone@example.com" ng-model="param.email" required class="form-control">
+		<!--ng-pattern="/[a-zA-Z\.\-_]@[a-zA-Z\.\-_]\.[a-z]{2,7}/"-->
+        <input type="text" id="email" name="email" placeholder="手机号码/Some@example.com" ng-model="param.email" required class="form-control" ng-pattern="/(([a-zA-Z\.\-_]+)@([a-zA-Z\.\-_]+)\.[a-z]{2,7})|(1[0-9]{10})/">
       </div>
       <div class="form-group m-b-xs">
         <label class="hide">Password</label>

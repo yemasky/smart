@@ -603,7 +603,8 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 //login 
 app.controller("LoginController",function($rootScope, $scope, $httpService, $modal, $location, $translate, $tooltip, $log){
 	var loginTooltip = '';
-	$scope.login = function() {
+	$scope.login = function(valid) {
+        if(valid == false) return;
         $scope.login.error_message = '';
 		$scope.beginLoading =! $scope.beginLoading;
 		var password = $scope.param.password;

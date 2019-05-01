@@ -106,6 +106,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                             if(room.clean == 'dirty')
                                 roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-dark" title="空脏"></i>';//空脏
                         }
+                        //锁房 维修房
+                        if(room.lock == 'lock') {//锁房
+                            roomStatus ='<a class="fas fa-lock text-warning" title="锁房"></a> ';
+                        }
+						if(room.lock == 'repair') {//维修房
+                            roomStatus = '<a class="fas fa-tools text-warning" title="维修房"></a>';
+                        }
                         //附加
 				   		if(angular.isDefined(check_outRoom[room.item_id])) {//预离
                             roomStatus = roomStatus + '<a class="fas fa-sign-out-alt text-warning" title="预离 &#8226; 查看订单"></a>';
@@ -146,7 +153,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		});
 	};
 	$scope.roomStatusBook = function(detailBookRoom) {
-        console.log(detailBookRoom);
         $scope.editRoomBook(detailBookRoom, 1);
     }
     //
@@ -230,11 +236,49 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param.item_name = $('#live_in_item_id').find('option:selected').text();
         $scope.param.detail_id = $('#live_in_item_id').find('option:selected').attr('detail_id');
         $scope.param.booking_detail_id = $('#live_in_item_id').find('option:selected').attr('booking_detail_id');
-    }
+    };
     //读取身份证
     $scope.readGuestIdCard = function() {
 
-    }
+    };
+    //设置room的各种状态
+    $scope.statusRoom = {};
+    $scope.setRoomStatus = function(room) {
+        $scope.statusRoom = room;
+    };
+    //lock unlock dirty clean repair room_card
+    $scope.param.editType = '';var myOtherAside = '';
+    $scope.editRoomStatus = function(editType) {
+        $scope.param.editType = editType;
+        if(editType == 'lock' || editType == 'repair') {
+            myOtherAside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/EditRoomStatus.html',show: false});
+            // Show when some event occurs (use $promise property to ensure the template has been loaded)
+            myOtherAside.$promise.then(function() {
+                myOtherAside.show();
+            })
+        } else {
+            $scope.saveRoomStatusEdit();
+        }
+    };
+    $scope.saveRoomStatusEdit = function() {
+        $scope.beginLoading =! $scope.beginLoading;
+        $scope.param.r_id = $scope.layoutRoom[$scope.statusRoom.item_id].r_id;
+        $scope.param['begin_datetime'] = $filter("date")( $scope.param['begin_datetime'], "yyyy-MM-dd");
+		$scope.param['end_datetime'] = $filter("date")($scope.param['end_datetime'], "yyyy-MM-dd");
+        $httpService.header('method', 'saveRoomStatusEdit');
+        $httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+            var message = $scope.getErrorByCode(result.data.code);
+            var myAlert = $alert({title: 'Success', content: message, placement: 'top-right', duration: 3, type: 'success', show: true});
+            myOtherAside.hide();
+        });
+    };
     //begin/////////////////////////////////////////远期房态//////////////////
     
     //end//////////////////////////////////////////远期房态///////////////////

@@ -54,11 +54,11 @@
                                                 <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id])"></label>
                                             </div>
                                           </div>
-                                            <button type="button" class="btn btn-default no-border no-margin p-xs w-full m-t-n" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="right" bs-dropdown="dropdown">
+                                            <button type="button" class="btn btn-default no-border no-margin p-xs w-full m-t-n" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
                                             <span class="pull-left text-muted" title=""><i class="fa fa-address-card" aria-hidden="true"></i>
-                                                <span ng-repeat="(i, liveIn) in roomLiveIn[room.item_id]" data-title="预抵: {{bookingDetailRoom[liveIn.booking_detail_id].check_in}} <br>预离: {{bookingDetailRoom[liveIn.booking_detail_id].check_out}}" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip">{{liveIn.member_name}}</span>
+                                                <span ng-repeat="(i, liveIn) in roomLiveIn[room.item_id]" data-title="预抵: {{bookingDetailRoom[liveIn.booking_detail_id].check_in|limitTo:10}} <br>预离: {{bookingDetailRoom[liveIn.booking_detail_id].check_out|limitTo:10}}" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip">{{liveIn.member_name}}</span>
                                             </span>
-                                            <span class="pull-right text-muted"><i class="fa fa-caret-down"></i></span></button>
+                                            <span class="pull-right text-muted"><i class="fas fa-cog"></i></span></button>
                                         </div>
                                     </div> 
                                 </div>
@@ -169,15 +169,6 @@
                     <div ng-show="activeTab==3">
                         <div class="form-group m-h-n clearfix">
 							<div class="p-md">
-							  <div class="form-inline form-group">
-                                <label class="control-label m-b"><i class="fa fa-clock-o"></i> 月份</label>
-                                <div class="input-group">
-                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="eta_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="eta_date" bs-datepicker>
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" type="button">Go!</button>
-                                    </span>
-                                </div>
-                              </div>
 							  <div class="table-responsive">
 								<table class="table table-bordered table-striped bg-white">
 								  <thead>
@@ -215,7 +206,15 @@
                     <div ng-show="activeTab==4">
                         <div class="form-group m-h-n clearfix">
 							<div class="p-md">
-							  <h3><span translate="module.channel.channel"></span>列表</h3>
+							  <div class="form-inline form-group">
+                                <label class="control-label m-b"><i class="fa fa-clock-o"></i> 月份</label>
+                                <div class="input-group">
+                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="eta_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="eta_date" bs-datepicker>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default" type="button">Go!</button>
+                                    </span>
+                                </div>
+                              </div>
 							  <div class="table-responsive">
 								<table class="table table-bordered table-striped bg-white">
 								  <thead>
@@ -367,11 +366,17 @@
 </div>
 <script type="text/ng-template" id="/app/manage_room.html">
 <ul class="dropdown-menu">
-  <li><a href class="pull-left col-sm-6"><i class="fas fa-lock"></i> 锁房</a> <a href class="pull-right col-sm-6"><i class="fas fa-lock-open"></i> 解锁</a></li>
-  <li><a href>Another action</a></li>
-  <li><a href>Something else here</a></li>
+  <li><a style="display:inline;" ng-click="editRoomStatus('lock')"><i class="fas fa-lock"></i> 锁房</a>
+      <a style="display:inline;" ng-click="editRoomStatus('unlock')"><i class="fas fa-lock-open"></i> 解锁</a></li>
+  <li class="divider" style="height:0;"></li>
+  <li><a style="display:inline;" ng-click="editRoomStatus('dirty')"><i class="fas fa-broom small"></i> 脏房</a>
+      <a style="display:inline;" ng-click="editRoomStatus('clean')"><i class="fas fa-magic"></i> 净房</a></li>
   <li class="divider"></li>
-  <li><a href>Separated link</a></li>
+  <li><a style="display:inline;" ng-click="editRoomStatus('repair')"><i class="fas fa-tools"></i> 维修</a>
+      <a style="display:inline;" ng-click="editRoomStatus('repair_ok')"><i class="fas fa-user-check small"></i> 修好</a></li>
+  <li class="divider"></li>
+  <li>
+      <a style="display:inline;" ng-click="editRoomStatus('room_card')"><i class="fas fa-id-card-alt"></i> 房卡</a></li>
 </ul>
 </script>
 <script language="JavaScript" src="/resource/scripts/controllers/Booking/BookRoomStatus.js?"></script>
