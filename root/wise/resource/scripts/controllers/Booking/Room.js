@@ -178,8 +178,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $alert({title: 'Error', content: "请选择客源市场！", templateUrl: '/modal-warning.html', show: true});
             return;
         }
-        $scope.param["in_time"] = $scope.param["in_time"].substr(11,5);
-        $scope.param["out_time"] = $scope.param["out_time"].substr(11,5);
+        if($scope.param['in_time'].length > 8) $scope.param["in_time"] = $scope.param["in_time"].substr(11,5);
+        if($scope.param['out_time'].length > 8) $scope.param["out_time"] = $scope.param["out_time"].substr(11,5);
         loading.show();
         var market_id = $scope.market_id;
         var param = 'channel='+_channel+'&market_id='+market_id;

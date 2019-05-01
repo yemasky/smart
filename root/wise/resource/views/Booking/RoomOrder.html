@@ -69,10 +69,12 @@
                       <span class="input-group-btn">
                           <button class="btn btn-default" type="button" ng-click="beginBooking('member')"><i class="fa fa-search"> </i> 会员</button>
                       </span>
-                  </div>
+                  </div> <span ng-show="market_father_id==7||market_father_id==8"><i class="fas fa-globe-asia"></i> OTA订单
+                  <input type="text" size="16" class="form-control btn-default" id="booking_number_ext" name="booking_number_ext" ng-model="param.booking_number_ext" required></span>
                   <i class="ti-bookmark"></i>备注
                   <div class="input-group">
                       <input type="text" size="10" class="form-control btn-default" id="node" name="node" ng-model="param.node" >
+                      
                       <span class="input-group-btn">
                           <button class="btn btn-default" type="submit" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading"><i class="fa fa-save"> </i> 预订</button>
                       </span>

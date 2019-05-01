@@ -84,7 +84,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                         }
                         //var roomLiveIn = $scope.bookingDetailRoom[number][room_id];
                     }
-                }console.log(roomLiveIn);
+                }
             }
             $scope.roomLiveIn = roomLiveIn;
             $scope.roomDetailList = roomDetailList;
