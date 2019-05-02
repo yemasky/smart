@@ -1,13 +1,13 @@
-<div class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
+<div class="aside b-r box-shadow" tabindex="-1" role="dialog">
+  <div class="aside-dialog aside-lg">
+    <div class="aside-content">
+      <div class="aside-header">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
-        <h4 class="modal-title">编辑</h4>
+        <h4 class="aside-title">编辑</h4>
       </div>
       <form name="form-layout" class="form-validation ng-pristine ng-valid ng-valid-required" id="setEditRoomForm" ng-submit="saveEditRoomForm(roomDetailEdit)">
           <input type="hidden" ng-model="param.detail_id" value="{{roomDetailEdit.booking_detail_id}}">
-      <div class="modal-body tab-container">
+      <div class="aside-body tab-container">
           <ul class="nav nav-tabs">
               <li ng-class="{active:activeRoomBookTab=='market'}" ng-click="activeRoomBookTab='market'">
                   <a translate="module.channel.market_name">客源市场</a>
@@ -51,7 +51,7 @@
             </div>
         </div>
       </div>
-      <div class="modal-footer">
+      <div class="aside-footer">
         <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
         <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
       </div>
@@ -59,6 +59,3 @@
     </div>
   </div>
  </div>
-<script language="javascript">
-
-</script>

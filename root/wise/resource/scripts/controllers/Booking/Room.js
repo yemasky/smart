@@ -318,7 +318,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     	//console.log(_this);
     };
     //开始预订
-    $scope.beginBooking = function(search) {
+    $scope.beginBooking = function(search) {alert(search);
         if($scope.market_father_id == '4' || search == 'member') {//判断会员是否正确
             var mobile_email = $scope.param.mobile_email, member_mobile = '', member_email = '';
             if(mobile_email.indexOf("@") != -1) {

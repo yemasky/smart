@@ -225,13 +225,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.editRoomBook(detailBookRoom, 1);
     }
     //
-    var editBookRoomModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',show: false});
+    var editBookRoomAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
-    $scope.showEditBookRoomModal = function(rDetail, tab) {
+    $scope.showEditBookRoomAside = function(rDetail, tab) {
         $scope.activeRoomBookTab = tab;
         $scope.roomDetailEdit = rDetail;
-        editBookRoomModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',show: false});
-        editBookRoomModal.$promise.then(editBookRoomModal.show);
+        editBookRoomAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
+        editBookRoomAside.$promise.then(editBookRoomAside.show);
     };
     $scope.saveEditRoomForm = function (roomDetailEdit) {console.log(roomDetailEdit);
         $httpService.header('method', 'editBookRoom');
@@ -259,11 +259,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.setEditItemRoomName = function(item_name) {
         $scope.param.item_room_name = item_name;
     }
-    //保存入住客人
-    var addGuestLiveInModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',show: false});
+    //添加入住客人
+    var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
     $scope.addGuestLiveIn = function(liveInGuest) {
-        addGuestLiveInModal = $modal({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',show: false});
-        addGuestLiveInModal.$promise.then(addGuestLiveInModal.show);
+        addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
+        addGuestLiveInAside.$promise.then(addGuestLiveInAside.show);
         if(liveInGuest != '') {console.log(liveInGuest);
             $(document).ready(function(){
                 for (var key in liveInGuest) {

@@ -63,19 +63,19 @@
                                               <a class="fas fa-user-plus" ng-click="addGuestLiveIn('')"></a>
 										  </td>
                                           <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
-											<a class="fa pull-right" ng-click="showEditBookRoomModal(rDetail, 'Room')"></a></td>
+											<a class="fa pull-right" ng-click="showEditBookRoomAside(rDetail, 'Room')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
-											<a class="pull-right" ng-click="showEditBookRoomModal(rDetail, 'market')"></a></td>
+											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'market')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_category_name}}
-											<a class="pull-right" ng-click="showEditBookRoomModal(rDetail, 'category')"></a></td>
+											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'category')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
-											<a class="pull-right" ng-click="showEditBookRoomModal(rDetail, 'system')"></a></td>
+											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'system')"></a></td>
 										  <td class="col-xs-1" show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{consumeList[rDetail.booking_number][rDetail.booking_detail_id][0].consume_price}}
 											<a class="pull-right"></a></td>
 										  <td class="col-xs-1">{{rDetail.check_in | limitTo:10}}</td>
 										  <td class="col-xs-1">{{rDetail.check_out | limitTo:10}}</td>
 										  <td>
-											  <button class="btn btn-xs btn-default" ng-click="showEditBookRoomModal(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i></button>
+											  <button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i></button>
 										  </td>
 									  </tr>
                                       <tr>

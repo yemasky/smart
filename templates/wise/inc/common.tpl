@@ -139,20 +139,13 @@
 <script type="text/ng-template" id="/app/footer.html">
 <div class="p bg-white text-xs">
   <div class="pull-right hidden-xs hidden-sm text-muted">
-    <strong>{{app.name}}</strong> - Built with AngularJS &amp; Bootstrap  &copy; Copyright 2014
+    <strong>{{app.name}}</strong> -  &copy; Copyright 2019
   </div>
   <ul class="list-inline no-margin text-center-xs">
     <li>
       <a bs-dropdown="dropdown" data-placement="top-left" data-animation="am-flip-x" data-template-url="/langs.html">{{select_lang}}</a>
     </li>
     <li class="text-muted">-</li>
-    <li>
-      <a ui-sref="page.document">Documents</a>
-    </li>
-    <li class="text-muted">-</li>    
-    <li>
-      <a href="javascript:;" target="_blank">Purchase</a>
-    </li>
   </ul>
 </div>
 </script><!-- /app/footer.html -->

@@ -1,0 +1,41 @@
+<div class="aside b-r box-shadow" tabindex="-1" role="dialog">
+  <div class="aside-dialog">
+    <div class="aside-content">
+     <form name="RoomStatusEditForm" class="form-validation" id="thisForm" ng-submit="saveRoomStatusEdit()">
+      <div class="aside-header">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4 class="aside-title" ng-bind-html="title"></h4>
+      </div>
+      <div class="aside-body">
+          <div class="col-md-9 b-l bg-auto">
+            <div class="p-md bg-light b-b font-bold">Public profile</div>
+            <form role="form" class="p-md ng-pristine ng-valid">
+              <div class="form-group">
+                <label>Profile picture</label>
+                <div class="form-file">
+                  <input type="file">
+                  <button class="btn btn-default">Upload new picture</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control w-xxl w-full-xs">
+              </div>
+              <div class="form-group">
+                <label>Email address</label>
+                <input type="email" class="form-control w-xxl w-full-xs">
+              </div>
+              
+              <button type="submit" class="btn btn-info m-t">Submit</button>
+            </form>
+          </div>
+        
+      </div>
+      <div class="aside-footer">
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+        <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

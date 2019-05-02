@@ -599,8 +599,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.weekday[3]="三";$scope.weekday[4]="四";$scope.weekday[5]="五";
 		$scope.weekday[6]="六";
         $scope.loading = $alert({content: 'Loading... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: false});
-        var message = '操作成功！';
-        $scope.successAlert = $alert({title: 'Success', content: message, placement: 'top-left', duration: 3, type: 'success', show: false});
+        $scope.successAlert = $alert({title: 'Success', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
 		
 }]);
 //login 

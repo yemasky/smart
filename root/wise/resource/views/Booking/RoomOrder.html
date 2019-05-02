@@ -1,7 +1,7 @@
 <span ng-include="'/resource/views/Common/nav.tpl.html'"></span>
 <div class="p-md" ng-controller="RoomOrderController">
     <div class="" append-source>
-            <form name="bookingRoomForm" class="form-inline" role="form" ng-submit="beginBooking()">
+            <form name="bookingRoomForm" class="form-inline" role="form" ng-submit="beginBooking('')">
             <div class=""> 
             	<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵</label>
                 <div class="form-group">
@@ -65,12 +65,12 @@
                   <input type="text" size="10" class="form-control" id="member_name" name="member_name" ng-model="param.member_name" required >
                   <i class="ti-mobile"></i>手机/Email
                   <div class="input-group">
-                      <input type="text" size="10" class="form-control" id="mobile_email" name="mobile_email" ng-model="param.mobile_email" >
+                      <input type="text" size="10" class="form-control" id="mobile_email" name="mobile_email" ng-model="param.mobile_email" required >
                       <span class="input-group-btn">
                           <button class="btn btn-default" type="button" ng-click="beginBooking('member')"><i class="fa fa-search"> </i> 会员</button>
                       </span>
                   </div> <span ng-show="market_father_id==7||market_father_id==8"><i class="fas fa-globe-asia"></i> OTA订单
-                  <input type="text" size="16" class="form-control btn-default" id="booking_number_ext" name="booking_number_ext" ng-model="param.booking_number_ext" required></span>
+                  <input type="text" size="16" class="form-control btn-default" id="booking_number_ext" name="booking_number_ext" ng-model="param.booking_number_ext" ng-if="market_father_id==7||market_father_id==8?true:false" required></span>
                   <i class="ti-bookmark"></i>备注
                   <div class="input-group">
                       <input type="text" size="10" class="form-control btn-default" id="node" name="node" ng-model="param.node" >
