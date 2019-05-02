@@ -56,7 +56,7 @@
                                           </div>
                                             <button type="button" class="btn btn-default no-border no-margin p-xs w-full m-t-n" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
                                             <span class="pull-left text-muted" title=""><i class="fa fa-address-card" aria-hidden="true"></i>
-                                                <span ng-repeat="(i, liveIn) in roomLiveIn[room.item_id]" data-title="预抵: {{bookingDetailRoom[liveIn.booking_detail_id].check_in|limitTo:10}} <br>预离: {{bookingDetailRoom[liveIn.booking_detail_id].check_out|limitTo:10}}" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip">{{liveIn.member_name}}</span>
+                                                <span ng-repeat="(i, liveIn) in roomLiveIn[room.item_id]" data-title="预抵: {{bookingDetailRoom[liveIn.booking_detail_id].check_in|limitTo:10}} <br>预离: {{bookingDetailRoom[liveIn.booking_detail_id].check_out|limitTo:10}}" data-placement="bottom" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip">{{liveIn.member_name}}</span>
                                             </span>
                                             <span class="pull-right text-muted"><i class="fas fa-caret-square-down"></i></span></button>
                                         </div>

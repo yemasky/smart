@@ -1,4 +1,4 @@
-<div class="aside b-r box-shadow" tabindex="-1" role="dialog">
+<div class="aside col-xs-6 b-r box-shadow" tabindex="-1" role="dialog">
   <div class="aside-dialog aside-lg">
     <div class="aside-content">
       <div class="aside-header">
@@ -33,7 +33,7 @@
                 <div ng-show="activeRoomBookTab=='Room'">
                     <div class="table-responsive">
                         <div class="list-group no-radius">
-                            <div class="list-group-item col-sm-2 m-xs" ng-repeat="(room_id, room) in layoutSelectRoom">
+                            <div class="list-group-item col-sm-2 p-xs m-xs" ng-repeat="(room_id, room) in layoutSelectRoom">
                               <span class="pull-left w-thumb-xs m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
                               <div class="clear">
                                 <span class="font-bold block">{{room.item_name}}
@@ -42,7 +42,7 @@
                                         <i></i>
                                     </label>
                                 </span>
-                                <span data-title="{{room.describe}}" bs-tooltip>{{room.describe | limitTo:5}}..</span>
+                                <span data-title="{{room.describe}}" data-placement="bottom" bs-tooltip>{{room.describe | limitTo:5}}..</span>
                               </div>
                             </div>
                         </div>

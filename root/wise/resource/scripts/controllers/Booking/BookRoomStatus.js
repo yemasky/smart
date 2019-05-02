@@ -207,7 +207,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.actionAccounts = '账务项';
     $scope.actionEditLog = '操作日志';
     $scope.bookDetail = {};$scope.roomDetail = {};
-    var asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
+    var asideEditRoomBook = '';
 	$scope.editRoomBook = function(detailBookRoom, tab) {
         $scope.layoutSelectRoom = layoutRoomList[detailBookRoom.item_category_id];
 		$scope.param["valid"] = "1";
@@ -225,7 +225,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.editRoomBook(detailBookRoom, 1);
     }
     //
-    var editBookRoomAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
+    var editBookRoomAside = '';
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
     $scope.showEditBookRoomAside = function(rDetail, tab) {
         $scope.activeRoomBookTab = tab;
@@ -260,11 +260,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param.item_room_name = item_name;
     }
     //添加入住客人
-    var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
+    var addGuestLiveInAside = '';
     $scope.addGuestLiveIn = function(liveInGuest) {
         addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
         addGuestLiveInAside.$promise.then(addGuestLiveInAside.show);
-        if(liveInGuest != '') {console.log(liveInGuest);
+        if(liveInGuest != '') {
             $(document).ready(function(){
                 for (var key in liveInGuest) {
                     if(key.substr(0,1) == '$') continue;
