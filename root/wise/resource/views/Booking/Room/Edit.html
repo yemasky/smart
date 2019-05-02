@@ -123,7 +123,7 @@
                             </ul>
                         </script>
                         <div class="btn-group m-b">
-                            <button type="button" class="btn btn-rounded btn-default"><i class="fas fa-yen-sign"></i> 收款</button>
+                            <button type="button" class="btn btn-rounded btn-default" ng-click="bookingAccounts()"><i class="fas fa-yen-sign"></i> 收款</button>
                             <button type="button" class="btn btn-default"><i class="fas fa-wallet"></i> 退款</button>
                             <button type="button" class="btn btn-default"><i class="fas fa-money-check-alt"></i> 挂账</button>
                             <div class="btn-group dropdown">
@@ -205,7 +205,6 @@
       <div class="aside-footer panel-footer">
       	<input type="hidden" name="item_id" value="" ng-model="param.item_id" >
         <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
-        <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
       </div>
       </form>
     </div>

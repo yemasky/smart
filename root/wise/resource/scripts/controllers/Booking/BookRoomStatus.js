@@ -348,6 +348,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             if(myOtherAside != '') myOtherAside.hide();
         });
     };
+    //收款
+    $scope.bookingAccounts = function() {
+        var asideAccounts = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
+		asideAccounts.$promise.then(function() {
+			asideAccounts.show();
+			$(document).ready(function(){
+			});
+		});
+	};
     //begin/////////////////////////////////////////远期房态//////////////////
     
     //end//////////////////////////////////////////远期房态///////////////////
