@@ -1,4 +1,73 @@
 /////
+app.directive("edit", function(){
+  return{
+    restrict: "E",
+    link: function(scope,element){
+      element.bind("click",function(e){
+        alert("I am clicked for editing");
+      });
+    }
+  }
+}).directive("update",function($document){
+  return{
+    restrict: 'AE',
+    require: 'ngModel',
+    link: function(scope,element,attrs,ngModel){
+      element.bind("click",function(){
+         alert(ngModel.$modelValue + " is updated, Update your value here.");
+         var id = "txt_name_" +ngModel.$modelValue.id;
+         var obj = $("#"+id);
+         obj.removeClass("active");
+         obj.addClass("inactive");
+         obj.attr("readOnly",true);
+          scope.$apply(function(){
+           scope.showEdit = true;
+         })
+      })
+    }
+  }
+}).directive("showBookroomPrice", function($document){
+  return{
+    restrict: "A",
+	require: 'ngModel',
+    link: function($scope, $element, $attr, $ngModel){
+        var show = $attr.showBookroomPrice;
+        $element.on('mouseout', function(){
+            if(show == 'close') {
+                $element.find('a').removeClass('fa fa-angle-double-down');
+            } else {
+                $element.find('a').removeClass('fa fa-angle-up');
+            }
+        });
+        $element.on('mouseover', function(){
+            if(show == 'close') {
+                $element.find('a').addClass('fa fa-angle-double-down');
+            } else {
+                $element.find('a').addClass('fa fa-angle-up');
+            }
+        });
+        $element.find('a').on("click",function(){
+            if(show == 'close') {
+            	var priceTable = '<table class="table no-margin table-condensed"><tbody><tr>';
+            	for(var i in $ngModel.$modelValue) {
+            		var price = $ngModel.$modelValue[i];
+					priceTable += '<td>'+price.business_day + '</td><td>' + price.consume_price+'</td>';
+				}
+				priceTable += '</tr></tbody></table>';
+                $element.parent().after('<tr><td colspan="8" class="no-padding panel">'+priceTable+'</td></tr>');
+                $attr.showBookroomPrice = show = 'on';
+                $element.find('a').removeClass('fa fa-angle-double-down');
+                $element.find('a').addClass('fa fa-angle-up');
+            } else {
+                $element.parent().next().remove();
+                $attr.showBookroomPrice = show = 'close';
+                $element.find('a').removeClass('fa fa-angle-up');
+                $element.find('a').addClass('fa fa-angle-double-down');
+            }
+        })
+    }
+  }
+});
 app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
     $scope.param = {};
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
@@ -133,7 +202,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	});
 	//预订编辑开始
     $scope.layoutSelectRoom = {};
-    $scope.actionEdit = '订单管理';
+    $scope.actionEdit = '客房项';
     $scope.actionConsume = '消费项';
     $scope.actionAccounts = '账务项';
     $scope.actionEditLog = '操作日志';
@@ -256,8 +325,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             myOtherAside.$promise.then(function() {
                 myOtherAside.show();
             })
-        } else {
+        } else if(editType != 'room_card') {
             $scope.saveRoomStatusEdit();
+        } else {//发放房卡 room_card
+            
         }
     };
     $scope.saveRoomStatusEdit = function() {
@@ -276,7 +347,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
             var message = $scope.getErrorByCode(result.data.code);
             var myAlert = $alert({title: 'Success', content: message, placement: 'top-right', duration: 3, type: 'success', show: true});
-            myOtherAside.hide();
+            if(myOtherAside != '') myOtherAside.hide();
         });
     };
     //begin/////////////////////////////////////////远期房态//////////////////

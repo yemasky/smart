@@ -7,7 +7,7 @@
       </div>
       <form name="RoomBookEditForm" class="form-validation" id="thisForm" ng-submit="saveData()">
       <div class="aside-body h-8x scrollable">
-		  <div class="list-group-item">
+		  <div class="list-group-item m-b">
 			  <a href class="w-thumb-md pull-left m-r"><img src="/data/images/userimg/user_m.png" class="img-responsive"></a>
 			  <div class="clear m-b-sm">
 				  <div>{{bookDetail.member_name}}</div>
@@ -72,10 +72,10 @@
 											<a class="pull-right" ng-click="showEditBookRoomModal(rDetail, 'system')"></a></td>
 										  <td class="col-xs-1" show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{consumeList[rDetail.booking_number][rDetail.booking_detail_id][0].consume_price}}
 											<a class="pull-right"></a></td>
-										  <td>{{rDetail.check_in | limitTo:10}}</td>
-										  <td>{{rDetail.check_out | limitTo:10}}</td>
+										  <td class="col-xs-1">{{rDetail.check_in | limitTo:10}}</td>
+										  <td class="col-xs-1">{{rDetail.check_out | limitTo:10}}</td>
 										  <td>
-											  <button class="btn btn-sm btn-addon btn-default" ng-click="showEditBookRoomModal(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i>编辑</button>
+											  <button class="btn btn-xs btn-default" ng-click="showEditBookRoomModal(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i></button>
 										  </td>
 									  </tr>
                                       <tr>
@@ -114,18 +114,37 @@
                     </div>
                 </div>
                 <div ng-show="activeRoomBookEditTab==3">
+                    <div class="panel-heading">
+                        <script type="text/ng-template" id="/app/dropdownx.html">
+                            <ul class="dropdown-menu">
+                              <li><a href>Action</a></li>
+                              <li><a href>Another action</a></li>
+                              <li><a href>More</a></li>
+                            </ul>
+                        </script>
+                        <div class="btn-group m-b">
+                            <button type="button" class="btn btn-rounded btn-default"><i class="fas fa-yen-sign"></i> 收款</button>
+                            <button type="button" class="btn btn-default"><i class="fas fa-wallet"></i> 退款</button>
+                            <button type="button" class="btn btn-default"><i class="fas fa-money-check-alt"></i> 挂账</button>
+                            <div class="btn-group dropdown">
+                              <button type="button" class="btn btn-rounded btn-default" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top" data-template-url="/app/dropdownx.html">
+                                类型 <span class="caret"></span>
+                              </button>          
+                            </div>
+                        </div>
+					</div>
                       <div class="table-responsive">
 						<table class="table table-bordered table-striped bg-white">
 						  <thead>
 							<tr>
-							  <th translate="module.channel.market_name">客源市场</th>
-							  <th>房型</th>
-							  <th>房号</th>
-							  <th>客人名称</th>
-							  <th translate="module.channel.phone">电话</th>
-							  <th translate="module.channel.address">地址</th>
-							  <th translate="common.hint.date">日期</th>
-							  <th translate="common.hint.manager">管理</th>
+                              <th>房号</th>
+							  <th>项目</th>
+							  <th>类型</th>
+							  <th>数量</th>
+							  <th>金额</th>
+							  <th>日期</th>
+							  <th>备注</th>
+							  <th>管理</th>
 							</tr>
 						  </thead>
 						  <tbody>
@@ -138,8 +157,8 @@
 							  <td>{{rDetail.address}}</td>
 							  <td>{{rDetail.add_datetime}}</td>
 							  <td>
-							  <button class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
-							  <button class="btn btn-sm btn-default" ng-click="config(Channel.id)"><span translate="common.hint.config" >配置</span></button>
+							  <button class="btn btn-xs btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
+							  <button class="btn btn-xs btn-default" ng-click="config(Channel.id)"><span translate="common.hint.config" >配置</span></button>
 							  </td>
 							</tr>
 						  </tbody>
@@ -192,75 +211,3 @@
     </div>
   </div>
 </div>
-<script language="javascript">
-app.directive("edit", function(){
-  return{
-    restrict: "E",
-    link: function(scope,element){
-      element.bind("click",function(e){
-        alert("I am clicked for editing");
-      });
-    }
-  }
-}).directive("update",function($document){
-  return{
-    restrict: 'AE',
-    require: 'ngModel',
-    link: function(scope,element,attrs,ngModel){
-      element.bind("click",function(){
-         alert(ngModel.$modelValue + " is updated, Update your value here.");
-         var id = "txt_name_" +ngModel.$modelValue.id;
-         var obj = $("#"+id);
-         obj.removeClass("active");
-         obj.addClass("inactive");
-         obj.attr("readOnly",true);
-          scope.$apply(function(){
-           scope.showEdit = true;
-         })
-      })
-    }
-  }
-}).directive("showBookroomPrice", function($document){
-  return{
-    restrict: "A",
-	require: 'ngModel',
-    link: function($scope, $element, $attr, $ngModel){
-        var show = $attr.showBookroomPrice;
-        $element.on('mouseout', function(){
-            if(show == 'close') {
-                $element.find('a').removeClass('fa fa-angle-double-down');
-            } else {
-                $element.find('a').removeClass('fa fa-angle-up');
-            }
-        });
-        $element.on('mouseover', function(){
-            if(show == 'close') {
-                $element.find('a').addClass('fa fa-angle-double-down');
-            } else {
-                $element.find('a').addClass('fa fa-angle-up');
-            }
-        });
-        $element.find('a').on("click",function(){
-            if(show == 'close') {
-            	var priceTable = '<table class="table no-margin table-condensed"><tbody><tr>';
-            	for(var i in $ngModel.$modelValue) {
-            		var price = $ngModel.$modelValue[i];
-					priceTable += '<td>'+price.business_day + '</td><td>' + price.consume_price+'</td>';
-				}
-				priceTable += '</tr></tbody></table>';
-                $element.parent().after('<tr><td colspan="8" class="no-padding panel">'+priceTable+'</td></tr>');
-                $attr.showBookroomPrice = show = 'on';
-                $element.find('a').removeClass('fa fa-angle-double-down');
-                $element.find('a').addClass('fa fa-angle-up');
-            } else {
-                $element.parent().next().remove();
-                $attr.showBookroomPrice = show = 'close';
-                $element.find('a').removeClass('fa fa-angle-up');
-                $element.find('a').addClass('fa fa-angle-double-down');
-            }
-        })
-    }
-  }
-});
-//modal controller
-</script>
