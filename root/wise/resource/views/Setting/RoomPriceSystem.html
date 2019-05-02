@@ -60,9 +60,9 @@
         //获取数据
         var _channel = $scope.$stateParams.channel; var _view = $scope.$stateParams.view, common = '';
         var param = 'channel=' + _channel + '&view=' + _view;
-        var loading = $alert({content: 'Loading... 90%', placement: 'top', type: 'info',templateUrl: '/loading.html',show: true});
+        $scope.loading.show();
         $httpService.post('/app.do?' + param, $scope, function(result) {
-            loading.hide();
+            $scope.loading.hide();
             if (result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);
                 $alert({ title: 'Error',content: message,templateUrl: '/modal-warning.html',show: true});
@@ -160,7 +160,7 @@
             } else {
 				param.price_system_father_id = 0;
 			}
-            loading = $alert({ content: 'Saveing... 90%', placement: 'top',type: 'info',templateUrl: '/loading.html',show: true});
+            $scope.loading.show();
             var formParam = $.serializeFormat('#thisForm');
             formParam['cancellation_policy'] = param['policy'];
             formParam['price_system_father_id'] = '0';
@@ -168,7 +168,7 @@
             formParam['price_system_id'] = param['price_system_id'];
             $scope.param = formParam;
             $httpService.post('/app.do?channel=' + common.saveAddEditUrl, $scope, function(result) {
-                loading.hide();
+                $scope.loading.hide();
                 if (result.data.success == '0') return;
                 solutionData(result.data.item);
                 asideRoomPriceSystem.hide();

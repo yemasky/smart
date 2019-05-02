@@ -362,8 +362,8 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
         }
     })
 }]);
-app.controller('MainController',["$rootScope","$scope","$translate","$localStorage","$window","$location","$httpService","$modal","$tooltip","$filter","$log", 
-	function($rootScope,$scope,$translate,$localStorage,$window,$location,$httpService,$modal,$tooltip,$filter,$log) {
+app.controller('MainController',["$rootScope","$scope","$translate","$localStorage","$window","$location","$httpService","$modal","$tooltip","$filter","$alert","$log", 
+	function($rootScope,$scope,$translate,$localStorage,$window,$location,$httpService,$modal,$tooltip,$filter,$alert,$log) {
 		function matchNavigator($window) {
 			var navigatorInfo = $window.navigator.userAgent || $window.navigator.vendor || $window.opera;
 			return /iPhone|iPod|iPad|Silk|Android|BlackBerry|Opera Mini|IEMobile/.test(navigatorInfo)
@@ -598,6 +598,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.weekday[0]="日";$scope.weekday[1]="一";$scope.weekday[2]="二";
 		$scope.weekday[3]="三";$scope.weekday[4]="四";$scope.weekday[5]="五";
 		$scope.weekday[6]="六";
+        $scope.loading = $alert({content: 'Loading... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: false});
 		
 }]);
 //login 

@@ -76,9 +76,9 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 	//获取数据
 	var _channel = $scope.$stateParams.channel;var _view = $scope.$stateParams.view,common = '';
 	var param = 'channel='+_channel+'&view='+_view;
-	var loading = $alert({content: 'Loading... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
+	$scope.loading.show();
 	$httpService.post('/app.do?'+param, $scope, function(result){
-		loading.hide();
+		$scope.loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
 			$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
@@ -165,8 +165,7 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 			//$alert({title: 'Notice', content: '类型必须选择！', templateUrl: '/modal-warning.html', show: true});
 			//return;
 		}
-		loading = $alert({content: 'Saveing... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
-		//
+		$scope.loading.show();
 		var formParam = $.serializeFormat('#thisForm');
 		formParam['cancellation_policy'] = param['policy'];
 		formParam['price_system_father_id'] = '0';
@@ -175,7 +174,7 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 		formParam['price_system_type'] = $scope.thisPriceSystem['price_system_type'];
 		$scope.param = formParam;
 		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
-			loading.hide();
+			$scope.loading.hide();
 			if(result.data.success == '0') return; 
 			//asideRoomPrice.hide();
             $alert({title: 'Notice', content: '保存成功！', templateUrl: '/modal-success.html', show: true});
@@ -193,10 +192,10 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 		$scope.param['begin_date'] = $('#begin_date').val().substr(0,10);
 		$scope.param['end_date'] = $('#end_date').val().substr(0,10);
 		$httpService.header('method', 'checkHistoryPrice');
-		loading.show();
+		$scope.loading.show();
 		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
-			$httpService.deleteHeader('method');loading.hide();
-			loading.hide();
+			$httpService.deleteHeader('method');
+            $scope.loading.hide();
 			if(result.data.success == '0') return; 
 			var year = $('#begin_date').val().substr(0,4);var month = $('#begin_date').val().substr(5,2);
 			var nextYear = $('#end_date').val().substr(0,4);var nextMonth = $('#end_date').val().substr(5,2);

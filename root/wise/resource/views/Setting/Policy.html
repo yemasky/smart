@@ -57,9 +57,9 @@ app.controller('PolicyController', function($rootScope, $scope, $httpService, $l
 	var _channel = $scope.$stateParams.channel, common = '';
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
-	var loading = $alert({content: 'Loading... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
+	$scope.loading.show();
 	$httpService.post('/app.do?'+param, $scope, function(result){
-		loading.hide();
+		$scope.loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
 			$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
@@ -95,7 +95,7 @@ app.controller('PolicyController', function($rootScope, $scope, $httpService, $l
 			$alert({title: 'Notice', content: '“取消政策规则”必须选择！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
-		loading = $alert({content: 'Saveing... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
+		$scope.loading.show();
 		param.begin_datetime = $filter('date')(param._begin_datetime, 'MM-dd', '0000');
 		delete param._begin_datetime;
 		param.end_datetime = $filter('date')(param._end_datetime, 'MM-dd', '0000');
@@ -104,7 +104,7 @@ app.controller('PolicyController', function($rootScope, $scope, $httpService, $l
 		delete param._rules_time;
 		$scope.param = param;
 		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
-			loading.hide();
+			$scope.loading.hide();
 			if(result.data.success == '0') {
 				return;
 			}

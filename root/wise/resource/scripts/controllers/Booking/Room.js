@@ -1,6 +1,6 @@
 /////
 app.controller('RoomOrderController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter) {
-    var loading = $alert({content: 'Loading... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
+    $scope.loading.show();
     //日历部分
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
@@ -13,7 +13,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     //获取数据
     var param = 'channel='+_channel+'&view='+_view+'&market_id='+$scope.market_id;
     $httpService.post('/app.do?'+param, $scope, function(result){
-        loading.hide();
+        $scope.loading.hide();
         if(result.data.success == '0') {
             var message = $scope.getErrorByCode(result.data.code);
             $alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
@@ -180,12 +180,12 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         }
         if($scope.param['in_time'].length > 8) $scope.param["in_time"] = $scope.param["in_time"].substr(11,5);
         if($scope.param['out_time'].length > 8) $scope.param["out_time"] = $scope.param["out_time"].substr(11,5);
-        loading.show();
+        $scope.loading.show();
         var market_id = $scope.market_id;
         var param = 'channel='+_channel+'&market_id='+market_id;
         $httpService.header('method', 'checkOrderData');
         $httpService.post('/app.do?'+param, $scope, function(result){
-            loading.hide();$httpService.deleteHeader('checkOrderData');
+            $scope.loading.hide();$httpService.deleteHeader('checkOrderData');
             if(result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);
                 $alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
@@ -336,7 +336,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 } 
                 member_mobile = mobile_email;
             }
-            loading.show();
+            $scope.loading.show();
             $httpService.header('method', 'checkMember');
             $checkMember = {};
             $checkMember.param = {};
@@ -344,7 +344,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $checkMember.param['member_mobile']     = member_mobile;
             $checkMember.param['channel_father_id'] = $scope.param.channel_father_id;
             $httpService.post('/app.do?'+param, $checkMember, function(result){
-                loading.hide();$httpService.deleteHeader('method');
+                $scope.loading.hide();$httpService.deleteHeader('method');
                 if(result.data.success == '0') {
                     var message = $scope.getErrorByCode(result.data.code);
                     var message_ext = '.没有找到"'+mobile_email+'"的会员记录！';
@@ -379,7 +379,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         }
         function booking() {
             $scope.beginLoading =! $scope.beginLoading;
-            loading.show();
+            $scope.loading.show();
             $scope.param.market_name = $scope.market_name;
             $scope.param.market_id = $scope.market_id;
             $scope.param.market_father_id = $scope.market_father_id; 
@@ -394,7 +394,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
 			if($scope.param['out_time'].length > 8)$scope.param['out_time'] = $filter('limitTo')($scope.param['out_time'], 8, 11);
             $httpService.post('/app.do?'+param, $scope, function(result){
                 $scope.beginLoading =! $scope.beginLoading;
-                loading.hide();$httpService.deleteHeader('checkOrderData');
+                $scope.loading.hide();$httpService.deleteHeader('checkOrderData');
                 if(result.data.success == '0') {
                     var message = $scope.getErrorByCode(result.data.code);
                     //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});

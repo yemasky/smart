@@ -86,9 +86,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
 	var param = 'channel='+_channel+'&view='+_view;
-	var loading = $alert({content: 'Loading... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
+	$scope.loading.show();
 	$httpService.post('/app.do?'+param, $scope, function(result){
-		loading.hide();
+		$scope.loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
 			//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
@@ -252,7 +252,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.roomDetailList[roomDetailEdit.booking_number] = $scope.roomDetail;
             var message = $scope.getErrorByCode(result.data.code);
             editBookRoomModal.$promise.then(editBookRoomModal.hide);
-            var myAlert = $alert({title: 'Success', content: message, placement: 'top-right', duration: 3, type: 'success', show: true});
+            var myAlert = $alert({title: 'Success', content: message, placement: 'top-left', duration: 3, type: 'success', show: true});
 
         });
     };
@@ -289,7 +289,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
             var message = $scope.getErrorByCode(result.data.code);
             editBookRoomModal.$promise.then(addGuestLiveInModal.hide);
-            var myAlert = $alert({title: 'Success', content: message, placement: 'top-right', duration: 3, type: 'success', show: true});
+            var myAlert = $alert({title: 'Success', content: message, placement: 'top-left', duration: 3, type: 'success', show: true});
             console.log($scope.roomDetail);
             var booking_detail_id=$scope.param.booking_detail_id;
             var booking_number=$scope.bookDetail.booking_number;
@@ -346,7 +346,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 return;//错误返回
             }
             var message = $scope.getErrorByCode(result.data.code);
-            var myAlert = $alert({title: 'Success', content: message, placement: 'top-right', duration: 3, type: 'success', show: true});
+            var myAlert = $alert({title: 'Success', content: message, placement: 'top-left', duration: 3, type: 'success', show: true});
             if(myOtherAside != '') myOtherAside.hide();
         });
     };
