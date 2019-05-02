@@ -252,7 +252,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.roomDetailList[roomDetailEdit.booking_number] = $scope.roomDetail;
             var message = $scope.getErrorByCode(result.data.code);
             editBookRoomModal.$promise.then(editBookRoomModal.hide);
-            var myAlert = $alert({title: 'Success', content: message, placement: 'top-left', duration: 3, type: 'success', show: true});
+            $scope.successAlert.show();
 
         });
     };
@@ -289,8 +289,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
             var message = $scope.getErrorByCode(result.data.code);
             editBookRoomModal.$promise.then(addGuestLiveInModal.hide);
-            var myAlert = $alert({title: 'Success', content: message, placement: 'top-left', duration: 3, type: 'success', show: true});
-            console.log($scope.roomDetail);
+            $scope.successAlert.show();
             var booking_detail_id=$scope.param.booking_detail_id;
             var booking_number=$scope.bookDetail.booking_number;
             if(angular.isUndefined($scope.guestLiveInList[booking_number]))
@@ -345,8 +344,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
-            var message = $scope.getErrorByCode(result.data.code);
-            var myAlert = $alert({title: 'Success', content: message, placement: 'top-left', duration: 3, type: 'success', show: true});
+            $scope.successAlert.show();
             if(myOtherAside != '') myOtherAside.hide();
         });
     };
