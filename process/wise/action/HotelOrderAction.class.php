@@ -301,11 +301,23 @@ class HotelOrderAction extends \BaseAction
         $item_room_name = $objRequest->getInput('item_room_name');
         $item_room = $objRequest->getInput('item_room');
         if ($detail_id > 0) {
+            CommonServiceImpl::instance()->startTransaction();
+            //更新房间detail
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
             if(!empty($item_room_name)) $arrayUpdate['item_name'] = $item_room_name;//item_room_name 为空则不更新
             $arrayUpdate['item_id'] = $item_room;
             BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $arrayUpdate);
+            //更新消费
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_detail_id', $detail_id);
+            BookingHotelServiceImpl::instance()->updateBookingConsume($whereCriteria, $arrayUpdate);
+            //更新财会
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_detail_id', $detail_id);
+            BookingHotelServiceImpl::instance()->updateBookingAccounts($whereCriteria, $arrayUpdate);
+            //
+            CommonServiceImpl::instance()->commit();
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
         }
 

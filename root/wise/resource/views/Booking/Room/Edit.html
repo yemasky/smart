@@ -139,11 +139,9 @@
 							<tr>
                               <th>房号</th>
 							  <th>项目</th>
-							  <th>类型</th>
 							  <th>数量</th>
 							  <th>金额</th>
-							  <th>日期</th>
-							  <th>备注</th>
+							  <th>营业日</th>
 							  <th>管理</th>
 							</tr>
 						  </thead>
@@ -151,11 +149,9 @@
 							<tr ng-repeat="(i, consume) in consumes">
 							  <td class="text-nowrap">{{consume.item_name}}</td>
 							  <td>{{consume.booking_type}}</td>
-							  <td></td>
-							  <td></td>
-							  <td></td>
-							  <td></td>
-							  <td></td>
+							  <td>{{consume.item_amount}}</td>
+							  <td>{{consume.consume_price}}</td>
+							  <td>{{consume.business_day}}</td>
 							  <td>
 							  <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.edit" >编辑</span></button>
 							  <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.config" >配置</span></button>

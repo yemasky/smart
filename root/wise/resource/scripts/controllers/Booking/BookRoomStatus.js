@@ -229,7 +229,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         editBookRoomAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
         editBookRoomAside.$promise.then(editBookRoomAside.show);
     };
-    $scope.saveEditRoomForm = function (roomDetailEdit) {console.log(roomDetailEdit);
+    $scope.saveEditRoomForm = function (roomDetailEdit) {
         $httpService.header('method', 'editBookRoom');
         $scope.beginLoading =! $scope.beginLoading;
         $scope.param.detail_id = roomDetailEdit.detail_id;
@@ -242,12 +242,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 return;//错误返回
             }
             roomDetailEdit.item_id = $scope.param.item_room;
-            roomDetailEdit.item_name = $scope.param.item_room_name;
+            if($scope.param.item_room_name != '') roomDetailEdit.item_name = $scope.param.item_room_name;
             $scope.roomDetail.item_id = $scope.param.item_room;
-            $scope.roomDetail.item_name = $scope.param.item_room_name;
+             if($scope.param.item_room_name != '') $scope.roomDetail.item_name = $scope.param.item_room_name;
             $scope.roomDetailList[roomDetailEdit.booking_number] = $scope.roomDetail;
-            var message = $scope.getErrorByCode(result.data.code);
-            editBookRoomModal.$promise.then(editBookRoomModal.hide);
+            editBookRoomAside.$promise.then(editBookRoomAside.hide);
             $scope.successAlert.show();
 
         });
