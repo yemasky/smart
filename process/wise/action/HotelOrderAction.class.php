@@ -133,6 +133,15 @@ class HotelOrderAction extends \BaseAction
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
             $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')->setChildrenKey('booking_detail_id')->setMultiple(true);
             $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
+            if(!empty($arrayConsume)) {
+                foreach ($arrayConsume as $number => $value) {
+                    foreach ($value as $detail_id => $consumes) {
+                        foreach ($consumes as $i => $consume) {
+                            $arrayConsume[$number][$detail_id][$i]['c_id'] = encode($consume['consume_id']);
+                        }
+                    }
+                }
+            }
         }
         //账务
         $arrayAccounts = null;
@@ -142,8 +151,15 @@ class HotelOrderAction extends \BaseAction
             $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')->setMultiple(true);
             $arrayAccounts = BookingHotelServiceImpl::instance()->getBookingAccounts($whereCriteria);
         }
+        //结账方式
+        $arrayPaymentType = null;
+        if (!empty($arrayBookingNumber)) {
+            $arrayPaymentType = ChannelServiceImpl::instance()->getPaymentTypeHash($company_id);
+        }
 
-        $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom' => $arrayLayoutRoom, 'bookingDetailRoom' => $bookingDetailRoom, 'bookList' => $arrayBookList, 'consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn];
+        $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom' => $arrayLayoutRoom, 'bookingDetailRoom' => $bookingDetailRoom,
+            'bookList' => $arrayBookList, 'consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn,
+            'paymentTypeList'=>$arrayPaymentType];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 
@@ -287,7 +303,7 @@ class HotelOrderAction extends \BaseAction
         if ($detail_id > 0) {
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
-            $arrayUpdate['item_name'] = $item_room_name;
+            if(!empty($item_room_name)) $arrayUpdate['item_name'] = $item_room_name;//item_room_name 为空则不更新
             $arrayUpdate['item_id'] = $item_room;
             BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $arrayUpdate);
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);

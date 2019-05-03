@@ -7,21 +7,23 @@
       </div>
       <form name="form-layout" class="form-validation ng-pristine ng-valid ng-valid-required" id="setEditRoomForm" ng-submit="saveEditRoomForm(roomDetailEdit)">
           <input type="hidden" ng-model="param.detail_id" value="{{roomDetailEdit.booking_detail_id}}">
-      <div class="aside-body tab-container">
-          <ul class="nav nav-tabs">
-              <li ng-class="{active:activeRoomBookTab=='market'}" ng-click="activeRoomBookTab='market'">
-                  <a translate="module.channel.market_name">客源市场</a>
-              </li>
-              <li ng-class="{active:activeRoomBookTab=='category'}" ng-click="activeRoomBookTab='category'">
-                  <a>房型</a>
-              </li>
-              <li ng-class="{active:activeRoomBookTab=='system'}" ng-click="activeRoomBookTab='system'">
-                  <a>价格</a>
-              </li>
-              <li ng-class="{active:activeRoomBookTab=='Room'}" ng-click="activeRoomBookTab='Room'">
-                  <a>房号</a>
-              </li>
-          </ul>
+      <div class="aside-body">
+          <div class="tab-container clear">
+              <ul class="nav nav-tabs">
+                  <li ng-class="{active:activeRoomBookTab=='market'}" ng-click="activeRoomBookTab='market'">
+                      <a translate="module.channel.market_name">客源市场</a>
+                  </li>
+                  <li ng-class="{active:activeRoomBookTab=='category'}" ng-click="activeRoomBookTab='category'">
+                      <a>房型</a>
+                  </li>
+                  <li ng-class="{active:activeRoomBookTab=='system'}" ng-click="activeRoomBookTab='system'">
+                      <a>价格</a>
+                  </li>
+                  <li ng-class="{active:activeRoomBookTab=='Room'}" ng-click="activeRoomBookTab='Room'">
+                      <a>房号</a>
+                  </li>
+              </ul>
+          </div>    
           <div class="clearfix">
             <div class="tab">
                 <div ng-show="activeRoomBookTab=='market'">

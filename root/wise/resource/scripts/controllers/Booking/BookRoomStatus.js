@@ -2,7 +2,7 @@
 app.directive("edit", function(){
   return{
     restrict: "E",
-    link: function(scope,element){
+    link: function($scope, $element){
       element.bind("click",function(e){
         alert("I am clicked for editing");
       });
@@ -12,16 +12,16 @@ app.directive("edit", function(){
   return{
     restrict: 'AE',
     require: 'ngModel',
-    link: function(scope,element,attrs,ngModel){
-      element.bind("click",function(){
-         alert(ngModel.$modelValue + " is updated, Update your value here.");
-         var id = "txt_name_" +ngModel.$modelValue.id;
+    link: function($scope,$element,$attrs,$ngModel){
+      $element.bind("click",function(){
+         alert($ngModel.$modelValue + " is updated, Update your value here.");
+         var id = "txt_name_" +$ngModel.$modelValue.id;
          var obj = $("#"+id);
          obj.removeClass("active");
          obj.addClass("inactive");
          obj.attr("readOnly",true);
-          scope.$apply(function(){
-           scope.showEdit = true;
+         $scope.$apply(function(){
+           $scope.showEdit = true;
          })
       })
     }
@@ -108,6 +108,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.layoutRoom        = result.data.item.layoutRoom;//房型房间对应关系
         $scope.consumeList       = result.data.item.consumeList;//消费
         $scope.guestLiveInList   = result.data.item.guestLiveInList;//入住客人
+        $scope.paymentTypeList = result.data.item.paymentTypeList;//支付方式
 		$scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
         $scope.bookRoomStatus    =  {}; $scope.roomDetailList    =  {};$scope.roomLiveIn    =  {};
         if($scope.roomList != '') {
@@ -169,19 +170,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                         var roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></a>';//空净
                         if(room.status == 'live_in') {//在住
                             roomStatus = '<a class="ui-icon glyphicon glyphicon-user bg-inverse" title="住净 &#8226; 查看订单"></a>';//住净
-                            if(room.clean == 'dirty')
-                                roomStatus = '<a class="ui-icon glyphicon glyphicon-user bg-danger" title="住脏 &#8226; 查看订单"></a>';//住脏
+                            if(room.clean == 'dirty') roomStatus = '<a class="ui-icon glyphicon glyphicon-user bg-danger" title="住脏 &#8226; 查看订单"></a>';//住脏
                         } else {
-                            if(room.clean == 'dirty')
-                                roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-dark" title="空脏"></i>';//空脏
+                            if(room.clean == 'dirty') roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-dark" title="空脏"></i>';//空脏
                         }
                         //锁房 维修房
-                        if(room.lock == 'lock') {//锁房
-                            roomStatus ='<a class="fas fa-lock text-warning" title="锁房"></a> ';
-                        }
-						if(room.lock == 'repair') {//维修房
-                            roomStatus = '<a class="fas fa-tools text-warning" title="维修房"></a>';
-                        }
+                        if(room.lock == 'lock') roomStatus ='<a class="fas fa-lock text-warning" title="锁房"></a> ';//锁房
+						if(room.lock == 'repair') roomStatus = '<a class="fas fa-tools text-warning" title="维修房"></a>';//维修房
                         //附加
 				   		if(angular.isDefined(check_outRoom[room.item_id])) {//预离
                             roomStatus = roomStatus + '<a class="fas fa-sign-out-alt text-warning" title="预离 &#8226; 查看订单"></a>';
@@ -214,6 +209,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.activeRoomBookEditTab = tab;
 		$scope.roomDetail = $scope.roomDetailList[detailBookRoom.booking_number];//单个订单下面得房间
         $scope.bookDetail = $scope.bookList[detailBookRoom.booking_number];//订单详情
+        $scope.consumeDetail = $scope.consumeList[detailBookRoom.booking_number];//消费详情
         asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
 		asideEditRoomBook.$promise.then(function() {
 			asideEditRoomBook.show();
@@ -257,7 +253,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         });
     };
     $scope.setEditItemRoomName = function(item_name) {
-        $scope.param.item_room_name = item_name;
+        if(item_name != '') $scope.param.item_room_name = item_name;
     }
     //添加入住客人
     var addGuestLiveInAside = '';
@@ -349,9 +345,29 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         });
     };
     //收款
+    $scope.payment_name = '选择支付方式';
+    var asideAccounts = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
     $scope.bookingAccounts = function() {
-        var asideAccounts = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
 		asideAccounts.$promise.then(function() {
+			asideAccounts.show();
+			$(document).ready(function(){
+			});
+		});
+	};
+    $scope.selectPaymentType = function(payment) {
+        if(angular.isDefined(payment)) {
+            $scope.payment_name = payment.payment_name;
+            $scope.payment_id = payment.payment_id;
+            $scope.payment_father_id =  payment.payment_father_id;
+            $('#payment_ul').next().hide();
+            $(document).ready(function(){
+                $('#payment_ul').mouseover(function(e) {$('#payment_ul').next().show();});
+            });
+        }
+	};
+    //消费编辑
+    $scope.editConsume = function(consume) {
+        asideAccounts.$promise.then(function() {
 			asideAccounts.show();
 			$(document).ready(function(){
 			});

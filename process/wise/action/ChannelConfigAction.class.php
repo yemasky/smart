@@ -175,7 +175,7 @@ class ChannelConfigAction extends \BaseAction {
 		$objRequest->hashKey = 'item_id';
 		$arrayDataList       = ChannelServiceImpl::instance()->getChannelItemHash($objRequest, $objResponse);
 
-		return $objResponse->successResponse('000001', $arrayDataList);
+		return $objResponse->successResponse(ErrorCodeConfig::$successCode, $arrayDataList);
 	}
 
 	public function doSaveChannelItem(\HttpRequest $objRequest, \HttpResponse $objResponse) {

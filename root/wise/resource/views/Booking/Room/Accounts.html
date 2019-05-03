@@ -1,34 +1,42 @@
-<div class="aside b-r box-shadow" tabindex="-1" role="dialog">
+<div class="aside col-xs-6 b-r box-shadow" tabindex="-1" role="dialog">
   <div class="aside-dialog">
     <div class="aside-content">
      <form name="RoomStatusEditForm" class="form-validation" id="thisForm" ng-submit="saveRoomStatusEdit()">
       <div class="aside-header">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
-        <h4 class="aside-title" ng-bind-html="title"></h4>
+        <h4 class="aside-title">账务项</h4>
       </div>
-      <div class="aside-body">
-          <div class="col-md-9 b-l bg-auto">
-            <div class="p-md bg-light b-b font-bold">Public profile</div>
-            <form role="form" class="p-md ng-pristine ng-valid">
-              <div class="form-group">
-                <label>Profile picture</label>
-                <div class="form-file">
-                  <input type="file">
-                  <button class="btn btn-default">Upload new picture</button>
-                </div>
-              </div>
-              <div class="form-group">
-                <label>Name</label>
-                <input type="text" class="form-control w-xxl w-full-xs">
-              </div>
-              <div class="form-group">
-                <label>Email address</label>
-                <input type="email" class="form-control w-xxl w-full-xs">
-              </div>
-              
-              <button type="submit" class="btn btn-info m-t">Submit</button>
-            </form>
-          </div>
+      <div class="aside-body form-inline">
+          <div class="form-group">    
+            <aside class="app-aside bg-white lt">
+            <nav>
+              <ul class="nav">
+                <li>
+                    <a class="btn btn-default customer_btn" style="padding:6px !important;" id="payment_ul">
+                        <span class="pull-right text-muted">
+                          <i class="fa fa-caret-down"></i>
+                        </span>
+                        <i class="icon fa fa-users text-lt"></i>
+                        <span>{{payment_name}}</span>
+                     </a>
+                     <ul class="nav nav-sub bg b">
+                        <li ng-repeat="(i, father) in paymentTypeList">
+                          <a class="">
+                            <span class="pull-right text-muted" ng-if="father.children!=''">
+                              <i class="fa fa-caret-down"></i>
+                            </span>
+                            <span class="font-normal">{{father.payment_name}}</span>
+                          </a>
+                          <ul class="nav nav-sub bg b" ng-if="father.children!=''">
+                            <li ng-repeat="(j, payment) in father.children"><a ng-click="selectPaymentType(payment, true)">{{payment.payment_name}}</a></li>
+                          </ul>
+                        </li>
+                     </ul>
+                </li>
+              </ul>
+            </nav>
+            </aside>
+        </div>
         
       </div>
       <div class="aside-footer">

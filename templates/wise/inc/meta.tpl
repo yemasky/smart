@@ -4,7 +4,7 @@
 <script language="javascript">var version = '<%$__VERSION%>'; var baseDateTime = '<%$thisDateTime%>', baseSeconds = 0;function setBaseSeconds() {baseSeconds++;} setInterval(setBaseSeconds, 1000);</script>
 <link rel="stylesheet" href="<%$__RESOURCE%>styles/app.min.css?<%$__VERSION%>" type="text/css" />
 <!-- commom -->
-<script language="javascript" src="<%$__RESOURCE%>jquery-3.2.1.min.js?<%$__VERSION%>"></script>
+<script language="javascript" src="<%$__RESOURCE%>jquery-3.4.1.min.js?<%$__VERSION%>"></script>
 <script language="javascript">
     var __RESOURCE = '<%$__RESOURCE%>';
 //jQuery 插件
