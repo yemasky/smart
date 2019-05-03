@@ -314,7 +314,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.editRoomStatus = function(editType) {
         $scope.param.editType = editType;
         if(editType == 'lock' || editType == 'repair') {
-            myOtherAside = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/EditRoomStatus.html',show: false});
+            var title = '锁房';
+            if(editType == 'repair') title = '维修房';
+            myOtherAside = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/EditRoomStatus.html',show: false});
             // Show when some event occurs (use $promise property to ensure the template has been loaded)
             myOtherAside.$promise.then(function() {
                 myOtherAside.show();

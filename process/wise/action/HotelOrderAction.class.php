@@ -300,7 +300,7 @@ class HotelOrderAction extends \BaseAction
         $detail_id = decode($objRequest->getInput('detail_id'));
         $item_room_name = $objRequest->getInput('item_room_name');
         $item_room = $objRequest->getInput('item_room');
-        if ($detail_id > 0) {
+        if ($detail_id > 0 && $item_room > 0) {
             CommonServiceImpl::instance()->startTransaction();
             //更新房间detail
             $whereCriteria = new \WhereCriteria();

@@ -16,7 +16,7 @@
                         <span class="pull-right text-muted">
                           <i class="fa fa-caret-down"></i>
                         </span>
-                        <i class="icon fa fa-users text-lt"></i>
+                        <i class="icon fas fa-money-check text-lt"></i>
                         <span>{{payment_name}}</span>
                      </a>
                      <ul class="nav nav-sub bg b">
@@ -36,6 +36,13 @@
               </ul>
             </nav>
             </aside>
+                    
+        </div>
+        <div class="input-group">
+            <input name="member_name" id="live_in_member_name" value="" class="w-thumb-lg form-control" ng-model="param.member_name" required>
+            <span class="input-group-btn">
+                <button class="btn btn-rounded btn-default" type="button" ng-click="readGuestIdCard()"><span class="ti-id-badge"></span> 读卡</button>
+            </span>
         </div>
         
       </div>

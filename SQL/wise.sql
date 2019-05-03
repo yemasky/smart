@@ -113,6 +113,7 @@ CREATE TABLE `booking_consume` (
   `market_name` varchar(64) NOT NULL COMMENT '市场名称',
   `item_id` int(11) NOT NULL COMMENT '项目',
   `item_name` varchar(128) NOT NULL COMMENT '名称',
+  `item_amount` int(11) NOT NULL DEFAULT '1' COMMENT '数量',
   `item_category_id` int(11) NOT NULL COMMENT '大类',
   `item_category_name` varchar(128) NOT NULL COMMENT '大类名称',
   `sales_id` int(11) NOT NULL DEFAULT '0',
@@ -122,6 +123,7 @@ CREATE TABLE `booking_consume` (
   `price_system_name` varchar(64) NOT NULL DEFAULT '' COMMENT '价格体系',
   `original_price` float(12,2) NOT NULL COMMENT '原价',
   `consume_price` float(12,2) NOT NULL COMMENT '消费价格',
+  `consume_price_total` float(12,2) NOT NULL COMMENT '总价',
   `employee_id` int(11) NOT NULL,
   `employee_name` varchar(64) NOT NULL DEFAULT '',
   `business_day` date NOT NULL,
@@ -136,7 +138,7 @@ CREATE TABLE `booking_consume` (
 
 /*Data for the table `booking_consume` */
 
-insert  into `booking_consume`(`consume_id`,`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`original_price`,`consume_price`,`employee_id`,`employee_name`,`business_day`,`confirm`,`confirm_employee_id`,`confirm_employee_name`,`confirm_datetime`,`valid`,`add_datetime`) values (1,2,1905023978101,'',1,'Hotel','room_day',1,0,1,2,'散客步入',-56808736,'',8,'双人间',0,'','0',3,'散客单早',0.00,0.00,1,'有个员工','2019-05-02','0',0,'',NULL,'1','2019-05-02 22:52:14');
+insert  into `booking_consume`(`consume_id`,`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_amount`,`item_category_id`,`item_category_name`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`original_price`,`consume_price`,`consume_price_total`,`employee_id`,`employee_name`,`business_day`,`confirm`,`confirm_employee_id`,`confirm_employee_name`,`confirm_datetime`,`valid`,`add_datetime`) values (1,2,1905023978101,'',1,'Hotel','room_day',1,0,1,2,'散客步入',1,'103',0,8,'双人间',0,'','0',3,'散客单早',0.00,0.00,0.00,1,'有个员工','2019-05-02','0',0,'',NULL,'1','2019-05-02 22:52:14');
 
 /*Table structure for table `booking_detail` */
 
@@ -186,7 +188,7 @@ CREATE TABLE `booking_detail` (
 
 /*Data for the table `booking_detail` */
 
-insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1905023978101,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',3,'201',4,'标准间','2019-05-02 00:00:00','14:00:00','2019-05-03 00:00:00','12:00:00','2019-05-03 09:14:39','0000-00-00 00:00:00','1',1,'有个员工','2019-05-02',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-05-02 22:52:14',NULL),(2,1905023978101,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',-56808736,'',8,'双人间','2019-05-02 00:00:00','14:00:00','2019-05-03 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-05-02',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-05-02 22:52:14',NULL);
+insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1905023978101,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',3,'201',4,'标准间','2019-05-02 00:00:00','14:00:00','2019-05-03 00:00:00','12:00:00','2019-05-03 09:14:39','0000-00-00 00:00:00','1',1,'有个员工','2019-05-02',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-05-02 22:52:14',NULL),(2,1905023978101,'',1,'Hotel','room_day',1,0,'','',1,2,'散客步入',1,'103',8,'双人间','2019-05-02 00:00:00','14:00:00','2019-05-03 00:00:00','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-05-02',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-05-02 22:52:14',NULL);
 
 /*Table structure for table `booking_discount` */
 
@@ -644,6 +646,7 @@ CREATE TABLE `consume_type` (
   `channel_id` int(11) NOT NULL DEFAULT '0',
   `consume_type_name` varchar(100) NOT NULL,
   `consume_type_en_name` varchar(100) NOT NULL,
+  `booking_type` enum('room_hour','room_day','goods') DEFAULT NULL,
   `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '是否有效',
   `add_datetime` datetime NOT NULL,
   PRIMARY KEY (`consume_type_id`)
