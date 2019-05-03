@@ -200,7 +200,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.actionEdit = '客房项';
     $scope.actionConsume = '消费项';
     $scope.actionAccounts = '账务项';
-    $scope.actionEditLog = '操作日志';
+    $scope.actionEditLog = '日志项';
     $scope.bookDetail = {};$scope.roomDetail = {};
     var asideEditRoomBook = '';
 	$scope.editRoomBook = function(detailBookRoom, tab) {
@@ -347,8 +347,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     };
     //收款
     $scope.payment_name = '选择支付方式';
-    var asideAccounts = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
-    $scope.bookingAccounts = function() {
+    var asideAccounts = '';
+    $scope.bookingAccounts = function(account, type) {
+        var title = '收款';
+        if(type == 'refund') title = '退款';
+        if(type == 'hanging') title = '挂账';
+        if(type == 'edit') title = '修改账款';
+        asideAccounts = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
 		asideAccounts.$promise.then(function() {
 			asideAccounts.show();
 			$(document).ready(function(){
@@ -366,6 +371,21 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             });
         }
 	};
+    $scope.saveAccounts = function() {
+        $scope.beginLoading =! $scope.beginLoading;
+        $httpService.header('method', 'saveAccounts');
+        $httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+            $scope.successAlert.show();
+            if(asideAccounts != '') asideAccounts.hide();
+        });
+    };
     //消费编辑
     $scope.editConsume = function(consume) {
         asideAccounts.$promise.then(function() {

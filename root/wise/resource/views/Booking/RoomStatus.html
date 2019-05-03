@@ -170,21 +170,21 @@
                         <div class="form-group m-h-n clearfix">
 							<div class="p-md">
 							  <div class="table-responsive">
-								<table class="table table-bordered table-striped bg-white">
+								<table class="table bg-white">
 								  <thead>
 									<tr>
 									  <th translate="module.channel.market_name">客源市场</th>
-									  <th>房型</th>
 									  <th>房号</th>
 									  <th>客人名称</th>
-									  <th translate="module.channel.phone">电话</th>
-									  <th translate="module.channel.address">地址</th>
-									  <th translate="common.hint.date">日期</th>
+									  <th></th>
+									  <th>电话</th>
+									  <th>价格</th>
+									  <th>营业日</th>
 									  <th translate="common.hint.manager">管理</th>
 									</tr>
 								  </thead>
-								  <tbody>
-									<tr ng-repeat="(i, book) in bookList">
+								  <tbody ng-repeat="(number, numberConsumes) in consumeList">
+									<tr ng-repeat="(detail_id, consumes) in numberConsumes">
 									  <td class="text-nowrap">{{book.market_name}}</td>
 									  <td><span>{{book.market_name}}</span></td>
 									  <td><a ng-click="config(Channel.id)">{{Channel.channel_name}}</a></td>
@@ -193,8 +193,8 @@
 									  <td>{{Channel.address}}</td>
 									  <td>{{Channel.add_datetime}}</td>
 									  <td>
-									  <button class="btn btn-sm btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
-									  <button class="btn btn-sm btn-default" ng-click="config(Channel.id)"><span translate="common.hint.config" >配置</span></button>
+									  <button class="btn btn-xs btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
+									  <button class="btn btn-xs btn-default" ng-click="config(Channel.id)"><span translate="common.hint.config" >确认</span></button>
 									  </td>
 									</tr>
 								  </tbody>
@@ -209,7 +209,7 @@
 							  <div class="form-inline form-group">
                                 <label class="control-label m-b"><i class="fa fa-clock-o"></i> 月份</label>
                                 <div class="input-group">
-                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="eta_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="eta_date" bs-datepicker>
+                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="eta_date" data-date-format="yyyy-MM-dd" data-date-type="number" data-start-view="1" data-min-view="1" data-autoclose="true" data-min-date="02/10/86" data-autoclose="1" name="eta_date" bs-datepicker>
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" type="button">Go!</button>
                                     </span>

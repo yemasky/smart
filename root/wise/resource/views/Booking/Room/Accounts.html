@@ -1,10 +1,10 @@
 <div class="aside col-xs-6 b-r box-shadow" tabindex="-1" role="dialog">
   <div class="aside-dialog">
     <div class="aside-content">
-     <form name="RoomStatusEditForm" class="form-validation" id="thisForm" ng-submit="saveRoomStatusEdit()">
+     <form name="AccountsForm" class="form-validation" id="thisAccountsForm" ng-submit="saveAccounts()">
       <div class="aside-header">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
-        <h4 class="aside-title">账务项</h4>
+        <h4 class="aside-title" ng-bind-html="title">账务项</h4>
       </div>
       <div class="aside-body form-inline">
           <div class="form-group">    
@@ -38,10 +38,14 @@
             </aside>
                     
         </div>
-        <div class="input-group">
-            <input name="member_name" id="live_in_member_name" value="" class="w-thumb-lg form-control" ng-model="param.member_name" required>
+        <select class="form-control" id="live_in_item_id" ng-model="param.item_id" ng-change="setLiveInItemName()" required>
+            <option value="">选择房号</option>
+            <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}"  ng-repeat="(room_id, rDetail) in roomDetail">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
+        </select>
+        <div class="input-group w-sm">
+            <input name="money" size="9" type="number" string-to-number="" step="0.01" min="0" id="money" value="" class="form-control" ng-model="param.money" required>
             <span class="input-group-btn">
-                <button class="btn btn-rounded btn-default" type="button" ng-click="readGuestIdCard()"><span class="ti-id-badge"></span> 读卡</button>
+                <button class="btn btn-rounded btn-default" type="button"><span class="fas fa-yen-sign"></span></button>
             </span>
         </div>
         
