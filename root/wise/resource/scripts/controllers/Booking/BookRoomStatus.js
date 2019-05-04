@@ -107,6 +107,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.layoutList        = result.data.item.layoutList;//房型列表
 		$scope.layoutRoom        = result.data.item.layoutRoom;//房型房间对应关系
         $scope.consumeList       = result.data.item.consumeList;//消费
+        $scope.accountsList      = result.data.item.accountsList;//账户信息
         $scope.guestLiveInList   = result.data.item.guestLiveInList;//入住客人
         $scope.paymentTypeList = result.data.item.paymentTypeList;//支付方式
 		$scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
@@ -210,6 +211,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.roomDetail = $scope.roomDetailList[detailBookRoom.booking_number];//单个订单下面得房间
         $scope.bookDetail = $scope.bookList[detailBookRoom.booking_number];//订单详情
         $scope.consumeDetail = $scope.consumeList[detailBookRoom.booking_number];//消费详情
+        $scope.accountDetail = $scope.accountsList[detailBookRoom.booking_number];//付款详情
         asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
 		asideEditRoomBook.$promise.then(function() {
 			asideEditRoomBook.show();
@@ -247,7 +249,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
              if($scope.param.item_room_name != '') $scope.roomDetail.item_name = $scope.param.item_room_name;
             $scope.roomDetailList[roomDetailEdit.booking_number] = $scope.roomDetail;
             editBookRoomAside.$promise.then(editBookRoomAside.hide);
-            $scope.successAlert.show();
+            $scope.successAlert.startProgressBar();
 
         });
     };
@@ -255,7 +257,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         if(item_name != '') $scope.param.item_room_name = item_name;
     }
     //添加入住客人
-    var addGuestLiveInAside = '';
+    var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
     $scope.addGuestLiveIn = function(liveInGuest) {
         addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
         addGuestLiveInAside.$promise.then(addGuestLiveInAside.show);
@@ -284,7 +286,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
             var message = $scope.getErrorByCode(result.data.code);
             editBookRoomModal.$promise.then(addGuestLiveInModal.hide);
-            $scope.successAlert.show();
+            $scope.successAlert.startProgressBar();
             var booking_detail_id=$scope.param.booking_detail_id;
             var booking_number=$scope.bookDetail.booking_number;
             if(angular.isUndefined($scope.guestLiveInList[booking_number]))
@@ -341,7 +343,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
-            $scope.successAlert.show();
+            $scope.successAlert.startProgressBar();
             if(myOtherAside != '') myOtherAside.hide();
         });
     };
@@ -349,10 +351,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.payment_name = '选择支付方式';
     var asideAccounts = '';
     $scope.bookingAccounts = function(account, type) {
-        var title = '收款';
-        if(type == 'refund') title = '退款';
-        if(type == 'hanging') title = '挂账';
+        var title = '收款', accounts_type = 'receipts';
+        if(type == 'refund') {title = '退款';accounts_type = 'refund';};
+        if(type == 'hanging') {title = '挂账';accounts_type = 'hanging';};
         if(type == 'edit') title = '修改账款';
+        $scope.param.accounts_type = accounts_type;
         asideAccounts = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
 		asideAccounts.$promise.then(function() {
 			asideAccounts.show();
@@ -380,12 +383,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param['channel'] = bookRoomDetiil.channel;
         $scope.param['booking_type'] = bookRoomDetiil.booking_type;
         $scope.param['member_id'] = bookRoomDetiil.member_id;
-        $scope.param['market_father_id'] = bookRoomDetiil.market_father_id;
-        $scope.param['market_id'] = bookRoomDetiil.market_id;
-        $scope.param['market_name'] = bookRoomDetiil.market_name;
-        $scope.param['item_category_id'] = bookRoomDetiil.item_category_id;
-        $scope.param['item_category_name'] = bookRoomDetiil.item_category_name;
-        console.log($scope.roomDetail);
+        $scope.param['payment_name'] = $scope.payment_name;
+        $scope.param['payment_id'] = $scope.payment_id;
+        $scope.param['payment_father_id'] = $scope.payment_father_id;
         
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
@@ -395,7 +395,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
-            $scope.successAlert.show();
+            $scope.successAlert.startProgressBar();
             if(asideAccounts != '') asideAccounts.hide();
         });
     };

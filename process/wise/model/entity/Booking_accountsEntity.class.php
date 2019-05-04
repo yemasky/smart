@@ -18,16 +18,11 @@ class Booking_accountsEntity extends \Entity {
 	protected $booking_type;
 	protected $channel_id;
 	protected $member_id;
-	protected $market_father_id;
-	protected $market_id;
-	protected $market_name;
 	protected $item_id;
 	protected $item_name;
-	protected $item_category_id;
-	protected $item_category_name;
-	protected $sales_id;
-	protected $sales_name;
-	protected $discount_type;
+	protected $payment_id;
+	protected $payment_name;
+	protected $payment_father_id;
 	protected $money;
 	protected $accounts_type;
 	protected $employee_id;
@@ -165,48 +160,6 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @return mixed
      */
-    public function getMarketFatherId() {
-        return $this->market_father_id;
-    }
-
-    /**
-     * @param mixed $market_father_id
-     */
-    public function setMarketFatherId($market_father_id) {
-        $this->market_father_id = $market_father_id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMarketId() {
-        return $this->market_id;
-    }
-
-    /**
-     * @param mixed $market_id
-     */
-    public function setMarketId($market_id) {
-        $this->market_id = $market_id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getMarketName() {
-        return $this->market_name;
-    }
-
-    /**
-     * @param mixed $market_name
-     */
-    public function setMarketName($market_name) {
-        $this->market_name = $market_name;
-    }
-
-    /**
-     * @return mixed
-     */
     public function getItemId() {
         return $this->item_id;
     }
@@ -235,71 +188,43 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @return mixed
      */
-    public function getItemCategoryId() {
-        return $this->item_category_id;
+    public function getPaymentId() {
+        return $this->payment_id;
     }
 
     /**
-     * @param mixed $item_category_id
+     * @param mixed $payment_id
      */
-    public function setItemCategoryId($item_category_id) {
-        $this->item_category_id = $item_category_id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getItemCategoryName() {
-        return $this->item_category_name;
-    }
-
-    /**
-     * @param mixed $item_category_name
-     */
-    public function setItemCategoryName($item_category_name) {
-        $this->item_category_name = $item_category_name;
+    public function setPaymentId($payment_id): void {
+        $this->payment_id = $payment_id;
     }
 
     /**
      * @return mixed
      */
-    public function getSalesId() {
-        return $this->sales_id;
+    public function getPaymentName() {
+        return $this->payment_name;
     }
 
     /**
-     * @param mixed $sales_id
+     * @param mixed $payment_name
      */
-    public function setSalesId($sales_id) {
-        $this->sales_id = $sales_id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getSalesName() {
-        return $this->sales_name;
-    }
-
-    /**
-     * @param mixed $sales_name
-     */
-    public function setSalesName($sales_name) {
-        $this->sales_name = $sales_name;
+    public function setPaymentName($payment_name): void {
+        $this->payment_name = $payment_name;
     }
 
     /**
      * @return mixed
      */
-    public function getDiscountType() {
-        return $this->discount_type;
+    public function getPaymentFatherId() {
+        return $this->payment_father_id;
     }
 
     /**
-     * @param mixed $discount_type
+     * @param mixed $payment_father_id
      */
-    public function setDiscountType($discount_type) {
-        $this->discount_type = $discount_type;
+    public function setPaymentFatherId($payment_father_id): void {
+        $this->payment_father_id = $payment_father_id;
     }
 
     /**
@@ -400,6 +325,5 @@ class Booking_accountsEntity extends \Entity {
         $this->add_datetime = $add_datetime;
     }
 
-	
-
+    
 }

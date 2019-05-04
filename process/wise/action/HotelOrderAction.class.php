@@ -487,6 +487,7 @@ class HotelOrderAction extends \BaseAction
             $Booking_accountsEntity->setEmployeeId($objLoginEmployee->getEmployeeId());
             $Booking_accountsEntity->setEmployeeName($objLoginEmployee->getEmployeeName());
             $Booking_accountsEntity->setBusinessDay(LoginServiceImpl::getBusinessDay());
+            $Booking_accountsEntity->setAddDatetime(getDateTime());
 
             BookingHotelServiceImpl::instance()->saveBookingAccounts($Booking_accountsEntity);
             //

@@ -70,27 +70,24 @@ CREATE TABLE `booking_accounts` (
   `booking_type` enum('room_hour','room_day','goods') NOT NULL,
   `channel_id` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
-  `market_father_id` int(11) NOT NULL,
-  `market_id` int(11) NOT NULL,
-  `market_name` varchar(64) NOT NULL,
   `item_id` int(11) NOT NULL,
   `item_name` varchar(128) NOT NULL,
-  `item_category_id` int(11) NOT NULL,
-  `item_category_name` varchar(128) NOT NULL,
-  `sales_id` int(11) NOT NULL DEFAULT '0',
-  `sales_name` varchar(64) NOT NULL DEFAULT '',
-  `discount_type` enum('0','1','2','3','4','5','6') NOT NULL DEFAULT '0',
-  `money` float(12,2) NOT NULL,
-  `accounts_type` enum('receipts','refund') NOT NULL,
-  `employee_id` int(11) NOT NULL,
+  `payment_id` int(11) NOT NULL,
+  `payment_name` varchar(100) NOT NULL,
+  `payment_father_id` int(11) NOT NULL,
+  `money` float(12,2) NOT NULL COMMENT '钱',
+  `accounts_type` enum('receipts','refund','hanging') NOT NULL COMMENT '收/退 款',
+  `employee_id` int(11) NOT NULL COMMENT '收款人',
   `employee_name` varchar(64) NOT NULL DEFAULT '',
-  `business_day` date NOT NULL,
-  `valid` enum('0','1') NOT NULL DEFAULT '1',
+  `business_day` date NOT NULL COMMENT '营业日',
+  `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '是否有效',
   `add_datetime` datetime NOT NULL,
   PRIMARY KEY (`accounts_id`,`business_day`,`valid`,`add_datetime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking_accounts` */
+
+insert  into `booking_accounts`(`accounts_id`,`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`item_id`,`item_name`,`payment_id`,`payment_name`,`payment_father_id`,`money`,`accounts_type`,`employee_id`,`employee_name`,`business_day`,`valid`,`add_datetime`) values (1,1,1905023978101,'',1,'Hotel','room_day',1,0,3,'201',2,'现金支付',1,0.01,'receipts',1,'有个员工','2019-05-04','1','2019-05-04 16:37:58'),(2,1,1905023978101,'',1,'Hotel','room_day',1,0,3,'201',2,'现金支付',1,0.03,'receipts',1,'有个员工','2019-05-04','1','2019-05-04 16:39:41'),(3,1,1905023978101,'',1,'Hotel','room_day',1,0,3,'201',2,'现金支付',1,0.03,'refund',1,'有个员工','2019-05-04','1','2019-05-04 16:40:10'),(4,1,1905023978101,'',1,'Hotel','room_day',1,0,3,'201',2,'现金支付',1,0.02,'receipts',1,'有个员工','2019-05-04','1','2019-05-04 21:53:38');
 
 /*Table structure for table `booking_consume` */
 

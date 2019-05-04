@@ -160,6 +160,33 @@
 						  </tbody>
 						</table>
                     </div>
+                    <div class="table-responsive">
+						<table class="table table-bordered table-striped bg-white">
+						  <thead>
+							<tr>
+                              <th>房号</th>
+							  <th>项目</th>
+							  <th>数量</th>
+							  <th>金额</th>
+							  <th>营业日</th>
+							  <th>管理</th>
+							</tr>
+						  </thead>
+						  <tbody>
+							<tr ng-repeat="(i, account) in accountDetail">
+							  <td class="text-nowrap">{{account.item_name}}</td>
+							  <td>{{account.booking_type}}</td>
+							  <td>{{account.item_amount}}</td>
+							  <td>{{account.consume_price}}</td>
+							  <td>{{account.business_day}}</td>
+							  <td>
+							  <button class="btn btn-xs btn-default" ng-click="editConsume(account)"><span translate="common.hint.edit" >编辑</span></button>
+							  <button class="btn btn-xs btn-default" ng-click="editConsume(account)"><span translate="common.hint.config" >配置</span></button>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+                    </div>
                 </div>
                 <div ng-show="activeRoomBookEditTab==4">
                       <div class="table-responsive">

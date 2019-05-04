@@ -362,8 +362,8 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
         }
     })
 }]);
-app.controller('MainController',["$rootScope","$scope","$translate","$localStorage","$window","$location","$httpService","$modal","$tooltip","$filter","$alert","$log", 
-	function($rootScope,$scope,$translate,$localStorage,$window,$location,$httpService,$modal,$tooltip,$filter,$alert,$log) {
+app.controller('MainController',["$rootScope","$scope","$translate","$localStorage","$window","$location","$httpService","$modal","$tooltip","$filter","$alert","$interval","$log", 
+	function($rootScope,$scope,$translate,$localStorage,$window,$location,$httpService,$modal,$tooltip,$filter,$alert,$interval,$log) {
 		function matchNavigator($window) {
 			var navigatorInfo = $window.navigator.userAgent || $window.navigator.vendor || $window.opera;
 			return /iPhone|iPod|iPad|Silk|Android|BlackBerry|Opera Mini|IEMobile/.test(navigatorInfo)
@@ -599,8 +599,25 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.weekday[3]="三";$scope.weekday[4]="四";$scope.weekday[5]="五";
 		$scope.weekday[6]="六";
         $scope.loading = $alert({content: 'Loading... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: false});
-        $scope.successAlert = $alert({title: 'Success', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
-		
+        
+        var vm = $scope.vm = {};
+        vm.value = 0;
+        $scope.startProgressBar = function(index) {
+            $scope.vm.value = index;
+            var start = $interval(function(){
+                $scope.vm.value = ++index;
+                if (index > 99) {
+                    $interval.cancel(start);
+                }
+                if (index == 60) {
+                    index = 99;
+                }
+            }, 18);
+        };
+        $scope.successAlert = $alert({scope : $scope, title: 'Success', templateUrl: '/resource/views/Common/successAlert.html', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
+        $scope.successAlert.startProgressBar = function() {
+            $scope.successAlert.show();$scope.startProgressBar(0);
+        }		
 }]);
 //login 
 app.controller("LoginController",function($rootScope, $scope, $httpService, $modal, $location, $translate, $tooltip, $log){
