@@ -612,7 +612,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
                 if (index == 60) {
                     index = 99;
                 }
-            }, 18);
+            }, 30);
         };
         $scope.successAlert = $alert({scope : $scope, title: 'Success', templateUrl: '/resource/views/Common/successAlert.html', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
         $scope.successAlert.startProgressBar = function() {
