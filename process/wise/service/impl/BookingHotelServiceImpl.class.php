@@ -443,6 +443,10 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     public function updateBookingAccounts($whereCriteria, $arrayUpdateData, $update_type = '') {
         return BookingDao::instance()->updateBookingAccounts($whereCriteria, $arrayUpdateData, $update_type);
     }
+
+    public function saveBookingAccounts(Booking_accountsEntity $Booking_accountsEntity) {
+        return BookingDao::instance()->saveBookingAccounts($Booking_accountsEntity);
+    }
     //入住信息
     public function saveGuestLiveIn(Booking_live_inEntity $Booking_live_inEntity) {
         return BookingDao::instance()->saveGuestLiveIn($Booking_live_inEntity);

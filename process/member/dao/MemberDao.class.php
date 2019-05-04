@@ -19,8 +19,8 @@ class MemberDao extends CommonDao {
 		return self::$objDao;
 	}
 
-	public function getMember($field = '', \WhereCriteria $whereCriteria) {
-		return $this->setDsnRead($this->getDsnRead())->setTable('member')->getList($field, $whereCriteria);//DBCache($cacheId)->
+	public function getMember(\WhereCriteria $whereCriteria, $field = '') {
+		return $this->setDsnRead($this->getDsnRead())->setTable('member')->getList($whereCriteria, $field);//DBCache($cacheId)->
 	}
 
 	public function saveMember($arrayData, $insert_type = 'INSERT') {
@@ -28,11 +28,11 @@ class MemberDao extends CommonDao {
     }
 
     public function updateMember(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
-        return $this->setDsnWrite($this->getDsnWrite())->setTable('member')->update($arrayUpdateData, $whereCriteria, $update_type);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('member')->update($whereCriteria, $arrayUpdateData, $update_type);
     }
 
 	public function getMemberLevel($whereCriteria, $field = null) {
-        return $this->setDsnRead($this->getDsnRead())->setTable('member_level')->getList($field, $whereCriteria);
+        return $this->setDsnRead($this->getDsnRead())->setTable('member_level')->getList($whereCriteria, $field);
     }
 
 }

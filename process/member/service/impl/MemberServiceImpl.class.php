@@ -30,7 +30,7 @@ class MemberServiceImpl extends \BaseServiceImpl implements MemberService {
         if(!empty($email)) $whereCriteria->EQ('member_mobile', $member_mobile);
         if(!empty($member_idcard_type)) $whereCriteria->EQ('id_type', $member_idcard_type);
         if(!empty($member_idcard_number)) $whereCriteria->EQ('id_number', $member_idcard_number);
-		return MemberDao::instance()->getMember($field, $whereCriteria);
+		return MemberDao::instance()->getMember($whereCriteria, $field);
 	}
 
 	public function saveMember($arrayData, $insert_type = 'INSERT') {

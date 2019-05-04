@@ -93,19 +93,19 @@ abstract class BaseDao {
         return $this;
     }
 
-    public function getList($field = '*', \WhereCriteria $whereCriteria): array {
+    public function getList(\WhereCriteria $whereCriteria, $field = '*'): array {
         if (empty($field)) $field = '*';
         $arrayResult = DBQuery::instance($this->getDsnRead())->setTable($this->table)->setKey($this->table_key)->getList($field, $whereCriteria);
         return $arrayResult;
     }
 
-    public function getEntity($field = '*', \WhereCriteria $whereCriteria) {
+    public function getEntity(\WhereCriteria $whereCriteria, $field = '*') {
         if (empty($field)) $field = '*';
         $arrayResult = DBQuery::instance($this->getDsnRead())->setEntityClass($this->entity_class)->setKey($this->table_key)->getEntity($field, $whereCriteria);
         return $arrayResult;
     }
 
-    public function getEntityList($field = '*', \WhereCriteria $whereCriteria): array {
+    public function getEntityList(\WhereCriteria $whereCriteria, $field = '*'): array {
         $arrayResult = DBQuery::instance($this->getDsnRead())->setEntityClass($this->entity_class)->setKey($this->table_key)->getEntityList($field, $whereCriteria);
         return $arrayResult;
     }
@@ -131,11 +131,11 @@ abstract class BaseDao {
         return DBQuery::instance($this->getDsnWrite())->batchInsertEntity($arrayObjEntity, $field_key, $insert_type);
     }
 
-    public function update($row, \WhereCriteria $whereCriteria, $update_type = '') {//IGNORE
+    public function update(\WhereCriteria $whereCriteria, $row, $update_type = '') {//IGNORE
         return DBQuery::instance($this->getDsnWrite())->setTable($this->table)->update($row, $whereCriteria, $update_type);
     }
 
-    public function batchUpdateByKey($arrayUpdate, \WhereCriteria $whereCriteria, $update_type = '') {
+    public function batchUpdateByKey(\WhereCriteria $whereCriteria, $arrayUpdate, $update_type = '') {
         return DBQuery::instance($this->getDsnWrite())->setTable($this->table)->batchUpdateByKey($arrayUpdate, $whereCriteria, $update_type);
     }
 

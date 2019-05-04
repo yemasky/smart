@@ -374,6 +374,16 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.saveAccounts = function() {
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'saveAccounts');
+        $scope.param['booking_number'] = $scope.bookDetail.booking_number;
+        $scope.param['booking_number_ext'] = $scope.bookDetail.booking_number_ext;
+        $scope.param['channel'] = $scope.bookDetail.channel;
+        $scope.param['booking_type'] = $scope.bookDetail.booking_type;
+        $scope.param['member_id'] = $scope.bookDetail.member_id;
+        $scope.param['market_father_id'] = $scope.bookDetail.market_father_id;
+        $scope.param['market_id'] = $scope.bookDetail.market_id;
+        console.log($scope.bookDetail);
+        
+        
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');

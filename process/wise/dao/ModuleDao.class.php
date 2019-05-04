@@ -23,7 +23,7 @@ class ModuleDao extends CommonDao {
 		if(empty($field)) $field = '*';
         if(empty($whereCriteria->getHashKey())) $whereCriteria->setHashKey('module_id');
 
-		return $this->setDsnRead($this->getDsnRead())->setTable('module')->getList($field, $whereCriteria);
+		return $this->setDsnRead($this->getDsnRead())->setTable('module')->getList($whereCriteria, $field);
 	}
 
     //--------Module//-----------//
@@ -33,11 +33,11 @@ class ModuleDao extends CommonDao {
     }
 
     public function updateModule(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('module')->update($arrayUpdateData, $whereCriteria);
+        return $this->setDsnRead($this->getDsnWrite())->setTable('module')->update($whereCriteria, $arrayUpdateData);
     }
 
     public function batchUpdateModuleByKey($arrayUpdate, \WhereCriteria $whereCriteria) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('module')->batchUpdateByKey($arrayUpdate, $whereCriteria);
+        return $this->setDsnRead($this->getDsnWrite())->setTable('module')->batchUpdateByKey($whereCriteria, $arrayUpdate);
     }
     //--------Module//-----------//
 
@@ -46,7 +46,7 @@ class ModuleDao extends CommonDao {
         if($field == '') $field = '*';
         if(empty($whereCriteria->getHashKey())) $whereCriteria->setHashKey('module_id');
 
-        return $this->setDsnRead($this->getDsnRead())->setTable('module_company')->getList($field, $whereCriteria);//DBCache($cacheId)->
+        return $this->setDsnRead($this->getDsnRead())->setTable('module_company')->getList($whereCriteria, $field);//DBCache($cacheId)->
     }
 
 }

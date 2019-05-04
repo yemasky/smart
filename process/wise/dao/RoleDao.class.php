@@ -23,7 +23,7 @@ class RoleDao extends CommonDao {
     public function getRoleEmployee(\WhereCriteria $whereCriteria, $field = '') {
         if(empty($field)) $field = 'role_id, employee_id';
 
-        return $this->setDsnRead($this->getDsnRead())->setTable('role_employee')->getList($field, $whereCriteria);//->DBCache($cacheId)
+        return $this->setDsnRead($this->getDsnRead())->setTable('role_employee')->getList($whereCriteria, $field);//->DBCache($cacheId)
     }
 
     public function saveRoleEmployee($arrayData, $insert_type = 'INSERT') {
@@ -31,13 +31,13 @@ class RoleDao extends CommonDao {
     }
 
     public function updateRoleEmployee(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('role_employee')->update($arrayUpdateData, $whereCriteria);
+        return $this->setDsnRead($this->getDsnWrite())->setTable('role_employee')->update($whereCriteria, $arrayUpdateData);
     }
     //--------RoleEmployee//-----------//
 
     //--------RoleMudule//-----------//
     public function getRoleMudule(\WhereCriteria $whereCriteria, $field = 'module_id') {
-        return $this->setDsnRead($this->getDsnRead())->setTable('role_module')->getList($field, $whereCriteria);
+        return $this->setDsnRead($this->getDsnRead())->setTable('role_module')->getList($whereCriteria, $field);
     }
 
     public function saveRoleMudule($arrayData, $insert_type = 'INSERT') {
@@ -45,7 +45,7 @@ class RoleDao extends CommonDao {
     }
 
     public function updateRoleMudule(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('role_module')->update($arrayUpdateData, $whereCriteria);
+        return $this->setDsnRead($this->getDsnWrite())->setTable('role_module')->update($whereCriteria, $arrayUpdateData);
     }
     //--------RoleMudule//-----------//
 }

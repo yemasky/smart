@@ -87,14 +87,15 @@ class HotelOrderAction extends \BaseAction
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id)->setHashKey('item_id');
         $arrayLayoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, 'category_item_id,item_id');
-        if(!empty($arrayLayoutRoom)) {
+        if (!empty($arrayLayoutRoom)) {
             foreach ($arrayLayoutRoom as $room_id => $value) {
                 $arrayLayoutRoom[$room_id]['r_id'] = encode($room_id);
             }
         }
         //获取预订 条件未完结的所有订单 valid = 1 and check_in <= 今天
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('channel', 'Hotel')->EQ('valid', '1')->LE('check_in', $in_date)->setHashKey('booking_number');
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('channel', 'Hotel')->EQ('valid', '1')->LE('check_in', $in_date)
+            ->setHashKey('booking_number');
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayBookList = BookingHotelServiceImpl::instance()->getBooking($whereCriteria);
         $arrayBookingNumber = array_keys($arrayBookList);
@@ -133,7 +134,7 @@ class HotelOrderAction extends \BaseAction
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
             $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')->setChildrenKey('booking_detail_id')->setMultiple(true);
             $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
-            if(!empty($arrayConsume)) {
+            if (!empty($arrayConsume)) {
                 foreach ($arrayConsume as $number => $value) {
                     foreach ($value as $detail_id => $consumes) {
                         foreach ($consumes as $i => $consume) {
@@ -159,7 +160,7 @@ class HotelOrderAction extends \BaseAction
 
         $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom' => $arrayLayoutRoom, 'bookingDetailRoom' => $bookingDetailRoom,
             'bookList' => $arrayBookList, 'consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn,
-            'paymentTypeList'=>$arrayPaymentType];
+            'paymentTypeList' => $arrayPaymentType];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 
@@ -305,7 +306,7 @@ class HotelOrderAction extends \BaseAction
             //更新房间detail
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
-            if(!empty($item_room_name)) $arrayUpdate['item_name'] = $item_room_name;//item_room_name 为空则不更新
+            if (!empty($item_room_name)) $arrayUpdate['item_name'] = $item_room_name;//item_room_name 为空则不更新
             $arrayUpdate['item_id'] = $item_room;
             BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $arrayUpdate);
             //更新消费
@@ -368,7 +369,7 @@ class HotelOrderAction extends \BaseAction
             //找寻会员 更具手机或身份证
             $member_id = 0;
             $arrayMember = \member\MemberServiceImpl::instance()->getMember($objRequest, 'member_id');
-            if(!empty($arrayMember)) {
+            if (!empty($arrayMember)) {
                 $member_id = $arrayMember[0]['member_id'];
             }
             $Booking_live_inEntity->setMemberId($member_id);
@@ -414,14 +415,14 @@ class HotelOrderAction extends \BaseAction
         $editType = $objRequest->getInput('editType');
         if ($item_id > 0) {
             CommonServiceImpl::instance()->startTransaction();
-            if($editType == 'lock' || $editType == 'repair') {
+            if ($editType == 'lock' || $editType == 'repair') {
                 $Booking_evenEntity = new Booking_evenEntity($arrayInput);
                 //
                 $whereCriteria = new \WhereCriteria();
                 $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel_config', 'room')
                     ->EQ('item_type', 'item')->EQ('item_id', $item_id);
-                if($editType == 'lock') $arrayUpdate['lock'] = 'lock';
-                if($editType == 'repair') $arrayUpdate['lock'] = 'repair';
+                if ($editType == 'lock') $arrayUpdate['lock'] = 'lock';
+                if ($editType == 'repair') $arrayUpdate['lock'] = 'repair';
                 $arrayUpdate['begin_datetime'] = $Booking_evenEntity->getBeginDatetime();
                 $arrayUpdate['end_datetime'] = $Booking_evenEntity->getEndDatetime();
                 ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $arrayUpdate);
@@ -438,23 +439,59 @@ class HotelOrderAction extends \BaseAction
                 $whereCriteria = new \WhereCriteria();
                 $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel_config', 'room')
                     ->EQ('item_type', 'item')->EQ('item_id', $item_id);
-                if($editType == 'unlock'){$arrayUpdate['lock'] = '0';}
-                if($editType == 'repair_ok'){$arrayUpdate['lock'] = '0';}
-                if($editType == 'dirty'){$arrayUpdate['clean'] = 'dirty';}
-                if($editType == 'clean'){$arrayUpdate['clean'] = '0';}
+                if ($editType == 'unlock') {
+                    $arrayUpdate['lock'] = '0';
+                }
+                if ($editType == 'repair_ok') {
+                    $arrayUpdate['lock'] = '0';
+                }
+                if ($editType == 'dirty') {
+                    $arrayUpdate['clean'] = 'dirty';
+                }
+                if ($editType == 'clean') {
+                    $arrayUpdate['clean'] = '0';
+                }
                 ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $arrayUpdate);
                 //
-                if($editType == 'lock' || $editType == 'repair') {
+                if ($editType == 'lock' || $editType == 'repair') {
                     $whereCriteria = new \WhereCriteria();
                     $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_id', $item_id)
                         ->EQ('valid', '1');
-                    BookingHotelServiceImpl::instance()->updateRoomEven($whereCriteria, ['valid'=>2]);
+                    BookingHotelServiceImpl::instance()->updateRoomEven($whereCriteria, ['valid' => 2]);
                 }
 
             }
             CommonServiceImpl::instance()->commit();
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
         }
+        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+    }
+
+    protected function doMethodSaveAccounts(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        //
+        $detail_id = decode($objRequest->getInput('detail_id'));
+        $item_name = $objRequest->getInput('item_name');
+        $item_id = $objRequest->getInput('item_id');
+        if ($detail_id > 0 && $item_id > 0) {
+            $arrayInput = $objRequest->getInput();
+            //更新房间detail
+            $Booking_accountsEntity = new Booking_accountsEntity($arrayInput);
+            $Booking_accountsEntity->setBookingDetailId($detail_id);
+            $Booking_accountsEntity->setCompanyId($company_id);
+            $Booking_accountsEntity->setChannel($channel_id);
+            $Booking_accountsEntity->setEmployeeId($objLoginEmployee->getEmployeeId());
+            $Booking_accountsEntity->setEmployeeName($objLoginEmployee->getEmployeeName());
+
+            BookingHotelServiceImpl::instance()->saveBookingAccounts($Booking_accountsEntity);
+            //
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+        }
+
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
 }

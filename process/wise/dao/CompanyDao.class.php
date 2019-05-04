@@ -18,11 +18,11 @@ class CompanyDao extends CommonDao {
     }
 
     public function getCompany(\WhereCriteria $whereCriteria, $field = null){
-        return $this->setDsnRead($this->getDsnRead())->setTable('company')->getList($field, $whereCriteria);
+        return $this->setDsnRead($this->getDsnRead())->setTable('company')->getList($whereCriteria, $field);
     }
 
 	public function getCompanySector(\WhereCriteria $whereCriteria, $field = null){
-		return $this->setDsnRead($this->getDsnRead())->setTable('company_sector')->getList($field, $whereCriteria);
+		return $this->setDsnRead($this->getDsnRead())->setTable('company_sector')->getList($whereCriteria, $field);
 	}
 
     //--------Company//-----------//
@@ -31,7 +31,7 @@ class CompanyDao extends CommonDao {
     }
 
     public function updateCompany(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('company')->update($arrayUpdateData, $whereCriteria);
+        return $this->setDsnRead($this->getDsnWrite())->setTable('company')->update($whereCriteria, $arrayUpdateData);
     }
     //company_sector
     public function saveCompanySector($arrayData, $insert_type = 'INSERT') {
@@ -39,7 +39,7 @@ class CompanyDao extends CommonDao {
     }
 
     public function updateCompanySector(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('company_sector')->update($arrayUpdateData, $whereCriteria);
+        return $this->setDsnRead($this->getDsnWrite())->setTable('company_sector')->update($whereCriteria, $arrayUpdateData);
     }
 
 }

@@ -18,7 +18,7 @@ class EmployeeDao extends CommonDao {
     }
 
     public function getEmployee(\WhereCriteria $whereCriteria, $field = null){
-        return $this->setDsnRead($this->getDsnRead())->setTable('employee')->getList($field, $whereCriteria);
+        return $this->setDsnRead($this->getDsnRead())->setTable('employee')->getList($whereCriteria, $field);
     }
 
     //--------Employee//-----------//
@@ -27,13 +27,13 @@ class EmployeeDao extends CommonDao {
     }
 
     public function updateEmployee(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('employee')->update($arrayUpdateData, $whereCriteria);
+        return $this->setDsnRead($this->getDsnWrite())->setTable('employee')->update($whereCriteria, $arrayUpdateData);
     }
     //--------Employee//-----------//
 
     //employee_sector
     public function getEmployeeSector(\WhereCriteria $whereCriteria, $field = null) {
-        return $this->setDsnRead($this->getDsnRead())->setTable('employee_sector')->getList($field, $whereCriteria);
+        return $this->setDsnRead($this->getDsnRead())->setTable('employee_sector')->getList($whereCriteria, $field);
     }
 
     public function saveEmployeeSector($arrayData, $insert_type = 'INSERT') {
@@ -41,6 +41,6 @@ class EmployeeDao extends CommonDao {
     }
 
     public function updateEmployeeSector(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('employee_sector')->update($arrayUpdateData, $whereCriteria);
+        return $this->setDsnRead($this->getDsnWrite())->setTable('employee_sector')->update($whereCriteria, $arrayUpdateData);
     }
 }
