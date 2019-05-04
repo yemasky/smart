@@ -374,15 +374,18 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.saveAccounts = function() {
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'saveAccounts');
-        $scope.param['booking_number'] = $scope.bookDetail.booking_number;
-        $scope.param['booking_number_ext'] = $scope.bookDetail.booking_number_ext;
-        $scope.param['channel'] = $scope.bookDetail.channel;
-        $scope.param['booking_type'] = $scope.bookDetail.booking_type;
-        $scope.param['member_id'] = $scope.bookDetail.member_id;
-        $scope.param['market_father_id'] = $scope.bookDetail.market_father_id;
-        $scope.param['market_id'] = $scope.bookDetail.market_id;
-        console.log($scope.bookDetail);
-        
+        var bookRoomDetiil = $scope.roomDetail[$scope.param.booking_detail_id];
+        $scope.param['booking_number'] = bookRoomDetiil.booking_number;
+        $scope.param['booking_number_ext'] = bookRoomDetiil.booking_number_ext;
+        $scope.param['channel'] = bookRoomDetiil.channel;
+        $scope.param['booking_type'] = bookRoomDetiil.booking_type;
+        $scope.param['member_id'] = bookRoomDetiil.member_id;
+        $scope.param['market_father_id'] = bookRoomDetiil.market_father_id;
+        $scope.param['market_id'] = bookRoomDetiil.market_id;
+        $scope.param['market_name'] = bookRoomDetiil.market_name;
+        $scope.param['item_category_id'] = bookRoomDetiil.item_category_id;
+        $scope.param['item_category_name'] = bookRoomDetiil.item_category_name;
+        console.log($scope.roomDetail);
         
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;

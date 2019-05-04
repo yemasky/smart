@@ -28,8 +28,6 @@ class Booking_accountsEntity extends \Entity {
 	protected $sales_id;
 	protected $sales_name;
 	protected $discount_type;
-	protected $price_system_id;
-	protected $price_system_name;
 	protected $money;
 	protected $accounts_type;
 	protected $employee_id;
@@ -302,34 +300,6 @@ class Booking_accountsEntity extends \Entity {
      */
     public function setDiscountType($discount_type) {
         $this->discount_type = $discount_type;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPriceSystemId() {
-        return $this->price_system_id;
-    }
-
-    /**
-     * @param mixed $price_system_id
-     */
-    public function setPriceSystemId($price_system_id) {
-        $this->price_system_id = $price_system_id;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPriceSystemName() {
-        return $this->price_system_name;
-    }
-
-    /**
-     * @param mixed $price_system_name
-     */
-    public function setPriceSystemName($price_system_name) {
-        $this->price_system_name = $price_system_name;
     }
 
     /**

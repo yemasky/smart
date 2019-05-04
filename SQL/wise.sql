@@ -79,15 +79,13 @@ CREATE TABLE `booking_accounts` (
   `item_category_name` varchar(128) NOT NULL,
   `sales_id` int(11) NOT NULL DEFAULT '0',
   `sales_name` varchar(64) NOT NULL DEFAULT '',
-  `discount_type` enum('0','1','2','3','4','5','6') NOT NULL,
-  `price_system_id` int(11) NOT NULL DEFAULT '0',
-  `price_system_name` varchar(64) NOT NULL DEFAULT '',
+  `discount_type` enum('0','1','2','3','4','5','6') NOT NULL DEFAULT '0',
   `money` float(12,2) NOT NULL,
   `accounts_type` enum('receipts','refund') NOT NULL,
   `employee_id` int(11) NOT NULL,
   `employee_name` varchar(64) NOT NULL DEFAULT '',
   `business_day` date NOT NULL,
-  `valid` enum('0','1') NOT NULL,
+  `valid` enum('0','1') NOT NULL DEFAULT '1',
   `add_datetime` datetime NOT NULL,
   PRIMARY KEY (`accounts_id`,`business_day`,`valid`,`add_datetime`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

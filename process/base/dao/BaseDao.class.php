@@ -95,19 +95,16 @@ abstract class BaseDao {
 
     public function getList(\WhereCriteria $whereCriteria, $field = '*'): array {
         if (empty($field)) $field = '*';
-        $arrayResult = DBQuery::instance($this->getDsnRead())->setTable($this->table)->setKey($this->table_key)->getList($field, $whereCriteria);
-        return $arrayResult;
+        return DBQuery::instance($this->getDsnRead())->setTable($this->table)->setKey($this->table_key)->getList($field, $whereCriteria);
     }
 
     public function getEntity(\WhereCriteria $whereCriteria, $field = '*') {
         if (empty($field)) $field = '*';
-        $arrayResult = DBQuery::instance($this->getDsnRead())->setEntityClass($this->entity_class)->setKey($this->table_key)->getEntity($field, $whereCriteria);
-        return $arrayResult;
+        return DBQuery::instance($this->getDsnRead())->setEntityClass($this->entity_class)->setKey($this->table_key)->getEntity($field, $whereCriteria);
     }
 
     public function getEntityList(\WhereCriteria $whereCriteria, $field = '*'): array {
-        $arrayResult = DBQuery::instance($this->getDsnRead())->setEntityClass($this->entity_class)->setKey($this->table_key)->getEntityList($field, $whereCriteria);
-        return $arrayResult;
+        return DBQuery::instance($this->getDsnRead())->setEntityClass($this->entity_class)->setKey($this->table_key)->getEntityList($field, $whereCriteria);
     }
 
     public function getCount(\WhereCriteria $whereCriteria, $field = null) {
