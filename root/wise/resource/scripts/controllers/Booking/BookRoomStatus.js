@@ -208,7 +208,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.bookDetail = {};$scope.roomDetail = {};
     var asideEditRoomBook = '';
 	$scope.editRoomBook = function(detailBookRoom, tab) {
-        $scope.layoutSelectRoom = layoutRoomList[detailBookRoom.item_category_id];
 		$scope.param["valid"] = "1";
 		$scope.activeRoomBookEditTab = tab;
 		$scope.roomDetail = $scope.roomDetailList[detailBookRoom.booking_number];//单个订单下面得房间
@@ -230,6 +229,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     var editBookRoomAside = '';
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
     $scope.showEditBookRoomAside = function(rDetail, tab) {
+        $scope.layoutSelectRoom = layoutRoomList[rDetail.item_category_id];
         $scope.activeRoomBookTab = tab;
         $scope.roomDetailEdit = rDetail;
         editBookRoomAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});

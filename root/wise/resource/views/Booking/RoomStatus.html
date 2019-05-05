@@ -29,10 +29,10 @@
                         <a>{{_self_module.module_name}}</a>
                     </li>
                     <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
-                        <a>订单&#8226;预抵<b class="badge bg-info badge-xs m-l-xs" ng-bind-html="bookAta">0</b></a>
+                        <a>订单<b class="badge bg-info badge-xs m-l-xs" ng-bind-html="bookAta">0</b></a>
                     </li>
                     <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
-                        <a>当日夜审</a>
+                        <a>夜审</a>
                     </li>
                     <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;getRoomItem()">
                         <a>远期房态</a>
@@ -54,7 +54,7 @@
                                                 <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id)"></label>
                                             </div>
                                           </div>
-                                            <button type="button" class="btn btn-default no-border no-margin p-xs w-full m-t-n" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
+                                            <button type="button" class="btn btn-default no-border no-margin p-xs w-full m-t-n" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
                                             <span class="pull-left text-muted" title=""><i class="fa fa-address-card" aria-hidden="true"></i>
                                                 <span ng-repeat="(i, liveIn) in roomLiveIn[room.item_id]" data-title="预抵: {{bookingDetailRoom[liveIn.booking_detail_id].check_in|limitTo:10}} <br>预离: {{bookingDetailRoom[liveIn.booking_detail_id].check_out|limitTo:10}}" data-placement="bottom" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="i<=1?true:false">{{liveIn.member_name}} </span>
                                             </span>
@@ -70,10 +70,10 @@
                             <ul class="nav nav-tabs" ng-init="activeAtaTab=1">
                                 <li ng-class="{active:activeAtaTab==0}"><a>　</a></li>
                                 <li ng-class="{active:activeAtaTab==1}" ng-click="activeAtaTab=1">
-                                    <a>今日预抵</a>
+                                    <a>预抵</a>
                                 </li>
                                 <li ng-class="{active:activeAtaTab==2}" ng-click="activeAtaTab=2">
-                                    <a>今日预离 <span class="badge badge-xs" ng-bind="dueOut">0</span></a>
+                                    <a>预离 <span class="badge badge-xs" ng-bind="dueOut">0</span></a>
                                 </li>
                                 <li ng-class="{active:activeAtaTab==3}" ng-click="activeAtaTab=3">
                                     <a>所有订单</a>
