@@ -114,8 +114,8 @@ class HotelOrderAction extends \BaseAction
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
         if (!empty($bookingDetailRoom)) {
-            foreach ($bookingDetailRoom as $k => $v) {
-                $bookingDetailRoom[$k]['detail_id'] = encode($v['booking_detail_id']);
+            foreach ($bookingDetailRoom as $detail_id => $v) {
+                $bookingDetailRoom[$detail_id]['detail_id'] = encode($v['booking_detail_id']);
             }
         }
         //入住人数

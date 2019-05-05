@@ -49,14 +49,14 @@
                                         <div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, room) in floor">
                                           <!--<span class="pull-left w-thumb-xs m-r b-b-2x"><i class="ui-icon ti-user {{bookRoomStatus[room.item_id].className}}"></i></span>-->
                                           <div class="clear p-xs">
-                                            <span class="font-bold block">{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}</span>
+                                            <span class="font-bold block"><!--layout name-->{{layoutList[layoutRoom[room.item_id].category_item_id].item_name}}</span>
                                             <div>{{room.item_name}}
-                                                <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id])"></label>
+                                                <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id)"></label>
                                             </div>
                                           </div>
                                             <button type="button" class="btn btn-default no-border no-margin p-xs w-full m-t-n" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
                                             <span class="pull-left text-muted" title=""><i class="fa fa-address-card" aria-hidden="true"></i>
-                                                <span ng-repeat="(i, liveIn) in roomLiveIn[room.item_id]" data-title="预抵: {{bookingDetailRoom[liveIn.booking_detail_id].check_in|limitTo:10}} <br>预离: {{bookingDetailRoom[liveIn.booking_detail_id].check_out|limitTo:10}}" data-placement="bottom" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip">{{liveIn.member_name}}</span>
+                                                <span ng-repeat="(i, liveIn) in roomLiveIn[room.item_id]" data-title="预抵: {{bookingDetailRoom[liveIn.booking_detail_id].check_in|limitTo:10}} <br>预离: {{bookingDetailRoom[liveIn.booking_detail_id].check_out|limitTo:10}}" data-placement="bottom" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="i<=1?true:false">{{liveIn.member_name}} </span>
                                             </span>
                                             <span class="pull-right text-muted"><i class="fas fa-caret-square-down"></i></span></button>
                                         </div>
@@ -135,7 +135,7 @@
 									</tr>
 								  </thead>
 								  <tbody><!-- bookingDetail -->
-									<tr ng-repeat="(i, detail) in bookingDetailRoom" ng-if="detail.booking_detail_status!=0">
+									<tr ng-repeat="(detail_id, detail) in bookingDetailRoom" ng-if="detail.booking_detail_status!=0">
 									  <td class="text-nowrap">{{detail.market_name}}</td>
 									  <td><span>{{detail.item_category_name}}</span></td>
                                       <td><span>{{detail.price_system_name}}</span></td>
