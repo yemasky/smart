@@ -289,7 +289,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 return;//错误返回
             }
             var message = $scope.getErrorByCode(result.data.code);
-            editBookRoomModal.$promise.then(addGuestLiveInModal.hide);
+            addGuestLiveInAside.$promise.then(addGuestLiveInAside.hide);
             $scope.successAlert.startProgressBar();
             var booking_detail_id=$scope.param.booking_detail_id;
             var booking_number=$scope.bookDetail.booking_number;
