@@ -496,4 +496,23 @@ class HotelOrderAction extends \BaseAction
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
+
+    protected function doMethodBookingClose(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        //
+        $book_id = decode($objRequest->getInput('book_id'));
+
+        if ($book_id > 0) {
+            $arrayInput = $objRequest->getInput();
+
+            //
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+        }
+
+        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+    }
 }

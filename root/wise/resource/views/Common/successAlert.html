@@ -1,14 +1,4 @@
-<div class="alert" tabindex="-1"><span ng-class="[type ? 'alert-' + type : null]"></span>
-    <div class="text-sm btn btn-rounded btn-success no-margin box-shadow" style="padding-bottom:0px !important;">
-        <i class="fas fa-check-circle pull-left">　</i>
-        <span ng-bind="title"></span>　<span class="font-bold text-lt" ng-bind-html="content"></span>
-        <span class="pull-right"> <button type="button" class="close" ng-click="$hide()">&times;</button></span>
-        <div class="progress progress-xxs no-margin no-radius dk m-t-xs">
-            <div class="progress-bar progress-bar-success" ng-style="{width: vm.value + '%'}"></div>
-        </div>
-    </div>
-</div>
-<!--<div class="alert panel bg-success no-padding" tabindex="-1" ng-class="[type ? 'alert-' + type : null]">
+<div class="alert panel bg-success no-padding" tabindex="-1" ng-class="[type ? 'alert-' + type : null]" style="opacity: 0.7;">
     <div class="panel-heading lt text-lt">
         <span class="pull-right"> <button type="button" class="close" ng-click="$hide()">&times;</button></span>
         <div class="clear"><i class="fas fa-check-circle text-lt"> </i>　<span ng-bind="title"></span>　<span class="font-bold text-lt" ng-bind-html="content"></span></div>
@@ -17,13 +7,3 @@
         <div class="progress-bar bg-light" ng-style="{width: vm.value + '%'}"></div>
     </div>
 </div>
-<div class="alert" tabindex="-1"><span ng-class="[type ? 'alert-' + type : null]"></span>
-    <div class="text-sm btn btn-rounded btn-success no-margin" style="padding-bottom:0px !important;">
-        <i class="fas fa-check-circle pull-left">　</i>
-        <span ng-bind="title"></span>　<span class="font-bold text-lt" ng-bind-html="content"></span>
-        <span class="pull-right"> <button type="button" class="close" ng-click="$hide()">&times;</button></span>
-        <div class="progress progress-xxs no-margin no-radius dk m-t-xs">
-            <div class="progress-bar progress-bar-success" ng-style="{width: vm.value + '%'}"></div>
-        </div>
-    </div>
-</div>-->

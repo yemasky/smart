@@ -207,13 +207,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.actionEditLog = '日志项';
     $scope.bookDetail = {};$scope.roomDetail = {};
     var asideEditRoomBook = '';
-	$scope.editRoomBook = function(detailBookRoom, tab) {
+	$scope.editRoomBook = function(detail, tab) {
 		$scope.param["valid"] = "1";
 		$scope.activeRoomBookEditTab = tab;
-		$scope.roomDetail = $scope.roomDetailList[detailBookRoom.booking_number];//单个订单下面得房间
-        $scope.bookDetail = $scope.bookList[detailBookRoom.booking_number];//订单详情
-        $scope.consumeDetail = $scope.consumeList[detailBookRoom.booking_number];//消费详情
-        $scope.accountDetail = $scope.accountsList[detailBookRoom.booking_number];//付款详情
+		$scope.roomDetail = $scope.roomDetailList[detail.booking_number];//单个订单下面的所有房间
+        $scope.bookDetail = $scope.bookList[detail.booking_number];//订单详情
+        $scope.consumeDetail = $scope.consumeList[detail.booking_number];//消费详情
+        $scope.accountDetail = $scope.accountsList[detail.booking_number];//付款详情
         asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
 		asideEditRoomBook.$promise.then(function() {
 			asideEditRoomBook.show();
@@ -235,7 +235,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         editBookRoomAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
         editBookRoomAside.$promise.then(editBookRoomAside.show);
     };
-    $scope.saveEditRoomForm = function (roomDetailEdit) {
+    $scope.saveEditRoomForm = function (roomDetailEdit) {//单个roomDetail
         $httpService.header('method', 'editBookRoom');
         $scope.beginLoading =! $scope.beginLoading;
         $scope.param.detail_id = roomDetailEdit.detail_id;
@@ -249,9 +249,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
             roomDetailEdit.item_id = $scope.param.item_room;
             if($scope.param.item_room_name != '') roomDetailEdit.item_name = $scope.param.item_room_name;
-            $scope.roomDetail.item_id = $scope.param.item_room;
-             if($scope.param.item_room_name != '') $scope.roomDetail.item_name = $scope.param.item_room_name;
-            $scope.roomDetailList[roomDetailEdit.booking_number] = $scope.roomDetail;
+            //$scope.roomDetail.item_id = $scope.param.item_room;
+            //if($scope.param.item_room_name != '') $scope.roomDetail.item_name = $scope.param.item_room_name;
+            //$scope.roomDetailList[roomDetailEdit.booking_number] = $scope.roomDetail;
             editBookRoomAside.$promise.then(editBookRoomAside.hide);
             $scope.successAlert.startProgressBar();
 
@@ -410,6 +410,26 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			$(document).ready(function(){
 			});
 		});
+	};
+	//结账退房
+	$scope.bookingClose = function(bookDetail, closeType) {
+		$scope.beginLoading =! $scope.beginLoading;
+        $httpService.header('method', 'bookingClose');
+		$scope.param['booking_number'] = bookDetail.booking_number;
+		$scope.param['book_id'] = bookDetail.book_id;
+		$scope.param['closeType'] = closeType;
+        $httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            } else {
+				$scope.successAlert.startProgressBar();
+			}
+        });
+		
 	};
     //begin/////////////////////////////////////////远期房态//////////////////
     

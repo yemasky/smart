@@ -5,7 +5,7 @@
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
-      <form name="RoomBookEditForm" class="form-validation" id="thisForm" ng-submit="saveData()">
+      <form name="RoomBookEditForm" class="form-validation" id="thisForm" ng-submit="">
       <div class="aside-body h-8x scrollable">
 		  <div class="m-b">
 			  <a href class="w-thumb-md pull-left m-r"><img src="/data/images/userimg/user_m.png" class="img-responsive"></a>
@@ -115,19 +115,19 @@
                 </div>
                 <div ng-show="activeRoomBookEditTab==3">
                     <div class="panel-heading">
-                        <script type="text/ng-template" id="/app/dropdownx.html">
+                        <script type="text/ng-template" id="/app/checkOutMenu.html">
                             <ul class="dropdown-menu">
-                              <li><a href>Action</a></li>
-                              <li><a href>Another action</a></li>
-                              <li><a href>More</a></li>
+                              <li><a href ng-click="bookingClose(bookDetail, 'refund')">结账退房</a></li>
+                              <li><a href ng-click="bookingClose(bookDetail, 'hanging')">挂账退房</a></li>
+                              <li><a href ng-click="bookingClose(bookDetail, 'close')">走结退房</a></li>
                             </ul>
                         </script>
                         <div class="btn-group m-b">
                             <button type="button" class="btn btn-rounded btn-default" ng-click="bookingAccounts('', '')"><i class="fas fa-yen-sign"></i> 收款</button>
-                            <button type="button" class="btn btn-default" ng-click="bookingAccounts('', 'refund')"><i class="fas fa-wallet"></i> 退款</button>
-                            <button type="button" class="btn btn-default" ng-click="bookingAccounts('', 'hanging')"><i class="fas fa-money-check-alt"></i> 挂账</button>
+                            <button type="button" class="btn btn-default" ng-click="bookingAccounts('', 'refund')">退款</button>
+                            <button type="button" class="btn btn-default" ng-click="bookingAccounts('', 'hanging')">挂账</button>
                             <div class="btn-group dropdown">
-                              <button type="button" class="btn btn-rounded btn-default" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top" data-template-url="/app/dropdownx.html"><i class="fas fas fa-cash-register"></i> 
+                              <button type="button" class="btn btn-rounded btn-default" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top" data-template-url="/app/checkOutMenu.html"><i class="fas fas fa-cash-register"></i> 
                                 结账 <span class="caret"></span>
                               </button>          
                             </div>
