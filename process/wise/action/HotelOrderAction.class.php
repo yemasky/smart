@@ -504,10 +504,38 @@ class HotelOrderAction extends \BaseAction
         //获取channel
         $channel_id = $objRequest->channel_id;
         //
-        $book_id = decode($objRequest->getInput('book_id'));
+        $booking_number = decode($objRequest->getInput('book_id'));
 
-        if ($book_id > 0) {
+        if ($booking_number > 0) {
             $arrayInput = $objRequest->getInput();
+            //计算消费
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
+            $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
+            $totalConsume = 0;
+            if(!empty($arrayConsume)) {
+                foreach ($arrayConsume as $i => $consume) {
+                    $totalConsume += $consume['consume_price'];
+                }
+            }
+            //计算账务
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
+            $arrayAccounts = BookingHotelServiceImpl::instance()->getBookingAccounts($whereCriteria);
+            $totalAccounts = 0;
+            if(!empty($arrayAccounts)) {
+                foreach ($arrayAccounts as $i => $account) {
+                    if($account['money'] == 'receipts') $totalAccounts += $account['money'];
+                    if($account['money'] == 'refund') $totalAccounts -= $account['money'];
+                    if($account['money'] == 'hanging') $totalAccounts += $account['money'];
+                }
+            }
+            if($totalConsume == 0 || $totalAccounts == 0 || $totalConsume != $totalAccounts) {
+                return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_equal_account']);
+            }
+            //更新数据
+
+            //设置脏房
 
             //
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
