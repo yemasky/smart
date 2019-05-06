@@ -104,26 +104,26 @@
     </li>
 	<li ng-repeat="(i, module) in menus" ui-sref-active="active" ng-class="" class="{{module.module_channel}} {{module.hide}} menu">
 		<a ng-if="module.have_children==1">
-		  <span class="pull-right text-muted" ng-if="module.have_children==1">
-           <i class="fa fa-caret-down"></i>
-          </span>
           <i class="icon {{module.ico}} text-lt"></i>
           <span>{{module.module_name}}</span>
+          <span class="text-muted" ng-if="module.have_children==1">
+           <i class="fa fa-caret-down"></i>
+          </span>
 		</a>
         <a ng-if="module.have_children==0" ui-sref="app.{{module.module_channel}}({view:module.module_view,channel:module.url})" ng-click="setActionNavName(module.module_id)">
-		  <span class="pull-right text-muted" ng-if="module.have_children==1">
-           <i class="fa fa-caret-down"></i>
-          </span>
           <i class="icon {{module.ico}} text-lt"></i>
           <span>{{module.module_name}}</span>
+          <span class="pull-right text-muted" ng-if="module.have_children==1">
+           <i class="fa fa-caret-down"></i>
+          </span>
 		</a>
 		<ul class="nav nav-sub bg" ng-if="module.have_children==1">
 			<li ng-repeat="(children_id, children) in module.children">
 			  <a ui-sref="app.{{children.module_channel}}({view:children.module_view,channel:children.url})" ng-click="setActionNavName(children.module_id)">
+				<span class="font-normal">{{children.module_name}}</span>
 				<span class="pull-right text-muted" ng-if="children.have_children==1">
 				  <i class="fa fa-caret-down"></i>
 				</span>
-				<span class="font-normal">{{children.module_name}}</span>
 			  </a>
 			  <ul class="nav nav-sub bg" ng-if="children.have_children==1">
 				<li ng-repeat="(submenu_id, submenu) in children.submenu">
