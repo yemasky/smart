@@ -222,7 +222,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		});
 	};
 	$scope.roomStatusBook = function(detail_id) {
-	    if(detail_id == 0) return;
+	    if(detail_id == 0) {//预定
+			var asideBookRoom = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
+			asideBookRoom.$promise.then(function() {
+				asideBookRoom.show();
+				$(document).ready(function(){
+			});
+		});
+			return;
+		}
         $scope.editRoomBook($scope.bookingDetailRoom[detail_id], 1);
     }
     //
