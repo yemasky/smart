@@ -344,6 +344,16 @@ class HttpResponse {
 
         return '';
     }
+
+    public function noticeResponse($code, $arrayData = '', $message = '', $url = '') {
+        header("Content-type: application/json; charset=" . __CHARSET);
+        header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
+        header("X-Powered-By: ASP.NET/20.3.6");
+        $arrayResult = array('success' => -1, 'code' => $code, 'message' => $message, 'item' => $arrayData, 'common' => $this->getResponse(), 'redirect' => $url, 'time' => getDateTime());
+        echo json_encode($arrayResult);
+
+        return '';
+    }
 }
 
 /**

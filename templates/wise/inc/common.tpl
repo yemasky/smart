@@ -51,6 +51,24 @@
   </div>
 </div>
 </script><!-- /modal-warning.html -->
+<script type="text/ng-template" id="/modal-notice.html">
+<div class="modal" tabindex="-1" role="dialog" id="modal-warning">
+  <div class="modal-dialog">
+	<div class="modal-content">
+	  <div class="modal-header" ng-show="title">
+		<button type="button" class="close" ng-click="$hide()">&times;</button>
+		<h4 class="modal-title"><i class="glyphicon glyphicon-exclamation-sign b-warning text-warning"></i> <span ng-bind-html="title"></span></h4>
+	  </div>
+	  <div class="modal-body" ng-show="content">
+		<p ng-bind-html="content"></p>
+	  </div>
+	  <div class="modal-footer">
+		<button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+	  </div>
+	</div>
+  </div>
+</div>
+</script><!-- /modal-notice.html -->
 <script type="text/ng-template" id="/modal-success.html">
 <div class="modal" tabindex="-1" role="dialog" id="modal-success">
   <div class="modal-dialog">
@@ -150,7 +168,7 @@
 </div>
 </script><!-- /app/footer.html -->
 <script type="text/ng-template" id="/loading.html">
-<div class="modal" tabindex="-1" role="dialog" id="modal-warning">
+<div class="modal" tabindex="-1" role="dialog">
 <div class="modal-dialog">
 <div class="progress progress-striped active">
 	<div class="progress-bar progress-bar-info" style="width:100%" ng-bind-html="content">loading...</div>

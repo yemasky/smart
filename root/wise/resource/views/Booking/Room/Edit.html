@@ -43,9 +43,9 @@
 						  <thead>
 							<tr>
 							  <th class="col-xs-1">状态</th>
-							  <th class="col-xs-2" translate="module.channel.market_name">客源市场</th>
-							  <th class="col-xs-2">房型</th>
 							  <th class="col-xs-1">房号</th>
+							  <th class="col-xs-2">房型</th>
+							  <th class="col-xs-2" translate="module.channel.market_name">客源市场</th>							  
 							  <th class="col-xs-2">价格类型</th>
                               <th class="col-xs-1">价格</th>
 							  <th class="col-xs-1">预抵</th>
@@ -63,12 +63,12 @@
 											  <span ng-if="rDetail.booking_detail_status==0">预抵</span>
                                               <a class="fas fa-user-plus" ng-click="addGuestLiveIn('')"></a>
 										  </td>
-										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
-											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'market')"></a></td>
+										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
+											<a class="fa pull-right" ng-click="showEditBookRoomAside(rDetail, 'Room')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_category_name}}
 											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'category')"></a></td>
-                                          <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
-											<a class="fa pull-right" ng-click="showEditBookRoomAside(rDetail, 'Room')"></a></td>
+										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
+											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'market')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
 											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'system')"></a></td>
 										  <td class="col-xs-1" show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{consumeList[rDetail.booking_number][rDetail.booking_detail_id][0].consume_price}}
@@ -123,12 +123,22 @@
                               <li><a href ng-click="bookingClose(bookDetail, 'close')">走结退房</a></li>
                             </ul>
                         </script>
+                        <script type="text/ng-template" id="/app/accountsMenu.html">
+                            <ul class="dropdown-menu">
+                              <li><a href ng-click="bookingAccounts('', '')">收款</a></li>
+                              <li><a href ng-click="bookingAccounts('', 'refund')">退款</a></li>
+                              <li><a href ng-click="bookingAccounts('', 'hanging')">挂账</a></li>
+                            </ul>
+                        </script>
                         <div class="btn-group m-b">
-                            <button type="button" class="btn btn-rounded btn-default" ng-click="bookingAccounts('', '')"><i class="fas fa-yen-sign"></i> 收款</button>
-                            <button type="button" class="btn btn-default" ng-click="bookingAccounts('', 'refund')">退款</button>
-                            <button type="button" class="btn btn-default" ng-click="bookingAccounts('', 'hanging')">挂账</button>
+                            <button type="button" class="btn btn-rounded btn-default" ng-click="bookingConsume('', 'hanging')"><i class="fas fa-yen-sign"></i> 消费</button>
                             <div class="btn-group dropdown">
-                              <button type="button" class="btn btn-rounded btn-default" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top" data-template-url="/app/checkOutMenu.html"><i class="fas fas fa-cash-register"></i> 
+                              <button type="button" class="btn btn-rounded btn-default" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top" data-template-url="/app/accountsMenu.html"><i class="fas fa-wallet"></i> 
+                                入账 <span class="caret"></span>
+                              </button>          
+                            </div>
+                            <div class="btn-group dropdown">
+                              <button type="button" class="btn btn-rounded btn-default" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top" data-template-url="/app/checkOutMenu.html"><i class="fas fa-cash-register"></i> 
                                 结账 <span class="caret"></span>
                               </button>          
                             </div>

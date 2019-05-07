@@ -411,6 +411,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 		});
 	};
+	//消费
+	$scope.bookingConsume = function(consume) {
+		asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
+        asideConsume.$promise.then(function() {
+			asideConsume.show();
+			$(document).ready(function(){
+			});
+		});
+	};
 	//结账退房
 	$scope.bookingClose = function(bookDetail, closeType) {
 		$scope.beginLoading =! $scope.beginLoading;

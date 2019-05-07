@@ -427,6 +427,9 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return $objSuccess;
     }
 
+    public function updateBooking($whereCriteria, $arrayUpdateData, $update_type = '') {
+        return BookingDao::instance()->updateBooking($whereCriteria, $arrayUpdateData, $update_type);
+    }
     //取得消费记录
     public function getBookingConsume(\WhereCriteria $whereCriteria, $field = '*') {
         return BookingDao::instance()->getBookingConsume($whereCriteria, $field);

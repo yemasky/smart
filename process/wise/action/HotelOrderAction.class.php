@@ -94,8 +94,8 @@ class HotelOrderAction extends \BaseAction
         }
         //获取预订 条件未完结的所有订单 valid = 1 and check_in <= 今天
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('channel', 'Hotel')->EQ('valid', '1')->LE('check_in', $in_date)
-            ->setHashKey('booking_number');
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('channel', 'Hotel')
+            ->EQ('valid', '1')->GE('booking_status', '0')->LE('check_in', $in_date)->setHashKey('booking_number');
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayBookList = BookingHotelServiceImpl::instance()->getBooking($whereCriteria);
         $arrayBookingNumber = array_keys($arrayBookList);
@@ -110,7 +110,7 @@ class HotelOrderAction extends \BaseAction
         //$whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
         //->LE('check_in', $out_date);
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')
-            ->EQ('valid', '1')->LE('check_in', $in_date)->setHashKey('booking_detail_id')->ORDER('check_in');
+            ->EQ('valid', '1')->GE('booking_detail_status', '0')->LE('check_in', $in_date)->setHashKey('booking_detail_id')->ORDER('check_in');
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
         if (!empty($bookingDetailRoom)) {
@@ -508,6 +508,15 @@ class HotelOrderAction extends \BaseAction
 
         if ($booking_number > 0) {
             $arrayInput = $objRequest->getInput();
+            //取得所有未退房房间
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1')
+                ->GE('booking_detail_status', '0')->EQ('booking_number', $booking_number)->setHashKey('item_id');
+            $arrayLiveInRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria, 'item_id');
+            if(empty($arrayLiveInRoom)) {
+                return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+            }
+            $arrayLiveInRoomId = array_keys($arrayLiveInRoom);
             //计算消费
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
@@ -515,7 +524,7 @@ class HotelOrderAction extends \BaseAction
             $totalConsume = 0;
             if(!empty($arrayConsume)) {
                 foreach ($arrayConsume as $i => $consume) {
-                    $totalConsume += $consume['consume_price'];
+                    $totalConsume = bcadd($consume['consume_price_total'], $totalConsume, 2);
                 }
             }
             //计算账务
@@ -525,19 +534,36 @@ class HotelOrderAction extends \BaseAction
             $totalAccounts = 0;
             if(!empty($arrayAccounts)) {
                 foreach ($arrayAccounts as $i => $account) {
-                    if($account['money'] == 'receipts') $totalAccounts += $account['money'];
-                    if($account['money'] == 'refund') $totalAccounts -= $account['money'];
-                    if($account['money'] == 'hanging') $totalAccounts += $account['money'];
+                    if($account['accounts_type'] == 'receipts') $totalAccounts = bcadd($account['money'], $totalAccounts, 2);
+                    if($account['accounts_type'] == 'refund') $totalAccounts = bcsub($totalAccounts, $account['money'], 2);
+                    if($account['accounts_type'] == 'hanging') $totalAccounts = bcadd($account['money'], $totalAccounts, 2);
                 }
             }
             if($totalConsume == 0 || $totalAccounts == 0 || $totalConsume != $totalAccounts) {
-                return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_equal_account']);
+                return $objResponse->noticeResponse(ErrorCodeConfig::$notice['no_equal_account'], '', bcsub($totalAccounts, $totalConsume, 2));
             }
+            CommonServiceImpl::instance()->startTransaction();
             //更新数据
-
-            //设置脏房
-
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->ArrayIN('item_id', $arrayLiveInRoomId);
+            $updateData['booking_number'] = '';//取消关联ID
+            $updateData['clean'] = 'dirty';//设置脏房
+            $updateData['status'] = '0';//取消入住状态
+            ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $updateData);
+            //设置预订完成
+            $updateData = [];
+            $updateData['booking_status'] = '-1';//[-1结束 已完成] 设置booking
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number);
+            BookingHotelServiceImpl::instance()->updateBooking($whereCriteria, $updateData);
             //
+            $updateData = [];
+            $updateData['booking_detail_status'] = '-1';//[-1退房]
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number)->EQ('valid', '1');
+            BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $updateData);
+            CommonServiceImpl::instance()->commit();
+
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
         }
 

@@ -23,10 +23,9 @@ class ErrorCodeConfig extends \ModulesConfig {
         'lock'=>'100003',
         'repair'=>'100004',
         'dirty'=>'100005',
-        'live_in'=>'100006',
-        'no_equal_account'=>'200001'
+        'live_in'=>'100006'
     ];
-
+    public static $notice  = ['no_equal_account'=>'200001'];
 	public static $successCode = ['success'=>'000001'];
 
 

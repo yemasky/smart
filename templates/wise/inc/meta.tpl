@@ -72,6 +72,11 @@ var app = angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource
 				var message_ext = $('label[for="'+response.data.item[0]+'"]').text();
 				if(message_ext != null && message_ext != '') message += '［'+message_ext + '］数据错误！';
 				$modal({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+			} else if(response.data.success == -1) {
+                var message = $translate.instant("notice.code."+response.data.code) + ' ' + response.data.message;
+				var message_ext = $('label[for="'+response.data.item[0]+'"]').text();
+				if(message_ext != null && message_ext != '') message += '［'+message_ext + '］数据错误！';
+				$modal({title: 'Notice', content: message, templateUrl: '/modal-notice.html', show: true});
 			} else if(response.data.success == 1) {
 				//
 			} else {
