@@ -393,8 +393,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
 			if($scope.param['in_time'].length > 8) $scope.param['in_time'] = $filter('limitTo')($scope.param['in_time'], 8, 11);
 			if($scope.param['out_time'].length > 8)$scope.param['out_time'] = $filter('limitTo')($scope.param['out_time'], 8, 11);
             $httpService.post('/app.do?'+param, $scope, function(result){
-                $scope.beginLoading =! $scope.beginLoading;
-                $scope.loading.hide();$httpService.deleteHeader('checkOrderData');
+                $scope.beginLoading =! $scope.beginLoading;$scope.loading.hide();
+				$httpService.deleteHeader('method');
                 if(result.data.success == '0') {
                     var message = $scope.getErrorByCode(result.data.code);
                     //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
