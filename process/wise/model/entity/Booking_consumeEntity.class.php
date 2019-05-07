@@ -32,6 +32,7 @@ class Booking_consumeEntity extends \Entity {
 	protected $price_system_name = '';
 	protected $original_price = 0.00;
 	protected $consume_price = 0.00;
+    protected $consume_price_total = 0.00;
 	protected $employee_id = 0;
 	protected $employee_name = '';
 	protected $business_day;
@@ -365,6 +366,20 @@ class Booking_consumeEntity extends \Entity {
 	public function setConsumePrice(float $consume_price) {
 		$this->consume_price = $consume_price;
 	}
+
+    /**
+     * @return float
+     */
+    public function getConsumePriceTotal(): float {
+        return $this->consume_price_total;
+    }
+
+    /**
+     * @param float $consume_price_total
+     */
+    public function setConsumePriceTotal(float $consume_price_total): void {
+        $this->consume_price_total = $consume_price_total;
+    }
 
 	/**
 	 * @return int

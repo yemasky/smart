@@ -347,24 +347,27 @@ class HotelOrderAction extends \BaseAction
             $Booking_live_inEntity->setCompanyId($company_id);
             $Booking_live_inEntity->setBookingNumber($booking_number);
             //检查客房是否能入住
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_type', 'item')->EQ('item_id', $Booking_live_inEntity->getItemId());
-            $arrayChannelItemStatus = ChannelServiceImpl::instance()->getChannelItem($whereCriteria, 'booking_number,`status`,clean,`lock`');
-            if (!empty($arrayChannelItemStatus)) {
-                $arrayChannelItemStatus = $arrayChannelItemStatus[0];
-                if ($arrayChannelItemStatus['booking_number'] != $booking_number) {
-                    if ($arrayChannelItemStatus['status'] != '0') {
-                        return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['status']]);
+            $arrayChannelItemStatus = null;
+            if($Booking_live_inEntity->getItemId() > 0) {//已排房
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_type', 'item')->EQ('item_id', $Booking_live_inEntity->getItemId());
+                $arrayChannelItemStatus = ChannelServiceImpl::instance()->getChannelItem($whereCriteria, 'booking_number,`status`,clean,`lock`');
+                if (!empty($arrayChannelItemStatus)) {
+                    $arrayChannelItemStatus = $arrayChannelItemStatus[0];
+                    if ($arrayChannelItemStatus['booking_number'] != $booking_number) {
+                        if ($arrayChannelItemStatus['status'] != '0') {
+                            return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['status']]);
+                        }
+                        if ($arrayChannelItemStatus['clean'] != '0') {
+                            return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['clean']]);
+                        }
+                        if ($arrayChannelItemStatus['lock'] != '0') {
+                            return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['lock']]);
+                        }
                     }
-                    if ($arrayChannelItemStatus['clean'] != '0') {
-                        return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['clean']]);
-                    }
-                    if ($arrayChannelItemStatus['lock'] != '0') {
-                        return $objResponse->errorResponse(ErrorCodeConfig::$errorCode[$arrayChannelItemStatus['lock']]);
-                    }
+                } else {
+                    return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
                 }
-            } else {
-                return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
             }
             //找寻会员 更具手机或身份证
             $member_id = 0;
@@ -383,11 +386,11 @@ class HotelOrderAction extends \BaseAction
             //更新
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
-            $arrayUpdate['booking_detail_status'] = '1';
+            if($Booking_live_inEntity->getItemId() > 0) $arrayUpdate['booking_detail_status'] = '1';//已排房算入住
             $arrayUpdate['actual_check_in'] = getDateTime();
             BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $arrayUpdate);
             //
-            if (empty($arrayChannelItemStatus['booking_number'])) {
+            if (isset($arrayChannelItemStatus['booking_number']) && empty($arrayChannelItemStatus['booking_number'])) {
                 $arrayUpdate = null;
                 $whereCriteria = new \WhereCriteria();
                 $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_type', 'item')->EQ('item_id', $Booking_live_inEntity->getItemId());

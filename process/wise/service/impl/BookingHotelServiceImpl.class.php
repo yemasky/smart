@@ -268,6 +268,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                                 $consume_key = $system_id . '-' . $i . '-' . substr($monthDate, 0, 8) . $day;
                                                 $BookingDetailConsumeList[$consume_key]->setOriginalPrice($price);
                                                 $BookingDetailConsumeList[$consume_key]->setConsumePrice($price);
+                                                $BookingDetailConsumeList[$consume_key]->setConsumePriceTotal($price);
                                             }
                                         }
                                     }

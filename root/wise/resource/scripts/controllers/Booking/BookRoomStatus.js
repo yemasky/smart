@@ -76,7 +76,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     //初始化数据
     //选择入住房
     var selectLayoutRoom = {};$scope.selectLayoutRoom = {};
-    var allLayoutRoom = {};
+    var arrayRoom = {};
     var liveLayoutRoom = {};
     //按房型选择房间 全部房型房间
     var layoutRoomList = {};
@@ -167,6 +167,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 				    var floorRoom = $scope.roomList[building][floor];
 					for(var i in floorRoom) {
 						var room = floorRoom[i];
+                        arrayRoom[room.item_id] = room;
                         room['detail_id'] = 0;
 						if(angular.isDefined(live_inRoom[room.item_id])) room['detail_id'] = live_inRoom[room.item_id]['booking_detail_id'];
                         bookRoomStatus[room.item_id] = room;
@@ -221,14 +222,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 		});
 	};
-	$scope.roomStatusBook = function(detail_id) {
+	$scope.roomStatusBook = function(detail_id, room) {
 	    if(detail_id == 0) {//预定
+            $scope.bookRoom = room;console.log(room);
 			var asideBookRoom = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
 			asideBookRoom.$promise.then(function() {
 				asideBookRoom.show();
 				$(document).ready(function(){
-			});
-		});
+                });
+            });
 			return;
 		}
         $scope.editRoomBook($scope.bookingDetailRoom[detail_id], 1);
