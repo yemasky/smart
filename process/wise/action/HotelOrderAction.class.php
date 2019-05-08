@@ -157,10 +157,11 @@ class HotelOrderAction extends \BaseAction
         if (!empty($arrayBookingNumber)) {
             $arrayPaymentType = ChannelServiceImpl::instance()->getPaymentTypeHash($company_id);
         }
-
+        //客源市场
+        $arrayCustomerMarket = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
         $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom' => $arrayLayoutRoom, 'bookingDetailRoom' => $bookingDetailRoom,
             'bookList' => $arrayBookList, 'consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn,
-            'paymentTypeList' => $arrayPaymentType];
+            'paymentTypeList' => $arrayPaymentType, 'marketList' => $arrayCustomerMarket, 'in_date' => getDay(), 'out_date'=>getDay(24)];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 

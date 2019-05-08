@@ -185,7 +185,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         var param = 'channel='+_channel+'&market_id='+market_id;
         $httpService.header('method', 'checkOrderData');
         $httpService.post('/app.do?'+param, $scope, function(result){
-            $scope.loading.hide();$httpService.deleteHeader('checkOrderData');
+            $scope.loading.hide();
+			$httpService.deleteHeader('method');
             if(result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);
                 $alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});

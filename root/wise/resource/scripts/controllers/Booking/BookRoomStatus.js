@@ -82,6 +82,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     var layoutRoomList = {};
     $scope.bookAta = '0';//预抵人数
     $scope.dueOut = '0';//预离人数
+	//选择客源市场
+    $scope.market_name = '散客步入';$scope.market_id = '2';$scope.customer_name = '预订人';
 	//获取数据
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
@@ -111,6 +113,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.guestLiveInList   = result.data.item.guestLiveInList;//入住客人
         $scope.paymentTypeList   = result.data.item.paymentTypeList;//支付方式
 		$scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
+		$scope.marketList        = result.data.item.marketList;
         $scope.bookRoomStatus    =  {}; $scope.roomDetailList = {};$scope.roomLiveIn = {};
         if($scope.roomList != '') {
 			//按当日计算预抵预离 过期忽略
@@ -199,7 +202,39 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		    }
 			$scope.bookRoomStatus = bookRoomStatus;
 		}
+		//时间控件
+		$(document).ready(function(){
+			var _thisDay = result.data.item.in_date;
+			var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');
+			var _nextDay = result.data.item.out_date;
+			$scope.param["check_in"] = _thisDay;$scope.param["check_out"] = _nextDay;
+			$scope.setBookingCalendar(_thisDay, _nextDay);
+			$('.check_in').val(_thisDay);$('.check_out').val(_nextDay);
+			$scope.param["in_time"] = _thisDay+'T14:00:00.000Z';$scope.param["out_time"] = _thisDay+'T12:00:00.000Z';
+		});
 	});
+	//日期控件
+	$scope.setBookingCalendar = function(in_date, out_date) {//设置日期
+        var check_in = new Date(in_date.replace(/-/g, '/'));
+        var check_in_time = check_in.getTime(); 
+        var check_out = new Date(out_date.replace(/-/g, '/'));
+        var check_out_time = check_out.getTime();
+        var bookingCalendar = {}, colspan = 4;
+        for(var i = check_in_time; i < check_out_time; i += 86400000) {
+            var thisDate = new Date(i);var year = thisDate.getFullYear();
+            var month = thisDate.getMonth() - 0 + 1; if(month < 10) month = '0'+month;
+            var day = thisDate.getDate() - 0; if(day < 10) day = '0'+day;
+            //date_key = 年-月-日 2018-01-01
+            var date_key = year+'-'+month+'-'+day;var week = $scope.weekday[thisDate.getDay()];
+            if(typeof(bookingCalendar[date_key]) == 'undefined') {
+                bookingCalendar[date_key] = {};
+            }
+            bookingCalendar[date_key]['day'] = day;    bookingCalendar[date_key]['week'] = week;
+            bookingCalendar[date_key]['month'] = month;bookingCalendar[date_key]['year'] = year;
+            colspan++;
+        }
+        $scope.bookingCalendar = bookingCalendar;$scope.colspan = colspan;
+    };	
 	//预订编辑开始
     $scope.layoutSelectRoom = {};
     $scope.actionEdit = '客房项';
@@ -224,17 +259,86 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	};
 	$scope.roomStatusBook = function(detail_id, room) {
 	    if(detail_id == 0) {//预定
-            $scope.bookRoom = room;console.log(room);
-			var asideBookRoom = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
+            $scope.bookRoom = room;
+			var asideBookRoom = $aside({scope : $scope, title: '预定:'+room.item_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
 			asideBookRoom.$promise.then(function() {
 				asideBookRoom.show();
 				$(document).ready(function(){
-                });
+					$('.check_date').daterangepicker({
+						"autoApply": true,"startDate": $scope._thisDay,"endDate": $scope._nextDay,"locale":{"format" : 'YYYY-MM-DD hh:mm'}
+					}, function(start, end, label) {
+					  //console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+						var check_in = start.format('YYYY-MM-DD'), check_out = end.format('YYYY-MM-DD');
+						$scope.param["check_in"] = check_in;$scope.param["check_out"] = check_out;
+						$scope.setBookingCalendar(check_in, check_out);
+						$('.check_in').val(check_in);$('.check_out').val(check_out);$scope.checkOrderData();
+                	});
+					$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
+				});
             });
 			return;
 		}
         $scope.editRoomBook($scope.bookingDetailRoom[detail_id], 1);
     }
+	//选择客人市场
+    $scope.selectCustomerMarket = function(market, ajax) {
+        $scope.marketSystemLayout = {};
+        if(angular.isDefined(market)) {
+            $scope.market_name = market.market_name;
+            $scope.market_id = market.market_id;
+            $scope.market_father_id =  market.market_father_id;
+            $('#customer_ul').next().hide();
+            $scope.customer_name = '预订人';
+            if(market.market_father_id == '4') {//判断会员是否正确
+                $scope.customer_name = market.market_name;
+            }
+            $scope.setPriceSystemMarket();
+            if(ajax == true) $scope.checkOrderData();//取出客源市场价格及远期房态
+        }
+    };
+	//取出客源市场价格及远期房态
+    $scope.checkOrderData = function() {
+        if($scope.market_id == '0') {
+            $alert({title: 'Error', content: "请选择客源市场！", templateUrl: '/modal-warning.html', show: true});
+            return;
+        }
+        if($scope.param['in_time'].length > 8) $scope.param["in_time"] = $scope.param["in_time"].substr(11,5);
+        if($scope.param['out_time'].length > 8) $scope.param["out_time"] = $scope.param["out_time"].substr(11,5);
+        $scope.loading.show();
+        var market_id = $scope.market_id;
+        var param = 'channel='+_channel+'&market_id='+market_id;
+        $httpService.header('method', 'checkOrderData');
+        $httpService.post('/app.do?'+param, $scope, function(result){
+            $scope.loading.hide();$httpService.deleteHeader('method');
+            if(result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                $alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+            } else {
+                var resultPriceLayout = result.data.item.priceLayout;
+                //$scope.marketChannelLayoutPrice = {};
+                $scope.setPriceLayout(resultPriceLayout);
+            }
+        })
+    }
+	//设置房型价格
+	var priceLayout = {};
+    $scope.setPriceLayout = function (resultPriceLayout) {
+        if(resultPriceLayout != '') {
+            for(var i in resultPriceLayout) {
+                var channel_id = resultPriceLayout[i].channel_id;
+                if(typeof(priceLayout[channel_id]) == 'undefined') priceLayout[channel_id] = {};
+                //
+                var item_id = resultPriceLayout[i].item_id;
+                if(typeof(priceLayout[channel_id][item_id]) == 'undefined') priceLayout[channel_id][item_id] = {};
+                //
+                var system_id = resultPriceLayout[i].price_system_id;
+                if(typeof(priceLayout[channel_id][item_id][system_id]) == 'undefined') priceLayout[channel_id][item_id][system_id] = {};
+                //
+                var price_date = resultPriceLayout[i].layout_price_date;
+                priceLayout[channel_id][item_id][system_id][price_date] = resultPriceLayout[i];
+            }
+        }
+    };
     //
     var editBookRoomAside = '';
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
