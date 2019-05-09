@@ -498,6 +498,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			//angular.element('#action_nav_name').html(nav);
 			$scope.action_nav_name = '' + nav;
 		};
+        $scope.getChannelModule = function(module_id) {
+            return $rootScope.employeeMenu[module_id];
+        }
         $rootScope.defaultChannel = {};
 		$scope.setCommonSetting = function(common) {//$common == null?
 			if(angular.isDefined(common) && common != '') {

@@ -1,83 +1,16 @@
-<div class="aside h-10x col-xs-11 b-r box-shadow" tabindex="-1" role="dialog">
+<div class="aside h-10x col-xs-11 b-r box-shadow no-padding" tabindex="-1" role="dialog">
   <div class="aside-dialog">
     <div class="aside-content">
       <div class="aside-header" ng-show="title">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
-      <form name="BookRoomForm" class="form-validation form-inline" id="BookRoomForm" ng-submit="">
-      <div class="aside-body h-8x">
-		<div class="row m-b">
-			<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵</label>
-			<div class="form-group">
-			  <input type="text" size="9" class="form-control check_in w-thumb-lg" style="float:left;" name="check_in" ng-model="param.check_in" value="" readonly>
-			  <input type="text" size="6" class="form-control w-thumb-lg" style="" name="in_time" ng-model="param.in_time" data-autoclose="1" data-time-format="HH:mm" placeholder="14:00" value="14:00" data-length="3" data-minute-step="15" data-timezone="UTC" bs-timepicker>
-			</div>
-			<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预离</label>
-			<div class="form-group">
-			  <input type="text" size="9" class="form-control check_out w-thumb-lg" style="float:left;" name="check_out" ng-model="param.check_out" value="" readonly>
-			  <input type="text" size="6" class="form-control w-thumb-lg" style="" name="out_time" ng-model="param.out_time" data-autoclose="1" data-time-format="HH:mm" placeholder="12:00" value="12:00" data-length="3" data-minute-step="15" data-timezone="UTC" bs-timepicker>
-			  <button class="btn btn-default check_date" type="button"><i class="fa fa-calendar text-info"> 选择日期</i></button>
-			</div>
-			<div class="form-group">    
-				<aside class="app-aside bg-white lt">
-				<nav>
-				  <ul class="nav">
-					<li>
-						<a class="btn btn-default customer_btn" style="padding:6px !important;" id="customer_ul">
-							<span class="pull-right text-muted">
-							  <i class="fa fa-caret-down"></i>
-							</span>
-							<i class="icon fa fa-users text-lt"></i>
-							<span>{{market_name}}</span>
-						 </a>
-						 <ul class="nav nav-sub bg b">
-							<li ng-repeat="(i, father) in marketList">
-							  <a class="">
-								<span class="pull-right text-muted" ng-if="father.children!=''">
-								  <i class="fa fa-caret-down"></i>
-								</span>
-								<span class="font-normal">{{father.market_name}}</span>
-							  </a>
-							  <ul class="nav nav-sub bg b" ng-if="father.children!=''">
-								<li ng-repeat="(j, market) in father.children"><a ng-click="selectCustomerMarket(market, true)">{{market.market_name}}</a></li>
-							  </ul>
-							</li>
-						 </ul>
-					</li>
-				  </ul>
-				</nav>
-				</aside>
-			</div>
-		  </div>
-		  <div class="row">
-			<div class="form-group">
-			  <i class="fa fa-user"></i> {{customer_name}}
-			  <input type="text" size="10" class="form-control" id="member_name" name="member_name" ng-model="param.member_name" required >
-			  <i class="ti-mobile"></i>手机/Email
-			  <div class="input-group">
-				  <input type="text" size="10" class="form-control" id="mobile_email" name="mobile_email" ng-model="param.mobile_email" required >
-				  <span class="input-group-btn">
-					  <button class="btn btn-default" type="button" ng-click="beginBooking('member')"><i class="fa fa-search"> </i> 会员</button>
-				  </span>
-			  </div> <span ng-show="market_father_id==7||market_father_id==8"><i class="fas fa-globe-asia"></i> OTA订单
-			  <input type="text" size="16" class="form-control btn-default" id="booking_number_ext" name="booking_number_ext" ng-model="param.booking_number_ext" ng-if="market_father_id==7||market_father_id==8?true:false" required></span>
-			  <i class="ti-bookmark"></i>备注
-			  <div class="input-group">
-				  <input type="text" size="10" class="form-control btn-default" id="node" name="node" ng-model="param.node" >
-
-				  <span class="input-group-btn">
-					  <button class="btn btn-default" type="submit" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading"><i class="fa fa-save"> </i> 预订</button>
-				  </span>
-			  </div>
-			</div>
-		  </div>
+      <div class="aside-body h-10x no-padding" ng-include="'/resource/views/Booking/RoomOrder.html'">		  
       </div>
       <div class="aside-footer panel-footer">
       	<input type="hidden" name="item_id" value="" ng-model="param.item_id" >
         <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
       </div>
-      </form>
     </div>
   </div>
 </div>

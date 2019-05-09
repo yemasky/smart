@@ -8,7 +8,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     $scope.param = {};$scope.booking_room = {};$scope.booking_price = {}; $scope.system_price = {};var priceLayout = {};
     //选择客源市场
     $scope.market_name = '散客步入';$scope.market_id = '2';$scope.customer_name = '预订人';
-    var _channel = $scope.$stateParams.channel;$scope.param.mobile_email = '';
+    var _channel = angular.isDefined($scope.getChannelModule(12)) ? $scope.getChannelModule(12).url : $scope.$stateParams.channel;
+    $scope.param.mobile_email = '';
     var _view = $scope.$stateParams.view;
     //获取数据
     var param = 'channel='+_channel+'&view='+_view+'&market_id='+$scope.market_id;
