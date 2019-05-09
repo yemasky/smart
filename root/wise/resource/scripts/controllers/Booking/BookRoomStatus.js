@@ -208,7 +208,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');
 			var _nextDay = result.data.item.out_date;
 			$scope.param["check_in"] = _thisDay;$scope.param["check_out"] = _nextDay;
-			$scope.setBookingCalendar(_thisDay, _nextDay);
 			$('.check_in').val(_thisDay);$('.check_out').val(_nextDay);
 			$scope.param["in_time"] = _thisDay+'T14:00:00.000Z';$scope.param["out_time"] = _thisDay+'T12:00:00.000Z';
 		});
@@ -237,8 +236,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	};
 	$scope.roomStatusBook = function(detail_id, room) {
 	    if(detail_id == 0) {//预定
-            $scope.bookRoom = room;
-			var asideBookRoom = $aside({scope : $scope, title: '预定:'+room.item_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
+            $scope.bookRoom = room;console.log(room);
+            var title = '预定 : '+$scope.layoutList[$scope.layoutRoom[room.item_id].category_item_id].item_name +'-'+room.item_name;
+			var asideBookRoom = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
 			asideBookRoom.$promise.then(function() {
 				asideBookRoom.show();
 				$(document).ready(function(){
