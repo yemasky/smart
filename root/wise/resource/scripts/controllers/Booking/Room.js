@@ -1,6 +1,8 @@
 /////
 app.controller('RoomOrderController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter) {
     $scope.loading.show();
+	var bookRoomFather_id = 0, isBookRoom = false;
+	if(angular.isDefined($scope.bookRoom)) {bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;}
     //日历部分
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
@@ -25,7 +27,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         $(document).ready(function(){
             var channelItemList = result.data.item.arrayChannelItem;
             var layoutRoom = result.data.item.layoutRoom;//房型房间
-            if(angular.isDefined(channelItemList)) $scope.setLayoutList(channelItemList, layoutRoom);
+            if(angular.isDefined(channelItemList)) {$scope.setLayoutList(channelItemList, layoutRoom);}
             $scope.marketList = result.data.item.marketList;
             //
             var resultPriceLayout = result.data.item.priceLayout;
@@ -39,7 +41,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             var _thisDay = result.data.item.in_date;
             var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');
             var _nextDay = result.data.item.out_date;
-            $scope.param["check_in"] = _thisDay;$scope.param["check_out"] = _nextDay;
+            $scope.param.check_in = _thisDay;$scope.param.check_out = _nextDay;
             $scope.setBookingCalendar(_thisDay, _nextDay);
             //时间控件
             $('.check_in').val(_thisDay);$('.check_out').val(_nextDay);
@@ -48,15 +50,15 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             }, function(start, end, label) {
               //console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
                 var check_in = start.format('YYYY-MM-DD'), check_out = end.format('YYYY-MM-DD');
-                $scope.param["check_in"] = check_in;$scope.param["check_out"] = check_out;
+                $scope.param.check_in = check_in;$scope.param.check_out = check_out;
                 $scope.setBookingCalendar(check_in, check_out);
                 $('.check_in').val(check_in);$('.check_out').val(check_out);$scope.checkOrderData();
             });
             $('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
-            $scope.param["in_time"] = _thisDay+'T14:00:00.000Z';$scope.param["out_time"] = _thisDay+'T12:00:00.000Z';
+            $scope.param.in_time = _thisDay+'T14:00:00.000Z';$scope.param.out_time = _thisDay+'T12:00:00.000Z';
             //var channel_id = result.data.item.defaultChannel_id;
-            $scope.param["channel_id"] = $rootScope.defaultChannel["channel_id"];
-            $scope.param["channel_father_id"] = $rootScope.defaultChannel["channel_father_id"];
+            $scope.param.channel_id = $rootScope.defaultChannel.channel_id;
+            $scope.param.channel_father_id = $rootScope.defaultChannel.channel_father_id;
             $scope.defaultHotel = $rootScope.defaultChannel["channel_name"];
             //设置客源市场 
             $scope.selectCustomerMarket($scope.marketList[1].children[2], false);
@@ -127,6 +129,9 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                         select_room_num[j]['value'] = j;
                     }
                     layoutList[channel_id][i]['select_room_num'] = select_room_num;
+					layoutList[channel_id][i]['isBookRoom'] = true;
+					console.log(bookRoomFather_id + '-->' + thisItemList[i]['item_id']);
+					if(isBookRoom && thisItemList[i]['item_id'] != bookRoomFather_id) layoutList[channel_id][i]['isBookRoom'] = false;
                 }
             }
         }

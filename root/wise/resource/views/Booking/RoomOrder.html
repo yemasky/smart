@@ -2,7 +2,7 @@
 <div class="p-md" ng-controller="RoomOrderController">
     <div class="" append-source>
             <form name="bookingRoomForm" class="form-inline" role="form" ng-submit="beginBooking('')">
-            <div class=""> 
+            <div class="">
             	<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵</label>
                 <div class="form-group">
                   <input type="text" size="9" class="form-control check_in w-thumb-lg" style="float:left;" name="check_in" ng-model="param.check_in" value="" readonly>
@@ -112,7 +112,7 @@
                   <!--房型列表-->
                   <tbody ng-repeat="(channel_id, layouts) in layoutList" ng-show="param.channel_id==channel_id">
                     <tr><th colspan="{{colspan}}">{{employeeChannel[channel_id].channel_name}}</th></tr>
-                    <tr ng-repeat="(i, layout) in layouts" ng-if="layout.item_type=='category'"><!--酒店房型列表 循环 i-->
+                    <tr ng-repeat="(i, layout) in layouts" ng-if="layout.item_type=='category'&&layout.isBookRoom==true"><!--酒店房型列表 循环 i-->
                       <td>{{layout.item_name}}
                         <i class="ti-angle-double-down small pull-right cursor" ng-show="layoutShow[layout.item_id]==0&&layoutSystemMore[market_id][channel_id][layout.item_id]==1" ng-click="showLayout(layout.item_id, 1)"></i>
                         <i class="ti-angle-up small pull-right cursor" ng-show="layoutShow[layout.item_id]==1" ng-click="showLayout(layout.item_id, 0)"></i>

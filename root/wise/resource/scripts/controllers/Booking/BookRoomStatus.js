@@ -236,22 +236,14 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	};
 	$scope.roomStatusBook = function(detail_id, room) {
 	    if(detail_id == 0) {//预定
-            $scope.bookRoom = room;console.log(room);
+			room.item_father_id = $scope.layoutRoom[room.item_id].category_item_id;
+            $scope.bookRoom = room;
             var title = '预定 : '+$scope.layoutList[$scope.layoutRoom[room.item_id].category_item_id].item_name +'-'+room.item_name;
 			var asideBookRoom = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
 			asideBookRoom.$promise.then(function() {
 				asideBookRoom.show();
 				$(document).ready(function(){
-					$('.check_date').daterangepicker({
-						"autoApply": true,"startDate": $scope._thisDay,"endDate": $scope._nextDay,"locale":{"format" : 'YYYY-MM-DD hh:mm'}
-					}, function(start, end, label) {
-					  //console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-						var check_in = start.format('YYYY-MM-DD'), check_out = end.format('YYYY-MM-DD');
-						$scope.param["check_in"] = check_in;$scope.param["check_out"] = check_out;
-						$scope.setBookingCalendar(check_in, check_out);
-						$('.check_in').val(check_in);$('.check_out').val(check_out);$scope.checkOrderData();
-                	});
-					$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
+					
 				});
             });
 			return;
