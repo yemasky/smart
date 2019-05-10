@@ -391,6 +391,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 		});
 	};
+    $scope.payment_id = '';
     $scope.selectPaymentType = function(payment) {
         if(angular.isDefined(payment)) {
             $scope.payment_name = payment.payment_name;
@@ -414,7 +415,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param['payment_name'] = $scope.payment_name;
         $scope.param['payment_id'] = $scope.payment_id;
         $scope.param['payment_father_id'] = $scope.payment_father_id;
-        
+        if($scope.param['payment_id'] == '') {
+            
+            return;
+        }
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');

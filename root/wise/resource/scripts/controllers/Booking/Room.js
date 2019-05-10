@@ -2,7 +2,7 @@
 app.controller('RoomOrderController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter) {
     $scope.loading.show();
 	var bookRoomFather_id = 0, isBookRoom = false; $scope.bookRoom_quantity = '数量'
-	if(angular.isDefined($scope.bookRoom)) {bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房间';}
+	if(angular.isDefined($scope.bookRoom)) {bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房号';}
     //日历部分
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
