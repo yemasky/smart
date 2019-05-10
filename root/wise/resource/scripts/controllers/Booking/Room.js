@@ -1,8 +1,8 @@
 /////
 app.controller('RoomOrderController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter) {
     $scope.loading.show();
-	var bookRoomFather_id = 0, isBookRoom = false;
-	if(angular.isDefined($scope.bookRoom)) {bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;}
+	var bookRoomFather_id = 0, isBookRoom = false; $scope.bookRoom_quantity = '数量'
+	if(angular.isDefined($scope.bookRoom)) {bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房间';}
     //日历部分
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
@@ -121,16 +121,28 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                     layoutList[channel_id][i]['room_num'] = num;
                     room_data[channel_id][thisItemList[i]['item_id']] = 0;
                     var select_room_num = [];
-                    for(var j = 0; j <= num; j++) {//房型的房间
-                        select_room_num[j] = {};
-                        select_room_num[j]['room_info'] = {};
-                        select_room_num[j]['room_info']['item_name'] = '';
-                        select_room_num[j]['room_info']['item_category_name'] = thisItemList[i].item_name;
-                        select_room_num[j]['value'] = j;
-                    }
+					if(isBookRoom) {
+						select_room_num[0] = {};
+						select_room_num[0]['room_info'] = {};
+						select_room_num[0]['room_info']['item_name'] = '';
+						select_room_num[0]['room_info']['item_category_name'] = '';
+						select_room_num[0]['value'] = '0';
+						select_room_num[1] = {};
+						select_room_num[1]['room_info'] = {};
+						select_room_num[1]['room_info']['item_name'] = $scope.bookRoom.item_name;
+						select_room_num[1]['room_info']['item_category_name'] = thisItemList[i].item_name;
+						select_room_num[1]['value'] = $scope.bookRoom.item_name;
+					} else {
+						for(var j = 0; j <= num; j++) {//房型的房间
+							select_room_num[j] = {};
+							select_room_num[j]['room_info'] = {};
+							select_room_num[j]['room_info']['item_name'] = '';
+							select_room_num[j]['room_info']['item_category_name'] = thisItemList[i].item_name;
+							select_room_num[j]['value'] = j;
+						}
+					}
                     layoutList[channel_id][i]['select_room_num'] = select_room_num;
 					layoutList[channel_id][i]['isBookRoom'] = true;
-					console.log(bookRoomFather_id + '-->' + thisItemList[i]['item_id']);
 					if(isBookRoom && thisItemList[i]['item_id'] != bookRoomFather_id) layoutList[channel_id][i]['isBookRoom'] = false;
                 }
             }

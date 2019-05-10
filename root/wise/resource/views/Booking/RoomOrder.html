@@ -92,7 +92,7 @@
                     <tr class="bs-sidebar hidden-print" data-offset-top="-50" bs-affix style="z-index:999 !important;">
                       <th class="w"><div class="w-xs">房型\日期</div></th>
                       <th class="w">客源市场价格</th>
-                      <th class="w-xs bg-light">数量</th>
+                      <th class="w-xs bg-light" ng-bind-html="bookRoom_quantity">数量</th>
                       <th class="w-xs col-sm-1 b-r bg-light" ng-repeat="(thisDate, date) in bookingCalendar">
                       	{{date.day}}<span class="text-xs text-muted m-l-xs"><small>{{date.week}}</small></span>
                       </th>
