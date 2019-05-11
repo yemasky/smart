@@ -1,8 +1,10 @@
 /////
 app.controller('RoomOrderController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter) {
-    $scope.loading.show();
-	var bookRoomFather_id = 0, isBookRoom = false; $scope.bookRoom_quantity = '数量'
-	if(angular.isDefined($scope.bookRoom)) {bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房号';}
+    "use strict"; 
+	$scope.loading.show();
+	var bookRoomFather_id = 0, isBookRoom = false; $scope.bookRoom_quantity = '数量';
+	if(angular.isDefined($scope.bookRoom) && $scope.bookRoom !== '') {
+		bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房号';}
     //日历部分
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
@@ -17,7 +19,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     var param = 'channel='+_channel+'&view='+_view+'&market_id='+$scope.market_id;
     $httpService.post('/app.do?'+param, $scope, function(result){
         $scope.loading.hide();
-        if(result.data.success == '0') {
+        if(result.data.success === '0') {
             var message = $scope.getErrorByCode(result.data.code);
             $alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
         }
@@ -59,7 +61,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             //var channel_id = result.data.item.defaultChannel_id;
             $scope.param.channel_id = $rootScope.defaultChannel.channel_id;
             $scope.param.channel_father_id = $rootScope.defaultChannel.channel_father_id;
-            $scope.defaultHotel = $rootScope.defaultChannel["channel_name"];
+            $scope.defaultHotel = $rootScope.defaultChannel.channel_name;
             //设置客源市场 
             $scope.selectCustomerMarket($scope.marketList[1].children[2], false);
         });
@@ -77,7 +79,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 $scope.customer_name = market.market_name;
             }
             $scope.setPriceSystemMarket();
-            if(ajax == true) $scope.checkOrderData();//取出客源市场价格及远期房态
+            if(ajax == true) {$scope.checkOrderData();}//取出客源市场价格及远期房态
         }
     };
     //设置房型价格
@@ -85,13 +87,13 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         if(resultPriceLayout != '') {
             for(var i in resultPriceLayout) {
                 var channel_id = resultPriceLayout[i].channel_id;
-                if(typeof(priceLayout[channel_id]) == 'undefined') priceLayout[channel_id] = {};
+                if(typeof(priceLayout[channel_id]) == 'undefined') {priceLayout[channel_id] = {};}
                 //
                 var item_id = resultPriceLayout[i].item_id;
-                if(typeof(priceLayout[channel_id][item_id]) == 'undefined') priceLayout[channel_id][item_id] = {};
+                if(typeof(priceLayout[channel_id][item_id]) == 'undefined') {priceLayout[channel_id][item_id] = {};}
                 //
                 var system_id = resultPriceLayout[i].price_system_id;
-                if(typeof(priceLayout[channel_id][item_id][system_id]) == 'undefined') priceLayout[channel_id][item_id][system_id] = {};
+                if(typeof(priceLayout[channel_id][item_id][system_id]) == 'undefined') {priceLayout[channel_id][item_id][system_id] = {};}
                 //
                 var price_date = resultPriceLayout[i].layout_price_date;
                 priceLayout[channel_id][item_id][system_id][price_date] = resultPriceLayout[i];

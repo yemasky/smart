@@ -85,6 +85,7 @@
 								<table class="table table-bordered table-striped bg-white table-hover">
 								  <thead>
 									<tr>
+								      <th>订单号</th>
 									  <th translate="module.channel.market_name">客源市场</th>
 									  <th>房型</th>
                                       <th>价格类型</th>
@@ -98,6 +99,7 @@
 								  </thead>
 								  <tbody><!-- bookingDetail -->
 									<tr ng-repeat="(i, detail) in bookingDetailRoom" ng-if="detail.booking_detail_status==0">
+								      <td>{{detail.booking_number}}</td>
 									  <td class="text-nowrap">{{detail.market_name}}</td>
 									  <td><span>{{detail.item_category_name}}</span></td>
                                       <td><span>{{detail.price_system_name}}</span></td>
@@ -123,6 +125,7 @@
 								<table class="table table-bordered table-striped bg-white table-hover">
 								  <thead>
 									<tr>
+								      <th>订单号</th>
 									  <th translate="module.channel.market_name">客源市场</th>
 									  <th>房型</th>
                                       <th>价格类型</th>
@@ -136,6 +139,7 @@
 								  </thead>
 								  <tbody><!-- bookingDetail -->
 									<tr ng-repeat="(detail_id, detail) in bookingDetailRoom" ng-if="detail.booking_detail_status!=0">
+								      <td>{{detail.booking_number}}</td>
 									  <td class="text-nowrap">{{detail.market_name}}</td>
 									  <td><span>{{detail.item_category_name}}</span></td>
                                       <td><span>{{detail.price_system_name}}</span></td>
@@ -173,6 +177,7 @@
 								<table class="table bg-white">
 								  <thead>
 									<tr>
+								      <th>订单号</th>
 									  <th translate="module.channel.market_name">客源市场</th>
 									  <th>房号</th>
 									  <th>客人名称</th>
@@ -185,6 +190,7 @@
 								  </thead>
 								  <tbody ng-repeat="(number, numberConsumes) in consumeList">
 									<tr ng-repeat="(detail_id, consumes) in numberConsumes">
+								      <td>{{detail.booking_number}}</td>
 									  <td class="text-nowrap">{{book.market_name}}</td>
 									  <td><span>{{book.market_name}}</span></td>
 									  <td><a ng-click="config(Channel.id)">{{Channel.channel_name}}</a></td>

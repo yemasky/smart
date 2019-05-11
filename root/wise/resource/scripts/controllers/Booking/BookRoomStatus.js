@@ -200,7 +200,33 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					}
 			   }
 		    }
-			$scope.bookRoomStatus = bookRoomStatus;
+			bookRoomStatus = bookRoomStatus;
+			//消费、账务计算
+			var roomConsume = {}, roomBalance = {};
+			if($scope.consumeList != '') {
+				for(var booking_number in $scope.consumeList) {
+					for(var detail_id in $scope.consumeList['booking_number']) {
+						for(var i in $scope.consumeList['booking_number']['detail_id']) {
+							var consume = $scope.consumeList['booking_number']['detail_id'][i];
+							var price = 0;
+							if(angular.isDefined(roomConsume[consume.item_id])) price = roomConsume[consume.item_id];
+							roomConsume[consume.item_id] = $scope.arithmetic(consume.consume_price_total, price, '+');
+						}
+					}
+				}				
+			}
+			var roomAccount = {};
+			if($scope.accountsList != '') {
+				for(var booking_number in $scope.accountsList) {
+					for(var i in $scope.accountsList['booking_number']) {
+						var account = $scope.accountsList['booking_number'][i];
+						var price = 0;
+						if(angular.isDefined(roomAccount[account.item_id])) price = roomAccount[account.item_id];
+						var symbol = '+';
+						roomAccount[account.item_id] = $scope.arithmetic(roomAccount.money, price, symbol);
+					}
+				}				
+			}
 		}
 		//时间控件
 		$(document).ready(function(){
@@ -287,6 +313,18 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     //添加入住客人
     var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
     $scope.addGuestLiveIn = function(liveInGuest) {
+		if(liveInGuest == 'AddBookRoom') {
+			$scope.bookInfo = $scope.bookDetail;$scope.bookRoom = '';
+			var title = '添加客房 订单号: '+$scope.bookDetail.booking_number;
+			var asideBookRoom = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
+			asideBookRoom.$promise.then(function() {
+				asideBookRoom.show();
+				$(document).ready(function(){
+
+				});
+			});
+			return;
+		}
         addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
         addGuestLiveInAside.$promise.then(addGuestLiveInAside.show);
         if(liveInGuest != '') {

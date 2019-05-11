@@ -370,7 +370,7 @@ class HotelOrderAction extends \BaseAction
                     return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
                 }
             }
-            //找寻会员 更具手机或身份证
+            //找寻会员 根据手机或身份证
             $member_id = 0;
             $arrayMember = \member\MemberServiceImpl::instance()->getMember($objRequest, 'member_id');
             if (!empty($arrayMember)) {
@@ -395,7 +395,7 @@ class HotelOrderAction extends \BaseAction
                 $arrayUpdate = null;
                 $whereCriteria = new \WhereCriteria();
                 $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_type', 'item')->EQ('item_id', $Booking_live_inEntity->getItemId());
-                $arrayUpdate['status'] = 'live_in';
+                $arrayUpdate['status'] = 'live_in';//设置入住状态
                 $arrayUpdate['booking_number'] = $booking_number;
                 ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $arrayUpdate);
             }

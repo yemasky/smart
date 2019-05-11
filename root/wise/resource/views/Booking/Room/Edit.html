@@ -10,10 +10,10 @@
 		  <div class="m-b">
 			  <a href class="w-thumb-md pull-left m-r"><img src="/data/images/userimg/user_m.png" class="img-responsive"></a>
 			  <div class="clear m-b-sm">
-				  <div>{{bookDetail.member_name}}</div>
+				  <div>{{bookDetail.member_name}} <code class="small">订单号 {{bookDetail.booking_number}}</code></div>
 				  <span>{{bookDetail.member_mobile}} {{bookDetail.member_email}}</span>
 				  <span class="text-muted text-xs">
-                      {{bookDetail.check_in}} {{bookDetail.check_out}}
+                      {{bookDetail.check_in|limitTo:10}}-{{bookDetail.check_out|limitTo:10}}
 				  </span>
 			  </div>
 		  </div>
@@ -36,7 +36,8 @@
                 <div ng-show="activeRoomBookEditTab==1">
                     <div class="btn-group m-b">
                         <button type="button" class="btn btn-rounded btn-default" ng-click="addGuestLiveIn('')"><i class="fa fa-users"></i> 添加住客</button>
-                        <button type="button" class="btn btn-rounded btn-default" ng-click="addGuestLiveIn('')"><i class="fas fa-bed"></i> 添加客房</button>
+                        <button type="button" class="btn btn-rounded btn-default" ng-click="addGuestLiveIn('AddBookRoom')"><i class="fas fa-bed"></i> 添加客房</button>
+                        <button type="button" class="btn btn-rounded btn-default" ng-click="addGuestLiveIn('HaveLiveIn')"><i class="fas fa-procedures"></i> 客房入住</button>
                     </div>
                       <div class="table-responsive">
 						<table class="table">
@@ -76,7 +77,8 @@
 										  <td class="col-xs-1">{{rDetail.check_in | limitTo:10}}</td>
 										  <td class="col-xs-1">{{rDetail.check_out | limitTo:10}}</td>
 										  <td>
-											  <button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i></button>
+											  <!--<button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i></button>-->
+											  <a class="btn btn-xs btn-default" ng-click="addGuestLiveIn('HaveLiveIn')"><i class="fas fa-procedures"></i> 客房入住</a>
 										  </td>
 									  </tr>
                                       <tr>
