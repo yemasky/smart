@@ -455,6 +455,10 @@ class HotelOrderAction extends \BaseAction
                 if ($editType == 'clean') {
                     $arrayUpdate['clean'] = '0';
                 }
+                if ($editType == 'empty_room') {//设置空房间
+                    $arrayUpdate['status'] = '0';
+                    $arrayUpdate['booking_number'] = '';
+                }
                 ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $arrayUpdate);
                 //
                 if ($editType == 'lock' || $editType == 'repair') {

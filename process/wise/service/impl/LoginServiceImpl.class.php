@@ -132,9 +132,15 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
             $employeeMenu                       = json_decode($objSession->employeeMenu, true);
             $employeeChannel                    = json_decode($objSession->employeeChannel, true);
             $channelSettingList                 = $objSession->channelSettingList;
-            if (empty($employeeMenu)) {
+            $setCookie = false;
+            if (empty($employeeMenu) || empty($channelSettingList)) {
                 $employeeMenu    = $this->getEmployeeModule($arrayEmployee['company_id'], $arrayEmployee['employee_id']);
                 $employeeChannel = EmployeeServiceImpl::instance()->getEmployeeChannel($arrayEmployee['company_id'], $arrayEmployee['employee_id']);
+                //channelSettingList
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->setHashKey('channel_id');
+                $channelSettingList = ChannelDao::instance()->getChannelSettingList($whereCriteria->EQ('company_id', $arrayEmployee['company_id']));
+                $setCookie = true;
             }
             $arrayLoginEmployee['employeeMenu']    = $employeeMenu;
             $arrayLoginEmployee['employeeChannel'] = $employeeChannel;
@@ -147,6 +153,7 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
             $loginEmployeeModel->setEmployeeMenu($employeeMenu);
             $loginEmployeeModel->setEmployeeChannel($employeeChannel);
             $loginEmployeeModel->setChannelSettingList($channelSettingList);
+            if($setCookie) $this->setLoginEmployeeCookie($loginEmployeeModel);
         }
         return $loginEmployeeModel;
     }
