@@ -1,4 +1,4 @@
-<div class="aside b-r box-shadow" tabindex="-1" role="dialog">
+<div class="aside b-r col-sm-11 box-shadow" tabindex="-1" role="dialog">
   <div class="aside-dialog aside-lg">
     <div class="aside-content">
       <div class="aside-header">
@@ -12,7 +12,7 @@
                 <table class="table">
                     <tbody>
                         <tr>
-                            <th>房号</th>
+                            <td>房号</td>
                             <td>
                                 <input ng-model="param.item_name" id="live_in_item_name" value="" type="hidden">
                                 <select class="form-control" id="live_in_item_id" ng-model="param.item_id" ng-change="setLiveInItemName()" required>
@@ -20,7 +20,9 @@
                                     <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}"  ng-repeat="(room_id, rDetail) in roomDetail">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
                                 </select>
                             </td>
-                            <th>姓名</th>
+                        </tr>
+                        <tr>
+                            <td>姓名</td>
                             <td class="input-group">
                                 <input name="member_name" id="live_in_member_name" value="" class="w-thumb-lg form-control" ng-model="param.member_name" required>
                                 <span class="input-group-btn">
@@ -29,7 +31,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <th>性别</th>
+                            <td>性别</td>
                             <td>
                                 <select class="form-control" id="live_in_member_sex" ng-model="param.member_sex" required>
                                     <option value="">请选择</option>
@@ -37,11 +39,13 @@
                                     <option value="0">女</option>
                                 </select>
                             </td>
-                            <th>电话</th>
+                        </tr>
+                        <tr>
+                            <td>电话</td>
                             <td><input name="" value="" class="form-control w-thumb-lg" id="live_in_member_mobile" size="15" ng-model="param.member_mobile"></td>
                         </tr>
                         <tr>
-                            <th>证件</th>
+                            <td>证件</td>
                             <td>
                                 <select class="form-control" id="live_in_member_idcard_type" ng-model="param.member_idcard_type" required>
                                     <option value="">请选择</option>
@@ -53,7 +57,9 @@
                                     <option value="other_permit">其它</option>
                                 </select>
                             </td>
-                            <th>证件号</th>
+                        </tr>
+                        <tr>
+                            <td>证件号</td>
                             <td><input name="" value="" class="form-control" id="live_in_member_idcard_number" ng-model="param.member_idcard_number" required></td>
                         </tr>
                     </tbody>
