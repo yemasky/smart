@@ -8,24 +8,6 @@ app.directive("edit", function(){
       });
     }
   }
-}).directive("update",function($document){
-  return{
-    restrict: 'AE',
-    require: 'ngModel',
-    link: function($scope,$element,$attrs,$ngModel){
-      $element.bind("click",function(){
-         alert($ngModel.$modelValue + " is updated, Update your value here.");
-         var id = "txt_name_" +$ngModel.$modelValue.id;
-         var obj = $("#"+id);
-         obj.removeClass("active");
-         obj.addClass("inactive");
-         obj.attr("readOnly",true);
-         $scope.$apply(function(){
-           $scope.showEdit = true;
-         })
-      })
-    }
-  }
 }).directive("showBookroomPrice", function($document){
   return{
     restrict: "A",
@@ -130,10 +112,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 						check_inRoom[detail.item_id] = detail; 
                         bookAta++;
 					}
-					if(detail.check_out.substr(0, 10) == thisDay) {
+					/*if(detail.check_out.substr(0, 10) == thisDay) {
 						check_outRoom[detail.item_id] = detail;
                         dueOut++;
-					}
+					}*/
                     var checkOutTimestamp = Date.parse(new Date(detail.check_out)); 
                     if(checkOutTimestamp <= thisDayTimestamp) {
                         check_outRoom[detail.item_id] = detail;
@@ -159,7 +141,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                             if(angular.isUndefined(roomLiveIn[LiveIn.item_id])) roomLiveIn[LiveIn.item_id] = {};
                             roomLiveIn[LiveIn.item_id][roomi] = LiveIn;roomi++;
                         }
-                        //var roomLiveIn = $scope.bookingDetailRoom[number][room_id];
                     }
                 }
             }
@@ -234,7 +215,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		    }
 			$scope.bookRoomStatus = bookRoomStatus;
 		}
-		//时间控件
+		//时间
 		$(document).ready(function(){
 			var _thisDay = result.data.item.in_date;
 			var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');
@@ -244,7 +225,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			$scope.param["in_time"] = _thisDay+'T14:00:00.000Z';$scope.param["out_time"] = _thisDay+'T12:00:00.000Z';
 		});
 	});	
-	//预订编辑开始
+	//单个预订编辑开始
     $scope.layoutSelectRoom = {};
     $scope.actionEdit = '客房项';
     $scope.actionConsume = '消费项';
@@ -376,7 +357,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     };
     //读取身份证
     $scope.readGuestIdCard = function() {
-
+        
     };
     //设置room的各种状态
     $scope.statusRoom = {};
