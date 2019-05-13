@@ -597,10 +597,21 @@ class HotelOrderAction extends \BaseAction
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('business_day', $business_day);
         $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
 
-        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],['nightAuditorList'=>$arrayConsume, 'nightDetailList'=>$arrayBookingDetail]);
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],['nightAuditorList'=>$arrayConsume, 'nightAuditorList'=>$arrayBookingDetail]);
     }
     //远期房态
     protected function doMethodRoomForcasting(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        $in_date = getDay();
+        $out_date = getDay(30);
+        //查找已住房间[远期房态]
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GT('check_in', $in_date)->LT('check_in', $out_date);
+        if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
+        $arrayResult['roomForwardList'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],$arrayResult);
     }
 }

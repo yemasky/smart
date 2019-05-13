@@ -161,9 +161,22 @@
 				            </div>
                             <div class="p-md form-inline" ng-show="activeAtaTab==3">
                                 <div class="m-b">
-                                    <label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵日期</label>
-                                    <div class="input-group">
-                                        <input type="text" size="9" class="form-control check_in w-thumb-lg" ng-model="check_in_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="check_in_date" bs-datepicker>
+                                    <label class="control-label m-b"><i class="fas fa-clock"></i> </label>
+                                    <select class="form-control" ng-model="condition_date">
+                                      <option value="">选择日期</option>
+									  <option value="eta_date">预抵日期</option>
+									  <option value="check_in_date">入住日期</option>
+									</select>
+                                    <input type="text" size="9" class="form-control check_in w-thumb-lg" ng-model="search_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" name="check_in_date" bs-datepicker required>
+                                    <label class="control-label m-b"><i class="fas fa-history"></i> </label>
+                                    <select class="form-control" ng-model="condition_key">
+                                      <option value="">订单号</option>
+									  <option value="mobile">移动电话</option>
+									  <option value="Email">Email</option>
+									  <option value="name">预订人</option>
+									</select>
+                               		<div class="input-group">
+                                        <input type="text" size="9" class="form-control w-thumb-lg" ng-model="search_date" required>
                                         <span class="input-group-btn">
                                             <button class="btn btn-default" type="button">Go!</button>
                                         </span>
@@ -226,19 +239,18 @@
 									  <th>审核</th>
 									</tr>
 								  </thead>
-								  <tbody ng-repeat="(number, numberConsumes) in consumeList">
-									<tr ng-repeat="(detail_id, consumes) in numberConsumes">
-								      <td>{{detail.booking_number}}</td>
-									  <td class="text-nowrap">{{book.market_name}}</td>
-									  <td><span>{{book.market_name}}</span></td>
-									  <td><a ng-click="config(Channel.id)">{{Channel.channel_name}}</a></td>
-									  <td>{{Channel.channel_en_name}}</td>
-									  <td>{{Channel.phone}}</td>
-									  <td>{{Channel.address}}</td>
-									  <td>{{Channel.add_datetime}}</td>
+								  <tbody>
+									<tr ng-repeat="(i, night) in nightAuditorList">
+								      <td>{{night.booking_number}}</td>
+									  <td class="text-nowrap">{{night.market_name}}</td>
+									  <td><span>{{night.market_name}}</span></td>
+									  <td><a ng-click="config(Channel.id)">{{night.channel_name}}</a></td>
+									  <td>{{night.channel_en_name}}</td>
+									  <td>{{night.phone}}</td>
+									  <td>{{night.address}}</td>
+									  <td>{{night.add_datetime}}</td>
 									  <td>
-									  <button class="btn btn-xs btn-default" ng-click="edit(Channel.id)"><span translate="common.hint.edit" >编辑</span></button>
-									  <button class="btn btn-xs btn-default" ng-click="config(Channel.id)"><span translate="common.hint.config" >确认</span></button>
+									  <button class="btn btn-xs btn-default" ng-click="config(night.id)"><span translate="common.hint.config" >确认</span></button>
 									  </td>
 									</tr>
 								  </tbody>

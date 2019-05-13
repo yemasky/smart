@@ -548,9 +548,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             } else {
-				
+				$scope.nightAuditorList = result.data.item.nightAuditorList;
 			}
-			$scope.nightAuditorList = result.data.nightAuditorList;
+			
         });
 	}
 	///////////////////////////////////////////////end night auditor
@@ -558,16 +558,17 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	$scope.roomForwardList = '';
     $scope.roomForcasting =function(getRoomForward) {
 		if($scope.roomForwardList == '' || getRoomForward == true) {
+			$scope.loading.start();
 			$httpService.header('method', 'roomForcasting');
 			$httpService.post('/app.do?'+param, $scope, function(result) {
-				$scope.beginLoading =! $scope.beginLoading;
+				$scope.loading.hide();
 				$httpService.deleteHeader('method');
 				if (result.data.success == '0') {
 					var message = $scope.getErrorByCode(result.data.code);
 					//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
 					return;//错误返回
 				} else {
-					$scope.successAlert.startProgressBar();
+					$scope.roomForwardList = result.data.item.roomForwardList;
 				}
 			});
 		}
