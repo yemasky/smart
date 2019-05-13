@@ -1,4 +1,4 @@
-/////
+
 app.directive("edit", function(){
   return{
     restrict: "E",
@@ -535,8 +535,44 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         });
 		
 	};
+	////////////////////////////////////////////////night auditor
+	$scope.nightAuditorList = '';
+	$scope.nightAuditor = function() {
+		$httpService.header('method', 'nightAuditor');
+		$scope.loading.start();
+		$httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.loading.hide();
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            } else {
+				
+			}
+			$scope.nightAuditorList = result.data.nightAuditorList;
+        });
+	}
+	///////////////////////////////////////////////end night auditor
     //begin/////////////////////////////////////////远期房态//////////////////
-    
+	$scope.roomForwardList = '';
+    $scope.roomForcasting =function(getRoomForward) {
+		if($scope.roomForwardList == '' || getRoomForward == true) {
+			$httpService.header('method', 'roomForcasting');
+			$httpService.post('/app.do?'+param, $scope, function(result) {
+				$scope.beginLoading =! $scope.beginLoading;
+				$httpService.deleteHeader('method');
+				if (result.data.success == '0') {
+					var message = $scope.getErrorByCode(result.data.code);
+					//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+					return;//错误返回
+				} else {
+					$scope.successAlert.startProgressBar();
+				}
+			});
+		}
+		console.log('Room Forcasting');
+	}
     //end//////////////////////////////////////////远期房态///////////////////
 	$httpService.deleteHeader('refresh');
 });

@@ -171,7 +171,7 @@
 <div class="modal" tabindex="-1" role="dialog">
 <div class="modal-dialog">
 <div class="progress progress-striped active">
-	<div class="progress-bar progress-bar-info" style="width:100%" ng-bind-html="content">loading...</div>
+	<div class="progress-bar progress-bar-info" ng-style="{width: vm.isLoad + '%'}">Loading... {{vm.isLoad}}%</div>
 </div>
 </div>
 </div>

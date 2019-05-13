@@ -577,4 +577,30 @@ class HotelOrderAction extends \BaseAction
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
+
+    //夜审
+    protected function doMethodNightAuditor(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        //所有在住的，都要夜审，所有应离未离的都要夜审，所有应到未到的，都要夜审。最晚到达时间每个酒店规定不一样
+        //预订数据
+        $nowHour = date("H");
+        $nightAuditorDay = $nowHour > 0 && $nowHour >= 6 ? getDay() : getDay();//0~6点为当天
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->GE('booking_detail_status', '0')->LE('check_out', $nightAuditorDay . ' 12:00:00');
+        $arrayBookingDetail = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
+        //
+        $business_day = LoginServiceImpl::getBusinessDay();
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('business_day', $business_day);
+        $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
+
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],['nightAuditorList'=>$arrayConsume, 'nightDetailList'=>$arrayBookingDetail]);
+    }
+    //远期房态
+    protected function doMethodRoomForcasting(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+    }
 }

@@ -606,26 +606,34 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.weekday[0]="日";$scope.weekday[1]="一";$scope.weekday[2]="二";
 		$scope.weekday[3]="三";$scope.weekday[4]="四";$scope.weekday[5]="五";
 		$scope.weekday[6]="六";
-        $scope.loading = $alert({content: 'Loading... 90%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: false});
-        
+       
         var vm = $scope.vm = {};
         vm.value = 0;
         $scope.startProgressBar = function(index) {
             $scope.vm.value = index;
             var start = $interval(function(){
                 $scope.vm.value = ++index;
-                if (index > 99) {
-                    $interval.cancel(start);
-                }
-                if (index == 60) {
-                    index = 99;
-                }
+                if (index > 99) {$interval.cancel(start);}
+                if (index == 60) {index = 99;}
             }, 30);
         };
+		vm.isLoad = 90;
+		$scope.startLoading = function(index) {
+            $scope.vm.isLoad = index;
+            var start = $interval(function(){
+                $scope.vm.isLoad = ++index;
+                if (index > 95) {$interval.cancel(start);}
+                if (index == 60) {index = 95;}
+            }, 3);
+        };
+        $scope.loading = $alert({scope : $scope, placement: 'top', type: 'info', templateUrl: '/loading.html', show: false});
         $scope.successAlert = $alert({scope : $scope, title: 'Success', templateUrl: '/resource/views/Common/successAlertRound.html', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
         $scope.successAlert.startProgressBar = function() {
             $scope.successAlert.show();$scope.startProgressBar(0);
-        }		
+        }	
+		$scope.loading.start = function() {
+            $scope.loading.show();$scope.startLoading(10);
+        }	
 }]);
 //login 
 app.controller("LoginController",function($rootScope, $scope, $httpService, $modal, $location, $translate, $tooltip, $log){

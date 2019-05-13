@@ -31,10 +31,10 @@
                     <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
                         <a>预抵<span class="badge bg-info badge-xs m-l-xs" ng-bind-html="bookAta">0</span></a>
                     </li>
-                    <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
+                    <li ng-class="{active:activeTab==3}" ng-click="activeTab=3;nightAuditor();">
                         <a>夜审</a>
                     </li>
-                    <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;getRoomItem()">
+                    <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;roomForcasting()">
                         <a>远期房态</a>
                     </li>
                  </ul>
@@ -223,7 +223,7 @@
 									  <th>电话</th>
 									  <th>价格</th>
 									  <th>营业日</th>
-									  <th translate="common.hint.manager">管理</th>
+									  <th>审核</th>
 									</tr>
 								  </thead>
 								  <tbody ng-repeat="(number, numberConsumes) in consumeList">
@@ -255,7 +255,7 @@
                                 <div class="input-group">
                                     <input type="text" size="9" class="form-control w-thumb-lg" ng-model="eta_date" data-date-format="yyyy-MM-dd" data-date-type="number" data-start-view="1" data-min-view="1" data-autoclose="true" data-min-date="02/10/86" data-autoclose="1" name="eta_date" bs-datepicker>
                                     <span class="input-group-btn">
-                                        <button class="btn btn-default" type="button">Go!</button>
+                                        <button class="btn btn-default" type="button" ng-click="roomForcasting(true)">Go!</button>
                                     </span>
                                 </div>
                               </div>
