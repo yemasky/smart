@@ -609,9 +609,32 @@ class HotelOrderAction extends \BaseAction
         $out_date = getDay(30);
         //查找已住房间[远期房态]
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GT('check_in', $in_date)->LT('check_in', $out_date);
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel_id', $channel_id)->EQ('booking_type', 'room_day')->GT('check_in', $in_date)->LT('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayResult['roomForwardList'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],$arrayResult);
+    }
+    //搜索订单
+    protected function doMethodSearchBooking(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+
+        $condition_key = $objRequest->getInput('condition_key');
+        $search_value = $objRequest->getInput('search_value');
+        $condition_date = $objRequest->getInput('condition_date');
+        $search_date = $objRequest->getInput('search_date');
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel_id', $channel_id)->EQ('booking_type', 'room_day')
+            ->setHashKey('booking_detail_id');
+        if(!empty($condition_date) && !empty($search_date)) {
+            $whereCriteria->EQ($condition_date, $search_date);
+        }
+        if(!empty($condition_key) && !empty($search_value)) {
+            $whereCriteria->EQ($condition_key, $search_value);
+        }
+        $arrayResult['bookingSearchList'] = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 }

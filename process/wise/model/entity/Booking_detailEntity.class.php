@@ -17,6 +17,9 @@ class Booking_detailEntity extends \Entity {
 	protected $booking_type = 'room_day';
 	protected $channel_id;
 	protected $member_id = 0;
+	protected $member_name = '';
+	protected $member_mobile = '';
+	protected $member_email = '';
 	protected $market_father_id = 0;
 	protected $market_id = 0;
 	protected $market_name = '';
@@ -161,6 +164,48 @@ class Booking_detailEntity extends \Entity {
 	public function setMemberId(int $member_id) {
 		$this->member_id = $member_id;
 	}
+
+    /**
+     * @return string
+     */
+    public function getMemberName(): string {
+        return $this->member_name;
+    }
+
+    /**
+     * @param string $member_name
+     */
+    public function setMemberName(string $member_name): void {
+        $this->member_name = $member_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMemberMobile(): string {
+        return $this->member_mobile;
+    }
+
+    /**
+     * @param string $member_mobile
+     */
+    public function setMemberMobile(string $member_mobile): void {
+        $this->member_mobile = $member_mobile;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMemberEmail(): string {
+        return $this->member_email;
+    }
+
+    /**
+     * @param string $member_email
+     */
+    public function setMemberEmail(string $member_email): void {
+        $this->member_email = $member_email;
+    }
 
 	/**
 	 * @return int

@@ -95,7 +95,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.guestLiveInList   = result.data.item.guestLiveInList;//入住客人
         $scope.paymentTypeList   = result.data.item.paymentTypeList;//支付方式
 		$scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
-        $scope.bookingRoomList   = result.data.item.bookingDetailRoom;//所有订单
+        $scope.bookingSearchList   = result.data.item.bookingDetailRoom;//所有订单
 		$scope.marketList        = result.data.item.marketList;
         $scope.bookRoomStatus    =  {}; $scope.roomDetailList = {};$scope.roomLiveIn = {};$scope.check_outRoom = {};
         if($scope.roomList != '') {
@@ -554,6 +554,30 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         });
 	}
 	///////////////////////////////////////////////end night auditor
+    $scope.searchBooking = function(condition) {
+        if((angular.isDefined($scope.param.condition_date) && angular.isDefined($scope.param.search_date)) || 
+           (angular.isDefined($scope.param.condition_key) && angular.isDefined($scope.param.search_value))) {
+        } else {
+            $alert({title: 'Notice', content: '搜索条件不正确！', templateUrl: '/modal-warning.html', show: true});
+            return;//错误返回
+        }
+        if(angular.isDefined($scope.param.search_date)) $scope.param.search_date = $filter('date')($scope.param.search_date, 'yyyy-MM-dd');
+        $httpService.header('method', 'searchBooking');
+		$scope.loading.start();
+		$httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.loading.hide();
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            } else {
+				$scope.bookingSearchList = result.data.item.bookingSearchList;
+			}
+			
+        });
+        
+    }
     //begin/////////////////////////////////////////远期房态//////////////////
 	$scope.roomForwardList = '';
     $scope.roomForcasting =function(getRoomForward) {
