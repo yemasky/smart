@@ -634,8 +634,10 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.loading.start = function() {
             $scope.loading.show();$scope.startLoading(10);
         };
-		$scope.confirm = function() {
-			$alert({scope : $scope, title: 'Success', templateUrl: '/resource/views/Common/modalConfirm.html', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
+		$scope.confirm = function(content, callback) {
+			$alert({scope : $scope, title: 'Notice', templateUrl: '/resource/views/Common/modalConfirm.html', content: content, placement: 'top', type: 'success', show: true, controller : function($scope) {
+                    $scope.callback = callback;
+                }});
 		}
 		
 }]);

@@ -297,6 +297,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.setEditItemRoomName = function(item_name) {
         if(item_name != '') $scope.param.item_room_name = item_name;
     }
+	//入住客房
+	function liveInAllRoom () {
+		console.log('入住');
+	}
     //添加入住客人
     var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
     $scope.addGuestLiveIn = function(liveInGuest) {
@@ -313,7 +317,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			return;
 		}
 		if(liveInGuest == 'HaveLiveIn') {
-			console.log($scope.bookDetail);
+			$scope.confirm('确定要设置客房全部入住状态吗？', liveInAllRoom());
 			
 			return;
 		}
