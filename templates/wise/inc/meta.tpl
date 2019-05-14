@@ -606,7 +606,8 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.weekday[0]="日";$scope.weekday[1]="一";$scope.weekday[2]="二";
 		$scope.weekday[3]="三";$scope.weekday[4]="四";$scope.weekday[5]="五";
 		$scope.weekday[6]="六";
-       
+        $scope.loading = $alert({scope : $scope, placement: 'top', type: 'info', templateUrl: '/loading.html', show: false});
+        $scope.successAlert = $alert({scope : $scope, title: 'Success', templateUrl: '/resource/views/Common/successAlertRound.html', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
         var vm = $scope.vm = {};
         vm.value = 0;
         $scope.startProgressBar = function(index) {
@@ -622,22 +623,28 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             $scope.vm.isLoad = index;
             var start = $interval(function(){
                 $scope.vm.isLoad = ++index;
-                if (index > 95) {$interval.cancel(start);}
+                if (index >= 100) {$scope.loading.hide();}
+                if (index >= 95) {$interval.cancel(start);}
                 if (index == 60) {index = 95;}
             }, 3);
         };
-        $scope.loading = $alert({scope : $scope, placement: 'top', type: 'info', templateUrl: '/loading.html', show: false});
-        $scope.successAlert = $alert({scope : $scope, title: 'Success', templateUrl: '/resource/views/Common/successAlertRound.html', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
         $scope.successAlert.startProgressBar = function() {
             $scope.successAlert.show();$scope.startProgressBar(0);
         };
 		$scope.loading.start = function() {
             $scope.loading.show();$scope.startLoading(10);
         };
-		$scope.confirm = function(content, callback) {
-			$alert({scope : $scope, title: 'Notice', templateUrl: '/resource/views/Common/modalConfirm.html', content: content, placement: 'top', type: 'success', show: true, controller : function($scope) {
-                    $scope.callback = callback;
-                }});
+        $scope.loading.percent = function() {
+            $scope.startLoading(99);
+        };
+		$scope.confirm = function(content, confirmCallback) {
+			$alert({scope : $scope, title: 'Notice', templateUrl: '/resource/views/Common/modalConfirm.html', content: content, placement: 'top', type: 'success',         show: true, controller : function($scope) {
+                        $scope.callback = function() {
+                            if(confirmCallback){
+                                confirmCallback();
+                            }
+                        };
+            }});
 		}
 		
 }]);

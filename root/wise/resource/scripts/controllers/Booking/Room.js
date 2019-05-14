@@ -1,7 +1,7 @@
-/////
+
 app.controller('RoomOrderController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter) {
     "use strict"; 
-	$scope.loading.show();
+	$scope.loading.start();
 	var bookRoomFather_id = 0, isBookRoom = false; $scope.bookRoom_quantity = '数量';
 	if(angular.isDefined($scope.bookRoom) && $scope.bookRoom !== '') {
 		bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房号';}
@@ -18,7 +18,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     //获取数据
     var param = 'channel='+_channel+'&view='+_view+'&market_id='+$scope.market_id;
     $httpService.post('/app.do?'+param, $scope, function(result){
-        $scope.loading.hide();
+        $scope.loading.percent();
         if(result.data.success === '0') {
             var message = $scope.getErrorByCode(result.data.code);
             $alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
@@ -200,12 +200,12 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         }
         if($scope.param['in_time'].length > 8) $scope.param["in_time"] = $scope.param["in_time"].substr(11,5);
         if($scope.param['out_time'].length > 8) $scope.param["out_time"] = $scope.param["out_time"].substr(11,5);
-        $scope.loading.show();
+        $scope.loading.start();
         var market_id = $scope.market_id;
         var param = 'channel='+_channel+'&market_id='+market_id;
         $httpService.header('method', 'checkOrderData');
         $httpService.post('/app.do?'+param, $scope, function(result){
-            $scope.loading.hide();
+            $scope.loading.percent();
 			$httpService.deleteHeader('method');
             if(result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);
@@ -357,7 +357,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 } 
                 member_mobile = mobile_email;
             }
-            $scope.loading.show();
+            $scope.loading.start();
             $httpService.header('method', 'checkMember');
             $checkMember = {};
             $checkMember.param = {};
@@ -365,7 +365,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $checkMember.param['member_mobile']     = member_mobile;
             $checkMember.param['channel_father_id'] = $scope.param.channel_father_id;
             $httpService.post('/app.do?'+param, $checkMember, function(result){
-                $scope.loading.hide();$httpService.deleteHeader('method');
+                $scope.loading.percent();$httpService.deleteHeader('method');
                 if(result.data.success == '0') {
                     var message = $scope.getErrorByCode(result.data.code);
                     var message_ext = '.没有找到"'+mobile_email+'"的会员记录！';
@@ -400,7 +400,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         }
         function booking() {
             $scope.beginLoading =! $scope.beginLoading;
-            $scope.loading.show();
+            $scope.loading.start();
             $scope.param.market_name = $scope.market_name;
             $scope.param.market_id = $scope.market_id;
             $scope.param.market_father_id = $scope.market_father_id; 
@@ -414,7 +414,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
 			if($scope.param['in_time'].length > 8) $scope.param['in_time'] = $filter('limitTo')($scope.param['in_time'], 8, 11);
 			if($scope.param['out_time'].length > 8)$scope.param['out_time'] = $filter('limitTo')($scope.param['out_time'], 8, 11);
             $httpService.post('/app.do?'+param, $scope, function(result){
-                $scope.beginLoading =! $scope.beginLoading;$scope.loading.hide();
+                $scope.beginLoading =! $scope.beginLoading;$scope.loading.percent();
 				$httpService.deleteHeader('method');
                 if(result.data.success == '0') {
                     var message = $scope.getErrorByCode(result.data.code);

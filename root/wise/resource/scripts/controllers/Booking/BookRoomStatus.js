@@ -72,7 +72,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
 	$httpService.post('/app.do?'+param, $scope, function(result){
-		$scope.loading.hide();
+		$scope.loading.percent();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
 			//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
@@ -296,14 +296,21 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     };
     $scope.setEditItemRoomName = function(item_name) {
         if(item_name != '') $scope.param.item_room_name = item_name;
-    }
+    };
 	//入住客房
-	function liveInAllRoom () {
+	$scope.liveInAllRoom = function(){
+        $scope.beginLoading =! $scope.beginLoading;
 		console.log('入住');
-	}
+        $scope.beginLoading =! $scope.beginLoading;
+	};
+    $scope.liveInOneRoom = function(){
+        $scope.beginLoading =! $scope.beginLoading;
+		console.log('入住One');
+        $scope.beginLoading =! $scope.beginLoading;
+	};
     //添加入住客人
     var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
-    $scope.addGuestLiveIn = function(liveInGuest) {
+    $scope.addGuestLiveIn = function(liveInGuest, ObjectLiveIn) {
 		if(liveInGuest == 'AddBookRoom') {
 			$scope.bookInfo = $scope.bookDetail;$scope.bookRoom = '';
 			var title = '添加客房 订单号: '+$scope.bookDetail.booking_number;
@@ -316,24 +323,29 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 			return;
 		}
-		if(liveInGuest == 'HaveLiveIn') {
-			$scope.confirm('确定要设置客房全部入住状态吗？', liveInAllRoom());
+		if(liveInGuest == 'HaveLiveIn') {//入住全部房间
+			$scope.confirm('确定要设置客房全部入住状态吗？', $scope.liveInAllRoom);
 			
 			return;
 		}
+        if(liveInGuest == 'LiveInOne') {//入住一个房间
+            $scope.confirm('确定要设置客房入住状态吗？', $scope.liveInOneRoom);
+            
+            return;              
+        }
         addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
         addGuestLiveInAside.$promise.then(addGuestLiveInAside.show);
         if(liveInGuest != '') {
             $(document).ready(function(){
-				if(angular.isObject(liveInGuest)){
-					for (var key in liveInGuest) {
+				if(liveInGuest == 'EditLiveIn') {
+					for (var key in ObjectLiveIn) {
 						if(key.substr(0,1) == '$') continue;
 						if($('#live_in_'+key)) {
-							$('#live_in_'+key).val(liveInGuest[key]);
+							$('#live_in_'+key).val(ObjectLiveIn[key]);
 						}
 					}
 				} else {
-					$('#live_in_item_id').val(liveInGuest);
+					$('#live_in_item_id').val(ObjectLiveIn);
 				}
             });
         }
@@ -554,7 +566,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$httpService.header('method', 'nightAuditor');
 		$scope.loading.start();
 		$httpService.post('/app.do?'+param, $scope, function(result) {
-            $scope.loading.hide();
+            $scope.loading.percent();
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);
@@ -578,7 +590,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $httpService.header('method', 'searchBooking');
 		$scope.loading.start();
 		$httpService.post('/app.do?'+param, $scope, function(result) {
-            $scope.loading.hide();
+            $scope.loading.percent()
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);
@@ -598,7 +610,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			$scope.loading.start();
 			$httpService.header('method', 'roomForcasting');
 			$httpService.post('/app.do?'+param, $scope, function(result) {
-				$scope.loading.hide();
+				$scope.loading.percent()
 				$httpService.deleteHeader('method');
 				if (result.data.success == '0') {
 					var message = $scope.getErrorByCode(result.data.code);
