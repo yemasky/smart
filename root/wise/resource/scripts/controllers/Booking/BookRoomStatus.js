@@ -312,16 +312,25 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 			return;
 		}
+		if(liveInGuest == 'HaveLiveIn') {
+			console.log($scope.bookDetail);
+			
+			return;
+		}
         addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
         addGuestLiveInAside.$promise.then(addGuestLiveInAside.show);
         if(liveInGuest != '') {
             $(document).ready(function(){
-                for (var key in liveInGuest) {
-                    if(key.substr(0,1) == '$') continue;
-                    if($('#live_in_'+key)) {
-                        $('#live_in_'+key).val(liveInGuest[key]);
-                    }
-                }
+				if(angular.isObject(liveInGuest)){
+					for (var key in liveInGuest) {
+						if(key.substr(0,1) == '$') continue;
+						if($('#live_in_'+key)) {
+							$('#live_in_'+key).val(liveInGuest[key]);
+						}
+					}
+				} else {
+					$('#live_in_item_id').val(liveInGuest);
+				}
             });
         }
     };
