@@ -52,9 +52,7 @@ app.directive("edit", function(){
 });
 app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
     $scope.param = {};
-    $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
-        $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
-    $ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.js"]);
+    $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css"]);
     //初始化数据
     //选择入住房
     var selectLayoutRoom = {};$scope.selectLayoutRoom = {};
@@ -300,13 +298,29 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	//入住客房
 	$scope.liveInAllRoom = function(){
         $scope.beginLoading =! $scope.beginLoading;
-		console.log('入住');
-        $scope.beginLoading =! $scope.beginLoading;
+		$httpService.header('method', 'liveInAllRoom');
+        $httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+        });
 	};
     $scope.liveInOneRoom = function(){
         $scope.beginLoading =! $scope.beginLoading;
-		console.log('入住One');
-        $scope.beginLoading =! $scope.beginLoading;
+		$httpService.header('method', 'liveInOneRoom');
+        $httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+        });
 	};
     //添加入住客人
     var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
@@ -344,8 +358,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 							$('#live_in_'+key).val(ObjectLiveIn[key]);
 						}
 					}
-				} else {
-					$('#live_in_item_id').val(ObjectLiveIn);
+				} else if(liveInGuest == 'AddLiveIn') {
+					$('#live_in_item_id').val(ObjectLiveIn.item_id);
+					$scope.roomDetailEdit = ObjectLiveIn;
 				}
             });
         }
@@ -407,7 +422,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 myOtherAside.show();
             })
         } else if(editType != 'room_card') {
-            $scope.saveRoomStatusEdit();
+			if(editType == 'unlock') {$scope.confirm('您确定要解锁此房间吗？', $scope.saveRoomStatusEdit);
+		    } else if(editType == 'repair_ok') { $scope.confirm('您确定已修好此房间吗？', $scope.saveRoomStatusEdit);
+			} else if(editType == 'empty_room') { $scope.confirm('您确定要设置此房间空房吗？', $scope.saveRoomStatusEdit);
+			} else {$scope.saveRoomStatusEdit();}
         } else {//发放房卡 room_card
             
         }

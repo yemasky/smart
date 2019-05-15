@@ -638,13 +638,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             $scope.startLoading(99);
         };
 		$scope.confirm = function(content, confirmCallback) {
-			$alert({scope : $scope, title: 'Notice', templateUrl: '/resource/views/Common/modalConfirm.html', content: content, placement: 'top', type: 'success',         show: true, controller : function($scope) {
-                        $scope.callback = function() {
-                            if(confirmCallback){
-                                confirmCallback();
-                            }
-                        };
-            }});
+			$alert({scope : $scope, title: 'Notice', templateUrl: '/resource/views/Common/modalConfirm.html', content: content, placement: 'top', type: 'success', show: true, controller : function($scope) {$scope.callback = function() {if(confirmCallback){confirmCallback();}};}});
 		}
 		
 }]);

@@ -60,9 +60,8 @@
 								  <table class="table no-margin">
 									  <tr>
 										  <td class="col-xs-1">
-											  <span ng-if="rDetail.booking_detail_status==1">入住</span>
-											  <span ng-if="rDetail.booking_detail_status==0">预抵</span>
-                                              <a class="fas fa-user-plus" ng-click="addGuestLiveIn('AddLiveIn', rDetail.item_id)"></a>
+											  <code class="small" ng-if="rDetail.booking_detail_status==0">预抵</code>
+                                              <a class="fas fa-user-plus" ng-click="addGuestLiveIn('AddLiveIn', rDetail)" title="添加住客"></a>
 										  </td>
 										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
 											<a class="fa pull-right" ng-click="showEditBookRoomAside(rDetail, 'Room')"></a></td>
@@ -78,7 +77,8 @@
 										  <td class="col-xs-1">{{rDetail.check_out | limitTo:10}}</td>
 										  <td>
 											  <!--<button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i></button>-->
-											  <a class="btn btn-xs btn-default" ng-click="addGuestLiveIn('LiveInOne', rDetail)"><i class="fas fa-procedures"></i> 客房入住</a>
+											  <a class="btn btn-xs btn-default" ng-click="addGuestLiveIn('LiveInOne', rDetail)" ng-if="rDetail.booking_detail_status==0"><i class="fas fa-procedures"></i> 客房入住</a>
+											  <a class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'editLiveIn')" ng-if="rDetail.booking_detail_status==1"><i class="fas fa-edit"></i> 已入住</a>
 										  </td>
 									  </tr>
                                       <tr>
@@ -86,7 +86,7 @@
                                               <table class="table no-margin">
                                                   <tr ng-repeat="(number, LiveIn) in guestLiveInList[rDetail.booking_number][rDetail.booking_detail_id]">
                                                       <td class="col-xs-1"></td>
-                                                      <td  class="col-xs-1" toggle-class="fa fa-edit" class-target="a"><i class="fa fa-user" ng-click="addGuestLiveIn('EditLiveIn', LiveIn)"></i><a class="pull-right" ng-click="addGuestLiveIn('EditLiveIn', LiveIn)"></a></td>
+                                                      <td  class="col-xs-1" toggle-class="fa fa-edit" class-target="a"><i class="fa fa-user" ng-click="addGuestLiveIn('EditLiveIn', LiveIn)"></i> <a class="" ng-click="addGuestLiveIn('EditLiveIn', LiveIn)"></a></td>
                                                       <td class="col-xs-1">{{LiveIn.member_name}}</td>
                                                       <td class="col-xs-1">{{LiveIn.member_sex==1?'男':'女'}}</td>
                                                       <td class="col-xs-1">{{LiveIn.member_mobile}}</td>

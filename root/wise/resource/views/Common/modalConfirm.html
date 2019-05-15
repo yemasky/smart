@@ -5,7 +5,7 @@
 		<button type="button" class="close" ng-click="$hide()">&times;</button>
 		<h4 class="modal-title"><i class="glyphicon glyphicon-exclamation-sign b-warning text-warning"></i> <span ng-bind-html="title"></span></h4>
 	  </div>
-	  <form name="form-confirm" class="form-validation" id="confirmForm" ng-submit="callback()">
+	  <form name="form-confirm" class="form-validation" id="confirmForm" ng-submit="callback();$hide()">
 	  <div class="modal-body" ng-show="content">
 		<p ng-bind-html="content"></p>
 	  </div>

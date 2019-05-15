@@ -338,6 +338,8 @@ class HotelOrderAction extends \BaseAction
         $member_name = $objRequest->validInput('member_name');
         $booking_number = trim(decode($objRequest->getInput('book_id')));
         $detail_id = decode($objRequest->getInput('detail_id'));
+        //
+        $is_live_in = $objRequest->getInput('is_live_in');
 
         if ($detail_id > 0) {
             //整合数据
@@ -387,11 +389,11 @@ class HotelOrderAction extends \BaseAction
             //更新
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
-            if($Booking_live_inEntity->getItemId() > 0) $arrayUpdate['booking_detail_status'] = '1';//已排房算入住
+            if($is_live_in == 1) $arrayUpdate['booking_detail_status'] = '1';//设置入住状态
             $arrayUpdate['actual_check_in'] = getDateTime();
             BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $arrayUpdate);
             //
-            if (isset($arrayChannelItemStatus['booking_number']) && empty($arrayChannelItemStatus['booking_number'])) {
+            if ($is_live_in == 1 && isset($arrayChannelItemStatus['booking_number']) && empty($arrayChannelItemStatus['booking_number'])) {
                 $arrayUpdate = null;
                 $whereCriteria = new \WhereCriteria();
                 $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_type', 'item')->EQ('item_id', $Booking_live_inEntity->getItemId());
@@ -403,6 +405,14 @@ class HotelOrderAction extends \BaseAction
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
         }
 
+        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+    }
+    //设置订单入住状态
+    protected function doMethodLiveInOneRoom(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+    }
+
+    protected function doMethodLiveInAllRoom(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
 

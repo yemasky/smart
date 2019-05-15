@@ -15,10 +15,11 @@
                             <td>房号</td>
                             <td>
                                 <input ng-model="param.item_name" id="live_in_item_name" value="" type="hidden">
-                                <select class="form-control" id="live_in_item_id" ng-model="param.item_id" ng-change="setLiveInItemName()" required>
+                                <select class="form-control" id="live_in_item_id" ng-model="param.item_id" ng-change="setLiveInItemName()">
                                     <option value="">选择房号</option>
-                                    <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}"  ng-repeat="(room_id, rDetail) in roomDetail">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
+                                    <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}" ng-repeat="(detail_id, rDetail) in roomDetail" ng-selected="rDetail.item_id==param.item_id">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
                                 </select>
+                                
                             </td>
                         </tr>
                         <tr>
@@ -61,6 +62,19 @@
                         <tr>
                             <td>证件号</td>
                             <td><input name="" value="" class="form-control" id="live_in_member_idcard_number" ng-model="param.member_idcard_number" required></td>
+                        </tr>
+                        <tr class="form-inline" ng-if="roomDetailEdit.booking_detail_status==0">
+                            <td></td>
+                            <td>
+                                  <label class="ui-checks">
+									<input type="radio" name="is_live_in" value="0" ng-model="param.is_live_in">
+									<i></i>未入住 
+								  </label> 
+                           		  <label class="ui-checks">
+									<input type="radio" name="is_live_in" value="1" ng-model="param.is_live_in" checked>
+									<i></i>入住 
+								  </label>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
