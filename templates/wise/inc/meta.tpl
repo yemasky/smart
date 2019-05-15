@@ -37,7 +37,7 @@
 			if(typeof(serializeFormat[n_name]) == 'undefined') serializeFormat[n_name] = {};
 			serializeFormat[n_name][key] = serialize[i].value;
 		}
-		console.log(serializeFormat);
+		//console.log(serializeFormat);
         return serializeFormat;
     }
 })(jQuery);
@@ -411,6 +411,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			return unix_time - 0 + baseSeconds;
             //return baseDateTime.substr(0, 10);
 		};
+        $scope.getDay = function() {
+            return $filter("date")($scope._baseDateTime(), "yyyy-MM-dd");
+        }
         $scope.__RESOURCE = __RESOURCE;
 		$scope._resource = '<%$__RESOURCE%>';
 		//

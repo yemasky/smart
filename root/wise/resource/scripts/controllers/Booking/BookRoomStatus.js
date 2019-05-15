@@ -325,7 +325,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     //添加入住客人
     var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
     $scope.addGuestLiveIn = function(liveInGuest, ObjectLiveIn) {
-        $('#live_in_edit_id').val('');
 		if(liveInGuest == 'AddBookRoom') {
 			$scope.bookInfo = $scope.bookDetail;$scope.bookRoom = '';
 			var title = '添加客房 订单号: '+$scope.bookDetail.booking_number;
@@ -338,20 +337,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 			return;
 		}
-		if(liveInGuest == 'HaveLiveIn') {//入住全部房间
-			$scope.confirm('确定要设置客房全部入住状态吗？', $scope.liveInAllRoom);
-			
-			return;
+		if(liveInGuest == 'HaveLiveIn') {$scope.confirm('确定要设置客房全部入住状态吗？', $scope.liveInAllRoom);return;//入住全部房间
 		}
-        if(liveInGuest == 'LiveInOne') {//入住一个房间
-            $scope.confirm('确定要设置客房入住状态吗？', $scope.liveInOneRoom);
-            
-            return;              
+        if(liveInGuest == 'LiveInOne') {$scope.confirm('确定要设置客房入住状态吗？', $scope.liveInOneRoom);return;//入住一个房间
         }
         addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
         addGuestLiveInAside.$promise.then(addGuestLiveInAside.show);
-        if(liveInGuest != '') {
-            $(document).ready(function(){
+        $(document).ready(function(){
+            $('#saveAddGuestLiveInForm input').val('');
+            if(liveInGuest != '') {
 				if(liveInGuest == 'EditLiveIn') {
 					for (var key in ObjectLiveIn) {
 						if(key.substr(0,1) == '$') continue;
@@ -364,11 +358,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     $scope.param = formParam;
                     $scope.param.live_in_edit_id = ObjectLiveIn.l_in_id;
 				} else if(liveInGuest == 'AddLiveIn') {
-					$('#live_in_edit_id').val(ObjectLiveIn.item_id);
+					$scope.param.item_id = ObjectLiveIn.item_id;
+                    //$('#live_in_item_id').val(ObjectLiveIn.item_id);
 					$scope.roomDetailEdit = ObjectLiveIn;
 				}
-            });
-        }
+            }
+        });
     };
     $scope.saveAddGuestLiveIn = function() {
         $httpService.header('method', 'saveGuestLiveIn');
@@ -395,10 +390,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.guestLiveInList[booking_number][booking_detail_id][length] = $scope.param;
         });
     };
-    $scope.setLiveInItemName = function() {
-        $scope.param.item_name = $('#live_in_item_id').find('option:selected').text();
-        $scope.param.detail_id = $('#live_in_item_id').find('option:selected').attr('detail_id');
-        $scope.param.booking_detail_id = $('#live_in_item_id').find('option:selected').attr('booking_detail_id');
+    $scope.setLiveInItemName = function(rDetail) {
+        $scope.param.item_name = rDetail.item_name;//$('#live_in_item_id').find('option:selected').text();
+        $scope.param.detail_id = rDetail.detail_id;//$('#live_in_item_id').find('option:selected').attr('detail_id');
+        $scope.param.booking_detail_id = rDetail.booking_detail_id;
+        //$('#live_in_item_id').find('option:selected').attr('booking_detail_id');
     };
     //读取身份证
     $scope.readGuestIdCard = function() {

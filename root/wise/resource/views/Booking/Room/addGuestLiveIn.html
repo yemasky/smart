@@ -5,7 +5,7 @@
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="aside-title">详细填写入住客人信息</h4>
       </div>
-      <form name="form-layout" class="form-validation" id="saveAddGuestLiveInForm" ng-submit="saveAddGuestLiveIn()">
+      <form name="addGuestLiveInForm" class="form-validation" id="saveAddGuestLiveInForm" ng-submit="saveAddGuestLiveIn()">
       <div class="aside-body no-padding">
           <div class="clearfix">
             <div class="panel panel-default">
@@ -16,9 +16,13 @@
                             <td>
                                 <input name="item_name" ng-model="param.item_name" id="live_in_item_name" value="" type="hidden">
                                 <input ng-model="param.live_in_edit_id" id="live_in_edit_id" value="" type="hidden">
-                                <select class="form-control" id="live_in_item_id" name="item_id" ng-model="param.item_id" ng-change="setLiveInItemName()">
+                                <!--<select class="form-control" id="live_in_item_id" name="item_id" ng-model="param.item_id" ng-change="setLiveInItemName()">
                                     <option value="">选择房号</option>
                                     <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}" ng-repeat="(detail_id, rDetail) in roomDetail" ng-selected="rDetail.item_id==param.item_id">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
+                                </select>-->
+                                
+                                <select class="form-control" id="live_in_item_id" name="item_id" ng-model="param.item_id" ng-change="setLiveInItemName(rDetail)" ng-options="rDetail.item_id as rDetail.item_name==''?'未排房':rDetail.item_name for (detail_id, rDetail) in roomDetail">
+                                    <option value="">选择房号</option>
                                 </select>
                                 
                             </td>
@@ -68,11 +72,11 @@
                             <td></td>
                             <td>
                                   <label class="ui-checks">
-									<input type="radio" name="is_live_in" value="0" ng-model="param.is_live_in">
+									<input type="radio" name="is_live_in" value="0" ng-model="param.is_live_in" checked>
 									<i></i>未入住 
-								  </label> 
+								  </label>
                            		  <label class="ui-checks">
-									<input type="radio" name="is_live_in" value="1" ng-model="param.is_live_in" checked>
+									<input type="radio" name="is_live_in" value="1" ng-model="param.is_live_in" ng-checked="param.item_id>0&&roomDetailEdit.check_in==getDay()">
 									<i></i>入住 
 								  </label>
                             </td>
