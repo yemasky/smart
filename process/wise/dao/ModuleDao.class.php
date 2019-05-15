@@ -29,15 +29,15 @@ class ModuleDao extends CommonDao {
     //--------Module//-----------//
 
     public function saveModule($arrayData, $insert_type = 'INSERT') {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('module')->insert($arrayData, $insert_type);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('module')->insert($arrayData, $insert_type);
     }
 
     public function updateModule(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('module')->update($whereCriteria, $arrayUpdateData);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('module')->update($whereCriteria, $arrayUpdateData);
     }
 
     public function batchUpdateModuleByKey($arrayUpdate, \WhereCriteria $whereCriteria) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('module')->batchUpdateByKey($whereCriteria, $arrayUpdate);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('module')->batchUpdateByKey($whereCriteria, $arrayUpdate);
     }
     //--------Module//-----------//
 

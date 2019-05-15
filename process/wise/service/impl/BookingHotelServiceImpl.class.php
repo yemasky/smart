@@ -456,6 +456,10 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return BookingDao::instance()->saveGuestLiveIn($Booking_live_inEntity);
     }
 
+    public function updateGuestLiveIn(\WhereCriteria $whereCriteria, $updateData) {
+        return BookingDao::instance()->updateGuestLiveIn($whereCriteria, $updateData);
+    }
+
     public function getGuestLiveIn(\WhereCriteria $whereCriteria, $field = null) : array {
         return BookingDao::instance()->getGuestLiveIn($whereCriteria, $field);
     }

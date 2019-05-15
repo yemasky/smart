@@ -340,9 +340,10 @@ class mysqliDriver {
      */
     public function executePrepareStatement($sql, $statement = '', $param = '') {
         $objStatement = $this->executePrepareStatementSql($sql, $statement, $param);
-
-        /* 关于语句对象 */
+        $result = $objStatement->get_result();
+        /* 关闭语句对象 */
         $objStatement->close();
+        return $result;
     }
 
     public function selectPrepareStatement($sql, $statement = '', $param = '') {

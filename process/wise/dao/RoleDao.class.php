@@ -27,11 +27,11 @@ class RoleDao extends CommonDao {
     }
 
     public function saveRoleEmployee($arrayData, $insert_type = 'INSERT') {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('role_employee')->insert($arrayData, $insert_type);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_employee')->insert($arrayData, $insert_type);
     }
 
     public function updateRoleEmployee(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('role_employee')->update($whereCriteria, $arrayUpdateData);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_employee')->update($whereCriteria, $arrayUpdateData);
     }
     //--------RoleEmployee//-----------//
 
@@ -41,11 +41,11 @@ class RoleDao extends CommonDao {
     }
 
     public function saveRoleMudule($arrayData, $insert_type = 'INSERT') {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('role_module')->insert($arrayData, $insert_type);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_module')->insert($arrayData, $insert_type);
     }
 
     public function updateRoleMudule(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('role_module')->update($whereCriteria, $arrayUpdateData);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_module')->update($whereCriteria, $arrayUpdateData);
     }
     //--------RoleMudule//-----------//
 }

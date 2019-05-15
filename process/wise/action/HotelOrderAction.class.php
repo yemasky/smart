@@ -126,6 +126,15 @@ class HotelOrderAction extends \BaseAction
             $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
                 ->setChildrenKey('booking_detail_id')->setMultiple(true);
             $arrayGuestLiveIn = BookingHotelServiceImpl::instance()->getGuestLiveIn($whereCriteria);
+            if (!empty($arrayGuestLiveIn)) {
+                foreach ($arrayGuestLiveIn as $booking_number => $guestLiveIn) {
+                    foreach ($guestLiveIn as $detail_id => $arrayliveIn) {
+                        foreach ($arrayliveIn as $i => $arrayliveIn) {
+                            $arrayGuestLiveIn[$booking_number][$detail_id][$i]['l_in_id'] = encode($arrayliveIn['live_in_id']);
+                        }
+                    }
+                }
+            }
         }
         //消费
         $arrayConsume = null;
@@ -340,7 +349,28 @@ class HotelOrderAction extends \BaseAction
         $detail_id = decode($objRequest->getInput('detail_id'));
         //
         $is_live_in = $objRequest->getInput('is_live_in');
+        //
+        $live_in_edit_id = decode($objRequest->getInput('live_in_edit_id'));
+        if($live_in_edit_id > 0) {//update
+            //找寻会员 根据手机或身份证
+            $member_id = 0;
+            $arrayMember = \member\MemberServiceImpl::instance()->getMember($objRequest, 'member_id');
+            if (!empty($arrayMember)) {
+                $member_id = $arrayMember[0]['member_id'];
+            }
+            $updateData['member_id'] = $member_id;
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('live_in_id', $live_in_edit_id);
+            $updateData['item_id'] = $objRequest->getInput('item_id');
+            $updateData['member_name'] = $objRequest->getInput('member_name');
+            $updateData['member_sex'] = $objRequest->getInput('member_sex');
+            $updateData['member_mobile'] = $objRequest->getInput('member_mobile');
+            $updateData['member_idcard_type'] = $objRequest->getInput('member_idcard_type');
+            $updateData['member_idcard_number'] = $objRequest->getInput('member_idcard_number');
+            BookingHotelServiceImpl::instance()->updateGuestLiveIn($whereCriteria, $updateData);
 
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+        }
         if ($detail_id > 0) {
             //整合数据
             $Booking_live_inEntity = new Booking_live_inEntity($arrayInput);

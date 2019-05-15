@@ -1031,7 +1031,7 @@ class DBQuery {
      *            row 数组形式，修改的数据，
      *            此参数的格式用法与insertData的$row是相同的。在符合条件的记录中，将对$row设置的字段的数据进行修改。
      */
-    public function update(array $row, WhereCriteria $whereCriteria, string $update_type = '') {
+    public function update(WhereCriteria $whereCriteria, array $row, string $update_type = '') {
         if (empty($row)) return false;
         $param = array();
         if (is_array($row)) {

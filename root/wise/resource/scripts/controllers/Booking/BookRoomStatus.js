@@ -325,6 +325,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     //添加入住客人
     var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
     $scope.addGuestLiveIn = function(liveInGuest, ObjectLiveIn) {
+        $('#live_in_edit_id').val('');
 		if(liveInGuest == 'AddBookRoom') {
 			$scope.bookInfo = $scope.bookDetail;$scope.bookRoom = '';
 			var title = '添加客房 订单号: '+$scope.bookDetail.booking_number;
@@ -358,8 +359,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 							$('#live_in_'+key).val(ObjectLiveIn[key]);
 						}
 					}
+                    $('#live_in_edit_id').val(ObjectLiveIn.l_in_id);
+                    var formParam = $.serializeFormat('#saveAddGuestLiveInForm');
+                    $scope.param = formParam;
+                    $scope.param.live_in_edit_id = ObjectLiveIn.l_in_id;
 				} else if(liveInGuest == 'AddLiveIn') {
-					$('#live_in_item_id').val(ObjectLiveIn.item_id);
+					$('#live_in_edit_id').val(ObjectLiveIn.item_id);
 					$scope.roomDetailEdit = ObjectLiveIn;
 				}
             });

@@ -23,11 +23,11 @@ class EmployeeDao extends CommonDao {
 
     //--------Employee//-----------//
     public function saveEmployee($arrayData, $insert_type = 'INSERT') {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('employee')->insert($arrayData, $insert_type);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('employee')->insert($arrayData, $insert_type);
     }
 
     public function updateEmployee(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('employee')->update($whereCriteria, $arrayUpdateData);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('employee')->update($whereCriteria, $arrayUpdateData);
     }
     //--------Employee//-----------//
 
@@ -37,10 +37,10 @@ class EmployeeDao extends CommonDao {
     }
 
     public function saveEmployeeSector($arrayData, $insert_type = 'INSERT') {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('employee_sector')->insert($arrayData, $insert_type);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('employee_sector')->insert($arrayData, $insert_type);
     }
 
     public function updateEmployeeSector(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnRead($this->getDsnWrite())->setTable('employee_sector')->update($whereCriteria, $arrayUpdateData);
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('employee_sector')->update($whereCriteria, $arrayUpdateData);
     }
 }

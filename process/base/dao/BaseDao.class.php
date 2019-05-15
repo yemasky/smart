@@ -123,13 +123,12 @@ abstract class BaseDao {
         return DBQuery::instance($this->getDsnWrite())->insertEntity($objEntity, $insert_type)->getInsertId();
     }
 
-
     public function batchInsertEntity($arrayObjEntity, $field_key = '', $insert_type = 'INSERT') : array {
         return DBQuery::instance($this->getDsnWrite())->batchInsertEntity($arrayObjEntity, $field_key, $insert_type);
     }
 
     public function update(\WhereCriteria $whereCriteria, $row, $update_type = '') {//IGNORE
-        return DBQuery::instance($this->getDsnWrite())->setTable($this->table)->update($row, $whereCriteria, $update_type);
+        return DBQuery::instance($this->getDsnWrite())->setTable($this->table)->update($whereCriteria, $row, $update_type);
     }
 
     public function batchUpdateByKey(\WhereCriteria $whereCriteria, $arrayUpdate, $update_type = '') {
