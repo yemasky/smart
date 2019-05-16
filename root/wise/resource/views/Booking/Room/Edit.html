@@ -120,19 +120,19 @@
                     <div class="panel-heading">
                         <script type="text/ng-template" id="/app/checkOutMenu.html">
                             <ul class="dropdown-menu">
-                              <li><a href ng-click="bookingClose(bookDetail, 'refund')">结账退房</a></li>
-                              <li><a href ng-click="bookingClose(bookDetail, 'hanging')">挂账退房</a></li>
-                              <li><a href ng-click="bookingClose(bookDetail, 'escape')">走结退房</a></li>
+                              <li><a href ng-click="bookingClose(bookDetail, 'refund')"><i class="fas fa-tasks"></i> 结账退房</a></li>
+                              <li><a href ng-click="bookingClose(bookDetail, 'hanging')"><i class="fas fa-tasks"></i> 挂账退房</a></li>
+                              <li><a href ng-click="bookingClose(bookDetail, 'escape')"><i class="fas fa-grimace"></i> 走结退房</a></li>
                               <li class="divider"></li>
-							  <li><a href ng-click="bookingClose(bookDetail, 'cancel')">取消订单</a></li>
+							  <li><a href ng-click="bookingClose(bookDetail, 'cancel')"><i class="fas fa-times"></i> 取消订单</a></li>
                             </ul>
                         </script>
                         <script type="text/ng-template" id="/app/accountsMenu.html">
                             <ul class="dropdown-menu">
-                              <li><a href ng-click="bookingAccounts('', '')">收款</a></li>
-                              <li><a href ng-click="bookingAccounts('', 'refund')">退款</a></li>
+                              <li><a href ng-click="bookingAccounts('', '')"><i class="fas fa-coins"></i> 收款</a></li>
+                              <li><a href ng-click="bookingAccounts('', 'refund')"><i class="fas fa-coins"></i> 退款</a></li>
                               <li class="divider"></li>
-                              <li><a href ng-click="bookingAccounts('', 'hanging')">挂账</a></li>
+                              <li><a href ng-click="bookingAccounts('', 'hanging')"><i class="fas fa-comments-dollar"></i> 挂账</a></li>
                             </ul>
                         </script>
                         <div class="btn-group m-b">

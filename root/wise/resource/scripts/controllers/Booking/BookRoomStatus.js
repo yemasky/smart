@@ -33,10 +33,10 @@ app.directive("edit", function(){
             	var priceTable = '<table class="table no-margin table-condensed"><tbody><tr>';
             	for(var i in $ngModel.$modelValue) {
             		var price = $ngModel.$modelValue[i];
-					priceTable += '<td>'+price.business_day + '</td><td>' + price.consume_price+'</td>';
+					priceTable += '<td class="w-xs">'+price.business_day + '</td><td>' + price.consume_price+'</td>';
 				}
 				priceTable += '</tr></tbody></table>';
-                $element.parent().after('<tr><td colspan="8" class="no-padding panel">'+priceTable+'</td></tr>');
+                $element.parent().after('<tr><td colspan="9" class="no-padding panel">'+priceTable+'</td></tr>');
                 $attr.showBookroomPrice = show = 'on';
                 $element.find('a').removeClass('fa fa-angle-double-down');
                 $element.find('a').addClass('fa fa-angle-up');
@@ -438,31 +438,26 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.successAlert.startProgressBar();
             if(myOtherAside != '') myOtherAside.hide();
             var editType = $scope.param.editType, bookRoomStatus = $scope.bookRoomStatus[$scope.statusRoom.item_id],roomStatus = bookRoomStatus.roomStatus;
-            if(editType == 'lock') {
-                if(bookRoomStatus.status == 'live_in') return;//在住房不能设置锁房 也不能设置维修
+            if(editType == 'lock') {if(bookRoomStatus.status == 'live_in') return;//在住房不能设置锁房 也不能设置维修
                 roomStatus ='<a class="fas fa-lock text-warning" title="锁房"></a> ';//锁房
             }
-            if(editType == 'repair') {
-                if(bookRoomStatus.status == 'live_in') return;
+            if(editType == 'repair') {if(bookRoomStatus.status == 'live_in') return;
                 roomStatus = '<a class="fas fa-tools text-warning" title="维修房"></a>';//维修房
             }
-            if(editType == 'unlock' || editType == 'repair_ok') {
-                if(bookRoomStatus.status == 'live_in') return;
+            if(editType == 'unlock' || editType == 'repair_ok') {if(bookRoomStatus.status == 'live_in') return;
                 roomStatus ='<a class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></a>';//解锁 空净 修好 空净  
             }
             //
             if(editType == 'dirty') {
                 if(bookRoomStatus.status == 'live_in') {
                     roomStatus = '<a class="ui-icon glyphicon glyphicon-user bg-danger" title="住脏 &#8226; 查看订单"></a>';//住脏
-                } else {
-                    roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-dark" title="空脏"></i>';//空脏
+                } else {roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-dark" title="空脏"></i>';//空脏
                 }
             }
             if(editType == 'clean') {
                 if(bookRoomStatus.status == 'live_in') {
                     roomStatus = '<a class="ui-icon glyphicon glyphicon-user bg-inverse" title="住净 &#8226; 查看订单"></a>';//住净
-                } else {
-                    roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></a>';//空净
+                } else {roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></a>';//空净
                 }
             }
             //附加
