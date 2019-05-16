@@ -37,7 +37,7 @@
                     <div class="btn-group m-b">
                         <button type="button" class="btn btn-rounded btn-default" ng-click="addGuestLiveIn('', '')"><i class="fa fa-users"></i> 添加住客</button>
                         <button type="button" class="btn btn-rounded btn-default" ng-click="addGuestLiveIn('AddBookRoom', '')"><i class="fas fa-bed"></i> 添加客房</button>
-                        <button type="button" class="btn btn-rounded btn-default" ng-click="addGuestLiveIn('HaveLiveIn', '')"><i class="fas fa-procedures"></i> 客房入住</button>
+                        <button type="button" class="btn btn-rounded btn-default" ng-click="addGuestLiveIn('HaveLiveIn', roomDetail)"><i class="fas fa-procedures"></i> 客房入住</button>
                     </div>
                       <div class="table-responsive">
 						<table class="table">
@@ -122,7 +122,7 @@
                             <ul class="dropdown-menu">
                               <li><a href ng-click="bookingClose(bookDetail, 'refund')">结账退房</a></li>
                               <li><a href ng-click="bookingClose(bookDetail, 'hanging')">挂账退房</a></li>
-                              <li><a href ng-click="bookingClose(bookDetail, 'close')">走结退房</a></li>
+                              <li><a href ng-click="bookingClose(bookDetail, 'escape')">走结退房</a></li>
                               <li class="divider"></li>
 							  <li><a href ng-click="bookingClose(bookDetail, 'cancel')">取消订单</a></li>
                             </ul>

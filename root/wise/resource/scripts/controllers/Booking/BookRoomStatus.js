@@ -98,7 +98,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.bookRoomStatus    =  {}; $scope.roomDetailList = {};$scope.roomLiveIn = {};$scope.check_outRoom = {};
         if($scope.roomList != '') {
 			//按当日计算预抵预离 过期忽略
-			var thisDay = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd');
+			var thisDay = $scope.getDay();
 			var check_inRoom = {},check_outRoom = {}, live_inRoom = {},roomDetailList = {};
             var bookAta = 0,dueOut = 0;
 			if($scope.bookingDetailRoom != '') {
@@ -106,9 +106,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 				for(var detail_id in $scope.bookingDetailRoom) {
 					var detail = $scope.bookingDetailRoom[detail_id];
                     live_inRoom[detail.item_id] = detail;
-                    if(detail.check_in.substr(0, 10) == thisDay && detail.booking_detail_status == '0') {
+                    if(detail.check_in == thisDay && detail.booking_detail_status == '0') {
 						check_inRoom[detail.item_id] = detail; 
-                        bookAta++;
+                        bookAta++;//预抵人数
 					}
 					/*if(detail.check_out.substr(0, 10) == thisDay) {
 						check_outRoom[detail.item_id] = detail;
@@ -117,7 +117,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     var checkOutTimestamp = Date.parse(new Date(detail.check_out)); 
                     if(checkOutTimestamp <= thisDayTimestamp) {
                         check_outRoom[detail.item_id] = detail;
-                        dueOut++;
+                        dueOut++;//预离人数
                     }
 					if(!angular.isDefined(roomDetailList[detail.booking_number])) {
 						roomDetailList[detail.booking_number] = {};
@@ -296,22 +296,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         if(item_name != '') $scope.param.item_room_name = item_name;
     };
 	//入住客房
-	$scope.liveInAllRoom = function(){
+	$scope.liveInRoom = function(liveIn){
         $scope.beginLoading =! $scope.beginLoading;
-		$httpService.header('method', 'liveInAllRoom');
-        $httpService.post('/app.do?'+param, $scope, function(result) {
-            $scope.beginLoading =! $scope.beginLoading;
-            $httpService.deleteHeader('method');
-            if (result.data.success == '0') {
-                var message = $scope.getErrorByCode(result.data.code);
-                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
-                return;//错误返回
-            }
-        });
-	};
-    $scope.liveInOneRoom = function(){
-        $scope.beginLoading =! $scope.beginLoading;
-		$httpService.header('method', 'liveInOneRoom');
+		$httpService.header('method', 'liveInRoom');
+		$scope.param.book_id = $scope.bookDetail.book_id;
+		$scope.param.liveInType = liveIn.type;
+		if(angular.isDefined(liveIn.detail_id)) $scope.param.detail_id = liveIn.detail_id;
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');
@@ -337,10 +327,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 			return;
 		}
-		if(liveInGuest == 'HaveLiveIn') {$scope.confirm('确定要设置客房全部入住状态吗？', $scope.liveInAllRoom);return;//入住全部房间
-		}
-        if(liveInGuest == 'LiveInOne') {$scope.confirm('确定要设置客房入住状态吗？', $scope.liveInOneRoom);return;//入住一个房间
-        }
+		if(liveInGuest=='HaveLiveIn'){$scope.confirm({'content':'确定要设置客房全部入住状态吗？','callback':$scope.liveInRoom,'param':{'type':'all'}});return;}//入住全部房间
+        if(liveInGuest == 'LiveInOne') {$scope.confirm({'content':'确定要设置客房入住状态吗？','callback':$scope.liveInRoom,'param':{'type':'one','detail_id':ObjectLiveIn.detail_id}});return;}//入住一个房间
         addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
         addGuestLiveInAside.$promise.then(addGuestLiveInAside.show);
         $(document).ready(function(){
@@ -349,13 +337,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 				if(liveInGuest == 'EditLiveIn') {
 					for (var key in ObjectLiveIn) {
 						if(key.substr(0,1) == '$') continue;
+						if(key == 'item_id') continue;
 						if($('#live_in_'+key)) {
 							$('#live_in_'+key).val(ObjectLiveIn[key]);
 						}
 					}
                     $('#live_in_edit_id').val(ObjectLiveIn.l_in_id);
-                    var formParam = $.serializeFormat('#saveAddGuestLiveInForm');
-                    $scope.param = formParam;
+					$scope.param.item_id = ObjectLiveIn.item_id == 0 ? '' : ObjectLiveIn.item_id;
                     $scope.param.live_in_edit_id = ObjectLiveIn.l_in_id;
 				} else if(liveInGuest == 'AddLiveIn') {
 					$scope.param.item_id = ObjectLiveIn.item_id;
@@ -367,6 +355,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     };
     $scope.saveAddGuestLiveIn = function() {
         $httpService.header('method', 'saveGuestLiveIn');
+		var formParam = $.serializeFormat('#saveAddGuestLiveInForm');
+        $scope.param = formParam;
         $scope.beginLoading =! $scope.beginLoading;
         $scope.param.book_id = $scope.bookDetail.book_id;
         $httpService.post('/app.do?'+param, $scope, function(result) {
@@ -423,9 +413,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 myOtherAside.show();
             })
         } else if(editType != 'room_card') {
-			if(editType == 'unlock') {$scope.confirm('您确定要解锁此房间吗？', $scope.saveRoomStatusEdit);
-		    } else if(editType == 'repair_ok') { $scope.confirm('您确定已修好此房间吗？', $scope.saveRoomStatusEdit);
-			} else if(editType == 'empty_room') { $scope.confirm('您确定要设置此房间空房吗？', $scope.saveRoomStatusEdit);
+			if(editType == 'unlock') {$scope.confirm({'content':'您确定要解锁此房间吗？','callback':$scope.saveRoomStatusEdit});
+		    } else if(editType == 'repair_ok') { $scope.confirm({'content':'您确定已修好此房间吗？','callback':$scope.saveRoomStatusEdit});
+			} else if(editType == 'empty_room') { $scope.confirm({'content':'您确定要设置此房间空房吗？','callback':$scope.saveRoomStatusEdit});
 			} else {$scope.saveRoomStatusEdit();}
         } else {//发放房卡 room_card
             

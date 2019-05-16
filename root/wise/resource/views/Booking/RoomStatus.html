@@ -98,7 +98,7 @@
 									</tr>
 								  </thead>
 								  <tbody><!-- bookingDetail -->
-									<tr ng-repeat="(i, detail) in bookingDetailRoom" ng-if="detail.booking_detail_status==0">
+									<tr ng-repeat="(i, detail) in bookingDetailRoom" ng-if="detail.booking_detail_status==0&&detail.check_in==getDay()">
 								      <td>{{detail.booking_number}}</td>
 									  <td class="text-nowrap">{{detail.market_name}}</td>
 									  <td><span>{{detail.item_category_name}}</span></td>
