@@ -355,8 +355,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     };
     $scope.saveAddGuestLiveIn = function() {
         $httpService.header('method', 'saveGuestLiveIn');
-		var formParam = $.serializeFormat('#saveAddGuestLiveInForm');
+		var formParam = $.serializeFormat('#saveAddGuestLiveInForm'),item_id = $scope.param.item_id;
         $scope.param = formParam;
+        $scope.param.item_id = item_id;
         $scope.beginLoading =! $scope.beginLoading;
         $scope.param.book_id = $scope.bookDetail.book_id;
         $httpService.post('/app.do?'+param, $scope, function(result) {
@@ -380,11 +381,16 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.guestLiveInList[booking_number][booking_detail_id][length] = $scope.param;
         });
     };
-    $scope.setLiveInItemName = function(rDetail) {
+    $scope.setLiveInItemName = function() {
+        var rDetail = null;
+        for(var detail_id in $scope.roomDetail) {
+            rDetail = $scope.roomDetail[detail_id];
+            if($scope.param.item_id == rDetail.item_id) break; 
+        }
+        if(rDetail == null) return;
         $scope.param.item_name = rDetail.item_name;//$('#live_in_item_id').find('option:selected').text();
         $scope.param.detail_id = rDetail.detail_id;//$('#live_in_item_id').find('option:selected').attr('detail_id');
-        $scope.param.booking_detail_id = rDetail.booking_detail_id;
-        //$('#live_in_item_id').find('option:selected').attr('booking_detail_id');
+        $scope.param.booking_detail_id = rDetail.booking_detail_id;//$('#live_in_item_id').find('option:selected').attr('booking_detail_id');
     };
     //读取身份证
     $scope.readGuestIdCard = function() {
@@ -494,11 +500,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.payment_id = payment.payment_id;
             $scope.payment_father_id =  payment.payment_father_id;
             $('#payment_ul').next().hide();
-            $(document).ready(function(){
-                $('#payment_ul').mouseover(function(e) {$('#payment_ul').next().show();});
-            });
         }
 	};
+    $scope.showPaymentUL = function() {$('#payment_ul').next().show();};
     $scope.saveAccounts = function() {
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'saveAccounts');
@@ -546,23 +550,37 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	};
 	//结账退房
 	$scope.bookingClose = function(bookDetail, closeType) {
-		$scope.beginLoading =! $scope.beginLoading;
-        $httpService.header('method', 'bookingClose');
-		$scope.param['booking_number'] = bookDetail.booking_number;
-		$scope.param['book_id'] = bookDetail.book_id;
-		$scope.param['closeType'] = closeType;
-        $httpService.post('/app.do?'+param, $scope, function(result) {
+        if(closeType == 'refund' || closeType == 'hanging') {
+            var title = '退房';
+            if(closeType == 'hanging') {title = '挂账退房';};
+            var asideBookingClose = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/bookClose.html',show: false});
+            asideBookingClose.$promise.then(function() {
+                asideBookingClose.show();
+                $(document).ready(function(){
+                });
+            });
+            return;
+        }
+        if(closeType == 'escape') {$scope.confirm({'content':'您确定要走结退房？','callback': close});
+        } else if(closeType == 'cancel') { $scope.confirm({'content':'您确定要取消此订单吗？','callback':close});}
+        function close() {
             $scope.beginLoading =! $scope.beginLoading;
-            $httpService.deleteHeader('method');
-            if (result.data.success == '0') {
-                var message = $scope.getErrorByCode(result.data.code);
-                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
-                return;//错误返回
-            } else {
-				$scope.successAlert.startProgressBar();
-			}
-        });
-		
+            $httpService.header('method', 'bookingClose');
+            $scope.param['booking_number'] = bookDetail.booking_number;
+            $scope.param['book_id'] = bookDetail.book_id;
+            $scope.param['closeType'] = closeType;
+            $httpService.post('/app.do?'+param, $scope, function(result) {
+                $scope.beginLoading =! $scope.beginLoading;
+                $httpService.deleteHeader('method');
+                if (result.data.success == '0') {
+                    var message = $scope.getErrorByCode(result.data.code);
+                    //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                    return;//错误返回
+                } else {
+                    $scope.successAlert.startProgressBar();
+                }
+            });
+        }
 	};
 	////////////////////////////////////////////////night auditor
 	$scope.nightAuditorList = '';

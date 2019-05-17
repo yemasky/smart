@@ -1,12 +1,12 @@
-<div class="aside col-sm-4 b-r box-shadow no-padding" tabindex="-1" role="dialog">
+<div class="aside col-sm-11 h-10x b-r box-shadow no-padding" tabindex="-1" role="dialog">
   <div class="aside-dialog">
     <div class="aside-content">
      <form name="AccountsForm" class="form-validation" id="thisAccountsForm" ng-submit="saveAccounts()">
       <div class="aside-header">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
-        <h4 class="aside-title" ng-bind-html="title">账务项</h4>
+        <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
-      <div class="aside-body">
+      <div class="aside-body h-8x scrollable no-padding">
           <input name="accounts_type" size="9" type="hidden" id="accounts_type" value="" class="form-control" ng-model="param.accounts_type">
           <div class="form-inline">
               <div class="form-group p-v-xs">
