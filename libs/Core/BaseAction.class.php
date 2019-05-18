@@ -354,6 +354,20 @@ class HttpResponse {
 
         return '';
     }
+
+    public function successServiceResponse(\SuccessService $successService) {
+        header("Content-type: application/json; charset=" . __CHARSET);
+        header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
+        header("X-Powered-By: ASP.NET/20.3.6");
+        $success = 1;
+        if($successService->isNotice()) $success = -1;
+        if(!$successService->isSuccess()) $success = 0;
+        $arrayResult = array('success' => $success, 'code' => $successService->getCode(), 'message' => $successService->getMessage(),
+            'item' => $successService->getData(), 'common' => $this->getResponse(), 'redirect' => $successService->getRedirectUrl(), 'time' => getDateTime());
+        echo json_encode($arrayResult);
+
+        return '';
+    }
 }
 
 /**

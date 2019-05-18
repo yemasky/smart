@@ -27,18 +27,6 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return BookingDao::instance()->getBookingDetailList($whereCriteria, $field);
     }
 
-    public function getBookingDetailEntity(\WhereCriteria $whereCriteria) {
-        return BookingDao::instance()->getBookingDetailEntity($whereCriteria);
-    }
-
-    public function getBookingDetailList(\WhereCriteria $whereCriteria, $field = '*') {
-        return BookingDao::instance()->getBookingDetailList($whereCriteria, $field);
-    }
-
-    public function updateBookingDetail(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
-        return BookingDao::instance()->updateBookingDetail($whereCriteria, $arrayUpdateData, $update_type);
-    }
-
     /*
      * booking_room 数据结构 单个时间段订房
      * [channel_id => layout_item_id => system_id => room_info]
@@ -426,6 +414,106 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         }
 
         return $objSuccess;
+    }
+
+    public function closeBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
+        // TODO: Implement closeBooking() method.
+        $objSuccess               = new \SuccessService();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        $closeType = $objRequest->getInput('closeType');
+        //
+        $booking_number = decode($objRequest->getInput('book_id'));
+
+        if ($booking_number > 0) {
+            $arrayInput = $objRequest->getInput();
+            //取得所有未退房房间
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1')
+                ->GE('booking_detail_status', '0')->EQ('booking_number', $booking_number)->setHashKey('item_id');
+            $arrayLiveInRoom = $this->getBookingDetailList($whereCriteria, 'item_id');
+            if(empty($arrayLiveInRoom)) {
+                $objSuccess->setSuccess(false);
+                $objSuccess->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
+                return $objSuccess;
+            }
+            $arrayLiveInRoomId = array_keys($arrayLiveInRoom);
+            //计算消费
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
+            $arrayConsume = $this->getBookingConsume($whereCriteria);
+            $totalConsume = 0;
+            if(!empty($arrayConsume)) {
+                foreach ($arrayConsume as $i => $consume) {
+                    $totalConsume = bcadd($consume['consume_price_total'], $totalConsume, 2);
+                }
+            }
+            //计算账务
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
+            $arrayAccounts = $this->getBookingAccounts($whereCriteria);
+            $totalAccounts = 0;
+            if(!empty($arrayAccounts)) {
+                foreach ($arrayAccounts as $i => $account) {
+                    if($account['accounts_type'] == 'receipts') $totalAccounts = bcadd($account['money'], $totalAccounts, 2);
+                    if($account['accounts_type'] == 'refund') $totalAccounts = bcsub($totalAccounts, $account['money'], 2);
+                    if($account['accounts_type'] == 'hanging') $totalAccounts = bcadd($account['money'], $totalAccounts, 2);
+                }
+            }
+            if($totalConsume != $totalAccounts && $closeType != 'escape') {//$totalConsume == 0 || $totalAccounts == 0 || 走结无需平账
+                $objSuccess->setNotice(true);
+                $objSuccess->setCode(ErrorCodeConfig::$notice['no_equal_account']);
+                $objSuccess->setData([bcsub($totalAccounts, $totalConsume, 2)]);
+                return $objSuccess;
+            }
+            CommonServiceImpl::instance()->startTransaction();
+            //取消订单
+            if($closeType != 'cancel') {
+                //结账退房//更新数据
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->ArrayIN('item_id', $arrayLiveInRoomId);
+                $updateData['booking_number'] = '';//取消关联ID
+                $updateData['clean'] = 'dirty';//设置脏房
+                $updateData['status'] = '0';//取消入住状态
+                ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $updateData);
+            }
+            //设置预订完成
+            $updateData = [];
+            $updateData['booking_status'] = '-1';//[-1结束 已完成] 设置booking
+            if($closeType == 'cancel') $updateData['booking_status'] = '-2';//[-2结束 取消订单] 设置booking
+            if($closeType == 'hanging') $updateData['booking_status'] = '-4';//[-4 挂账退房订单]
+            if($closeType == 'escape') $updateData['booking_status'] = '-5';//[-5 走结退房订单]
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number);
+            $this->updateBooking($whereCriteria, $updateData);
+            //
+            $updateData = [];
+            $updateData['booking_detail_status'] = '-1';//[-1退房]
+            if($closeType == 'cancel') $updateData['booking_detail_status'] = '-2';//[-2 取消订单]
+            if($closeType == 'hanging') $updateData['booking_detail_status'] = '-4';//[-4 挂账退房订单]
+            if($closeType == 'escape') $updateData['booking_detail_status'] = '-5';//[-5 走结退房订单]
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number)->EQ('valid', '1');
+            $this->updateBookingDetail($whereCriteria, $updateData);
+            CommonServiceImpl::instance()->commit();
+            return $objSuccess;
+        }
+        return $objSuccess;
+
+    }
+
+    public function getBookingDetailEntity(\WhereCriteria $whereCriteria) {
+        return BookingDao::instance()->getBookingDetailEntity($whereCriteria);
+    }
+
+    public function getBookingDetailList(\WhereCriteria $whereCriteria, $field = '*') {
+        return BookingDao::instance()->getBookingDetailList($whereCriteria, $field);
+    }
+
+    public function updateBookingDetail(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
+        return BookingDao::instance()->updateBookingDetail($whereCriteria, $arrayUpdateData, $update_type);
     }
 
     public function updateBooking($whereCriteria, $arrayUpdateData, $update_type = '') {
