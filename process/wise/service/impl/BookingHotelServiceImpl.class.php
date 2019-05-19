@@ -133,7 +133,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                             $arrayBookDetailList[] = $DetailEntity;
                             for ($j = 0; $j < $total_day; $j++) {
                                 //消费//2018-08-
-                                $consume_key         = $system_id . '-' . $i . '-' . $arrayBusinessDay[$j];
+                                $consume_key         = $layout_item_id . '-' . $system_id . '-' . $i . '-' . $arrayBusinessDay[$j];
                                 $DetailConsumeEntity = clone $BookingDetailConsumeEntity;
                                 $DetailConsumeEntity->setItemId($_item_id);
                                 $DetailConsumeEntity->setItemCategoryId($layout_item_id);
@@ -187,7 +187,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 }
 
                 if (empty($arrayDirectSystemId)) {
-                    return $objSuccess->setSuccessService(false, '000009', '价格体系为空', []);
+                    return $objSuccess->setSuccessService(false,'000009','价格体系为空', []);
                 }
                 //{begin} 根据手动放盘价格体系[$arrayDirectSystemId]查找房型房价 父价格 组合system 和 item_id
                 $whereSqlStr = '';
@@ -206,25 +206,23 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 if (empty($arrayPriceLayout)) {
                     return $objSuccess->setSuccessService(false, '100001', '价格体系没有设置价格', []);
                 }
-
-                //計算價格
+                //計算價格 $arrayFormulaSystem[system_id] 公式放盘[根据上面传输数据构造出来] $arrayDirectSystemId[system_id] 手动放盘
                 if (!empty($arrayFormulaSystem)) {//计算价格[公式放盘]
-                    foreach ($arrayFormulaSystem as $price_system_id => $formulaData) {
-                        //父价格
-                        if (isset($arrayPriceLayout[$formulaData['system_father_id']])) {
-                            $formulaLayout = json_decode($arrayFormulaSystem[$price_system_id]['formula'], true);//公式
-                            foreach ($formulaData['layout_item_id'] as $layout_item_id => $item_id) {
-                                //判断是否存在$arrayLayoutRooms[$layout_item_id][$system_id]
-                                if (!isset($arrayLayoutRooms[$layout_item_id][$system_id])) continue;
+                    foreach ($arrayFormulaSystem as $price_system_id => $formulaData) {//$formulaData->价格体系对应的公式和名称以及适用的房型
+                        if (isset($arrayPriceLayout[$formulaData['system_father_id']])) {//如果存在父价格[公式放盘需要父价格，公式放盘只有公式]
+                            $formulaLayout = json_decode($formulaData['formula'], true);//那么取出公式放盘公式 formula->公式
+                            foreach ($formulaData['layout_item_id'] as $layout_item_id => $item_id) {//取出对应的房型ID system_id =>[layout_id=>layout_id]
+                                //判断是否存在$arrayLayoutRooms[$layout_item_id][$price_system_id] 房型所对应的价格体系ID
+                                if (!isset($arrayLayoutRooms[$layout_item_id][$price_system_id])) continue;
                                 if (isset($arrayPriceLayout[$formulaData['system_father_id']][$item_id])) {
                                     if (isset($formulaLayout[$channel_id . '-' . $item_id])) {
-                                        $formula = $formulaLayout[$channel_id . '-' . $item_id];
+                                        $formula = $formulaLayout[$channel_id . '-' . $item_id];//取出公式
                                     } else {
                                         $formula['formula_value']        = '';
                                         $formula['formula_second_value'] = '';
                                     }
-                                    //公式继承的父类价格
-                                    $arrayFormulaFatherPrice = $arrayPriceLayout[$formulaData['system_father_id']][$item_id];
+                                    //公式继承的父类价格//父价格
+                                    $arrayFormulaFatherPrice = $arrayPriceLayout[$formulaData['system_father_id']][$item_id];//取出父价格
                                     foreach ($arrayFormulaFatherPrice as $monthDate => $priceDateList) {
                                         //时间矩阵月的第几天
                                         $arrayThisDay = $arrayDateMatrix[$monthDate];
@@ -235,25 +233,26 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                             $price_day = 'day_' . $day;
                                             $price     = $priceDateList[$price_day];
                                             if (empty($price)) {
-                                                return $objSuccess->setSuccessService(false, '100001', '时间:' . substr($arrayThisDay, 0, 8) . $price_day, []);
+                                                return $objSuccess->setSuccessService(false, '100001', '时间：' . substr($monthDate, 0, 8) . $day, []);
                                             }
+                                            $decimalPrice = $objLoginEmployee->getChannelSetting($channel_id)->getDecimalPrice();
                                             if (!empty($formula['formula_value'])) {
-                                                if ($formula['formula'] == '*') $price = $price * $formula['formula_value'];
-                                                if ($formula['formula'] == '+') $price = $price + $formula['formula_value'];
-                                                if ($formula['formula'] == '-') $price = $price - $formula['formula_value'];
+                                                if ($formula['formula'] == '*') $price = bcmul($price, $formula['formula_value'], $decimalPrice);//$price * $formula['formula_value'];
+                                                if ($formula['formula'] == '+') $price = bcadd($price, $formula['formula_value'], $decimalPrice);//$price + $formula['formula_value'];
+                                                if ($formula['formula'] == '-') $price = bcsub($price, $formula['formula_value'], $decimalPrice);//$price - $formula['formula_value'];
                                             }
                                             if (!empty($formula['formula_second_value'])) {
-                                                if ($formula['formula_second'] == '*') $price = $price * $formula['formula_second_value'];
-                                                if ($formula['formula_second'] == '+') $price = $price + $formula['formula_second_value'];
-                                                if ($formula['formula_second'] == '-') $price = $price - $formula['formula_second_value'];
+                                                if ($formula['formula_second'] == '*') $price = bcmul($price, $formula['formula_value'], $decimalPrice);//$price * $formula['formula_second_value'];
+                                                if ($formula['formula_second'] == '+') $price = bcadd($price, $formula['formula_value'], $decimalPrice);//$price + $formula['formula_second_value'];
+                                                if ($formula['formula_second'] == '-') $price = bcsub($price, $formula['formula_value'], $decimalPrice);//$price - $formula['formula_second_value'];
                                             }
                                             //得到计算后价格
                                             $price = decimal($price, $objLoginEmployee->getChannelSetting($channel_id)->getDecimalPrice());
                                             //sprintf("%.2f", $price);//小数点后2位
                                             //$bookPrice[$insert_key]['price'] = $price;//售卖价格
-                                            for ($i = 0; $i < $arrayLayoutRooms[$layout_item_id][$system_id]['value']; $i++) {
+                                            for ($i = 0; $i < $arrayLayoutRooms[$layout_item_id][$price_system_id]['value']; $i++) {//订相同的房间的价格
                                                 //消费//2018-08-
-                                                $consume_key = $system_id . '-' . $i . '-' . substr($monthDate, 0, 8) . $day;
+                                                $consume_key = $layout_item_id . '-' . $price_system_id . '-' . $i . '-' . substr($monthDate, 0, 8) . $day;
                                                 $BookingDetailConsumeList[$consume_key]->setOriginalPrice($price);
                                                 $BookingDetailConsumeList[$consume_key]->setConsumePrice($price);
                                                 $BookingDetailConsumeList[$consume_key]->setConsumePriceTotal($price);
@@ -293,10 +292,13 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                         //每一个price day是一个夜审价格
                                         $price_day                       = 'day_' . $day;
                                         $price                           = $priceDateList[$price_day];
+                                        if (empty($price)) {
+                                            return $objSuccess->setSuccessService(false, '100001', '时间：' . substr($monthDate, 0, 8) . $day, []);
+                                        }
                                         $bookPrice[$insert_key]['price'] = $price;//售卖价格
                                         for ($i = 0; $i < $arrayLayoutRooms[$layout_item_id][$system_id]['value']; $i++) {
                                             //2018-08-
-                                            $consume_key = $system_id . '-' . $i . '-' . substr($monthDate, 0, 8) . $day;
+                                            $consume_key = $layout_item_id . '-' . $system_id . '-' . $i . '-' . substr($monthDate, 0, 8) . $day;
                                             $BookingDetailConsumeList[$consume_key]->setOriginalPrice($price);
                                             $BookingDetailConsumeList[$consume_key]->setConsumePrice($price);
                                         }

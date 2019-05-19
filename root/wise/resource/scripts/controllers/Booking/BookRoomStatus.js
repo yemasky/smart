@@ -551,7 +551,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	//结账退房
 	$scope.bookingClose = function(bookDetail, closeType) {
         if(closeType == 'refund' || closeType == 'hanging') {
-            var title = '退房';
+            var title = '退房';$scope.closeThisBooking = close;
             if(closeType == 'hanging') {title = '挂账退房';};
             var asideBookingClose = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/bookClose.html',show: false});
             asideBookingClose.$promise.then(function() {

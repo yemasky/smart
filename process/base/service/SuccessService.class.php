@@ -99,11 +99,12 @@ class SuccessService {
     }
 
 
-    public function setSuccessService(bool $success, string $code, string $message, $data = null) : SuccessService {
+    public function setSuccessService(bool $success, string $code, string $message, $data = null, $redirectUrl = '') : SuccessService {
         $this->success = $success;
         $this->code = $code;
         $this->message = $message;
         $this->data = $data;
+        $this->redirectUrl = $redirectUrl;
         return $this;
     }
 }

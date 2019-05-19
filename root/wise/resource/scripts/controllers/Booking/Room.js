@@ -359,7 +359,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             }
             $scope.loading.start();
             $httpService.header('method', 'checkMember');
-            $checkMember = {};
+            var $checkMember = {};
             $checkMember.param = {};
             $checkMember.param['member_email']      = member_email;
             $checkMember.param['member_mobile']     = member_mobile;

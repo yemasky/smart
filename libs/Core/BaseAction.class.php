@@ -316,6 +316,7 @@ class HttpResponse {
     }
 
     public function successResponse($code, $arrayData = '', $url = '') {
+        header('HTTP/1.1 200 OK');
         header("Content-type: application/json; charset=" . __CHARSET);
         header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
         header("X-Powered-By: ASP.NET/20.3.6");
@@ -326,6 +327,7 @@ class HttpResponse {
     }
 
     public function tablePageResponse($arrayDate) {
+        header('HTTP/1.1 200 OK');
         header("Content-type: application/json; charset=" . __CHARSET);
         header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
         header("X-Powered-By: ASP.NET/20.3.6");
@@ -336,6 +338,7 @@ class HttpResponse {
     }
 
     public function errorResponse($code, $arrayData = '', $message = '', $url = '') {
+        header('HTTP/1.1 200 OK');
         header("Content-type: application/json; charset=" . __CHARSET);
         header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
         header("X-Powered-By: ASP.NET/20.3.6");
@@ -346,6 +349,7 @@ class HttpResponse {
     }
 
     public function noticeResponse($code, $arrayData = '', $message = '', $url = '') {
+        header('HTTP/1.1 200 OK');
         header("Content-type: application/json; charset=" . __CHARSET);
         header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
         header("X-Powered-By: ASP.NET/20.3.6");
@@ -356,6 +360,7 @@ class HttpResponse {
     }
 
     public function successServiceResponse(\SuccessService $successService) {
+        header('HTTP/1.1 200 OK');
         header("Content-type: application/json; charset=" . __CHARSET);
         header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
         header("X-Powered-By: ASP.NET/20.3.6");

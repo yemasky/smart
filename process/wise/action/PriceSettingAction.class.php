@@ -116,7 +116,7 @@ class PriceSettingAction extends \BaseAction {
 				if($overTime > 90) {
 					return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['over_date']['code']);
 				}
-				$arrayItemId = $keyMonth = '';
+				$arrayItemId = $keyMonth = [];
 				foreach($layout_price as $channel_layout => $price) {
 					if(!empty($price)) {
 						$arrayChannelLayout                       = explode('-', $channel_layout);
