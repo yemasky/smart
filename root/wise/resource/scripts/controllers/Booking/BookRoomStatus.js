@@ -30,12 +30,14 @@ app.directive("edit", function(){
         });
         $element.find('a').on("click",function(){
             if(show == 'close') {
-            	var priceTable = '<table class="table no-margin table-condensed"><tbody><tr>';
+            	var priceTable = '<table class="table no-margin table-condensed"><tbody>';
+                var priceTr = priceDate = '<tr><td></td>';
             	for(var i in $ngModel.$modelValue) {
             		var price = $ngModel.$modelValue[i];
-					priceTable += '<td class="w-xs">'+price.business_day + '</td><td>' + price.consume_price+'</td>';
+					priceDate += '<td class="w-xs">'+price.business_day + '</td>';
+                    priceTr += '<td>' + price.consume_price+'</td>';
 				}
-				priceTable += '</tr></tbody></table>';
+				priceTable += priceDate + '<td></td></tr>'+priceTr+'<td></td></tr></tbody></table>';
                 $element.parent().after('<tr><td colspan="9" class="no-padding panel">'+priceTable+'</td></tr>');
                 $attr.showBookroomPrice = show = 'on';
                 $element.find('a').removeClass('fa fa-angle-double-down');
