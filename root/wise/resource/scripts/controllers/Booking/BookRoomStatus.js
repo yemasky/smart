@@ -297,7 +297,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.setEditItemRoomName = function(item_name) {
         if(item_name != '') $scope.param.item_room_name = item_name;
     };
-	//入住客房
+	//设置入住客房
 	$scope.liveInRoom = function(liveIn){
         $scope.beginLoading =! $scope.beginLoading;
 		$httpService.header('method', 'liveInRoom');
@@ -355,10 +355,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
         });
     };
+    //报错入住客人
     $scope.saveAddGuestLiveIn = function() {
+        if(!$scope.setLiveInItemName()){return;};
         $httpService.header('method', 'saveGuestLiveIn');
 		var formParam = $.serializeFormat('#saveAddGuestLiveInForm'),item_id = $scope.param.item_id;
-        $scope.param = formParam;
+        $scope.param = angular.merge(formParam, $scope.param);
         $scope.param.item_id = item_id;
         $scope.beginLoading =! $scope.beginLoading;
         $scope.param.book_id = $scope.bookDetail.book_id;
@@ -389,10 +391,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             rDetail = $scope.roomDetail[detail_id];
             if($scope.param.item_id == rDetail.item_id) break; 
         }
-        if(rDetail == null) return;
+        if(rDetail == null) {$alert({title: 'Notice', content: '找不到客房！', templateUrl: '/modal-warning.html', show: true});return false;};
         $scope.param.item_name = rDetail.item_name;//$('#live_in_item_id').find('option:selected').text();
         $scope.param.detail_id = rDetail.detail_id;//$('#live_in_item_id').find('option:selected').attr('detail_id');
         $scope.param.booking_detail_id = rDetail.booking_detail_id;//$('#live_in_item_id').find('option:selected').attr('booking_detail_id');
+        return true;
     };
     //读取身份证
     $scope.readGuestIdCard = function() {

@@ -10,7 +10,7 @@
 //jQuery 插件
 (function ($) {
     $.serializeFormat = function (id) {
-		var serialize = $(id).serializeArray();var serializeFormat = {},n_name='',n_n_name='';
+		var serialize = $(id).serializeArray();var serializeFormat = {},n_name='',n_n_name='';//console.log(serialize);
         for(var i in serialize) {
 			var name = serialize[i].name;
 			var bIndex = name.indexOf('[');
@@ -37,7 +37,6 @@
 			if(typeof(serializeFormat[n_name]) == 'undefined') serializeFormat[n_name] = {};
 			serializeFormat[n_name][key] = serialize[i].value;
 		}
-		//console.log(serializeFormat);
         return serializeFormat;
     }
 })(jQuery);
