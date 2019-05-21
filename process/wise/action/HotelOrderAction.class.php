@@ -124,7 +124,7 @@ class HotelOrderAction extends \BaseAction
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
             $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
-                ->setChildrenKey('booking_detail_id')->setMultiple(true);
+                ->setFatherKey('booking_detail_id')->setChildrenKey('live_in_id');
             $arrayGuestLiveIn = BookingHotelServiceImpl::instance()->getGuestLiveIn($whereCriteria);
             if (!empty($arrayGuestLiveIn)) {
                 foreach ($arrayGuestLiveIn as $booking_number => $guestLiveIn) {
@@ -369,7 +369,7 @@ class HotelOrderAction extends \BaseAction
             $updateData['member_idcard_number'] = $objRequest->getInput('member_idcard_number');
             BookingHotelServiceImpl::instance()->updateGuestLiveIn($whereCriteria, $updateData);
 
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],['live_in_id'=>$live_in_edit_id]);
         }
         if ($detail_id > 0) {
             //整合数据
@@ -415,7 +415,7 @@ class HotelOrderAction extends \BaseAction
             $Booking_live_inEntity->setAddDatetime(getDateTime());
             //插入
             CommonServiceImpl::instance()->startTransaction();
-            BookingHotelServiceImpl::instance()->saveGuestLiveIn($Booking_live_inEntity);
+            $live_in_id = BookingHotelServiceImpl::instance()->saveGuestLiveIn($Booking_live_inEntity);
             //更新
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
@@ -432,7 +432,7 @@ class HotelOrderAction extends \BaseAction
                 ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $arrayUpdate);
             }
             CommonServiceImpl::instance()->commit();
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['live_in_id'=>$live_in_id]);
         }
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
@@ -459,10 +459,30 @@ class HotelOrderAction extends \BaseAction
                 $updateData['booking_detail_status'] = '1';
                 $updateData['actual_check_in'] = getDateTime();
                 BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $updateData);
+                //取得入住房间
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)
+                    ->EQ('booking_number', $booking_number)->GT('item_id', 0);
+                $arrayLiveInItem = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria, 'item_id');
+                if(!empty($arrayLiveInItem)) {
+                    $arrayItem = array_column($arrayLiveInItem, 'item_id');
+                    //更新房间入住状态
+                    $updateData = [];
+                    $updateData['booking_number'] = $booking_number;
+                    $updateData['status'] = 'live_in';
+                    foreach ($arrayItem as $i => $item_id) {
+                        $whereCriteria = new \WhereCriteria();
+                        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('status', '0');
+                        $whereCriteria->EQ('item_id', $item_id);
+                        ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $updateData);
+                    }
+                }
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
             } elseif($liveInType == 'unall') {//反入住状态主订单
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
             } elseif($liveInType == 'one') {//入住单个房间
+
+
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
             } elseif($liveInType == 'unone') {//反入住单个房间
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
@@ -471,7 +491,7 @@ class HotelOrderAction extends \BaseAction
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
 
-    //编辑房间状态
+    //编辑房间状态（锁房、维修房、清洁等）
     protected function doMethodSaveRoomStatusEdit(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();

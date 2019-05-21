@@ -84,7 +84,7 @@
                                       <tr>
                                           <td colspan="9" class="no-padding panel">
                                               <table class="table no-margin">
-                                                  <tr ng-repeat="(number, LiveIn) in guestLiveInList[rDetail.booking_number][rDetail.booking_detail_id]">
+                                                  <tr ng-repeat="(live_in_id, LiveIn) in guestLiveInList[rDetail.booking_number][rDetail.booking_detail_id]">
                                                       <td class="col-xs-1"></td>
                                                       <td  class="col-xs-1" toggle-class="fa fa-edit" class-target="a"><i class="fa fa-user" ng-click="addGuestLiveIn('EditLiveIn', LiveIn)"></i> <a class="" ng-click="addGuestLiveIn('EditLiveIn', LiveIn)"></a></td>
                                                       <td class="col-xs-1">{{LiveIn.member_name}}</td>

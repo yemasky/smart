@@ -187,6 +187,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                             }
                         }
                         bookRoomStatus[room.item_id] = room;
+                        bookRoomStatus[room.item_id].check_in = '',bookRoomStatus[room.item_id].check_out = '';
+                        if(angular.isDefined(live_inRoom[room.item_id])) {
+                            bookRoomStatus[room.item_id].check_in = live_inRoom[room.item_id].check_in;
+                            bookRoomStatus[room.item_id].check_out = live_inRoom[room.item_id].check_out;
+                        }
 						//glyphicon-log-in 预抵 glyphicon-log-out 预离 
                         var roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></a>';//空净
                         if(room.status == 'live_in') {//在住
@@ -311,7 +316,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 var message = $scope.getErrorByCode(result.data.code);
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
-            }
+            } else {$scope.successAlert.startProgressBar();}
         });
 	};
     //添加入住客人
@@ -340,9 +345,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					for (var key in ObjectLiveIn) {
 						if(key.substr(0,1) == '$') continue;
 						if(key == 'item_id') continue;
-						if($('#live_in_'+key)) {
-							$('#live_in_'+key).val(ObjectLiveIn[key]);
-						}
+						if($('#live_in_'+key)) {$('#live_in_'+key).val(ObjectLiveIn[key]);}
+                        $scope.param[key] = ObjectLiveIn[key];
 					}
                     $('#live_in_edit_id').val(ObjectLiveIn.l_in_id);
 					$scope.param.item_id = ObjectLiveIn.item_id == 0 ? '' : ObjectLiveIn.item_id;
@@ -355,7 +359,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
         });
     };
-    //报错入住客人
+    //保存入住客人
     $scope.saveAddGuestLiveIn = function() {
         if(!$scope.setLiveInItemName()){return;};
         $httpService.header('method', 'saveGuestLiveIn');
@@ -372,6 +376,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
+            var live_in_id = result.data.item.live_in_id;
             var message = $scope.getErrorByCode(result.data.code);
             addGuestLiveInAside.$promise.then(addGuestLiveInAside.hide);
             $scope.successAlert.startProgressBar();
@@ -382,7 +387,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             if(angular.isUndefined($scope.guestLiveInList[booking_number][booking_detail_id]))
                 $scope.guestLiveInList[booking_number][booking_detail_id] = {};
             var length = $scope.guestLiveInList[booking_number][booking_detail_id].length;
-            $scope.guestLiveInList[booking_number][booking_detail_id][length] = $scope.param;
+            if(angular.isDefined($scope.param.live_in_edit_id) && $scope.param.live_in_edit_id != '') {
+                $scope.param.live_in_edit_id = '';$('#live_in_edit_id').val('');
+                $scope.guestLiveInList[booking_number][booking_detail_id][live_in_id] = angular.copy($scope.param);
+            } else {
+                $scope.guestLiveInList[booking_number][booking_detail_id][live_in_id] = angular.copy($scope.param);
+            }
         });
     };
     $scope.setLiveInItemName = function() {
