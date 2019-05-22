@@ -6,7 +6,7 @@
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
       <form name="RoomBookEditForm" class="form-validation" id="thisForm" ng-submit="">
-      <div class="aside-body h-8x scrollable no-padding">
+      <div class="aside-body h-8x no-padding">
 		  <div class="m">
 			  <a href class="w-thumb-md pull-left m-r"><img src="/data/images/userimg/user_m.png" class="img-responsive"></a>
 			  <div class="clear m-b-sm">
@@ -17,7 +17,7 @@
 				  </span>
 			  </div>
 		  </div>
-        <div class="tab-container clear">
+        <div class="tab-container">
             <ul class="nav nav-tabs">
                 <li ng-class="{active:activeRoomBookEditTab==1}" ng-click="activeRoomBookEditTab=1">
                     <a ng-bind-html="actionEdit"></a>
@@ -112,29 +112,23 @@
                     </div>
                 </div>
 				<div ng-show="activeRoomBookEditTab==2">
-                      <div class="table-responsive">
-						
-                    </div>
+                      <div class="table-responsive"> </div>
                 </div>
                 <div ng-show="activeRoomBookEditTab==3">
+                    <script type="text/ng-template" id="/app/checkOutMenu.html">
+                        <ul class="dropdown-menu">
+                          <li><a href ng-click="bookingClose(bookDetail, 'refund')"><i class="fas fa-tasks"></i> 结账退房</a></li>
+                          <li><a href ng-click="bookingClose(bookDetail, 'hanging')"><i class="fas fa-tasks"></i> 挂账退房</a></li>
+                          <li><a href ng-click="bookingClose(bookDetail, 'escape')"><i class="fas fa-grimace"></i> 走结退房</a></li>
+                          <li class="divider"></li>
+                          <li><a href ng-click="bookingClose(bookDetail, 'cancel')"><i class="fas fa-times"></i> 取消订单</a></li>
+                        </ul>
+                    </script>
                     <div class="panel-heading">
-                        <script type="text/ng-template" id="/app/checkOutMenu.html">
-                            <ul class="dropdown-menu">
-                              <li><a href ng-click="bookingClose(bookDetail, 'refund')"><i class="fas fa-tasks"></i> 结账退房</a></li>
-                              <li><a href ng-click="bookingClose(bookDetail, 'hanging')"><i class="fas fa-tasks"></i> 挂账退房</a></li>
-                              <li><a href ng-click="bookingClose(bookDetail, 'escape')"><i class="fas fa-grimace"></i> 走结退房</a></li>
-                              <li class="divider"></li>
-							  <li><a href ng-click="bookingClose(bookDetail, 'cancel')"><i class="fas fa-times"></i> 取消订单</a></li>
-                            </ul>
-                        </script>
-                        <script type="text/ng-template" id="/app/accountsMenu.html">
-                            <ul class="dropdown-menu">
-                              <li><a href ng-click="bookingAccounts('', '')"><i class="fas fa-coins"></i> 收款</a></li>
-                              <li><a href ng-click="bookingAccounts('', 'refund')"><i class="fas fa-coins"></i> 退款</a></li>
-                              <li class="divider"></li>
-                              <li><a href ng-click="bookingAccounts('', 'hanging')"><i class="fas fa-comments-dollar"></i> 挂账</a></li>
-                            </ul>
-                        </script>
+                        <div class="btn-group m-b" ng-init="activeBookAccountsEditTab=1">
+                            <label class="btn btn-rounded btn-default" ng-class="{active:activeBookAccountsEditTab==1}" ng-click="activeBookAccountsEditTab=1"><i class="fas fa-list-alt"></i> 消费列表</label>
+                            <label class="btn btn-rounded btn-default" ng-class="{active:activeBookAccountsEditTab==2}" ng-click="activeBookAccountsEditTab=2"><i class="far fa-list-alt"></i> 账务列表</label>
+                        </div>
                         <div class="btn-group m-b">
                             <button type="button" class="btn btn-rounded btn-default" ng-click="bookingConsume('', 'hanging')"><i class="fas fa-yen-sign"></i> 消费</button>
                             <div class="btn-group dropdown">
@@ -149,60 +143,67 @@
                             </div>
                         </div>
 					</div>
-                      <div class="table-responsive">
-						<table class="table table-bordered table-striped bg-white">
-						  <thead>
-							<tr>
-                              <th>房号</th>
-							  <th>项目</th>
-							  <th>数量</th>
-							  <th>金额</th>
-							  <th>营业日</th>
-							  <th>管理</th>
-							</tr>
-						  </thead>
-						  <tbody ng-repeat="(detail_id, consumes) in consumeDetail">
-							<tr ng-repeat="(i, consume) in consumes">
-							  <td class="text-nowrap">{{consume.item_name}}</td>
-							  <td>{{consume.booking_type}}</td>
-							  <td>{{consume.item_amount}}</td>
-							  <td>{{consume.consume_price}}</td>
-							  <td>{{consume.business_day}}</td>
-							  <td>
-							  <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.edit" >编辑</span></button>
-							  <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.config" >配置</span></button>
-							  </td>
-							</tr>
-						  </tbody>
-						</table>
+                    <div class="tab-container">
+                        <div ng-show="activeBookAccountsEditTab==1">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped bg-white">
+                                  <thead>
+                                    <tr>
+                                      <th>房号</th>
+                                      <th>项目</th>
+                                      <th>数量</th>
+                                      <th>金额</th>
+                                      <th>营业日</th>
+                                      <th>管理</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody ng-repeat="(detail_id, consumes) in consumeDetail">
+                                    <tr ng-repeat="(i, consume) in consumes">
+                                      <td class="text-nowrap">{{consume.item_name}}</td>
+                                      <td>{{consume.booking_type}}</td>
+                                      <td>{{consume.item_amount}}</td>
+                                      <td>{{consume.consume_price}}</td>
+                                      <td>{{consume.business_day}}</td>
+                                      <td>
+                                      <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.edit" >编辑</span></button>
+                                      <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.config" >配置</span></button>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div ng-show="activeBookAccountsEditTab==2">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped bg-white">
+                                  <thead>
+                                    <tr>
+                                      <th>房号</th>
+                                      <th>项目</th>
+                                      <th>数量</th>
+                                      <th>金额</th>
+                                      <th>营业日</th>
+                                      <th>管理</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr ng-repeat="(i, account) in accountDetail">
+                                      <td class="text-nowrap">{{account.item_name}}</td>
+                                      <td>{{account.booking_type}}</td>
+                                      <td>{{account.item_amount}}</td>
+                                      <td>{{account.money}}</td>
+                                      <td>{{account.business_day}}</td>
+                                      <td>
+                                      <button class="btn btn-xs btn-default" ng-click="editConsume(account)"><span translate="common.hint.edit" >编辑</span></button>
+                                      <button class="btn btn-xs btn-default" ng-click="editConsume(account)"><span translate="common.hint.config" >配置</span></button>
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
-                    <div class="table-responsive">
-						<table class="table table-bordered table-striped bg-white">
-						  <thead>
-							<tr>
-                              <th>房号</th>
-							  <th>项目</th>
-							  <th>数量</th>
-							  <th>金额</th>
-							  <th>营业日</th>
-							  <th>管理</th>
-							</tr>
-						  </thead>
-						  <tbody>
-							<tr ng-repeat="(i, account) in accountDetail">
-							  <td class="text-nowrap">{{account.item_name}}</td>
-							  <td>{{account.booking_type}}</td>
-							  <td>{{account.item_amount}}</td>
-							  <td>{{account.money}}</td>
-							  <td>{{account.business_day}}</td>
-							  <td>
-							  <button class="btn btn-xs btn-default" ng-click="editConsume(account)"><span translate="common.hint.edit" >编辑</span></button>
-							  <button class="btn btn-xs btn-default" ng-click="editConsume(account)"><span translate="common.hint.config" >配置</span></button>
-							  </td>
-							</tr>
-						  </tbody>
-						</table>
-                    </div>
+                    
                 </div>
                 <div ng-show="activeRoomBookEditTab==4">
                       <div class="table-responsive">

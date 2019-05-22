@@ -31,7 +31,7 @@ app.directive("edit", function(){
         $element.find('a').on("click",function(){
             if(show == 'close') {
             	var priceTable = '<table class="table no-margin table-condensed"><tbody>';
-                var priceTr = priceDate = '<tr><td></td>';
+                var priceTr = priceDate = '<tr><td></td><td></td>';
             	for(var i in $ngModel.$modelValue) {
             		var price = $ngModel.$modelValue[i];
 					priceDate += '<td class="w-xs">'+price.business_day + '</td>';
