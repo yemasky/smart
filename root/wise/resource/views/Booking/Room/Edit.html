@@ -180,24 +180,32 @@
                                     <tr>
                                       <th>房号</th>
                                       <th>项目</th>
-                                      <th>数量</th>
                                       <th>金额</th>
                                       <th>营业日</th>
+                                      <th>时间</th>  
                                       <th>管理</th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     <tr ng-repeat="(i, account) in accountDetail">
                                       <td class="text-nowrap">{{account.item_name}}</td>
-                                      <td>{{account.booking_type}}</td>
-                                      <td>{{account.item_amount}}</td>
+                                      <td>{{account.accounts_type=='receipts'?'收款':account.accounts_type=='refund'?'退款':''}}</td>
                                       <td>{{account.money}}</td>
                                       <td>{{account.business_day}}</td>
+                                      <td>{{account.add_datetime}}</td>
                                       <td>
                                       <button class="btn btn-xs btn-default" ng-click="editConsume(account)"><span translate="common.hint.edit" >编辑</span></button>
                                       <button class="btn btn-xs btn-default" ng-click="editConsume(account)"><span translate="common.hint.config" >配置</span></button>
                                       </td>
                                     </tr>
+                                    <tr>
+                                      <th class="text-nowrap">合计</th>
+                                      <td>收款</td>
+                                      <td></td>
+                                      <td>退款</td>
+                                      <td></td>
+                                      <td></td>
+                                    </tr>  
                                   </tbody>
                                 </table>
                             </div>

@@ -376,7 +376,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
-            var live_in_id = result.data.item.live_in_id;
+            var live_in_id = result.data.item.live_in_id, l_in_id = result.data.item.l_in_id;
             var message = $scope.getErrorByCode(result.data.code);
             addGuestLiveInAside.$promise.then(addGuestLiveInAside.hide);
             $scope.successAlert.startProgressBar();
@@ -390,8 +390,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             if(angular.isDefined($scope.param.live_in_edit_id) && $scope.param.live_in_edit_id != '') {
                 $scope.param.live_in_edit_id = '';$('#live_in_edit_id').val('');
                 $scope.guestLiveInList[booking_number][booking_detail_id][live_in_id] = angular.copy($scope.param);
+                $scope.guestLiveInList[booking_number][booking_detail_id][live_in_id].l_in_id = l_in_id;
             } else {
                 $scope.guestLiveInList[booking_number][booking_detail_id][live_in_id] = angular.copy($scope.param);
+                $scope.guestLiveInList[booking_number][booking_detail_id][live_in_id].l_in_id = l_in_id;
             }
         });
     };
@@ -544,6 +546,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
             $scope.successAlert.startProgressBar();
             if(asideAccounts != '') asideAccounts.hide();
+            var accounts_id = result.data.item.accounts_id, booking_number = angular.copy($scope.param['booking_number']);
+            $scope.accountDetail[accounts_id] = angular.copy($scope.param);
+            $scope.accountDetail[accounts_id].accounts_id = accounts_id;
+            $scope.accountDetail[accounts_id].ba_id = result.data.item.ba_id;
+            $scope.accountDetail[accounts_id].business_day = result.data.item.business_day;
+            $scope.accountsList[booking_number] = $scope.accountDetail;
         });
     };
     //消费编辑
@@ -612,7 +620,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             } else {
 				$scope.nightAuditorList = result.data.item.nightAuditorList;
 			}
-			
         });
 	}
 	///////////////////////////////////////////////end night auditor
@@ -636,9 +643,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             } else {
 				$scope.bookingSearchList = result.data.item.bookingSearchList;
 			}
-			
         });
-        
     }
     //begin/////////////////////////////////////////远期房态//////////////////
 	$scope.roomForwardList = '';

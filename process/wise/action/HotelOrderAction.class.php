@@ -141,13 +141,14 @@ class HotelOrderAction extends \BaseAction
         if (!empty($arrayBookingNumber)) {
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
-            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')->setChildrenKey('booking_detail_id')->setMultiple(true);
+            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
+                ->setFatherKey('booking_detail_id')->setChildrenKey('consume_id');
             $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
             if (!empty($arrayConsume)) {
                 foreach ($arrayConsume as $number => $value) {
                     foreach ($value as $detail_id => $consumes) {
-                        foreach ($consumes as $i => $consume) {
-                            $arrayConsume[$number][$detail_id][$i]['c_id'] = encode($consume['consume_id']);
+                        foreach ($consumes as $accounts_id => $consume) {
+                            $arrayConsume[$number][$detail_id][$accounts_id]['c_id'] = encode($consume['consume_id']);
                         }
                     }
                 }
@@ -158,8 +159,15 @@ class HotelOrderAction extends \BaseAction
         if (!empty($arrayBookingNumber)) {
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
-            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')->setMultiple(true);
+            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')->setChildrenKey('accounts_id');
             $arrayAccounts = BookingHotelServiceImpl::instance()->getBookingAccounts($whereCriteria);
+            if (!empty($arrayAccounts)) {
+                foreach ($arrayAccounts as $number => $value) {
+                    foreach ($value as $accounts_id => $accounts) {
+                        $arrayAccounts[$number][$accounts_id]['ba_id'] = encode($accounts['accounts_id']);
+                    }
+                }
+            }
         }
         //结账方式
         $arrayPaymentType = null;
@@ -368,8 +376,7 @@ class HotelOrderAction extends \BaseAction
             $updateData['member_idcard_type'] = $objRequest->getInput('member_idcard_type');
             $updateData['member_idcard_number'] = $objRequest->getInput('member_idcard_number');
             BookingHotelServiceImpl::instance()->updateGuestLiveIn($whereCriteria, $updateData);
-
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],['live_in_id'=>$live_in_edit_id]);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],['live_in_id'=>$live_in_edit_id, 'l_in_id'=>encode($live_in_edit_id)]);
         }
         if ($detail_id > 0) {
             //整合数据
@@ -432,7 +439,7 @@ class HotelOrderAction extends \BaseAction
                 ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $arrayUpdate);
             }
             CommonServiceImpl::instance()->commit();
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['live_in_id'=>$live_in_id]);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['live_in_id'=>$live_in_id, 'l_in_id'=>encode($live_in_id)]);
         }
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
@@ -573,18 +580,18 @@ class HotelOrderAction extends \BaseAction
         if ($detail_id > 0 && $item_id > 0) {
             $arrayInput = $objRequest->getInput();
             //更新房间detail
+            $businessDay = LoginServiceImpl::getBusinessDay();
             $Booking_accountsEntity = new Booking_accountsEntity($arrayInput);
             $Booking_accountsEntity->setBookingDetailId($detail_id);
             $Booking_accountsEntity->setCompanyId($company_id);
             $Booking_accountsEntity->setChannel($channel_id);
             $Booking_accountsEntity->setEmployeeId($objLoginEmployee->getEmployeeId());
             $Booking_accountsEntity->setEmployeeName($objLoginEmployee->getEmployeeName());
-            $Booking_accountsEntity->setBusinessDay(LoginServiceImpl::getBusinessDay());
+            $Booking_accountsEntity->setBusinessDay($businessDay);
             $Booking_accountsEntity->setAddDatetime(getDateTime());
-
-            BookingHotelServiceImpl::instance()->saveBookingAccounts($Booking_accountsEntity);
+            $accounts_id = BookingHotelServiceImpl::instance()->saveBookingAccounts($Booking_accountsEntity);
             //
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['accounts_id'=>$accounts_id, 'ba_id'=>encode($accounts_id), 'business_day'=>$businessDay]);
         }
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
