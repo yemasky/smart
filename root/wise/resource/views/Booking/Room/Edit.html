@@ -59,9 +59,9 @@
 								<td colspan="9" class="no-padding panel">
 								  <table class="table no-margin">
 									  <tr>
-										  <td class="col-xs-1">
-											  <code class="small" ng-if="rDetail.booking_detail_status==0">预抵</code>
+										  <td class="col-xs-1 small">
                                               <a class="fas fa-user-plus" ng-click="addGuestLiveIn('AddLiveIn', rDetail)" title="添加住客"></a>
+											  <code class="small" ng-if="rDetail.booking_detail_status==0">预抵</code>
 										  </td>
 										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
 											<a class="fa pull-right" ng-click="showEditBookRoomAside(rDetail, 'Room')"></a></td>

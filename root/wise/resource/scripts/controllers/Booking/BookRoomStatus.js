@@ -465,10 +465,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             if(editType == 'lock') {if(bookRoomStatus.status == 'live_in') return;//在住房不能设置锁房 也不能设置维修
                 roomStatus ='<a class="fas fa-lock text-warning" title="锁房"></a> ';//锁房
             }
-            if(editType == 'repair') {if(bookRoomStatus.status == 'live_in') return;
+            if(editType == 'repair') {if(bookRoomStatus.status == 'live_in') return;//在住房不能设置锁房 也不能设置维修
                 roomStatus = '<a class="fas fa-tools text-warning" title="维修房"></a>';//维修房
             }
-            if(editType == 'unlock' || editType == 'repair_ok') {if(bookRoomStatus.status == 'live_in') return;
+            if(editType == 'unlock' || editType == 'repair_ok' || editType == 'empty_room') {
+				if(bookRoomStatus.status == 'live_in') return;//在住房不能设置锁房 也不能设置维修
                 roomStatus ='<a class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></a>';//解锁 空净 修好 空净  
             }
             //
@@ -492,7 +493,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 roomStatus = '<a class="fas fa-sign-in-alt text-success" title="预抵 &#8226; 查看订单"></a>'+roomStatus;
             }
             $scope.bookRoomStatus[$scope.statusRoom.item_id].roomStatus = roomStatus;
-            
         });
     };
     //收款

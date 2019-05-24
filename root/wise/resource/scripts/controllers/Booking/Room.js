@@ -426,7 +426,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                     //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 } else {
                     var message = $scope.getErrorByCode(result.data.code);
-                    $alert({title: '预订成功', content: message, templateUrl: '/modal-success.html', show: true});                    
+                    $alert({title: '预订成功', content: message, container:'body', templateUrl: '/modal-success.html', show: true});                    
                 }
             })
         }

@@ -108,9 +108,9 @@ class HotelOrderAction extends \BaseAction
         //查找[今日房态/今天预抵的] 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
         $whereCriteria = new \WhereCriteria();
         //$whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
-        //->LE('check_in', $out_date);
+        //->LE('check_in', $out_date);//->LE('check_in', $in_date)
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')
-            ->EQ('valid', '1')->GE('booking_detail_status', '0')->LE('check_in', $in_date)->setHashKey('booking_detail_id')->ORDER('check_in');
+            ->EQ('valid', '1')->GE('booking_detail_status', '0')->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_detail_id')->ORDER('check_in');
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
         if (!empty($bookingDetailRoom)) {
