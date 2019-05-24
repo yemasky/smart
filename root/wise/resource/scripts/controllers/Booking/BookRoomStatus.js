@@ -147,18 +147,21 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.roomLiveIn = roomLiveIn;
             $scope.roomDetailList = roomDetailList;
             //消费、账务计算
-			var bookConsume = {}, bookAccount = {}, bookBalance = {};
+			var bookConsume = {}, bookAccount = {}, bookBalance = {}, bookConsumePrice = {};
 			if($scope.consumeList != '') {//消费
 				for(var booking_number in $scope.consumeList) {
-                    bookConsume[booking_number] = 0; bookAccount[booking_number] = 0;
+                    bookConsume[booking_number] = 0; bookAccount[booking_number] = 0; bookConsumePrice[booking_number] = {};
 					for(var detail_id in $scope.consumeList[booking_number]) {
+                        bookConsumePrice[booking_number][detail_id] = 0;
 						for(var i in $scope.consumeList[booking_number][detail_id]) {
 							var consume = $scope.consumeList[booking_number][detail_id][i];
 							bookConsume[booking_number] = $scope.arithmetic(consume.consume_price_total, '+', bookConsume[booking_number]);
+                            bookConsumePrice[booking_number][detail_id] = $scope.arithmetic(consume.consume_price_total, '+',bookConsumePrice[booking_number][detail_id]);
 						}
 					}
 				}				
 			}
+            $scope.bookConsumePrice = bookConsumePrice;
 			if($scope.accountsList != '') {//账务
 				for(var booking_number in $scope.accountsList) {
 					for(var i in $scope.accountsList[booking_number]) {
@@ -241,16 +244,35 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	$scope.editRoomBook = function(detail, tab) {
 		$scope.param["valid"] = "1";
 		$scope.activeRoomBookEditTab = tab;
-		$scope.roomDetail = $scope.roomDetailList[detail.booking_number];//单个订单下面的所有房间
-        $scope.bookDetail = $scope.bookList[detail.booking_number];//订单详情
-        $scope.consumeDetail = $scope.consumeList[detail.booking_number];//消费详情
-        $scope.accountDetail = $scope.accountsList[detail.booking_number];//付款详情
-        asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
-		asideEditRoomBook.$promise.then(function() {
-			asideEditRoomBook.show();
-			$(document).ready(function(){
-			});
-		});
+        if(angular.isUndefined($scope.consumeList[detail.booking_number])) {
+            $httpService.header('method', 'getEditRoomBookInfo');
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.post('/app.do?'+param, $scope, function(result) {
+                $scope.beginLoading =! $scope.beginLoading;
+                $httpService.deleteHeader('method');
+                if (result.data.success == '0') {
+                    var message = $scope.getErrorByCode(result.data.code);
+                    //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                    return;//错误返回
+                }
+                showEditRoomBook();
+            })
+        } else {
+            showEditRoomBook();
+        }
+        function showEditRoomBook() {
+            $scope.roomDetail = $scope.roomDetailList[detail.booking_number];//单个订单下面的所有房间
+            $scope.bookDetail = $scope.bookList[detail.booking_number];//订单详情
+            $scope.consumeDetail = $scope.consumeList[detail.booking_number];//消费详情
+            $scope.accountDetail = $scope.accountsList[detail.booking_number];//付款详情
+
+            asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
+            asideEditRoomBook.$promise.then(function() {
+                asideEditRoomBook.show();
+                $(document).ready(function(){
+                });
+            });
+        }
 	};
 	var asideBookRoom = '';
 	$scope.closeAsideBookRoom = function(bookDetail) {if(asideBookRoom != '') {asideBookRoom.hide();};}
