@@ -42,6 +42,11 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $check_out        = $objRequest->validInput('check_out');
         $in_time          = $objRequest->validInput('in_time');
         $out_time         = $objRequest->validInput('out_time');
+        $booking_number   = decode($objRequest->getInput('book_id'));
+        $arrayCommonData['booking_number'] = 0;
+        if(!empty($booking_number) && is_numeric($booking_number)) {
+            $arrayCommonData['booking_number'] = $booking_number;
+        }
         //mobile_email
         $mobile_email = $objRequest->validInput('mobile_email');
         if(strlen($mobile_email) == 11 && is_numeric($mobile_email)) {//mobile
@@ -64,9 +69,9 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $arrayCommonData['sales_name']    = '';
         $arrayCommonData['add_datetime']  = getDateTime();
         $arrayAllBookData                 = array_merge($arrayInput, $arrayCommonData);
-        //预订人信息
+        //booking 预订人信息
         $BookingEntity = new BookingEntity($arrayAllBookData);
-        $BookingEntity->setBookingNumber(0);
+        $BookingEntity->setBookingNumber($arrayCommonData['booking_number']);
         $BookingEntity->setBookingStatus('0');//初始状态为 0
         $BookingEntity->setBusinessDay($objResponse->business_day);
         $BookingEntity->setBookingTotalPrice(0);
@@ -320,17 +325,21 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return $objSuccess->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '没有取到预订数据', []);
     }
 
-    public function saveBooking(BookingDataModel $BookingData): \SuccessService {
+    public function saveBooking(BookingDataModel $BookingData): \SuccessService
+    {
         CommonServiceImpl::instance()->startTransaction();
-        $objSuccess               = new \SuccessService();
-        $bookingEntity            = $BookingData->getBookingEntity();
-        $bookDetailList           = $BookingData->getBookDetailList();
+        $objSuccess = new \SuccessService();
+        $bookingEntity = $BookingData->getBookingEntity();
+        $bookDetailList = $BookingData->getBookDetailList();
         $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();
-        $booking_id               = BookingDao::instance()->saveBooking($bookingEntity);
-        $bookingNumber            = BookingUtil::instanct()->getBookingNumber($booking_id);
-        $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('booking_id', $booking_id);
-        BookingDao::instance()->updateBooking($whereCriteria, ['booking_number'=>$bookingNumber]);
+        $bookingNumber = $bookingEntity->getBookingNumber();
+        if (empty($bookingNumber)) {
+            $booking_id = BookingDao::instance()->saveBooking($bookingEntity);
+            $bookingNumber = BookingUtil::instanct()->getBookingNumber($booking_id);
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('booking_id', $booking_id);
+            BookingDao::instance()->updateBooking($whereCriteria, ['booking_number' => $bookingNumber]);
+        }
         foreach ($bookDetailList as $k => $bookDetail) {
             $bookDetailList[$k]->setBookingNumber($bookingNumber);
         }

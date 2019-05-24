@@ -4,7 +4,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
 	$scope.loading.start();
 	var bookRoomFather_id = 0, isBookRoom = false; $scope.bookRoom_quantity = '数量';
 	if(angular.isDefined($scope.bookRoom) && $scope.bookRoom !== '') {
-		bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房号';}
+		bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房号';
+	}
     //日历部分
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
@@ -413,6 +414,10 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $scope.param['id'] = $rootScope.employeeChannel[$scope.param.channel_id].id;
 			if($scope.param['in_time'].length > 8) $scope.param['in_time'] = $filter('limitTo')($scope.param['in_time'], 8, 11);
 			if($scope.param['out_time'].length > 8)$scope.param['out_time'] = $filter('limitTo')($scope.param['out_time'], 8, 11);
+			if(angular.isDefined($scope.bookInfo) && $scope.bookInfo !== '') {
+				$scope.param.booking_number = $scope.bookInfo.booking_number;
+				$scope.param.book_id = $scope.bookInfo.book_id;
+			}
             $httpService.post('/app.do?'+param, $scope, function(result){
                 $scope.beginLoading =! $scope.beginLoading;$scope.loading.percent();
 				$httpService.deleteHeader('method');
