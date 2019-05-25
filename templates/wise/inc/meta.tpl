@@ -559,6 +559,15 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			$scope.thisChannel_id = thisChannel_id;
 			$scope.thisChannel = thisChannel;
 		};
+		$scope.getChannelSetting = function(channel_id, key) {
+			if(angular.isDefined($rootScope.channelSettingList[channel_id][key])) {
+				return $rootScope.channelSettingList[channel_id][key];
+			}
+			if(angular.isDefined($rootScope.channelSettingList[channel_id])) {
+			   return $rootScope.channelSettingList[channel_id];
+			}
+			return null;
+		}
 		////*********************************////
 		$scope.redirect = function(url) {
 			$location.path(url);

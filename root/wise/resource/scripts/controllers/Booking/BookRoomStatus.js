@@ -246,20 +246,16 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.activeRoomBookEditTab = tab;
         if(angular.isUndefined($scope.consumeList[detail.booking_number])) {
             $httpService.header('method', 'getEditRoomBookInfo');
-            $scope.beginLoading =! $scope.beginLoading;
+			$scope.param.booking_number = detail.booking_number;
             $httpService.post('/app.do?'+param, $scope, function(result) {
-                $scope.beginLoading =! $scope.beginLoading;
                 $httpService.deleteHeader('method');
                 if (result.data.success == '0') {
                     var message = $scope.getErrorByCode(result.data.code);
                     //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                     return;//错误返回
-                }
-                showEditRoomBook();
+                } else {showEditRoomBook();}
             })
-        } else {
-            showEditRoomBook();
-        }
+        } else {showEditRoomBook();}
         function showEditRoomBook() {
             $scope.roomDetail = $scope.roomDetailList[detail.booking_number];//单个订单下面的所有房间
             $scope.bookDetail = $scope.bookList[detail.booking_number];//订单详情

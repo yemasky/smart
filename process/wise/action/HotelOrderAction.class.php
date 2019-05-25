@@ -662,4 +662,66 @@ class HotelOrderAction extends \BaseAction
         $arrayResult['bookingSearchList'] = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
+    //补全订单其它显示信息
+    protected function doMethodGetEditRoomBookInfo(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $arrayResult = [];
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        $booking_number = $objRequest->getInput('booking_number');
+
+        if (!empty($booking_number)) {
+            $arrayBookingNumber = [$booking_number];
+            //入住人数
+            $arrayGuestLiveIn = null;
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
+            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
+                ->setFatherKey('booking_detail_id')->setChildrenKey('live_in_id');
+            $arrayGuestLiveIn = BookingHotelServiceImpl::instance()->getGuestLiveIn($whereCriteria);
+            if (!empty($arrayGuestLiveIn)) {
+                foreach ($arrayGuestLiveIn as $booking_number => $guestLiveIn) {
+                    foreach ($guestLiveIn as $detail_id => $arrayliveIn) {
+                        foreach ($arrayliveIn as $i => $arrayliveIn) {
+                            $arrayGuestLiveIn[$booking_number][$detail_id][$i]['l_in_id'] = encode($arrayliveIn['live_in_id']);
+                        }
+                    }
+                }
+            }
+            //消费
+            $arrayConsume = null;
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
+            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
+                ->setFatherKey('booking_detail_id')->setChildrenKey('consume_id');
+            $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
+            if (!empty($arrayConsume)) {
+                foreach ($arrayConsume as $number => $value) {
+                    foreach ($value as $detail_id => $consumes) {
+                        foreach ($consumes as $accounts_id => $consume) {
+                            $arrayConsume[$number][$detail_id][$accounts_id]['c_id'] = encode($consume['consume_id']);
+                        }
+                    }
+                }
+            }
+
+            //账务
+            $arrayAccounts = null;
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
+            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')->setChildrenKey('accounts_id');
+            $arrayAccounts = BookingHotelServiceImpl::instance()->getBookingAccounts($whereCriteria);
+            if (!empty($arrayAccounts)) {
+                foreach ($arrayAccounts as $number => $value) {
+                    foreach ($value as $accounts_id => $accounts) {
+                        $arrayAccounts[$number][$accounts_id]['ba_id'] = encode($accounts['accounts_id']);
+                    }
+                }
+            }
+            $arrayResult = ['consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn];
+        }
+
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
+    }
 }
