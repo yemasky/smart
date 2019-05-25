@@ -672,12 +672,33 @@ class HotelOrderAction extends \BaseAction
         $booking_number = $objRequest->getInput('booking_number');
 
         if (!empty($booking_number)) {
-            $arrayBookingNumber = [$booking_number];
+            //订单详情
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('channel', 'Hotel')
+                ->EQ('booking_number', $booking_number)->setHashKey('booking_number');
+            if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
+            $arrayBookList = BookingHotelServiceImpl::instance()->getBooking($whereCriteria);
+            if (!empty($arrayBookList)) {
+                foreach ($arrayBookList as $booking_number => $v) {
+                    $arrayBookList[$booking_number]['book_id'] = encode($booking_number);
+                }
+            }
+            //单个订单下面的所有房间
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')
+                ->EQ('booking_number', $booking_number)->setHashKey('booking_detail_id')->ORDER('check_in');
+            if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
+            $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
+            if (!empty($bookingDetailRoom)) {
+                foreach ($bookingDetailRoom as $detail_id => $v) {
+                    $bookingDetailRoom[$detail_id]['detail_id'] = encode($v['booking_detail_id']);
+                }
+            }
             //入住人数
             $arrayGuestLiveIn = null;
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
-            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
+            $whereCriteria->EQ('booking_number', $booking_number)->setHashKey('booking_number')
                 ->setFatherKey('booking_detail_id')->setChildrenKey('live_in_id');
             $arrayGuestLiveIn = BookingHotelServiceImpl::instance()->getGuestLiveIn($whereCriteria);
             if (!empty($arrayGuestLiveIn)) {
@@ -692,8 +713,7 @@ class HotelOrderAction extends \BaseAction
             //消费
             $arrayConsume = null;
             $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
-            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('booking_number', $booking_number)->setHashKey('booking_number')
                 ->setFatherKey('booking_detail_id')->setChildrenKey('consume_id');
             $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
             if (!empty($arrayConsume)) {
@@ -710,7 +730,7 @@ class HotelOrderAction extends \BaseAction
             $arrayAccounts = null;
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
-            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')->setChildrenKey('accounts_id');
+            $whereCriteria->EQ('booking_number', $booking_number)->setHashKey('booking_number')->setChildrenKey('accounts_id');
             $arrayAccounts = BookingHotelServiceImpl::instance()->getBookingAccounts($whereCriteria);
             if (!empty($arrayAccounts)) {
                 foreach ($arrayAccounts as $number => $value) {
@@ -719,7 +739,7 @@ class HotelOrderAction extends \BaseAction
                     }
                 }
             }
-            $arrayResult = ['consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn];
+            $arrayResult = ['book'=>$arrayBookList, 'consume' => $arrayConsume, 'accounts' => $arrayAccounts, 'guestLiveIn' => $arrayGuestLiveIn, 'detailRoom'=>$bookingDetailRoom];
         }
 
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);

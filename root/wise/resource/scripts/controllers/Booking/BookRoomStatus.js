@@ -253,7 +253,14 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     var message = $scope.getErrorByCode(result.data.code);
                     //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                     return;//错误返回
-                } else {showEditRoomBook();}
+                } else {
+                    $scope.roomDetailList[detail.booking_number] = result.data.item.detailRoom;//单个订单下面的所有房间
+                    $scope.bookList[detail.booking_number] = result.data.item.book[detail.booking_number];//订单详情
+                    $scope.consumeList[detail.booking_number] = result.data.item.consume[detail.booking_number];//消费详情
+                    $scope.accountsList[detail.booking_number] = result.data.item.accounts;//付款详情
+                    $scope.guestLiveInList[detail.booking_number] = result.data.item.guestLiveIn;//
+                    showEditRoomBook();
+                }
             })
         } else {showEditRoomBook();}
         function showEditRoomBook() {
