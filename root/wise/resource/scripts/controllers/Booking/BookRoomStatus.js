@@ -1,14 +1,5 @@
 
-app.directive("edit", function(){
-  return{
-    restrict: "E",
-    link: function($scope, $element){
-      element.bind("click",function(e){
-        alert("I am clicked for editing");
-      });
-    }
-  }
-}).directive("showBookroomPrice", function($document){
+app.directive("showBookroomPrice", function($document){
   return{
     restrict: "A",
 	require: 'ngModel',
@@ -244,9 +235,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	$scope.editRoomBook = function(detail, tab) {
 		$scope.param["valid"] = "1";
 		$scope.activeRoomBookEditTab = tab;
-        if(angular.isUndefined($scope.consumeList[detail.booking_number])) {
+        var booking_number = detail.booking_number;
+        if(angular.isUndefined($scope.consumeList[booking_number])) {
             $httpService.header('method', 'getEditRoomBookInfo');
-			$scope.param.booking_number = detail.booking_number;
+			$scope.param.booking_number = booking_number;
             $httpService.post('/app.do?'+param, $scope, function(result) {
                 $httpService.deleteHeader('method');
                 if (result.data.success == '0') {
@@ -254,20 +246,39 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                     return;//错误返回
                 } else {
-                    $scope.roomDetailList[detail.booking_number] = result.data.item.detailRoom;//单个订单下面的所有房间
-                    $scope.bookList[detail.booking_number] = result.data.item.book[detail.booking_number];//订单详情
-                    $scope.consumeList[detail.booking_number] = result.data.item.consume[detail.booking_number];//消费详情
-                    $scope.accountsList[detail.booking_number] = result.data.item.accounts;//付款详情
-                    $scope.guestLiveInList[detail.booking_number] = result.data.item.guestLiveIn;//
+                    $scope.bookingDetailRoom[booking_number] = result.data.item.detailRoom;//单个订单下面的所有房间
+                    if(angular.isUndefined($scope.roomDetailList[booking_number])) {$scope.roomDetailList[booking_number] = {};}
+					$scope.roomDetailList[booking_number][detail.booking_detail_id] = detail;
+                    $scope.bookList[booking_number] = result.data.item.book[booking_number];//订单详情
+                    if(angular.isUndefined($scope.consumeList[booking_number])) {$scope.consumeList[booking_number] = {};}
+                    console.log(result.data.item.consume[booking_number]);
+                    $scope.consumeList[booking_number] = angular.copy(result.data.item.consume[booking_number]);//消费详情
+                    console.log($scope.consumeList[booking_number]);
+                    $scope.accountsList[booking_number] = result.data.item.accounts;//付款详情
+                    //消费、账务计算
+                    if($scope.consumeList[booking_number] != '') {//消费
+                        var bookConsume = {}, bookAccount = {}, bookBalance = {}, bookConsumePrice = {};
+                        bookConsume[booking_number] = 0; bookAccount[booking_number] = 0; bookConsumePrice[booking_number] = {};
+                        for(var detail_id in $scope.consumeList[booking_number]) {
+                            bookConsumePrice[booking_number][detail_id] = 0;
+                            for(var i in $scope.consumeList[booking_number][detail_id]) {
+                                var consume = $scope.consumeList[booking_number][detail_id][i];
+                                bookConsume[booking_number] = $scope.arithmetic(consume.consume_price_total, '+', bookConsume[booking_number]);
+                                bookConsumePrice[booking_number][detail_id] = $scope.arithmetic(consume.consume_price_total, '+',bookConsumePrice[booking_number][detail_id]);
+                            }
+                        }
+                        $scope.bookConsumePrice[booking_number] = bookConsumePrice[booking_number];
+                    }
+                    $scope.guestLiveInList[booking_number] = result.data.item.guestLiveIn;//
                     showEditRoomBook();
                 }
             })
         } else {showEditRoomBook();}
         function showEditRoomBook() {
-            $scope.roomDetail = $scope.roomDetailList[detail.booking_number];//单个订单下面的所有房间
-            $scope.bookDetail = $scope.bookList[detail.booking_number];//订单详情
-            $scope.consumeDetail = $scope.consumeList[detail.booking_number];//消费详情
-            $scope.accountDetail = $scope.accountsList[detail.booking_number];//付款详情
+            $scope.roomDetail = $scope.roomDetailList[booking_number];//单个订单下面的所有房间
+            $scope.bookDetail = $scope.bookList[booking_number];//订单详情
+            $scope.consumeDetail = $scope.consumeList[booking_number];//消费详情
+            $scope.accountDetail = $scope.accountsList[booking_number];//付款详情
 
             asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
             asideEditRoomBook.$promise.then(function() {
