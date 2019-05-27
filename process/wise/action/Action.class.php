@@ -36,6 +36,9 @@ class Action {
                 return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['login_over_time']['code']);
             } else {
                 //$action = 'login_over_time';
+                if (isset($_SERVER['CONTENT_TYPE']) && stripos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+                    return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['login_over_time']['code']);
+                }
             }
         } else {
             $objResponse->noLogin = '0';
