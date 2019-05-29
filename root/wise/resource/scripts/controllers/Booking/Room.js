@@ -189,7 +189,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 }
             }
         }
-        $scope.selectMarketLayoutPrice();//channel_id, layout_item_id, system_id
+        //$scope.selectMarketLayoutPrice();//channel_id, layout_item_id, system_id
         $scope.marketSystemLayout = marketSystemLayout;
         $scope.layoutShow = layoutShow;$scope.layoutSystemMore = layoutSystemMore;
     };
@@ -215,6 +215,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 var resultPriceLayout = result.data.item.priceLayout;
                 //$scope.marketChannelLayoutPrice = {};
                 $scope.setPriceLayout(resultPriceLayout);
+                $scope.selectMarketLayoutPrice();//设置新价格
             }
         })
     }
@@ -294,7 +295,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                                         if(layout_formula['formula_second_value'] - 0 > 0)
                                             price = $scope.arithmetic(price, layout_formula['formula_second'], layout_formula['formula_second_value'], decimal_price);
                                     } else {
-                                        price = '';//未设置价格
+                                        price = '-';//未设置价格
                                     }
                                     thisMarketPrice[market_id][channel_id][layout_item_id][_system_id][year_month+day] = price;
                                 }
@@ -327,6 +328,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 }
             }
         }
+        console.log(thisMarketPrice);
         $scope.marketChannelLayoutPrice = thisMarketPrice;
     }
     $scope.selectThisLayout = function($event) {}
@@ -378,7 +380,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                         //找出markey
                         var market = '';
                         for(var mi in $scope.marketList) {
-                            for(mii in $scope.marketList[mi]['children']) {
+                            for(var mii in $scope.marketList[mi]['children']) {
                                 if($scope.market_id == $scope.marketList[mi]['children'][mii].market_id) {
                                     market = $scope.marketList[mi]['children'][mii];
                                     break;
