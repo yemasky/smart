@@ -370,6 +370,7 @@ CREATE TABLE `channel_cancellation_policy` (
   `policy_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `policy_name` varchar(100) NOT NULL COMMENT '取消政策名称',
   `policy_en_name` varchar(100) NOT NULL DEFAULT '' COMMENT '英文名称',
+  `channel` enum('Hotel','Meal','Meeting','Shop','Service','Tour','Sport') NOT NULL DEFAULT 'Hotel',
   `company_id` int(11) NOT NULL COMMENT '公司/品牌ID',
   `channel_id` int(11) NOT NULL DEFAULT '0' COMMENT '频道ID',
   `rules` enum('night','percent','cash') NOT NULL COMMENT '规则',
@@ -386,7 +387,27 @@ CREATE TABLE `channel_cancellation_policy` (
 
 /*Data for the table `channel_cancellation_policy` */
 
-insert  into `channel_cancellation_policy`(`policy_id`,`policy_name`,`policy_en_name`,`company_id`,`channel_id`,`rules`,`rules_value`,`rules_days`,`rules_time`,`begin_datetime`,`end_datetime`,`policy_type`,`valid`,`add_datetime`) values (1,'不可取消','Cannot be canceled',1,0,'percent',100,NULL,NULL,NULL,NULL,'layout','1','2018-06-04 15:36:36'),(2,'18点前免费取消','Free cancellation before 18 o\'clock',1,0,'night',1,NULL,'18:00:00',NULL,NULL,'layout','1','2018-06-04 15:40:48');
+insert  into `channel_cancellation_policy`(`policy_id`,`policy_name`,`policy_en_name`,`channel`,`company_id`,`channel_id`,`rules`,`rules_value`,`rules_days`,`rules_time`,`begin_datetime`,`end_datetime`,`policy_type`,`valid`,`add_datetime`) values (1,'不可取消','Cannot be canceled','Hotel',1,0,'percent',100,NULL,NULL,NULL,NULL,'layout','1','2018-06-04 15:36:36'),(2,'18点前免费取消','Free cancellation before 18 o\'clock','Hotel',1,0,'night',1,NULL,'18:00:00',NULL,NULL,'layout','1','2018-06-04 15:40:48');
+
+/*Table structure for table `channel_consume_setting` */
+
+DROP TABLE IF EXISTS `channel_consume_setting`;
+
+CREATE TABLE `channel_consume_setting` (
+  `consume_setting_id` int(11) NOT NULL AUTO_INCREMENT,
+  `consume_setting_father_id` int(11) NOT NULL DEFAULT '0',
+  `channel` enum('Hotel','Meal','Meeting','Shop','Service','Tour','Sport') NOT NULL DEFAULT 'Hotel',
+  `company_id` int(11) NOT NULL,
+  `channel_id` int(11) NOT NULL,
+  `consume_setting_title` varchar(100) NOT NULL COMMENT '消费标题',
+  `consume_setting_title_en` varchar(100) NOT NULL DEFAULT '',
+  `booking_type` varchar(50) NOT NULL COMMENT '消费代码 消费类型',
+  `consume_price` float(8,2) NOT NULL DEFAULT '0.00' COMMENT '价格 0为免费',
+  `consume_unit` varchar(50) NOT NULL COMMENT '单位',
+  PRIMARY KEY (`consume_setting_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+/*Data for the table `channel_consume_setting` */
 
 /*Table structure for table `channel_item` */
 
@@ -779,11 +800,11 @@ CREATE TABLE `module` (
   `ico` varchar(100) NOT NULL DEFAULT '' COMMENT '图标',
   `is_release` enum('0','1') NOT NULL DEFAULT '1' COMMENT '是否对外发布使用',
   PRIMARY KEY (`module_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=37 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8;
 
 /*Data for the table `module` */
 
-insert  into `module`(`module_id`,`module_channel`,`module_name`,`module_father_id`,`module`,`url`,`module_view`,`module_order`,`action`,`action_order`,`submenu_father_id`,`is_menu`,`is_recommend`,`ico`,`is_release`) values (1,'Booking','预订模块',-1,'Booking','','',0,'',0,0,'1','0','','1'),(2,'Booking','酒店预订',0,'HoteOrder','','Hotel',0,'',0,0,'1','0','fa fa-bed','1'),(3,'Booking','餐饮服务',0,'MealOrder','','Meal',0,'',0,0,'1','0','glyphicon glyphicon-cutlery','1'),(4,'Booking','商务会议',0,'MeetingBooking','','Meeting',0,'',0,0,'1','0','ti-comments-smiley','1'),(5,'Booking','健身娱乐',0,'SportBooking','','Sport',0,'',0,0,'1','0','ti-dribbble','1'),(6,'Booking','商品购买',0,'Shoping','','Shop',0,'',0,0,'1','0','ti-shopping-cart','1'),(7,'Booking','商务服务',0,'Services','','Services',0,'',0,0,'1','0','ti-tablet','1'),(8,'Booking','旅行路线',0,'Tour','','Tour',0,'',0,0,'1','0','fa fa-sun','1'),(9,'Management','公司管理',-1,'Management','','',0,'',0,0,'1','0','','1'),(10,'Management','员工管理',0,'Employee','','',0,'',0,0,'1','0','glyphicon glyphicon-user','1'),(11,'Management','文件管理',0,'File','','',0,'',0,0,'1','0','fa fa-file-word','1'),(12,'Booking','客房预订',2,'HotelOrder','','RoomOrder',0,'RoomOrder',0,0,'1','0','','1'),(13,'Booking','客房房态',2,'HotelOrder','','RoomStatus',0,'RoomStatus',0,0,'1','0','','1'),(14,'Setting','配置模块',-1,'Setting','','',0,'',0,0,'1','0','','1'),(15,'Setting','企业配置',0,'Channel','','',0,'',0,0,'1','0','ti-settings','1'),(16,'Setting','新增/编辑企业',15,'Channel','','',0,'AddEdit',0,0,'1','0','','1'),(17,'Setting','禁用企业',15,'Channel','','',0,'Delete',0,0,'0','0','','1'),(18,'Setting','配置企业',15,'Channel','','',0,'Config',0,0,'0','0','','1'),(19,'Setting','配置属性',18,'ChannelConfig','','',0,'',0,0,'0','0','','1'),(20,'Setting','房间配置',18,'ChannelConfig','','',0,'room',0,0,'0','0','','1'),(21,'Setting','上传文件',14,'Upload','','',0,'',0,0,'0','0','','1'),(22,'Setting','上传图片',14,'Upload','','',0,'images',0,0,'0','0','','1'),(23,'Setting','管理图片',14,'Upload','','',0,'manager',0,0,'0','0','','1'),(24,'Setting','房型配置',18,'ChannelConfig','','',0,'layout',0,0,'0','0','','1'),(25,'Setting','支付配置',0,'ChannelSetting','','PaymentType',0,'payment',0,0,'1','0','fa fa-credit-card','1'),(26,'Setting','新增/编辑支付',25,'ChannelSetting','','PaymentTypeAddEdit',0,'paymentAddEdit',0,0,'0','0','','1'),(27,'Setting','客源市场',0,'ChannelSetting','','CustomerMarket',0,'market',0,0,'1','0','fa fa-users','1'),(28,'Setting','新增/编辑客源市场',27,'ChannelSetting','','CustomerMarketAddEdit',0,'marketAddEdit',0,0,'0','0','','1'),(29,'Setting','价格设置',0,'PriceSetting','','',0,'',0,0,'1','0','ti-server','1'),(30,'Setting','客房价格',29,'PriceSetting','','RoomPriceList',0,'RoomPriceList',0,0,'1','0','','1'),(31,'Setting','取消政策',0,'CancellationPolicy','','Policy',0,'',0,0,'1','0','ti-receipt','1'),(32,'Setting','新增/编辑取消政策',31,'CancellationPolicy','','PolicyAddEdit',0,'PolicyAddEdit',0,0,'0','0','','1'),(33,'Setting','价格类型',29,'PriceSetting','','RoomPriceSystem',0,'RoomPriceSystem',0,0,'0','0','','1'),(34,'Setting','添加价格类型',29,'PriceSetting','','RoomPriceSystemAddEdit',0,'RoomPriceSystemAddEdit',0,0,'0','0','','1'),(35,'Setting','添加客房价格',29,'PriceSetting','','RoomPriceAddEdit',0,'RoomPriceAddEdit',0,0,'0','0','','1'),(36,'Setting','企业管理',15,'Channel','','',0,'Manager',0,0,'1','0','','1');
+insert  into `module`(`module_id`,`module_channel`,`module_name`,`module_father_id`,`module`,`url`,`module_view`,`module_order`,`action`,`action_order`,`submenu_father_id`,`is_menu`,`is_recommend`,`ico`,`is_release`) values (1,'Booking','预订模块',-1,'Booking','','',0,'',0,0,'1','0','','1'),(2,'Booking','酒店预订',0,'HoteOrder','','Hotel',0,'',0,0,'1','0','fa fa-bed','1'),(3,'Booking','餐饮服务',0,'MealOrder','','Meal',0,'',0,0,'1','0','glyphicon glyphicon-cutlery','1'),(4,'Booking','商务会议',0,'MeetingBooking','','Meeting',0,'',0,0,'1','0','ti-comments-smiley','1'),(5,'Booking','健身娱乐',0,'SportBooking','','Sport',0,'',0,0,'1','0','ti-dribbble','1'),(6,'Booking','商品购买',0,'Shoping','','Shop',0,'',0,0,'1','0','ti-shopping-cart','1'),(7,'Booking','商务服务',0,'Services','','Services',0,'',0,0,'1','0','ti-tablet','1'),(8,'Booking','旅行路线',0,'Tour','','Tour',0,'',0,0,'1','0','fa fa-sun','1'),(9,'Management','公司管理',-1,'Management','','',0,'',0,0,'1','0','','1'),(10,'Management','员工管理',0,'Employee','','',0,'',0,0,'1','0','glyphicon glyphicon-user','1'),(11,'Management','文件管理',0,'File','','',0,'',0,0,'1','0','fa fa-file-word','1'),(12,'Booking','客房预订',2,'HotelOrder','','RoomOrder',0,'RoomOrder',0,0,'1','0','','1'),(13,'Booking','客房房态',2,'HotelOrder','','RoomStatus',0,'RoomStatus',0,0,'1','0','','1'),(14,'Setting','配置模块',-1,'Setting','','',0,'',0,0,'1','0','','1'),(15,'Setting','企业配置',0,'Channel','','',0,'',0,0,'1','0','ti-settings','1'),(16,'Setting','新增/编辑企业',15,'Channel','','',0,'AddEdit',0,0,'1','0','','1'),(17,'Setting','禁用企业',15,'Channel','','',0,'Delete',0,0,'0','0','','1'),(18,'Setting','配置企业',15,'Channel','','',0,'Config',0,0,'0','0','','1'),(19,'Setting','配置属性',18,'ChannelConfig','','',0,'',0,0,'0','0','','1'),(20,'Setting','房间配置',18,'ChannelConfig','','',0,'room',0,0,'0','0','','1'),(21,'Setting','上传文件',14,'Upload','','',0,'',0,0,'0','0','','1'),(22,'Setting','上传图片',14,'Upload','','',0,'images',0,0,'0','0','','1'),(23,'Setting','管理图片',14,'Upload','','',0,'manager',0,0,'0','0','','1'),(24,'Setting','房型配置',18,'ChannelConfig','','',0,'layout',0,0,'0','0','','1'),(25,'Setting','支付配置',0,'ChannelSetting','','PaymentType',0,'payment',0,0,'1','0','fa fa-credit-card','1'),(26,'Setting','新增/编辑支付',25,'ChannelSetting','','PaymentTypeAddEdit',0,'paymentAddEdit',0,0,'0','0','','1'),(27,'Setting','客源市场',0,'ChannelSetting','','CustomerMarket',0,'market',0,0,'1','0','fa fa-users','1'),(28,'Setting','新增/编辑客源市场',27,'ChannelSetting','','CustomerMarketAddEdit',0,'marketAddEdit',0,0,'0','0','','1'),(29,'Setting','价格设置',0,'PriceSetting','','',0,'',0,0,'1','0','ti-server','1'),(30,'Setting','客房价格',29,'PriceSetting','','RoomPriceList',0,'RoomPriceList',0,0,'1','0','','1'),(31,'Setting','客房取消政策',37,'CancellationPolicy','','Policy',0,'',0,0,'1','0','','1'),(32,'Setting','新增/编辑取消政策',37,'CancellationPolicy','','PolicyAddEdit',0,'PolicyAddEdit',0,0,'0','0','','1'),(33,'Setting','价格类型',29,'PriceSetting','','RoomPriceSystem',0,'RoomPriceSystem',0,0,'0','0','','1'),(34,'Setting','添加价格类型',29,'PriceSetting','','RoomPriceSystemAddEdit',0,'RoomPriceSystemAddEdit',0,0,'0','0','','1'),(35,'Setting','添加客房价格',29,'PriceSetting','','RoomPriceAddEdit',0,'RoomPriceAddEdit',0,0,'0','0','','1'),(36,'Setting','企业管理',15,'Channel','','',0,'Manager',0,0,'1','0','','1'),(37,'Setting','取消政策',0,'CancellationPolicy','','',0,'',0,0,'1','0','ti-receipt','1');
 
 /*Table structure for table `module_company` */
 

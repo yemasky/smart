@@ -434,14 +434,18 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 						//if(typeof(menus[father_id]) == 'undefined') menus[father_id] = {};
 						//if(typeof(menus[father_id][module_id]) == 'undefined') menus[father_id][module_id] = {};
 						if(father_id == '0') {
+							var children = {}, have_children = 0;
+							if(typeof(menus[module_id]) != 'undefined') {//father_id 比 module_id 要大，在后面添加的 已经添加了children
+								children = menus[module_id]['children'];have_children = 1;
+							}
 							menus[module_id] = $menus[i];//father_id == 0 第一行菜单
 							menus[module_id]['hide'] = 'hide';
 							if(menus[module_id]['module_channel'] == $module_channel) menus[module_id]['hide'] = '';
-							menus[module_id]['children'] = {};
-							menus[module_id]['have_children'] = 0;
+							menus[module_id]['children'] = children;
+							menus[module_id]['have_children'] = have_children;
 						} else {//
+							if(typeof(menus[father_id]) == 'undefined') {menus[father_id] = {};menus[father_id]['children']={};}
 							if(submenu_father_id == '0') {
-								//if(typeof(menus[father_id]) == 'undefined') {menus[father_id] = {};menus[father_id]['children']={};}
 								menus[father_id]['children'][module_id] = $menus[i];
 								menus[father_id]['children'][module_id]['submenu'] = {};
 								menus[father_id]['children'][module_id]['have_children'] = 0;
