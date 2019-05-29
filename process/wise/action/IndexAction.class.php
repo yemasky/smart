@@ -66,8 +66,8 @@ class IndexAction extends \BaseAction {
         $method = $objRequest->method;
         if (!empty($method)) {
             $method = 'doMethod' . ucfirst($method);
-
-            if (method_exists($this, $method)) return $this->$method($objRequest, $objResponse);
+            if (method_exists($this, $method))
+                return $this->$method($objRequest, $objResponse);
         }
         //
         $objResponse->setTplName("wise/index/default");
