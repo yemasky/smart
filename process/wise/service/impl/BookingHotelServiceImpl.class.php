@@ -23,7 +23,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     }
 
     public function checkBooking(\WhereCriteria $whereCriteria, $field = null) {
-        if ($field == '') $field = 'channel_id,item_id,check_in,check_out';
+        if ($field == '') $field = 'channel_id,item_category_id,item_id,check_in,check_out';
         return BookingDao::instance()->getBookingDetailList($whereCriteria, $field);
     }
 

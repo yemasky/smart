@@ -684,11 +684,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         });
     }
     //begin/////////////////////////////////////////远期房态//////////////////
-	$scope.roomForwardList = '';
+	$scope.roomForwardList = '';$scope.param.eta_date = $scope.getDay('yyyy-MM-dd');
     $scope.roomForcasting =function(getRoomForward) {
 		if($scope.roomForwardList == '' || getRoomForward == true) {
+            $scope.setForwardCalendar('2019-05-01', '2019-07-30');
 			$scope.loading.start();
 			$httpService.header('method', 'roomForcasting');
+            $scope.param.eta_date = $filter("date")($scope.param.eta_date, 'yyyy-MM-dd');
 			$httpService.post('/app.do?'+param, $scope, function(result) {
 				$scope.loading.percent()
 				$httpService.deleteHeader('method');
@@ -703,6 +705,31 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		}
 		console.log('Room Forcasting');
 	}
+    $scope.forwardCalendar = {};$scope.forwardColspan = 4;
+    $scope.setForwardCalendar = function(in_date, out_date) {//设置日期
+        var check_in = new Date(in_date.replace(/-/g, '/'));
+        var check_in_time = check_in.getTime(); 
+        var check_out = new Date(out_date.replace(/-/g, '/'));
+        var check_out_time = check_out.getTime();
+        var forwardCalendar = {}, forwardColspan = 4;
+        for(var i = check_in_time; i < check_out_time; i += 86400000) {
+            var thisDate = new Date(i);var year = thisDate.getFullYear();
+            var month = thisDate.getMonth() - 0 + 1; if(month < 10) month = '0'+month;
+            var day = thisDate.getDate() - 0; if(day < 10) day = '0'+day;
+            //date_key = 年-月-日 2018-01-01
+            var date_key = year+'-'+month+'-'+day;var week = $scope.weekday[thisDate.getDay()];
+            if(typeof(forwardCalendar[date_key]) == 'undefined') {
+                forwardCalendar[date_key] = {};
+            }
+            forwardCalendar[date_key]['day'] = day;
+            forwardCalendar[date_key]['week'] = week;
+            forwardCalendar[date_key]['month'] = month;
+            forwardCalendar[date_key]['year'] = year;
+            forwardColspan++;
+        }
+        $scope.forwardCalendar = forwardCalendar;$scope.forwardColspan = forwardColspan;
+    };
+    $scope.setForwardCalendar('2019-05-01', '2019-07-30');
     //end//////////////////////////////////////////远期房态///////////////////
 	$httpService.deleteHeader('refresh');
 });

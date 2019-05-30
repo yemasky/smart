@@ -410,8 +410,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			return unix_time - 0 + baseSeconds;
             //return baseDateTime.substr(0, 10);
 		};
-        $scope.getDay = function() {
-            return $filter("date")($scope._baseDateTime(), "yyyy-MM-dd");
+        $scope.getDay = function(format) {
+            if(angular.isUndefined(format)) format = "yyyy-MM-dd";
+            return $filter("date")($scope._baseDateTime(), format);
         }
         $scope.__RESOURCE = __RESOURCE;
 		$scope._resource = '<%$__RESOURCE%>';

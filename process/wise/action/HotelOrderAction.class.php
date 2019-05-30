@@ -630,8 +630,8 @@ class HotelOrderAction extends \BaseAction
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         //获取channel
         $channel_id = $objRequest->channel_id;
-        $in_date = getDay();
-        $out_date = getDay(30);
+        $in_date = substr($objRequest->eta_date, 0, 7) . '-01';
+        $out_date = date("Y-m-d", strtotime($in_date) - 0 + 5184000);
         //查找已住房间[远期房态]
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel_id', $channel_id)->EQ('booking_type', 'room_day')->GT('check_in', $in_date)->LT('check_in', $out_date);
