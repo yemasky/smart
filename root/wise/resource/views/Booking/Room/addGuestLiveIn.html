@@ -21,7 +21,7 @@
                                     <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}" ng-repeat="(detail_id, rDetail) in roomDetail" ng-selected="rDetail.item_id==param.item_id">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
                                 </select>-->
                                 
-                                <select class="form-control" id="live_in_item_id" name="item_id" ng-model="param.item_id" ng-change="setLiveInItemName()" ng-options="rDetail.item_id as rDetail.item_name==''?'未排房':rDetail.item_name for (detail_id, rDetail) in roomDetail">
+                                <select class="form-control" id="live_in_booking_detail_id" name="booking_detail_id" ng-model="param.booking_detail_id" ng-change="setLiveInItemName()" ng-options="rDetail.booking_detail_id as rDetail.item_name==''?'未排房':rDetail.item_name for (detail_id, rDetail) in roomDetail">
                                     <option value="">选择房号</option>
                                 </select>
                             </td>

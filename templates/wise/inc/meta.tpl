@@ -620,8 +620,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		}
 		$scope.weekday = new Array(7);
 		$scope.weekday[0]="日";$scope.weekday[1]="一";$scope.weekday[2]="二";
-		$scope.weekday[3]="三";$scope.weekday[4]="四";$scope.weekday[5]="五";
-		$scope.weekday[6]="六";
+		$scope.weekday[3]="三";$scope.weekday[4]="四";$scope.weekday[5]="五";$scope.weekday[6]="六";
         $scope.loading = $alert({scope : $scope, placement: 'top', type: 'info', templateUrl: '/loading.html', show: false});
         $scope.successAlert = $alert({scope : $scope, title: 'Success', templateUrl: '/resource/views/Common/successAlertRound.html', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
         var vm = $scope.vm = {};

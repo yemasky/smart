@@ -97,6 +97,7 @@ class Action {
             $objResponse->setResponse('_self_module', $_self_module);
         }
         $module = empty($module) ? 'Index' : ucwords($module);
+        $objRequest->setModule($module);
         //common setting
         $objResponse->__module_id  = $module_id;
         $objResponse->home_channel = \Encrypt::instance()->encode('home', getDay());

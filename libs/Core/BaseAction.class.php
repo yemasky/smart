@@ -17,6 +17,7 @@ class HttpRequest {
      * 分支KEY,即$_REQUEST['action'] *
      */
     private static $ACTION_KEY = "action";
+    private $module = '';
     /**
      * 保存从浏览器提交变量,即$_REQUEST.不可修改 *
      */
@@ -202,6 +203,12 @@ class HttpRequest {
     }
 
     /**
+     * 设置内部分支
+     */
+    public function setAction($actionValue) {
+        $this->actionValue = $actionValue;
+    }
+    /**
      * 取得内部分支
      */
     public function getAction() {
@@ -215,11 +222,19 @@ class HttpRequest {
     }
 
     /**
-     * 取得内部分支
+     * @return string
      */
-    public function setAction($actionValue) {
-        $this->actionValue = $actionValue;
+    public function getModule(): string {
+        return $this->module;
     }
+
+    /**
+     * @param string $module
+     */
+    public function setModule(string $module): void {
+        $this->module = $module;
+    }
+
 }
 
 /**

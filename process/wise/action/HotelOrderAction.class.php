@@ -456,13 +456,14 @@ class HotelOrderAction extends \BaseAction
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
             if($liveInType == 'all') {//设置入住状态
+                $businessDay = LoginServiceImpl::getBusinessDay();
                 $whereCriteria->EQ('booking_number', $booking_number)->EQ('booking_status', '0');
                 $updateData['booking_status'] = '1';
                 BookingHotelServiceImpl::instance()->updateBooking($whereCriteria, $updateData);
                 $updateData = [];
                 $whereCriteria = new \WhereCriteria();
-                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)
-                    ->EQ('booking_number', $booking_number)->EQ('booking_detail_status', '0');
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number)
+                    ->EQ('booking_detail_status', '0')->LE('check_in', $businessDay);
                 $updateData['booking_detail_status'] = '1';
                 $updateData['actual_check_in'] = getDateTime();
                 BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $updateData);

@@ -1,4 +1,20 @@
-<!--ommon langs-->
+<!--main content-->
+<script type="text/ng-template" id="/app/layout.html">
+<!-- header -->
+<header id="header" class="app-header navbar {{app.settings.headerColor}}" role="menu" ng-include="'/app/header/header.html'"></header>
+<!-- / header -->
+<!-- aside -->
+<aside id="aside" class="app-aside hidden-xs {{app.settings.asideColor}}" ng-class="{'show animated fadeInLeft' : app.asideCollapse}" ng-include="'/app/header/aside.nav.menu.html'"></aside>
+<!-- / aside -->
+<!-- content -->
+<div id="content" class="app-content" role="main" ui-view></div>
+<div ui-view="header_menu"></div>
+<!-- / content -->
+<!-- footer -->
+<footer id="footer" class="app-footer col-sm-2" role="footer" ng-include="'/app/footer.html'"></footer>
+<!-- / footer -->
+</script><!--main content--><!-- /app/layout.html -->
+<!--common langs-->
 <script type="text/ng-template" id="/langs.html">
 <ul class="dropdown-menu">
 	<li ng-repeat="(langKey, label) in langs">
@@ -87,21 +103,6 @@
   </div>
 </div>
 </script><!-- /modal-success.html -->
-<script type="text/ng-template" id="/app/layout.html">
-<!-- header -->
-<header id="header" class="app-header navbar {{app.settings.headerColor}}" role="menu" ng-include="'/app/header/header.html'"></header>
-<!-- / header -->
-<!-- aside -->
-<aside id="aside" class="app-aside hidden-xs {{app.settings.asideColor}}" ng-class="{'show animated fadeInLeft' : app.asideCollapse}" ng-include="'/app/header/aside.nav.menu.html'"></aside>
-<!-- / aside -->
-<!-- content -->
-<div id="content" class="app-content" role="main" ui-view></div>
-<div ui-view="header_menu"></div>
-<!-- / content -->
-<!-- footer -->
-<footer id="footer" class="app-footer" role="footer" ng-include="'/app/footer.html'"></footer>
-<!-- / footer -->
-</script><!-- /app/layout.html -->
 <script type="text/ng-template" id="/app/aside.html">
 <div class="app-aside-inner" bs-affix>
   <div class="app-aside-body scrollable hover" ui-view="header_menu"></div>

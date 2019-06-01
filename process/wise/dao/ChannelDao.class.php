@@ -173,6 +173,18 @@ class ChannelDao extends CommonDao {
     public function updateCancellationPolicy(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_cancellation_policy')->update($whereCriteria, $arrayUpdateData, $update_type);
     }
+    //getChannelConsume
+    public function getChannelConsume(\WhereCriteria $whereCriteria, $field = null) {
+        return $this->setDsnRead($this->getDsnRead())->setTable('channel_consume')->getList($whereCriteria, $field);
+    }
+
+    public function saveChannelConsume($arrayData, $insert_type = 'INSERT') {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_consume')->insert($arrayData, $insert_type);
+    }
+
+    public function updateChannelConsume(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_consume')->update($whereCriteria, $arrayUpdateData, $update_type);
+    }
     //channel_setting
     public function getChannelSettingEntity(\WhereCriteria $whereCriteria, $field = null) : Channel_settingEntity {
         return $this->setDsnRead($this->getDsnRead())->setEntity('\wise\Channel_settingEntity')->getEntity($whereCriteria, $field);

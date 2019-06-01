@@ -387,10 +387,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                         $scope.param[key] = ObjectLiveIn[key];
 					}
                     $('#live_in_edit_id').val(ObjectLiveIn.l_in_id);
-					$scope.param.item_id = ObjectLiveIn.item_id == 0 ? '' : ObjectLiveIn.item_id;
+					$scope.param.booking_detail_id = ObjectLiveIn.booking_detail_id;
                     $scope.param.live_in_edit_id = ObjectLiveIn.l_in_id;
 				} else if(liveInGuest == 'AddLiveIn') {
-					$scope.param.item_id = ObjectLiveIn.item_id;
+					$scope.param.booking_detail_id = ObjectLiveIn.booking_detail_id;
                     //$('#live_in_item_id').val(ObjectLiveIn.item_id);
 					$scope.roomDetailEdit = ObjectLiveIn;
 				}
@@ -439,10 +439,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         var rDetail = null;
         for(var detail_id in $scope.roomDetail) {
             rDetail = $scope.roomDetail[detail_id];
-            if($scope.param.item_id == rDetail.item_id) break; 
+            if($scope.param.booking_detail_id == rDetail.booking_detail_id) break; 
         }
         if(rDetail == null) {$alert({title: 'Notice', content: '找不到客房！', templateUrl: '/modal-warning.html', show: true});return false;};
         $scope.param.item_name = rDetail.item_name;//$('#live_in_item_id').find('option:selected').text();
+        $scope.param.item_id = rDetail.item_id;
         $scope.param.detail_id = rDetail.detail_id;//$('#live_in_item_id').find('option:selected').attr('detail_id');
         $scope.param.booking_detail_id = rDetail.booking_detail_id;//$('#live_in_item_id').find('option:selected').attr('booking_detail_id');
         return true;
