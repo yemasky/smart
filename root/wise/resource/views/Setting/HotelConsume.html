@@ -81,6 +81,9 @@ app.controller('HotelConsumeController', function($rootScope, $scope, $httpServi
 			});
 		})
 	};
+    $scope.changeChannelConsume = function(channel_consume_father_id) {
+        $scope.param.consume_code = $scope.dataFather[channel_consume_father_id].consume_code;
+    };
 	$scope.saveData = function() {
 		var param = this.param;
 		if(param == null || param == '' || !angular.isDefined(param.channel_consume_father_id)) {
