@@ -23,7 +23,7 @@ class Action {
         $module_channel = 'Booking';
         //
         $channel_id = $objRequest->id;
-        $channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : '';
+        $channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : null;
         $objRequest->channel_id = $channel_id;
 
         $objResponse->__nav_name = '';

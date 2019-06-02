@@ -25,7 +25,7 @@
                     <i ng-if="data.valid=='0'" class="fa fa-ban text-warning"></i>
                   </td>
                   <td>
-                    <a class="pull-right" ng-click="addPolicy(data)" ng-if="data.company_id>0"><i class="fa fa-edit"></i> </a>
+                    <a class="pull-right" ng-click="addChannelConsume(data)" ng-if="data.company_id>0"><i class="fa fa-edit"></i> </a>
                   </td>
                 </tr>
               </tbody>
@@ -66,21 +66,16 @@ app.controller('HotelConsumeController', function($rootScope, $scope, $httpServi
 	});
     $scope.dataFather = dataFather;
 	//
-	var asidePolicy = '', begin_datetime = {}, end_datetime = {};
+	var asideChannelConsume = '', begin_datetime = {}, end_datetime = {};
 	$scope.addChannelConsume = function(_this) {
-		$scope.param = {}; $scope.param["valid"] = "1";$scope.param["_rules_time"] = "2018-01-01T18:00:00.000Z";
-		$scope.param["_begin_datetime"] = "00-00";$scope.param["_end_datetime"] = "00-00";
+		$scope.param = {}; $scope.param["valid"] = "1";
 		if(_this != 0) {
-			var thisYear = $filter('date')($scope._baseDateTime(), 'yyyy', '0800')
 			$scope.param = _this;
-			$scope.param["_begin_datetime"] = thisYear+'-'+$scope.param["begin_datetime"] + 'T00:00:00.000Z';
-			$scope.param["_end_datetime"] = thisYear+'-'+$scope.param["end_datetime"] + 'T00:00:00.000Z';
-			$scope.param["_rules_time"] = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd', 'UTC') + 'T'+$scope.param["rules_time"]+'.000Z';
 		}
 		$scope.action = '添加/编辑';
-		asidePolicy = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/HotelConsumeAddEdit.tpl.html'});
-		asidePolicy.$promise.then(function() {
-			asidePolicy.show();
+		asideChannelConsume = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/HotelConsumeAddEdit.tpl.html'});
+		asideChannelConsume.$promise.then(function() {
+			asideChannelConsume.show();
 			$(document).ready(function(){
 				$('#rules').val($scope.param["rules"]);
 			});
@@ -88,25 +83,21 @@ app.controller('HotelConsumeController', function($rootScope, $scope, $httpServi
 	};
 	$scope.saveData = function() {
 		var param = this.param;
-		if(param == null || param == '' || !angular.isDefined(param.rules)) {
-			$alert({title: 'Notice', content: '“取消政策规则”必须选择！', templateUrl: '/modal-warning.html', show: true});
+		if(param == null || param == '' || !angular.isDefined(param.channel_consume_father_id)) {
+			$alert({title: 'Notice', content: '“酒店消费类别”必须选择！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
 		$scope.loading.show();
-		param.begin_datetime = $filter('date')(param._begin_datetime, 'MM-dd', '0000');
-		delete param._begin_datetime;
-		param.end_datetime = $filter('date')(param._end_datetime, 'MM-dd', '0000');
-		delete param._end_datetime;
-		param.rules_time = $filter('date')(param._rules_time, 'HH:mm', 'UTC');
-		delete param._rules_time;
 		$scope.param = param;
+        $httpService.header('method', 'editChannelConsume');
 		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+            $httpService.deleteHeader('method');
 			$scope.loading.hide();
 			if(result.data.success == '0') {
 				return;
 			}
-			$scope.dataList = result.data.item.policyList;
-			asidePolicy.hide();
+			$scope.dataList;
+			asideChannelConsume.hide();
 			
 		});
 	}

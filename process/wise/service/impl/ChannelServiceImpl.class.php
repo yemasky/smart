@@ -413,7 +413,7 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
     //channel_consume
     public function getChannelConsume($company_id, $channel_id = '', $channel_consume_id = '', $field = '') {
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->ArrayIN('company_id', [$company_id, '0'])->ORDER('channel_consume_father_id', 'ASC');
+        $whereCriteria->ArrayIN('company_id', [$company_id, '0'])->ORDER('channel_consume_father_id', 'ASC')->NE('valid', '-1');
         if(!empty($channel_id) && $channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         if(!empty($channel_consume_id) && $channel_consume_id > 0) $whereCriteria->EQ('channel_consume_id', $channel_consume_id);
         if(empty($field)) $field = 'channel_consume_id,channel_consume_father_id,channel,company_id,channel_id,consume_title,consume_title_en,consume_code,consume_price,consume_unit,valid';
@@ -442,9 +442,9 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
         return ChannelDao::instance()->saveChannelConsume($arrayData, $insert_type);
     }
 
-    public function updateChannelConsume($company_id, $policy_id, $arrayUpdateData, $update_type = '') {
+    public function updateChannelConsume($company_id, $channel_consume_id, $arrayUpdateData, $update_type = '') {
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('policy_id', $policy_id);
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_consume_id', $channel_consume_id);
 
         return ChannelDao::instance()->updateChannelConsume($whereCriteria, $arrayUpdateData, $update_type);
     }

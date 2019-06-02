@@ -1,6 +1,6 @@
 /*
-SQLyog Ultimate v11.24 (32 bit)
-MySQL - 10.1.19-MariaDB : Database - wise
+SQLyog Ultimate v12.08 (64 bit)
+MySQL - 10.1.37-MariaDB : Database - wise
 *********************************************************************
 */
 
@@ -405,13 +405,14 @@ CREATE TABLE `channel_consume` (
   `consume_code` varchar(50) NOT NULL COMMENT '消费代码 消费类型 对应booking_type',
   `consume_price` float(8,2) NOT NULL DEFAULT '0.00' COMMENT '价格 0为免费 -1自定义 -99父类',
   `consume_unit` varchar(50) NOT NULL COMMENT '单位',
-  `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '有效无效',
+  `valid` enum('-1','0','1') NOT NULL DEFAULT '1' COMMENT '有效无效 -1删除',
+  `add_datetime` datetime NOT NULL COMMENT '添加时间',
   PRIMARY KEY (`channel_consume_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 /*Data for the table `channel_consume` */
 
-insert  into `channel_consume`(`channel_consume_id`,`channel_consume_father_id`,`channel`,`company_id`,`channel_id`,`consume_title`,`consume_title_en`,`consume_code`,`consume_price`,`consume_unit`,`valid`) values (1,1,'Hotel',0,0,'房费','Room rate','room_rate',-1.00,'元','1'),(2,1,'Hotel',0,0,'房费','Charge rate','room_rate',-1.00,'元','1'),(3,3,'commom',0,0,'能源费','Energy cost','energy_cost',-1.00,'元','1'),(4,3,'commom',0,0,'水费','Water rate','energy_cost',-1.00,'元','1'),(5,3,'commom',0,0,'电费','Electric charge','energy_cost',-1.00,'元','1'),(6,1,'Hotel',0,0,'加收房费','Charge rate','room_rate',-1.00,'元','1'),(7,7,'Hotel',0,0,'服务费','Service charge','service_charge',-1.00,'元','1'),(8,8,'Hotel',0,0,'场地费','Water Front Hire','water_front_hire',-1.00,'元','1'),(9,1,'Hotel',0,0,'小时房费','Hour rate','room_rate',-1.00,'元','1');
+insert  into `channel_consume`(`channel_consume_id`,`channel_consume_father_id`,`channel`,`company_id`,`channel_id`,`consume_title`,`consume_title_en`,`consume_code`,`consume_price`,`consume_unit`,`valid`,`add_datetime`) values (0,0,'commom',0,0,'新类别','New type','new ',0.00,'元','0','0000-00-00 00:00:00'),(1,1,'Hotel',0,0,'房费','Room rate','room_rate',-1.00,'元','1','0000-00-00 00:00:00'),(2,1,'Hotel',0,0,'房费','Charge rate','room_rate',-1.00,'元','1','0000-00-00 00:00:00'),(3,3,'commom',0,0,'能源费','Energy cost','energy_cost',-1.00,'元','1','0000-00-00 00:00:00'),(4,3,'commom',0,0,'水费','Water rate','energy_cost',-1.00,'元','1','0000-00-00 00:00:00'),(5,3,'commom',0,0,'电费','Electric charge','energy_cost',-1.00,'元','1','0000-00-00 00:00:00'),(6,1,'Hotel',0,0,'加收房费','Charge rate','room_rate',-1.00,'元','1','0000-00-00 00:00:00'),(7,7,'Hotel',0,0,'服务费','Service charge','service_charge',-1.00,'元','1','0000-00-00 00:00:00'),(8,8,'Hotel',0,0,'场地费','Water Front Hire','water_front_hire',-1.00,'元','1','0000-00-00 00:00:00'),(9,1,'Hotel',0,0,'小时房费','Hour rate','room_rate',-1.00,'元','1','0000-00-00 00:00:00');
 
 /*Table structure for table `channel_item` */
 
