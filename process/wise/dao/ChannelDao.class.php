@@ -173,7 +173,7 @@ class ChannelDao extends CommonDao {
     public function updateCancellationPolicy(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_cancellation_policy')->update($whereCriteria, $arrayUpdateData, $update_type);
     }
-    //getChannelConsume
+    //channel_consume
     public function getChannelConsume(\WhereCriteria $whereCriteria, $field = null) {
         return $this->setDsnRead($this->getDsnRead())->setTable('channel_consume')->getList($whereCriteria, $field);
     }

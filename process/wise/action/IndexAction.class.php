@@ -69,6 +69,10 @@ class IndexAction extends \BaseAction {
             if (method_exists($this, $method))
                 return $this->$method($objRequest, $objResponse);
         }
+        if($objRequest->_ != '') {
+            $objResponse->setTplName("wise/index/nologin");
+            return false;
+        }
         //
         $objResponse->setTplName("wise/index/default");
     }

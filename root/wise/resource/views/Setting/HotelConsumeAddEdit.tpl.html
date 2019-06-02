@@ -1,0 +1,59 @@
+<div class="aside box-shadow h-10x b-r col-sm-6 no-padding" tabindex="-1">
+    <div class="aside-dialog"  id="wertyuio">
+    <div class="aside-header" ng-show="title">
+    	<button type="button" class="close" ng-click="$hide()">&times;</button>
+    	<h4 class="aside-title" ng-bind-html="_self_module.module_name"></h4>
+    </div>
+    <form name="thisForm" class="form-validation" id="thisForm" ng-submit="saveData()">
+    <div class="aside-content h-8x">
+      <div class="aside-body h-8x scrollable" style="overflow:visible">
+        <div>
+           <div class="form-group m-h-n clearfix">
+            	<div class="col-sm-12">
+                    <div class="col-sm-12 w-sm no-padding">
+                    <label for="rules">酒店消费类别</label>
+                    <select class="form-control w-sm" name="rules" id="rules" ng-model="param.rules" required>
+                        <option value="0">新类别</option>
+                        <option value="percent">百分比</option>
+                        <option value="cash">每订单现金</option>
+                    </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group m-h-n clearfix">
+            	<div class="col-sm-6">
+                <label for="policy_name">酒店消费名称</label>
+                <input class="form-control w" name="consume_title" value="" ng-model="param.consume_title" required>
+                </div>
+                <div class="col-sm-6">
+            	<label for="policy_en_name">酒店消费英文名称</label>
+                <input class="form-control w" name="consume_title_en" value="" ng-model="param.consume_title_en" required>
+                </div>
+            </div>
+            <div class="form-group m-h-n clearfix">
+            	<div class="col-sm-6">
+                <label for="rules">价格(0为免费 -1自定义)</label>
+                <input class="form-control w" name="begin_datetime" id="begin_datetime" type="text" value="" ng-model="param._begin_datetime">
+                </div>
+                <div class="col-sm-6">
+                <label for="rules">单位</label>
+                <input class="form-control w" name="end_datetime" id="end_datetime" type="text" value="" ng-model="param._end_datetime" >
+                </div>
+            </div>
+            <div class="form-group clearfix">
+                <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
+                <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
+            </div>
+            <div class="form-group"></div>
+        </div>
+      </div>
+      
+    </div>
+    <div class="aside-footer panel-footer">
+        <input type="hidden" name="policy_id" value="" ng-model="param.policy_id" >
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+        <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
+    </div>
+    </form>
+  </div>
+</div>

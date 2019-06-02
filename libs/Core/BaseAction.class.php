@@ -231,7 +231,7 @@ class HttpRequest {
     /**
      * @param string $module
      */
-    public function setModule(string $module): void {
+    public function setModule(string $module) {
         $this->module = $module;
     }
 

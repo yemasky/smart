@@ -11,28 +11,18 @@
                   <th>类别</th>
                   <th>中文名称</th>
                   <th>英文名称</th>
-                  <th>消费类型</th>
-                  <th>价格</th>
-                  <th>单位</th>
                   <th>有效</th>
                   <th>编辑</th>
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="(i, data) in dataList">
-                  <td class="text-nowrap">{{data.consume_title}}</td>
-                  <td>{{data.consume_title_en}}<span ng-if="data.consume_title_en==''">　</span> </td>
+                <tr ng-repeat="(id, data) in dataList" ng-if="id!=data.channel_consume_father_id">
+                  <td class="text-nowrap">{{dataFather[data.channel_consume_father_id].consume_title}}</td>
+                  <td>{{data.consume_title}}</td>
+                  <td>{{data.consume_title_en}}</td>
                   <td>
-                  	<span ng-if="data.rules=='night'">间夜</span> 
-                    <span ng-if="data.rules=='percent'">百分比</span> 
-                    <span ng-if="data.rules=='cash'">每订单现金</span> 
-                  </td>
-                  <td>{{data.rules_value}}</td>
-                  <td>{{data.rules_days}}天{{data.rules_time}}点前免费取消</td>
-                  <td><span ng-if="data.begin_datetime!=''">{{data.begin_datetime}}~{{data.end_datetime}}</span></td>
-                  <td>
-                    <i ng-if="data.valid==1" class="fa fa-dot-circle-o text-success"></i>
-                    <i ng-if="data.valid==0" class="fa fa-ban text-warning"></i>
+                    <i ng-if="data.valid=='1'" class="fas fa-check-circle text-success"></i>
+                    <i ng-if="data.valid=='0'" class="fa fa-ban text-warning"></i>
                   </td>
                   <td>
                     <a class="pull-right" ng-click="addPolicy(data)" ng-if="data.company_id>0"><i class="fa fa-edit"></i> </a>
@@ -53,7 +43,7 @@
 app.controller('HotelConsumeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
 	//获取数据
 	var _channel = $scope.$stateParams.channel, common = '';
-	var _view = $scope.$stateParams.view;
+	var _view = $scope.$stateParams.view,dataFather = {};
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
 	$httpService.post('/app.do?'+param, $scope, function(result){
@@ -65,7 +55,16 @@ app.controller('HotelConsumeController', function($rootScope, $scope, $httpServi
 		common = result.data.common;
 		$scope.setCommonSetting(common);
 		$scope.dataList = result.data.item.channelConsume;
+        if($scope.dataList != '') {
+            for(var i in $scope.dataList){
+                var data = $scope.dataList[i];
+                if(data.channel_consume_id == data.channel_consume_father_id)   {
+                    dataFather[data.channel_consume_id] = data;
+                }
+            }
+        }
 	});
+    $scope.dataFather = dataFather;
 	//
 	var asidePolicy = '', begin_datetime = {}, end_datetime = {};
 	$scope.addChannelConsume = function(_this) {
@@ -79,7 +78,7 @@ app.controller('HotelConsumeController', function($rootScope, $scope, $httpServi
 			$scope.param["_rules_time"] = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd', 'UTC') + 'T'+$scope.param["rules_time"]+'.000Z';
 		}
 		$scope.action = '添加/编辑';
-		asidePolicy = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/ChannelConsumeAddEdit.tpl.html'});
+		asidePolicy = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/HotelConsumeAddEdit.tpl.html'});
 		asidePolicy.$promise.then(function() {
 			asidePolicy.show();
 			$(document).ready(function(){

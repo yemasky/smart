@@ -32,7 +32,7 @@ class Action {
             //登录action
             $action               = empty($action) ? 'login' : $action;
             $objResponse->noLogin = 1;
-            if (isset($_SERVER['HTTP_AJAXREQUEST']) && $_SERVER['HTTP_AJAXREQUEST'] == true) {
+            if ((isset($_SERVER['HTTP_AJAXREQUEST']) && $_SERVER['HTTP_AJAXREQUEST'] == true) || $objRequest->view != '') {
                 return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['login_over_time']['code']);
             } else {
                 //$action = 'login_over_time';
@@ -98,6 +98,7 @@ class Action {
         }
         $module = empty($module) ? 'Index' : ucwords($module);
         $objRequest->setModule($module);
+
         //common setting
         $objResponse->__module_id  = $module_id;
         $objResponse->home_channel = \Encrypt::instance()->encode('home', getDay());

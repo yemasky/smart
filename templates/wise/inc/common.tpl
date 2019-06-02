@@ -11,7 +11,7 @@
 <div ui-view="header_menu"></div>
 <!-- / content -->
 <!-- footer -->
-<footer id="footer" class="app-footer col-sm-2" role="footer" ng-include="'/app/footer.html'"></footer>
+<footer id="footer" class="app-footer col-sm-3" role="footer" ng-include="'/app/footer.html'"></footer>
 <!-- / footer -->
 </script><!--main content--><!-- /app/layout.html -->
 <!--common langs-->

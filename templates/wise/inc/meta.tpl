@@ -335,12 +335,12 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
 		}
     }).state('app.Setting', {
         url: "/Setting/:view/:channel", //url: "/role/edit?id",
-        templateUrl: function($routeParams) {
-			var view = $routeParams.view;
+        templateUrl: function($routeParams, $rootScope, $scope) {
+			var view = $routeParams.view;//有view访问静态文件
 			if(view != '') return 'resource/views/Setting/'+$routeParams.view+'.html?<%$__VERSION%>';
             return randomUrl($routeParams.channel); 
         },
-		controller: function() {
+		controller: function($rootScope, $scope, $ocLazyLoad, $httpService) {
 		}
     }).state('app.Channel', {
         url: "/Channel/:channel", //url: "/role/edit?id",
