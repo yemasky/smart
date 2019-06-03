@@ -12,7 +12,7 @@
             	<div class="col-sm-12">
                     <div class="col-sm-12 w-sm no-padding">
                     <label for="rules">酒店消费类别</label>
-                    <select class="form-control w-sm" name="channel_consume_father_id" id="channel_consume_father_id" ng-model="param.channel_consume_father_id" required ng-options="data.channel_consume_id as data.consume_title for (i, data) in dataFather" ng-change="changeChannelConsume(param.channel_consume_father_id)">
+                    <select class="form-control w-sm" name="channel_consume_father_id" id="channel_consume_father_id" ng-model="param.channel_consume_father_id" required ng-options="data.channel_consume_id as data.consume_title for (i, data) in dataConsumeFather" ng-change="changeChannelConsume(param.channel_consume_father_id)">
                         <option value="">选择类别</option>
                     </select>
                     </div>
