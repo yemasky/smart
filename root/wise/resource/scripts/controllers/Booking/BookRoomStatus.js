@@ -88,7 +88,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
         $scope.bookingSearchList = result.data.item.bookingDetailRoom;//所有订单
 		$scope.marketList        = result.data.item.marketList;
-        var for       = result.data.item.channelConsumeList;
+        var channelConsume       = result.data.item.channelConsumeList;
         $scope.bookRoomStatus    =  {}; $scope.roomDetailList = {};$scope.roomLiveIn = {};$scope.check_outRoom = {};
         if($scope.roomList != '') {
 			//按当日计算预抵预离 过期忽略
@@ -215,16 +215,29 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		    }
 			$scope.bookRoomStatus = bookRoomStatus;
 		}
-        var channelConsumeList = '';
+        var channelConsumeList = {};
         if(channelConsume!='') {
-            var j = 0;
             for(var i in channelConsume) {
                 var consume = channelConsume[i];
-                if(consume.channel_consume_id == consume.channel_consume_father_id) {
-                    channelConsumeList[j] = consume;
-                }              
+                var consume_id = consume.channel_consume_id;
+                var consume_father_id = consume.channel_consume_father_id;
+                if(consume_id == consume_father_id) {
+                    var children = {}
+                    if(angular.isDefined(channelConsumeList[consume_father_id])) {
+                        children = channelConsumeList[consume_father_id].children;
+                    }
+                    consume['children'] = children;
+                    channelConsumeList[consume_father_id] = consume;
+                } else {
+                    if(angular.isUndefined(channelConsumeList[consume_father_id])) {
+                        channelConsumeList[consume_father_id] = {};
+                        channelConsumeList[consume_father_id]['children'] = {};
+                    }
+                    channelConsumeList[consume_father_id]['children'][consume_id] = consume;
+                }             
             }
         }
+        $scope.channelConsumeList = channelConsumeList;
 		//时间
 		$(document).ready(function(){
 			var _thisDay = result.data.item.in_date;

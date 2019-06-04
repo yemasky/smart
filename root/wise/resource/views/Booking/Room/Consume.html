@@ -22,15 +22,15 @@
                                 <span>{{payment_name}}</span>
                              </a>
                              <ul class="nav nav-sub bg b">
-                                <li ng-repeat="(i, father) in paymentTypeList">
+                                <li ng-repeat="(i, father) in channelConsumeList">
                                   <a class="">
                                     <span class="pull-right text-muted" ng-if="father.children!=''">
                                       <i class="fa fa-caret-down"></i>
                                     </span>
-                                    <span class="font-normal">{{father.payment_name}}</span>
+                                    <span class="font-normal">{{father.consume_title}}</span>
                                   </a>
                                   <ul class="nav nav-sub bg b" ng-if="father.children!=''">
-                                    <li ng-repeat="(j, payment) in father.children"><a ng-click="selectPaymentType(payment, true)">{{payment.payment_name}}</a></li>
+                                    <li ng-repeat="(j, consume) in father.children"><a ng-click="selectConsume(consume, true)">{{consume.consume_title}}</a></li>
                                   </ul>
                                 </li>
                              </ul>
