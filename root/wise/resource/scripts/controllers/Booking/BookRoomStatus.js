@@ -86,8 +86,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.guestLiveInList   = result.data.item.guestLiveInList;//入住客人
         $scope.paymentTypeList   = result.data.item.paymentTypeList;//支付方式
 		$scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
-        $scope.bookingSearchList   = result.data.item.bookingDetailRoom;//所有订单
+        $scope.bookingSearchList = result.data.item.bookingDetailRoom;//所有订单
 		$scope.marketList        = result.data.item.marketList;
+        var for       = result.data.item.channelConsumeList;
         $scope.bookRoomStatus    =  {}; $scope.roomDetailList = {};$scope.roomLiveIn = {};$scope.check_outRoom = {};
         if($scope.roomList != '') {
 			//按当日计算预抵预离 过期忽略
@@ -214,6 +215,16 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		    }
 			$scope.bookRoomStatus = bookRoomStatus;
 		}
+        var channelConsumeList = '';
+        if(channelConsume!='') {
+            var j = 0;
+            for(var i in channelConsume) {
+                var consume = channelConsume[i];
+                if(consume.channel_consume_id == consume.channel_consume_father_id) {
+                    channelConsumeList[j] = consume;
+                }              
+            }
+        }
 		//时间
 		$(document).ready(function(){
 			var _thisDay = result.data.item.in_date;
@@ -603,7 +614,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	};
 	//消费
 	$scope.bookingConsume = function(consume) {
-		asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
+        var title = '消费';
+		asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Consume.html',show: false});
         asideConsume.$promise.then(function() {
 			asideConsume.show();
 			$(document).ready(function(){

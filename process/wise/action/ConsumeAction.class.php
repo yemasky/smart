@@ -80,6 +80,7 @@ class ConsumeAction extends \BaseAction {
         $channel_id                 = $objRequest->channel_id;
         if(is_numeric($channel_id) && $channel_id > 0) $arrayInput['channel_id'] = $channel_id;
         if(is_numeric($c_c_id) && $c_c_id > 0) {
+            unset($arrayInput['c_c_id']);
             ChannelServiceImpl::instance()->updateChannelConsume($arrayInput['company_id'], $c_c_id, $arrayInput);
         } else {
             $arrayInput['add_datetime'] = getDateTime();

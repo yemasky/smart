@@ -154,6 +154,8 @@ class HotelOrderAction extends \BaseAction
                 }
             }
         }
+        //消费类别
+        $arrayChannelConsume = ChannelServiceImpl::instance()->getChannelConsume($company_id, $channel_id);
         //账务
         $arrayAccounts = null;
         if (!empty($arrayBookingNumber)) {
@@ -177,7 +179,7 @@ class HotelOrderAction extends \BaseAction
         //客源市场
         $arrayCustomerMarket = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
         $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom' => $arrayLayoutRoom, 'bookingDetailRoom' => $bookingDetailRoom,
-            'bookList' => $arrayBookList, 'consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn,
+            'bookList' => $arrayBookList, 'consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn,'channelConsumeList'=>$arrayChannelConsume,
             'paymentTypeList' => $arrayPaymentType, 'marketList' => $arrayCustomerMarket, 'in_date' => getDay(), 'out_date'=>getDay(24)];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
