@@ -100,7 +100,9 @@ CREATE TABLE `booking_consume` (
   `booking_number_ext` varchar(64) NOT NULL DEFAULT '',
   `company_id` int(11) NOT NULL COMMENT '品牌 公司ID',
   `channel` enum('Hotel','Meal','Meeting','Shop','Service','Tour','Sport') NOT NULL COMMENT '频道',
+  `channel_consume_father_id` int(11) NOT NULL DEFAULT '0',
   `channel_consume_id` int(11) NOT NULL DEFAULT '0',
+  `consume_title` varchar(64) NOT NULL DEFAULT '',
   `booking_type` varchar(64) NOT NULL DEFAULT 'room_day' COMMENT '消费类型',
   `channel_id` int(11) NOT NULL,
   `member_id` int(11) NOT NULL COMMENT '会员',
@@ -135,7 +137,7 @@ CREATE TABLE `booking_consume` (
 
 /*Data for the table `booking_consume` */
 
-insert  into `booking_consume`(`consume_id`,`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`channel_consume_id`,`booking_type`,`channel_id`,`member_id`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_amount`,`item_category_id`,`item_category_name`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`original_price`,`consume_price`,`consume_price_total`,`consume_status`,`employee_id`,`employee_name`,`business_day`,`confirm`,`confirm_employee_id`,`confirm_employee_name`,`confirm_datetime`,`valid`,`add_datetime`) values (1,1,1905246424401,'',1,'Hotel',0,'room_day',1,0,1,2,'散客步入',1,'103',1,8,'双人间',0,'','0',3,'散客单早',2.00,2.00,2.00,'0',1,'有个员工','2019-05-24','0',0,'',NULL,'1','2019-05-24 16:10:42'),(2,2,1905246424401,'',1,'Hotel',0,'room_day',1,0,1,2,'散客步入',-58685506,'',1,8,'双人间',0,'','0',3,'散客单早',2.00,2.00,2.00,'0',1,'有个员工','2019-05-27','0',0,'',NULL,'1','2019-05-24 16:11:45');
+insert  into `booking_consume`(`consume_id`,`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`channel_consume_father_id`,`channel_consume_id`,`consume_title`,`booking_type`,`channel_id`,`member_id`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_amount`,`item_category_id`,`item_category_name`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`original_price`,`consume_price`,`consume_price_total`,`consume_status`,`employee_id`,`employee_name`,`business_day`,`confirm`,`confirm_employee_id`,`confirm_employee_name`,`confirm_datetime`,`valid`,`add_datetime`) values (1,1,1905246424401,'',1,'Hotel',0,0,'','room_day',1,0,1,2,'散客步入',1,'103',1,8,'双人间',0,'','0',3,'散客单早',2.00,2.00,2.00,'0',1,'有个员工','2019-05-24','0',0,'',NULL,'1','2019-05-24 16:10:42'),(2,2,1905246424401,'',1,'Hotel',0,0,'','room_day',1,0,1,2,'散客步入',-58685506,'',1,8,'双人间',0,'','0',3,'散客单早',2.00,2.00,2.00,'0',1,'有个员工','2019-05-27','0',0,'',NULL,'1','2019-05-24 16:11:45');
 
 /*Table structure for table `booking_detail` */
 

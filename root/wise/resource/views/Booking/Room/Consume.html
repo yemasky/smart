@@ -19,7 +19,7 @@
                                   <i class="fa fa-caret-down"></i>
                                 </span>
                                 <i class="icon fas fa-money-check text-lt"></i>
-                                <span>{{payment_name}}</span>
+                                <span>{{consume_title}}</span>
                              </a>
                              <ul class="nav nav-sub bg b">
                                 <li ng-repeat="(i, father) in channelConsumeList">
@@ -30,7 +30,7 @@
                                     <span class="font-normal">{{father.consume_title}}</span>
                                   </a>
                                   <ul class="nav nav-sub bg b" ng-if="father.children!=''">
-                                    <li ng-repeat="(j, consume) in father.children"><a ng-click="selectConsume(consume, true)">{{consume.consume_title}}</a></li>
+                                    <li ng-repeat="(j, consume) in father.children"><a ng-click="selectConsume(consume)">{{consume.consume_title}}</a></li>
                                   </ul>
                                 </li>
                              </ul>

@@ -628,6 +628,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	//消费
 	$scope.bookingConsume = function(consume) {
         var title = '消费';
+        if(consume == 'borrowing') title = "借物";
 		asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Consume.html',show: false});
         asideConsume.$promise.then(function() {
 			asideConsume.show();
@@ -635,6 +636,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 		});
 	};
+    $scope.consume_title = '选择消费类别';
+    $scope.selectConsume = function(consume) {
+        if(angular.isDefined(consume)) {
+            $scope.consume_title = consume.consume_title;
+            $scope.channel_consume_id = consume.channel_consume_id;
+            $scope.channel_consume_father_id =  consume.channel_consume_father_id;
+            $('#payment_ul').next().hide();
+        }
+    }
 	//结账退房
 	$scope.bookingClose = function(bookDetail, closeType) {
         if(closeType == 'refund' || closeType == 'hanging') {

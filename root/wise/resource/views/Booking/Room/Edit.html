@@ -129,7 +129,8 @@
                             <label class="btn btn-rounded btn-default" ng-class="{active:activeBookAccountsEditTab==2}" ng-click="activeBookAccountsEditTab=2"><i class="far fa-list-alt"></i> 账务列表</label>
                         </div>
                         <div class="btn-group m-b">
-                            <button type="button" class="btn btn-rounded btn-default" ng-click="bookingConsume('', 'hanging')"><i class="fas fa-yen-sign"></i> 消费</button>
+                            <button type="button" class="btn btn-rounded btn-default" ng-click="bookingConsume('borrowing')"><i class="fas fa-clipboard-list"></i> 借物</button>
+                            <button type="button" class="btn btn-rounded btn-default" ng-click="bookingConsume('consume')"><i class="fas fa-yen-sign"></i> 消费</button>
                             <div class="btn-group dropdown">
                               <button type="button" class="btn btn-rounded btn-default" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top" data-template-url="/app/accountsMenu.html"><i class="fas fa-wallet"></i> 
                                 入账 <span class="caret"></span>
