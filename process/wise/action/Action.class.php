@@ -24,7 +24,7 @@ class Action {
         //
         $channel_id = $objRequest->id;
         $channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : null;
-        $objRequest->channel_id = $channel_id;
+        if(!empty($channel_id)) $objRequest->channel_id = $channel_id;
 
         $objResponse->__nav_name = '';
         $objLoginEmployee        = LoginServiceImpl::instance()->checkLoginEmployee();
