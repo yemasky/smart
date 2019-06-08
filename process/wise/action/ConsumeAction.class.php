@@ -16,6 +16,9 @@ class ConsumeAction extends \BaseAction {
             case "HotelConsume":
                 $this->doHotelConsume($objRequest, $objResponse);
                 break;
+            case "Borrowing":
+                $this->doBorrowing($objRequest, $objResponse);
+                break;
             default:
                 $this->doDefault($objRequest, $objResponse);
                 break;
@@ -88,6 +91,45 @@ class ConsumeAction extends \BaseAction {
         }
 
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['channel_consume_id'=>$c_c_id]);
+    }
+
+    protected function doBorrowing(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+        $method = $objRequest->method;
+        if(!empty($method)) {
+            return $this->doMethod($objRequest, $objResponse);
+        }
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $arrayResult['channelBorrowing'] = ChannelServiceImpl::instance()->getChannelBorrowing($company_id);
+        if(!empty($arrayResult['channelBorrowing'])) {
+            foreach ($arrayResult['channelBorrowing'] as $k => $value) {
+                $arrayResult['channelBorrowing'][$k]['c_b_id'] = encode($value['borrowing_id']);
+            }
+        }
+
+        $objResponse->setResponse('saveAddEditUrl', ModuleServiceImpl::instance()->getEncodeModuleId($objRequest->getModule(), $objRequest->getAction()));
+
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
+    }
+
+    protected function doMethodEditChannelBorrowing(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+
+        $c_b_id = $objRequest->getInput('c_b_id');
+        $c_b_id = !empty($c_b_id) ? decode($c_b_id) : null;
+        $arrayInput = $objRequest->getInput();
+        $arrayInput['company_id']   = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id                 = $objRequest->channel_id;
+        if(is_numeric($channel_id) && $channel_id > 0) $arrayInput['channel_id'] = $channel_id;
+        if(is_numeric($c_b_id) && $c_b_id > 0) {
+            unset($arrayInput['c_b_id']);
+            ChannelServiceImpl::instance()->updateChannelBorrowing($arrayInput['company_id'], $c_b_id, $arrayInput);
+        } else {
+            $arrayInput['add_datetime'] = getDateTime();
+            $c_b_id = ChannelServiceImpl::instance()->saveChannelConsume($arrayInput);
+        }
+
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['channel_consume_id'=>$c_b_id]);
     }
 
 }

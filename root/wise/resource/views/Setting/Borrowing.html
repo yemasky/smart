@@ -99,13 +99,13 @@ app.controller('BorrowingController', function($rootScope, $scope, $httpService,
     };
 	$scope.saveData = function() {
 		var param = this.param;
-		if(param == null || param == '' || !angular.isDefined(param.channel_consume_father_id)) {
-			$alert({title: 'Notice', content: '“酒店消费类别”必须选择！', templateUrl: '/modal-warning.html', show: true});
+		if(param == null || param == '' || !angular.isDefined(param.channel_id)) {
+			$alert({title: 'Notice', content: '“属于企业”必须选择！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
 		$scope.loading.show();
 		$scope.param = param;
-        $httpService.header('method', 'editChannelConsume');
+        $httpService.header('method', 'editChannelBorrowing');
 		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
             $httpService.deleteHeader('method');
 			$scope.loading.hide();

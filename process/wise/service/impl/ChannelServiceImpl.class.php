@@ -448,6 +448,44 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 
         return ChannelDao::instance()->updateChannelConsume($whereCriteria, $arrayUpdateData, $update_type);
     }
+    //getChannelBorrowing
+    public function getChannelBorrowing($company_id, $channel_id = '', $borrowing_id = '', $field = '') {
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->ArrayIN('company_id', [$company_id, '0'])->ORDER('channel_id', 'ASC')->NE('valid', '-1');
+        if(!empty($channel_id) && $channel_id > 0) $whereCriteria->ArrayIN('channel_id', [$channel_id, 0]);
+        if(!empty($borrowing_id) && $borrowing_id > 0) $whereCriteria->EQ('borrowing_id', $borrowing_id);
+        if(empty($field)) $field = 'borrowing_id,channel,company_id,channel_id,borrowing_name,borrowing_en_name,borrowing_price,borrowing_tag,borrowing_stock,borrowing_describe,valid';
+
+        return ChannelDao::instance()->getChannelBorrowing($whereCriteria, $field);
+    }
+
+    public function getChannelBorrowingCache($company_id, $channel_id = '', $policy_id = '') {
+
+    }
+
+    public function checkSameChannelBorrowing($company_id, $borrowing_name = '', $borrowing_en_name = '') {
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->ArrayIN('company_id', [$company_id, '0']);
+        if(!empty($policy_name)) $whereCriteria->EQ('borrowing_name', $borrowing_name);
+        //if(!empty($borrowing_en_name)) $arrayCondition['where']['borrowing_en_name'] = $borrowing_en_name;
+        $arrayResult = ChannelDao::instance()->getChannelBorrowing($whereCriteria, 'borrowing_id');
+        if(!empty($arrayResult)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function saveChannelBorrowing($arrayData, $insert_type = 'INSERT') {
+        return ChannelDao::instance()->saveChannelBorrowing($arrayData, $insert_type);
+    }
+
+    public function updateChannelBorrowing($company_id, $borrowing_id, $arrayUpdateData, $update_type = '') {
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('borrowing_id', $borrowing_id);
+
+        return ChannelDao::instance()->updateChannelBorrowing($whereCriteria, $arrayUpdateData, $update_type);
+    }
 	//
 	public function getBusinessDay($channel_id) {
 		$whereCriteria = new \WhereCriteria();
