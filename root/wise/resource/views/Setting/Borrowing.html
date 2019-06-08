@@ -2,7 +2,9 @@
 <div class="p-md" ng-controller="BorrowingController">
 	<div class="box b-a bg-white m-b">
     	<div class="col-md-10">
-      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addChannelConsume(0)"> </a></div>
+      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> 
+                <a class="pull-right fa fa-plus" ng-click="addAndEditFunction('')"> </a>
+            </div>
             <div class="p-md">
             <div class="table-responsive">
             <table class="table table-bordered table-striped bg-white">
@@ -16,11 +18,11 @@
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="(id, consume) in dataConsume">
+                <tr ng-repeat="(id, consume) in dataFormat">
                   <td class="no-padding panel" colspan="5">
                       <table class="table no-margin">
                           <tr ng-repeat="(consume_id, data) in consume">
-                              <td class="w text-nowrap b-r">{{dataConsumeFather[data.channel_consume_father_id].consume_title}}</td>
+                              <td class="w text-nowrap b-r">{{dataFormatFather[data.channel_consume_father_id].consume_title}}</td>
                               <td class="w b-r">{{data.consume_title}}</td>
                               <td class="w b-r">{{data.consume_title_en}}</td>
                               <td class="w b-r">
@@ -48,8 +50,9 @@
 <script language="javascript">
 app.controller('BorrowingController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
 	//获取数据
+    $scope.dataFormat = {};$scope.dataFormatFather = {};
 	var _channel = $scope.$stateParams.channel, common = '';
-	var _view = $scope.$stateParams.view, dataConsume = {}, dataConsumeFather = {};
+	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
 	$httpService.post('/app.do?'+param, $scope, function(result){
@@ -61,37 +64,38 @@ app.controller('BorrowingController', function($rootScope, $scope, $httpService,
 		common = result.data.common;
 		$scope.setCommonSetting(common);
 		$scope.dataList = result.data.item.channelConsume;
+        var dataFormat = {},dataFormatFather = {};
         if($scope.dataList != '') {
             for(var i in $scope.dataList){
                 var data = $scope.dataList[i];
                 if(data.channel_consume_id == data.channel_consume_father_id)   {
-                    dataConsumeFather[data.channel_consume_id] = data;
+                    dataFormatFather[data.channel_consume_id] = data;
                 } else {
-                    if(angular.isUndefined(dataConsume[data.channel_consume_father_id])) dataConsume[data.channel_consume_father_id] = {};
-                    dataConsume[data.channel_consume_father_id][data.channel_consume_id] = data;
+                    if(angular.isUndefined(dataFormat[data.channel_consume_father_id])) dataFormat[data.channel_consume_father_id] = {};
+                    dataFormat[data.channel_consume_father_id][data.channel_consume_id] = data;
                 }
             }
         }
+        $scope.dataFormat = dataFormat;$scope.dataFormatFather = dataFormatFather;
 	});
-    $scope.dataConsume = dataConsume;$scope.dataConsumeFather = dataConsumeFather;
 	//
-	var asideChannelConsume = '', begin_datetime = {}, end_datetime = {};
-	$scope.addChannelConsume = function(_this) {
+	var asideThisPage = '';
+	$scope.addAndEditFunction = function(_this) {
 		$scope.param = {}; $scope.param["valid"] = "1";
-		if(_this != 0) {
+		if(_this != '') {
 			$scope.param = _this;
 		}
 		$scope.action = '添加/编辑';
-		asideChannelConsume = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/Borrowing.tpl.html'});
-		asideChannelConsume.$promise.then(function() {
-			asideChannelConsume.show();
+		asideThisPage = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/BorrowingAddEdit.tpl.html'});
+		asideThisPage.$promise.then(function() {
+			asideThisPage.show();
 			$(document).ready(function(){
 				$('#rules').val($scope.param["rules"]);
 			});
 		})
 	};
-    $scope.changeChannelConsume = function(channel_consume_father_id) {
-        $scope.param.consume_code = $scope.dataConsumeFather[channel_consume_father_id].consume_code;
+    $scope.selectChange = function(channel_id) {
+        $scope.param.consume_code = channel_id;
     };
 	$scope.saveData = function() {
 		var param = this.param;
@@ -111,7 +115,7 @@ app.controller('BorrowingController', function($rootScope, $scope, $httpService,
             var channel_consume_id = result.data.item.channel_consume_id;
             param.channel_consume_id = channel_consume_id;
 			$scope.dataList[param.channel_consume_father_id][channel_consume_id] = angular.copy(param);
-			asideChannelConsume.hide();
+			asideThisPage.hide();
 			
 		});
 	}

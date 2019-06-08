@@ -375,10 +375,11 @@ DROP TABLE IF EXISTS `channel_borrowing`;
 
 CREATE TABLE `channel_borrowing` (
   `borrowing_id` int(11) NOT NULL AUTO_INCREMENT,
-  `borrowing_name` varchar(128) NOT NULL,
   `company_id` int(11) NOT NULL,
   `channel` enum('Hotel','Meal') NOT NULL,
   `channel_id` int(11) NOT NULL,
+  `borrowing_name` varchar(128) NOT NULL,
+  `borrowing_price` float(8,2) NOT NULL COMMENT '借物(价值)押金',
   `borrowing_tag` varchar(64) NOT NULL DEFAULT '',
   `borrowing_stock` int(11) NOT NULL COMMENT '库存',
   `borrowing_describe` varchar(500) NOT NULL DEFAULT '',
