@@ -245,10 +245,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
            for(var i in channelBorrowing) {
                var borrowing = channelBorrowing[i], tag = channelBorrowing[i].borrowing_tag;
                var borrowing_id = borrowing.borrowing_id;
-               if(angular.isUndefined(thisChannelBorrowing[tag])) {thisChannelBorrowing[tag] = {};}
-               thisChannelBorrowing[tag][borrowing_id] = borrowing;
+               if(angular.isUndefined(thisChannelBorrowing[tag])) {
+                   thisChannelBorrowing[tag] = {};
+                   thisChannelBorrowing[tag]['borrowing_tag'] = tag;
+                   thisChannelBorrowing[tag]['children'] = {};
+               }
+               thisChannelBorrowing[tag]['children'][borrowing_id] = borrowing;
            }
         }
+        $scope.thisChannelBorrowing = thisChannelBorrowing;
         //时间
 		$(document).ready(function(){
 			var _thisDay = result.data.item.in_date;
@@ -639,8 +644,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	//消费
 	$scope.bookingConsume = function(consume) {
         var title = '消费';
-        if(consume == 'borrowing') title = "借物";
-		asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Consume.html',show: false});
+        var templateUrl = '/resource/views/Booking/Room/Consume.html';
+        if(consume == 'borrowing') {
+            title = "借物";
+            templateUrl = '/resource/views/Booking/Room/Borrowing.html';
+        }
+		asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: templateUrl,show: false});
         asideConsume.$promise.then(function() {
 			asideConsume.show();
 			$(document).ready(function(){
