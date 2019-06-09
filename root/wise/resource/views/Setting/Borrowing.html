@@ -75,7 +75,7 @@ app.controller('BorrowingController', function($rootScope, $scope, $httpService,
 	//
 	var asideThisPage = '';
 	$scope.addAndEditFunction = function(_this, list_i) {
-		$scope.param = {}; $scope.param["valid"] = "1";$scope.list_i = $scope.dataList.length - 0 + 1;
+		$scope.param = {}; $scope.param["valid"] = "1";$scope.list_i = $scope.dataList.length - 0;
 		if(_this != '') {
 			$scope.param = angular.copy(_this);
             $scope.list_i = list_i;
