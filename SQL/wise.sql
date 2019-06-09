@@ -378,7 +378,8 @@ CREATE TABLE `channel_borrowing` (
   `company_id` int(11) NOT NULL,
   `channel` enum('Hotel','Meal') NOT NULL,
   `channel_id` int(11) NOT NULL,
-  `borrowing_name` varchar(128) NOT NULL,
+  `borrowing_name` varchar(128) NOT NULL COMMENT '借物名称',
+  `borrowing_en_name` varchar(128) NOT NULL DEFAULT '' COMMENT '英文名称',
   `borrowing_price` float(8,2) NOT NULL COMMENT '借物(价值)押金',
   `borrowing_tag` varchar(64) NOT NULL DEFAULT '',
   `borrowing_stock` int(11) NOT NULL COMMENT '库存',
@@ -386,9 +387,11 @@ CREATE TABLE `channel_borrowing` (
   `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '有效无效',
   `add_datetime` datetime NOT NULL COMMENT '添加时间',
   PRIMARY KEY (`borrowing_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 /*Data for the table `channel_borrowing` */
+
+insert  into `channel_borrowing`(`borrowing_id`,`company_id`,`channel`,`channel_id`,`borrowing_name`,`borrowing_en_name`,`borrowing_price`,`borrowing_tag`,`borrowing_stock`,`borrowing_describe`,`valid`,`add_datetime`) values (1,1,'Hotel',1,'11','11',2.00,'11',5,'111','1','2019-06-09 11:47:33');
 
 /*Table structure for table `channel_business_day` */
 

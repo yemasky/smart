@@ -3,37 +3,39 @@
 	<div class="box b-a bg-white m-b">
     	<div class="col-md-10">
       		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> 
-                <a class="pull-right fa fa-plus" ng-click="addAndEditFunction('')"> </a>
+                <a class="pull-right fa fa-plus" ng-click="addAndEditFunction('', '')"> </a>
             </div>
             <div class="p-md">
             <div class="table-responsive">
-            <table class="table table-bordered table-striped bg-white">
+            <table class="table table-bordered table-striped bg-white text-nowrap">
               <thead>
                 <tr>
-                    <th class="w">类别</th>
-                    <th class="w">中文名称</th>
+                    <th class="w">属于企业</th>
+                    <th>借物标签</th>
+                    <th class="w">借物名称</th>
                     <th class="w">英文名称</th>
-                    <th class="w">有效</th>
+                    <th class="w">借物描述</th>
+                    <th>借物押金(价值)</th>
+                    <th class="w">借物库存</th>
+                    <th>有效</th>
                     <th>编辑</th>
                 </tr>
               </thead>
               <tbody>
-                <tr ng-repeat="(id, consume) in dataFormat">
-                  <td class="no-padding panel" colspan="5">
-                      <table class="table no-margin">
-                          <tr ng-repeat="(consume_id, data) in consume">
-                              <td class="w text-nowrap b-r">{{dataFormatFather[data.channel_consume_father_id].consume_title}}</td>
-                              <td class="w b-r">{{data.consume_title}}</td>
-                              <td class="w b-r">{{data.consume_title_en}}</td>
-                              <td class="w b-r">
-                                <i ng-if="data.valid=='1'" class="fas fa-check-circle text-success"></i>
-                                <i ng-if="data.valid=='0'" class="fa fa-ban text-warning"></i>
-                              </td>
-                              <td>
-                                <a class="pull-right" ng-click="addChannelConsume(data)" ng-if="data.company_id>0"><i class="fa fa-edit"></i> </a>
-                              </td>
-                          </tr>
-                      </table>
+                <tr ng-repeat="(i, dataArray) in dataList">
+                  <td class="w text-nowrap b-r">{{employeeChannel[dataArray.channel_id].channel_name}}</td>
+                  <td class="w b-r">{{dataArray.borrowing_tag}}</td>
+                  <td class="w b-r">{{dataArray.borrowing_name}}</td>
+                  <td class="w b-r">{{dataArray.borrowing_en_name}}</td>
+                  <td class="w b-r" title="{{dataArray.borrowing_describe}}">{{dataArray.borrowing_describe|limitTo:10}}</td>
+                  <td class="w b-r">{{dataArray.borrowing_price}}</td>
+                  <td class="w b-r">{{dataArray.borrowing_stock}}</td>
+                  <td class="b-r">
+                    <i ng-if="dataArray.valid=='1'" class="fas fa-check-circle text-success"></i>
+                    <i ng-if="dataArray.valid=='0'" class="fa fa-ban text-warning"></i>
+                  </td>
+                  <td>
+                    <a class="pull-right" ng-click="addAndEditFunction(dataArray, i)"><i class="fa fa-edit"></i> </a>
                   </td>
                 </tr>
               </tbody>
@@ -63,27 +65,20 @@ app.controller('BorrowingController', function($rootScope, $scope, $httpService,
 		}
 		common = result.data.common;
 		$scope.setCommonSetting(common);
-		$scope.dataList = result.data.item.channelConsume;
+		$scope.dataList = result.data.item.channelBorrowing;
         var dataFormat = {},dataFormatFather = {};
         if($scope.dataList != '') {
-            for(var i in $scope.dataList){
-                var data = $scope.dataList[i];
-                if(data.channel_consume_id == data.channel_consume_father_id)   {
-                    dataFormatFather[data.channel_consume_id] = data;
-                } else {
-                    if(angular.isUndefined(dataFormat[data.channel_consume_father_id])) dataFormat[data.channel_consume_father_id] = {};
-                    dataFormat[data.channel_consume_father_id][data.channel_consume_id] = data;
-                }
-            }
+            
         }
-        $scope.dataFormat = dataFormat;$scope.dataFormatFather = dataFormatFather;
+        $scope.dataFormat = dataFormat;
 	});
 	//
 	var asideThisPage = '';
-	$scope.addAndEditFunction = function(_this) {
-		$scope.param = {}; $scope.param["valid"] = "1";
+	$scope.addAndEditFunction = function(_this, list_i) {
+		$scope.param = {}; $scope.param["valid"] = "1";$scope.list_i = $scope.dataList.length - 0 + 1;
 		if(_this != '') {
-			$scope.param = _this;
+			$scope.param = angular.copy(_this);
+            $scope.list_i = list_i;
 		}
 		$scope.action = '添加/编辑';
 		asideThisPage = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/BorrowingAddEdit.tpl.html'});
@@ -95,7 +90,8 @@ app.controller('BorrowingController', function($rootScope, $scope, $httpService,
 		})
 	};
     $scope.selectChange = function(channel_id) {
-        $scope.param.consume_code = channel_id;
+        $scope.param.channel_id = channel_id;
+        $scope.param.channel = $rootScope.employeeChannel[channel_id].channel;
     };
 	$scope.saveData = function() {
 		var param = this.param;
@@ -112,9 +108,8 @@ app.controller('BorrowingController', function($rootScope, $scope, $httpService,
 			if(result.data.success == '0') {
 				return;
 			}
-            var channel_consume_id = result.data.item.channel_consume_id;
-            param.channel_consume_id = channel_consume_id;
-			$scope.dataList[param.channel_consume_father_id][channel_consume_id] = angular.copy(param);
+            var borrowing_id = result.data.item.borrowing_id;
+			$scope.dataList[$scope.list_i] = angular.copy(param);
 			asideThisPage.hide();
 			
 		});

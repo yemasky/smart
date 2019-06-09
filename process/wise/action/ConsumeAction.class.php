@@ -126,10 +126,10 @@ class ConsumeAction extends \BaseAction {
             ChannelServiceImpl::instance()->updateChannelBorrowing($arrayInput['company_id'], $c_b_id, $arrayInput);
         } else {
             $arrayInput['add_datetime'] = getDateTime();
-            $c_b_id = ChannelServiceImpl::instance()->saveChannelConsume($arrayInput);
+            $c_b_id = ChannelServiceImpl::instance()->saveChannelBorrowing($arrayInput);
         }
 
-        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['channel_consume_id'=>$c_b_id]);
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['borrowing_id'=>$c_b_id]);
     }
 
 }
