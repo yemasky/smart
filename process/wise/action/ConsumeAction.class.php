@@ -121,6 +121,7 @@ class ConsumeAction extends \BaseAction {
         $arrayInput['company_id']   = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         $channel_id                 = $objRequest->channel_id;
         if(is_numeric($channel_id) && $channel_id > 0) $arrayInput['channel_id'] = $channel_id;
+        $arrayInput['borrowing_tag'] = trim($arrayInput['borrowing_tag']);
         if(is_numeric($c_b_id) && $c_b_id > 0) {
             unset($arrayInput['c_b_id']);
             ChannelServiceImpl::instance()->updateChannelBorrowing($arrayInput['company_id'], $c_b_id, $arrayInput);

@@ -156,6 +156,26 @@ class HotelOrderAction extends \BaseAction
         }
         //消费类别
         $arrayChannelConsume = ChannelServiceImpl::instance()->getChannelConsume($company_id, $channel_id);
+        //客房借物
+        $arrayBorrowing = [];
+        if (!empty($arrayBookingNumber)) {
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
+            $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
+                ->setFatherKey('booking_detail_id')->setChildrenKey('booking_borrowing_id');
+            $arrayBorrowing = BookingHotelServiceImpl::instance()->getBookingBorrowing($whereCriteria);
+            if (!empty($arrayBorrowing)) {
+                foreach ($arrayBorrowing as $number => $value) {
+                    foreach ($value as $detail_id => $borrowings) {
+                        foreach ($borrowings as $booking_borrowing_id => $borrowing) {
+                            $arrayBorrowing[$number][$detail_id][$booking_borrowing_id]['bb_id'] = encode($consume['booking_borrowing_id']);
+                        }
+                    }
+                }
+            }
+        }
+        //借物物件
+        $arrayChannelBorrowing = ChannelServiceImpl::instance()->getChannelBorrowing($company_id, $channel_id);
         //账务
         $arrayAccounts = null;
         if (!empty($arrayBookingNumber)) {
@@ -180,7 +200,8 @@ class HotelOrderAction extends \BaseAction
         $arrayCustomerMarket = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
         $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom' => $arrayLayoutRoom, 'bookingDetailRoom' => $bookingDetailRoom,
             'bookList' => $arrayBookList, 'consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn,'channelConsumeList'=>$arrayChannelConsume,
-            'paymentTypeList' => $arrayPaymentType, 'marketList' => $arrayCustomerMarket, 'in_date' => getDay(), 'out_date'=>getDay(24)];
+            'paymentTypeList' => $arrayPaymentType, 'marketList' => $arrayCustomerMarket, 'channelBorrowing'=>$arrayChannelBorrowing, 'bookBorrowing'=>$arrayBorrowing,
+            'in_date' => getDay(), 'out_date'=>getDay(24)];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 

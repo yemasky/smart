@@ -88,6 +88,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
         $scope.bookingSearchList = result.data.item.bookingDetailRoom;//所有订单
 		$scope.marketList        = result.data.item.marketList;
+        var channelBorrowing     = result.data.item.channelBorrowing;
         var channelConsume       = result.data.item.channelConsumeList;
         $scope.bookRoomStatus    =  {}; $scope.roomDetailList = {};$scope.roomLiveIn = {};$scope.check_outRoom = {};
         if($scope.roomList != '') {
@@ -238,7 +239,17 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
         }
         $scope.channelConsumeList = channelConsumeList;
-		//时间
+		//借物
+        var thisChannelBorrowing = {};
+        if(channelBorrowing != '') {
+           for(var i in channelBorrowing) {
+               var borrowing = channelBorrowing[i], tag = channelBorrowing[i].borrowing_tag;
+               var borrowing_id = borrowing.borrowing_id;
+               if(angular.isUndefined(thisChannelBorrowing[tag])) {thisChannelBorrowing[tag] = {};}
+               thisChannelBorrowing[tag][borrowing_id] = borrowing;
+           }
+        }
+        //时间
 		$(document).ready(function(){
 			var _thisDay = result.data.item.in_date;
 			var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');

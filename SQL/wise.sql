@@ -95,6 +95,8 @@ DROP TABLE IF EXISTS `booking_borrowing`;
 
 CREATE TABLE `booking_borrowing` (
   `booking_borrowing_id` int(11) NOT NULL AUTO_INCREMENT,
+  `company_id` int(11) NOT NULL,
+  `channel_id` int(11) NOT NULL,
   `booking_detail_id` int(11) NOT NULL,
   `booking_number` bigint(19) NOT NULL,
   `item_id` int(11) NOT NULL,
@@ -387,11 +389,11 @@ CREATE TABLE `channel_borrowing` (
   `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '有效无效',
   `add_datetime` datetime NOT NULL COMMENT '添加时间',
   PRIMARY KEY (`borrowing_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Data for the table `channel_borrowing` */
 
-insert  into `channel_borrowing`(`borrowing_id`,`company_id`,`channel`,`channel_id`,`borrowing_name`,`borrowing_en_name`,`borrowing_price`,`borrowing_tag`,`borrowing_stock`,`borrowing_describe`,`valid`,`add_datetime`) values (1,1,'Hotel',1,'11','11',2.00,'11',5,'111','1','2019-06-09 11:47:33');
+insert  into `channel_borrowing`(`borrowing_id`,`company_id`,`channel`,`channel_id`,`borrowing_name`,`borrowing_en_name`,`borrowing_price`,`borrowing_tag`,`borrowing_stock`,`borrowing_describe`,`valid`,`add_datetime`) values (1,1,'Hotel',1,'天堂伞小号','umbrella',20.00,'雨伞',5,'雨伞','1','2019-06-09 11:47:33'),(2,1,'Hotel',1,'天堂伞大号','umbrella',30.00,'雨伞',5,'天堂伞大号','1','2019-06-09 13:53:52');
 
 /*Table structure for table `channel_business_day` */
 
