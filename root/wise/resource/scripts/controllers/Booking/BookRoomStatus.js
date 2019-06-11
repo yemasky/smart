@@ -665,6 +665,21 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $('#payment_ul').next().hide();
         }
     }
+    //借物
+    $scope.borrowing_name = '选择借物';
+    $scope.selectBorrowing = function(borrowing) {
+        if(angular.isDefined(borrowing)) {
+            $scope.borrowing_name = borrowing.borrowing_name;
+            $scope.borrowing_id = borrowing.borrowing_id;
+            $('#borrowing_ul').next().hide();
+        }
+    };
+    $scope.showBorrowingUL = function() {
+        $('#borrowing_ul').next().show();
+    }
+    $scope.setBorrowingItemName = function() {
+        
+    }
 	//结账退房
 	$scope.bookingClose = function(bookDetail, closeType) {
         if(closeType == 'refund' || closeType == 'hanging') {

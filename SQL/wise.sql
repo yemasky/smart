@@ -1,6 +1,6 @@
 /*
-SQLyog Ultimate v12.08 (64 bit)
-MySQL - 10.1.37-MariaDB : Database - wise
+SQLyog Ultimate v11.24 (32 bit)
+MySQL - 10.1.19-MariaDB : Database - wise
 *********************************************************************
 */
 
@@ -103,6 +103,8 @@ CREATE TABLE `booking_borrowing` (
   `item_name` varchar(128) NOT NULL,
   `borrowing_id` int(11) NOT NULL,
   `borrowing_name` varchar(128) NOT NULL,
+  `accounts_id` int(11) NOT NULL DEFAULT '0' COMMENT '已收押金对应的accounts_id',
+  `cash_pledge` float(8,2) NOT NULL COMMENT '已收押金',
   `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '有效无效',
   `add_datetime` datetime NOT NULL,
   PRIMARY KEY (`booking_borrowing_id`)
