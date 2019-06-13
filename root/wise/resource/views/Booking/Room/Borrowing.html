@@ -1,13 +1,12 @@
 <div class="aside col-sm-4 b-r box-shadow no-padding" tabindex="-1" role="dialog">
   <div class="aside-dialog">
     <div class="aside-content">
-     <form name="AccountsForm" class="form-validation" id="thisAccountsForm" ng-submit="saveAccounts()">
+     <form name="BorrowingForm" class="form-validation" id="thisBorrowingForm" ng-submit="saveBorrowing()">
       <div class="aside-header">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="aside-title" ng-bind-html="title">借物</h4>
       </div>
       <div class="aside-body">
-          <input name="accounts_type" size="9" type="hidden" id="accounts_type" value="" class="form-control" ng-model="param.accounts_type">
           <div class="form-inline">
               <div class="form-group p-v-xs">
                  <aside class="app-aside bg-white lt w-sm">
@@ -39,7 +38,7 @@
                     </nav>
                 </aside>
             </div>
-            <select class="form-control w-sm p-v-xs" id="live_in_item_id" ng-model="param.item_id" ng-change="setBorrowingItemName();" ng-options="rDetail.item_id as rDetail.item_name==''?'未排房':rDetail.item_name for (detail_id, rDetail) in roomDetail" required>
+            <select class="form-control w-sm p-v-xs" id="" ng-model="param.item_id" ng-change="setBorrowingItemName();" ng-options="rDetail.item_id as rDetail.item_name==''?'未排房':rDetail.item_name for (detail_id, rDetail) in roomDetail" required>
                 <option value="">选择房号</option>
             </select>
         </div>
