@@ -480,8 +480,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         for(var detail_id in $scope.roomDetail) {
             rDetail = $scope.roomDetail[detail_id];
             if($scope.param.booking_detail_id == rDetail.booking_detail_id) break; 
-            rDetail = null;
         }
+        console.log($scope.roomDetail);console.log($scope.param.booking_detail_id);
         if(rDetail == null) {$alert({title: 'Notice', content: '找不到客房！', templateUrl: '/modal-warning.html', show: true, type : 'warning'});return false;};
         $scope.param.item_name = rDetail.item_name;//$('#live_in_item_id').find('option:selected').text();
         $scope.param.item_id = angular.copy(rDetail.item_id);
