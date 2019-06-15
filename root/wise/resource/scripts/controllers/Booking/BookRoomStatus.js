@@ -480,8 +480,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         for(var detail_id in $scope.roomDetail) {
             rDetail = $scope.roomDetail[detail_id];
             if($scope.param.booking_detail_id == rDetail.booking_detail_id) break; 
+            rDetail == null
         }
-        console.log($scope.roomDetail);console.log($scope.param.booking_detail_id);
         if(rDetail == null) {$alert({title: 'Notice', content: '找不到客房！', templateUrl: '/modal-warning.html', show: true, type : 'warning'});return false;};
         $scope.param.item_name = rDetail.item_name;//$('#live_in_item_id').find('option:selected').text();
         $scope.param.item_id = angular.copy(rDetail.item_id);
@@ -490,6 +490,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         //$('#live_in_item_id').find('option:selected').attr('booking_detail_id');
         return true;
     };
+    $scope.selectRoomItem = function($event) {
+        $scope.param.item_name = $event.target.text;//$('#').find('option:selected').text();
+        $scope.param.item_id = $event.target.value;
+        $scope.param.detail_id = $event.target.attributes.detail_id.nodeValue;//$('#').find('option:selected').attr('detail_id');
+        $scope.param.booking_detail_id = $event.target.attributes.booking_detail_id.nodeValue;
+        return true;
+    }
     //读取身份证
     $scope.readGuestIdCard = function() {
         
@@ -678,9 +685,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     };
     $scope.showBorrowingUL = function() {
         $('#borrowing_ul').next().show();
-    }
-    $scope.setBorrowingItemName = function() {
-        
     }
 	//结账退房
 	$scope.bookingClose = function(bookDetail, closeType) {
