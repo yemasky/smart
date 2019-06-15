@@ -597,7 +597,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			$(document).ready(function(){
 			});
 		});
-	};
+    };
     $scope.payment_id = '';
     $scope.selectPaymentType = function(payment) {
         if(angular.isDefined(payment)) {
@@ -636,6 +636,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             if(asideAccounts != '') asideAccounts.hide();
             var accounts_id = result.data.item.accounts_id, booking_number = angular.copy($scope.param['booking_number']);
             $scope.accountDetail[accounts_id] = angular.copy($scope.param);
+            $scope.accountDetail[accounts_id].add_datetime = $scope.getDay('yyyy-MM-dd HH:mm:ss');
             $scope.accountDetail[accounts_id].accounts_id = accounts_id;
             $scope.accountDetail[accounts_id].ba_id = result.data.item.ba_id;
             $scope.accountDetail[accounts_id].business_day = result.data.item.business_day;

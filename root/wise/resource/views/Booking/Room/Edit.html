@@ -185,10 +185,11 @@
                         </div>
                         <div ng-show="activeBookAccountsEditTab==2">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped bg-white">
+                                <table class="table table-bordered table-striped bg-white text-nowrap">
                                   <thead>
                                     <tr>
                                       <th>房号</th>
+                                      <th>支付方式</th>
                                       <th>项目</th>
                                       <th>金额</th>
                                       <th>营业日</th>
@@ -198,7 +199,8 @@
                                   </thead>
                                   <tbody>
                                     <tr ng-repeat="(i, account) in accountDetail">
-                                      <td class="text-nowrap">{{account.item_name}}</td>
+                                      <td>{{account.item_name}}</td>
+                                      <td>{{account.payment_name}}</td>
                                       <td>{{account.accounts_type=='receipts'?'收款':account.accounts_type=='refund'?'退款':''}}</td>
                                       <td>{{account.money}}</td>
                                       <td>{{account.business_day}}</td>
@@ -213,6 +215,7 @@
                                       <td>收款</td>
                                       <td></td>
                                       <td>退款</td>
+                                      <td></td>
                                       <td></td>
                                       <td></td>
                                     </tr>  

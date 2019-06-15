@@ -1,6 +1,6 @@
 /*
-SQLyog Ultimate v11.24 (32 bit)
-MySQL - 10.1.19-MariaDB : Database - wise
+SQLyog Ultimate v12.08 (64 bit)
+MySQL - 10.1.37-MariaDB : Database - wise
 *********************************************************************
 */
 
@@ -67,7 +67,7 @@ CREATE TABLE `booking_accounts` (
   `booking_number_ext` varchar(64) NOT NULL DEFAULT '',
   `company_id` int(11) NOT NULL,
   `channel` enum('Hotel','Meal','Meeting','Shop','Service','Tour','Sport') NOT NULL,
-  `booking_type` enum('room_hour','room_day','goods') NOT NULL,
+  `booking_type` varchar(64) NOT NULL DEFAULT 'room_rate',
   `channel_id` int(11) NOT NULL,
   `member_id` int(11) NOT NULL,
   `item_id` int(11) NOT NULL,
@@ -85,9 +85,11 @@ CREATE TABLE `booking_accounts` (
   `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '是否有效',
   `add_datetime` datetime NOT NULL,
   PRIMARY KEY (`accounts_id`,`business_day`,`valid`,`add_datetime`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking_accounts` */
+
+insert  into `booking_accounts`(`accounts_id`,`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`item_id`,`item_name`,`payment_id`,`payment_name`,`payment_father_id`,`money`,`accounts_type`,`account_hanging_money`,`accounts_status`,`employee_id`,`employee_name`,`business_day`,`valid`,`add_datetime`) values (1,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.03,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 16:59:32'),(2,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.02,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:00:02'),(3,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.03,'refund',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:00:11'),(4,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.03,'refund',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:00:22'),(5,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',10,'信用卡',9,0.03,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:26:08'),(6,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,5.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:42:30'),(7,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,7.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:42:58'),(8,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,5.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:43:56'),(9,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.02,'refund',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 21:19:24'),(10,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.02,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:47:21'),(11,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.02,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:53:18'),(12,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.04,'refund',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:53:54'),(13,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.07,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:57:13'),(14,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.07,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:57:36'),(15,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.04,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:58:28'),(16,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,9.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:59:06'),(17,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.02,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 23:12:23'),(18,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.02,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 23:13:30'),(19,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.03,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 23:17:10');
 
 /*Table structure for table `booking_borrowing` */
 
@@ -126,7 +128,7 @@ CREATE TABLE `booking_consume` (
   `channel_consume_father_id` int(11) NOT NULL DEFAULT '0',
   `channel_consume_id` int(11) NOT NULL DEFAULT '0',
   `consume_title` varchar(64) NOT NULL DEFAULT '',
-  `booking_type` varchar(64) NOT NULL DEFAULT 'room_day' COMMENT '消费类型',
+  `booking_type` varchar(64) NOT NULL DEFAULT 'room_rate' COMMENT '消费类型',
   `channel_id` int(11) NOT NULL,
   `member_id` int(11) NOT NULL COMMENT '会员',
   `market_father_id` int(11) NOT NULL COMMENT '市场大类',
