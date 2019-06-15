@@ -39,8 +39,12 @@
                     </nav>
                 </aside>
             </div>
-            <select class="form-control w-sm p-v-xs" ng-model="param.item_id" ng-change="setLiveInItemName();" ng-options="rDetail.item_id as rDetail.item_name==''?'未排房':rDetail.item_name for (detail_id, rDetail) in roomDetail" required>
+            <select class="form-control w-sm p-v-xs" ng-model="param.item_id" ng-change="" ng-options="rDetail.item_id as rDetail.item_name==''?'未排房':rDetail.item_name for (detail_id, rDetail) in roomDetail" required>
                 <option value="">选择房号</option>
+            </select>
+            <select class="form-control" id="" name="item_id" ng-model="param.item_id" ng-change="">
+                <option value="">选择房号</option>
+                <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}" ng-repeat="(detail_id, rDetail) in roomDetail" ng-selected="rDetail.item_id==param.item_id">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
             </select>
             <div class="form-group p-v-xs">
                 <div class="input-group w-sm">
