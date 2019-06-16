@@ -39,6 +39,16 @@
                     </nav>
                 </aside>
             </div>
+            <div class="form-group" ng-if="payment_id==11">
+                <div class="input-group w-sm p-v-xs">
+                    <span class="input-group-btn"><button class="btn btn-default" type="button">授权号</button></span><input value="" type="text" class="form-control" name="credit_authorized_number">
+                </div>
+                <div class="input-group w p-v-xs">
+                    <span class="input-group-btn"><button class="btn btn-default" type="button">卡号</button></span><input value="" type="text" class="form-control" name="credit_card_number">
+                </div>
+                <div class="input-group w-sm p-v-xs">
+                    <input value="{{getDay('yyyy-mm-dd HH:mm:ss')}}" type="text" class="form-control" name="credit_authorized_days" readonly>
+                </div>            </div>
             <select class="form-control" name="item_id" ng-model="param.item_id">
                 <option value="">选择房号</option>
                 <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}" ng-repeat="(detail_id, rDetail) in roomDetail" ng-selected="rDetail.item_id==param.item_id" ng-click="selectRoomItem($event)">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>

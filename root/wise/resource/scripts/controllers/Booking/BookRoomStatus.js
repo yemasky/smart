@@ -45,7 +45,7 @@ app.directive("showBookroomPrice", function($document){
 });
 app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
     $scope.param = {};
-    $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css"]);
+    $ocLazyLoad.load([$scope._resource + "styles/booking.css"]);
     //初始化数据
     //选择入住房
     var selectLayoutRoom = {};$scope.selectLayoutRoom = {};
