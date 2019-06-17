@@ -645,7 +645,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     };
     //消费编辑
     $scope.editConsume = function(consume) {
+        console.log(consume);
+        var title = '编辑消费';
         $scope.param = consume;
+        $scope.param.item_id = consume.item_id+'';
+        $scope.payment_name = consume.payment_name;
         asideAccounts = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
         asideAccounts.$promise.then(function() {
 			asideAccounts.show();
