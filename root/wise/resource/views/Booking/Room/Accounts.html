@@ -64,6 +64,7 @@
         </div>
       </div>
       <div class="aside-footer">
+        <input type="hidden" value="" ng-model="param.ba_id">
         <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
         <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading" ng-bind-html="title">Save changes</button>
       </div>

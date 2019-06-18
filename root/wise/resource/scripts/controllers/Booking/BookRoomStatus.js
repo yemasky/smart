@@ -590,7 +590,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         if(type == 'refund') {title = '退款';accounts_type = 'refund';};
         if(type == 'hanging') {title = '挂账';accounts_type = 'hanging';};
         if(type == 'edit') title = '修改账款';
-        $scope.param.accounts_type = accounts_type;
+        $scope.param.accounts_type = accounts_type;$scope.param.ba_id = '';
         asideAccounts = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
 		asideAccounts.$promise.then(function() {
 			asideAccounts.show();
@@ -648,9 +648,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         console.log(accounts);
         var title = '账务编辑';
         var type = '收款';
-        $scope.param = accounts;
-        $scope.param.item_id = accounts.item_id+'';
-        $scope.payment_name = accounts.payment_name;
+        $scope.param = angular.copy(accounts);
+        $scope.param.item_id = angular.copy(accounts.item_id)+'';
+        $scope.payment_name = angular.copy(accounts.payment_name);
+        $scope.payment_id = angular.copy(accounts.payment_id);
         if(accounts.accounts_type == 'refund') type = '退款';
         if(accounts.accounts_type == 'pre-authorization') type = '预授权';
         asideAccounts = $aside({scope : $scope, title: title+'-'+type, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
