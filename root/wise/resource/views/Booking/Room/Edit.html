@@ -176,8 +176,10 @@
                                                     <td class="w">{{consume.consume_price}}</td>
                                                     <td class="w">{{consume.business_day}}</td>
                                                     <td class="col-xs-1">
-                                                    <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.edit" >编辑</span></button>
-                                                    <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.config" >配置</span></button>
+                                                        <span class="btn-group">
+                                                            <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.edit" >编辑</span></button>
+                                                            <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.backout" >撤销</span></button>
+                                                        </span>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -210,8 +212,10 @@
                                       <td>{{account.business_day}}</td>
                                       <td>{{account.add_datetime}}</td>
                                       <td>
-                                      <button class="btn btn-xs btn-default" ng-click="editAccounts(account)"><span translate="common.hint.edit" >编辑</span></button>
-                                      <button class="btn btn-xs btn-default" ng-click="editAccounts(account)"><span translate="common.hint.config" >配置</span></button>
+                                          <span class="btn-group">
+                                          <button class="btn btn-xs btn-default" ng-click="editAccounts(account)"><span translate="common.hint.edit" >编辑</span></button>
+                                          <button class="btn btn-xs btn-default" ng-click="editAccounts(account)"><span translate="common.hint.backout" >撤销</span></button>
+                                          </span>
                                       </td>
                                     </tr>
                                     <tr>
