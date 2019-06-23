@@ -598,6 +598,7 @@ class HotelOrderAction extends \BaseAction
         //获取channel
         $channel_id = $objRequest->channel_id;
         //
+
         $detail_id = decode($objRequest->getInput('detail_id'));
         $item_name = $objRequest->getInput('item_name');
         $item_id = $objRequest->getInput('item_id');

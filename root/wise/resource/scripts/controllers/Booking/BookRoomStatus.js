@@ -611,17 +611,19 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.saveAccounts = function() {
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'saveAccounts');
-        var bookRoomDetiil = $scope.roomDetail[$scope.param.booking_detail_id];
-        $scope.param['booking_number'] = bookRoomDetiil.booking_number;
-        $scope.param['booking_number_ext'] = bookRoomDetiil.booking_number_ext;
-        $scope.param['channel'] = bookRoomDetiil.channel;
-        $scope.param['booking_type'] = bookRoomDetiil.booking_type;
-        $scope.param['member_id'] = bookRoomDetiil.member_id;
+        if(angular.isDefined($scope.roomDetail[$scope.param.booking_detail_id])) {
+            var bookRoomDetail = $scope.roomDetail[$scope.param.booking_detail_id];
+            $scope.param['booking_number'] = bookRoomDetail.booking_number;
+            $scope.param['booking_number_ext'] = bookRoomDetail.booking_number_ext;
+            $scope.param['channel'] = bookRoomDetail.channel;
+            $scope.param['booking_type'] = bookRoomDetail.booking_type;
+            $scope.param['member_id'] = bookRoomDetail.member_id;
+        }
         $scope.param['payment_name'] = $scope.payment_name;
         $scope.param['payment_id'] = $scope.payment_id;
         $scope.param['payment_father_id'] = $scope.payment_father_id;
         if($scope.param['payment_id'] == '') {
-            
+            console.log($scope.param);
             return;
         }
         $httpService.post('/app.do?'+param, $scope, function(result) {
@@ -645,13 +647,14 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     };
     //账务编辑
     $scope.editAccounts = function(accounts) {
-        console.log(accounts);
         var title = '账务编辑';
         var type = '收款';
-        $scope.param = angular.copy(accounts);
-        $scope.param.item_id = angular.copy(accounts.item_id)+'';
-        $scope.payment_name = angular.copy(accounts.payment_name);
-        $scope.payment_id = angular.copy(accounts.payment_id);
+        var param = angular.copy(accounts);
+        $scope.param.item_id = param.item_id+'';
+        $scope.param.ba_id   = param.ba_id;
+        $scope.param.money   = param.money;
+        $scope.payment_id    = param.payment_id;$scope.payment_name  = param.payment_name;
+        $scope.payment_father_id = param.payment_father_id;
         if(accounts.accounts_type == 'refund') type = '退款';
         if(accounts.accounts_type == 'pre-authorization') type = '预授权';
         asideAccounts = $aside({scope : $scope, title: title+'-'+type, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
