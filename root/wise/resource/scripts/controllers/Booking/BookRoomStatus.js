@@ -659,6 +659,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param.money   = param.money;
         $scope.payment_id    = param.payment_id;$scope.payment_name  = param.payment_name;
         $scope.payment_father_id = param.payment_father_id;
+        if($scope.payment_id == '11') {
+            $scope.param.credit_authorized_number = param.credit_authorized_number;
+            $scope.param.credit_card_number  = param.credit_card_number;
+            $scope.param.credit_authorized_days = param.credit_authorized_days;
+            console.log($scope.param);
+        }
+        
         if(accounts.accounts_type == 'refund') type = '退款';
         if(accounts.accounts_type == 'pre-authorization') type = '预授权';
         asideAccounts = $aside({scope : $scope, title: title+'-'+type, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});

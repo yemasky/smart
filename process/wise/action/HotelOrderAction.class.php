@@ -609,6 +609,10 @@ class HotelOrderAction extends \BaseAction
             $arrayUpdate['payment_father_id'] = $objRequest->getInput('payment_father_id');
             $arrayUpdate['payment_id'] = $objRequest->getInput('payment_id');
             $arrayUpdate['payment_name'] = $objRequest->getInput('payment_name');
+            if($arrayUpdate['payment_id'] == '11') {
+                $arrayUpdate['credit_authorized_number'] = $objRequest->getInput('credit_authorized_number');
+                $arrayUpdate['credit_card_number'] = $objRequest->getInput('credit_card_number');
+            }
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('accounts_id', $ba_id);
             BookingHotelServiceImpl::instance()->updateBookingAccounts($whereCriteria, $arrayUpdate);
