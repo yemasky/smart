@@ -628,6 +628,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         }
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
+            $scope.param.ba_id = '';//设置编辑为空
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);
@@ -637,15 +638,18 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.successAlert.startProgressBar();
             if(asideAccounts != '') asideAccounts.hide();
             var accounts_id = result.data.item.accounts_id, booking_number = angular.copy($scope.param['booking_number']);
-            $scope.accountDetail[accounts_id] = angular.copy($scope.param);
+            if(angular.isDefined($scope.accountDetail[accounts_id])) {
+                $scope.accountDetail[accounts_id] = angular.merge($scope.accountDetail[accounts_id], $scope.param);
+            } else {$scope.accountDetail[accounts_id] = angular.copy($scope.param);}
             $scope.accountDetail[accounts_id].add_datetime = $scope.getDay('yyyy-MM-dd HH:mm:ss');
             $scope.accountDetail[accounts_id].accounts_id = accounts_id;
             $scope.accountDetail[accounts_id].ba_id = result.data.item.ba_id;
-            $scope.accountDetail[accounts_id].business_day = result.data.item.business_day;
+            if(result.data.item.business_day != '') $scope.accountDetail[accounts_id].business_day = result.data.item.business_day;
             $scope.accountsList[booking_number] = $scope.accountDetail;
         });
     };
     //账务编辑
+    $scope.param.ba_id = '';
     $scope.editAccounts = function(accounts) {
         var title = '账务编辑';
         var type = '收款';

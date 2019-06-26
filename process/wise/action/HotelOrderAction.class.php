@@ -598,11 +598,23 @@ class HotelOrderAction extends \BaseAction
         //获取channel
         $channel_id = $objRequest->channel_id;
         //
-
+        $ba_id = decode($objRequest->getInput('ba_id'));
         $detail_id = decode($objRequest->getInput('detail_id'));
         $item_name = $objRequest->getInput('item_name');
         $item_id = $objRequest->getInput('item_id');
-        if ($detail_id > 0 && $item_id > 0) {
+        if(!empty($ba_id)) {
+            if(!empty($item_name)) $arrayUpdate['item_name'] = $item_name;
+            $arrayUpdate['item_id'] = $item_id;
+            $arrayUpdate['money'] = $objRequest->getInput('money');
+            $arrayUpdate['payment_father_id'] = $objRequest->getInput('payment_father_id');
+            $arrayUpdate['payment_id'] = $objRequest->getInput('payment_id');
+            $arrayUpdate['payment_name'] = $objRequest->getInput('payment_name');
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('accounts_id', $ba_id);
+            BookingHotelServiceImpl::instance()->updateBookingAccounts($whereCriteria, $arrayUpdate);
+
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['accounts_id'=>$ba_id, 'ba_id'=>encode($ba_id), 'business_day'=>'']);
+        } elseif ($detail_id > 0 && $item_id > 0) {
             $arrayInput = $objRequest->getInput();
             //更新房间detail
             $businessDay = LoginServiceImpl::getBusinessDay();
