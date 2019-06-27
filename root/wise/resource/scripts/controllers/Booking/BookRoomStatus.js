@@ -590,6 +590,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         if(type == 'refund') {title = '退款';accounts_type = 'refund';};
         if(type == 'hanging') {title = '挂账';accounts_type = 'hanging';};
         if(type == 'edit') title = '修改账款';
+        $scope.param.credit_authorized_days = $scope.getDay('yyyy-mm-dd HH:mm:ss');
         $scope.param.accounts_type = accounts_type;$scope.param.ba_id = '';
         asideAccounts = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
 		asideAccounts.$promise.then(function() {

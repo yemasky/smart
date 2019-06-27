@@ -24,7 +24,13 @@ class Booking_accountsEntity extends \Entity {
 	protected $payment_name;
 	protected $payment_father_id;
 	protected $money;
+	protected $credit_authorized_number;
+	protected $credit_card_number;
+	protected $credit_authorized_days;
+	protected $credit_authorized_money;
 	protected $accounts_type;
+	protected $account_hanging_money;
+	protected $accounts_status;
 	protected $employee_id;
 	protected $employee_name;
 	protected $business_day;
@@ -244,6 +250,62 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @return mixed
      */
+    public function getCreditAuthorizedNumber() {
+        return $this->credit_authorized_number;
+    }
+
+    /**
+     * @param mixed $credit_authorized_number
+     */
+    public function setCreditAuthorizedNumber($credit_authorized_number): void {
+        $this->credit_authorized_number = $credit_authorized_number;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreditCardNumber() {
+        return $this->credit_card_number;
+    }
+
+    /**
+     * @param mixed $credit_card_number
+     */
+    public function setCreditCardNumber($credit_card_number): void {
+        $this->credit_card_number = $credit_card_number;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreditAuthorizedDays() {
+        return $this->credit_authorized_days;
+    }
+
+    /**
+     * @param mixed $credit_authorized_days
+     */
+    public function setCreditAuthorizedDays($credit_authorized_days): void {
+        $this->credit_authorized_days = $credit_authorized_days;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCreditAuthorizedMoney() {
+        return $this->credit_authorized_money;
+    }
+
+    /**
+     * @param mixed $credit_authorized_money
+     */
+    public function setCreditAuthorizedMoney($credit_authorized_money): void {
+        $this->credit_authorized_money = $credit_authorized_money;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getAccountsType() {
         return $this->accounts_type;
     }
@@ -253,6 +315,34 @@ class Booking_accountsEntity extends \Entity {
      */
     public function setAccountsType($accounts_type) {
         $this->accounts_type = $accounts_type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAccountHangingMoney() {
+        return $this->account_hanging_money;
+    }
+
+    /**
+     * @param mixed $account_hanging_money
+     */
+    public function setAccountHangingMoney($account_hanging_money): void {
+        $this->account_hanging_money = $account_hanging_money;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAccountsStatus() {
+        return $this->accounts_status;
+    }
+
+    /**
+     * @param mixed $accounts_status
+     */
+    public function setAccountsStatus($accounts_status): void {
+        $this->accounts_status = $accounts_status;
     }
 
     /**
