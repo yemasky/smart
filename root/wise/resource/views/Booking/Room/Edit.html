@@ -274,3 +274,15 @@
     </div>
   </div>
 </div>
+<script language="javascript">
+app.controller('BorrowingController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
+    ////////begin Borrowing
+    $scope.changeBorrowing = function() {
+        $scope.param.money = $scope.borrowing.borrowing_price * $scope.param.borrowing_num;
+    }
+    $scope.saveBorrowing = function() {
+        
+    }
+    //////end Borrowing
+});    
+</script>

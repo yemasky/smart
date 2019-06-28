@@ -1,4 +1,4 @@
-<div class="aside col-sm-4 b-r box-shadow no-padding" tabindex="-1" role="dialog">
+<div class="aside col-sm-4 b-r box-shadow no-padding" tabindex="-1" role="dialog" ng-controller="BorrowingController">
   <div class="aside-dialog">
     <div class="aside-content">
      <form name="BorrowingForm" class="form-validation" id="thisBorrowingForm" ng-submit="saveBorrowing()">
@@ -29,7 +29,7 @@
                                     <span class="font-normal">{{father.borrowing_tag}}</span>
                                   </a>
                                   <ul class="nav nav-sub bg b" ng-if="father.children!=''">
-                                    <li ng-repeat="(j, borrowing) in father.children"><a ng-click="selectBorrowing(borrowing)">{{borrowing.borrowing_name}}</a></li>
+                                    <li ng-repeat="(j, borrowing) in father.children"><a ng-click="selectBorrowing(borrowing)">{{borrowing.borrowing_name}} <span class="pull-right"><span class="fas fa-yen-sign"></span> {{borrowing.borrowing_price}}</span></a></li>
                                   </ul>
                                 </li>
                              </ul>
@@ -37,6 +37,17 @@
                       </ul>
                     </nav>
                 </aside>
+            </div>
+            <div class="form-group p-v-xs">
+                <div class="input-group w">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">余量 <span ng-bind="borrowing_stock_have"></span></button>
+                    </span>
+                    <input name="borrowing_num" size="6" type="number" string-to-number step="1" min="0" max="{{borrowing_stock_have}}" id="money" value="" class="form-control" ng-model="param.borrowing_num" required ng-change="changeBorrowing()">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">数量</button>
+                    </span>
+                </div>
             </div>
             <select class="form-control" name="item_id" ng-model="param.item_id">
                 <option value="">选择房号</option>
@@ -99,3 +110,4 @@
     </div>
   </div>
 </div>
+

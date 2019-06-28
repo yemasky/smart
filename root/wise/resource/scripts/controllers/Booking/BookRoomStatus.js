@@ -715,11 +715,14 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         }
     }
     //借物
-    $scope.borrowing_name = '选择借物';
+    $scope.borrowing_name = '选择借物';$scope.borrowing = {};
     $scope.selectBorrowing = function(borrowing) {
         if(angular.isDefined(borrowing)) {
+            $scope.borrowing = borrowing;
             $scope.borrowing_name = borrowing.borrowing_name;
             $scope.borrowing_id = borrowing.borrowing_id;
+            $scope.borrowing_stock_have = borrowing.borrowing_stock - borrowing.borrowing_have;
+            $scope.param.money = borrowing.borrowing_price;
             $('#borrowing_ul').next().hide();
         }
     };

@@ -454,7 +454,7 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
         $whereCriteria->ArrayIN('company_id', [$company_id, '0'])->ORDER('channel_id', 'ASC')->ORDER('borrowing_tag')->NE('valid', '-1');
         if(!empty($channel_id) && $channel_id > 0) $whereCriteria->ArrayIN('channel_id', [$channel_id, 0]);
         if(!empty($borrowing_id) && $borrowing_id > 0) $whereCriteria->EQ('borrowing_id', $borrowing_id);
-        if(empty($field)) $field = 'borrowing_id,channel,company_id,channel_id,borrowing_name,borrowing_en_name,borrowing_price,borrowing_tag,borrowing_stock,borrowing_describe,valid';
+        if(empty($field)) $field = 'borrowing_id,channel,company_id,channel_id,borrowing_name,borrowing_en_name,borrowing_price,borrowing_tag,borrowing_stock,borrowing_have,borrowing_describe,valid';
 
         return ChannelDao::instance()->getChannelBorrowing($whereCriteria, $field);
     }
