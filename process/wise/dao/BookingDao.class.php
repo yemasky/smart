@@ -55,7 +55,9 @@ class BookingDao extends CommonDao {
     public function getBookingConsume(\WhereCriteria $whereCriteria, $field = null) : array {
         return $this->setDsnRead($this->getDsnRead())->setTable('booking_consume')->getList($whereCriteria, $field);
     }
-
+    public function saveBookingConsume(Booking_consumeEntity $Booking_consumeEntity) {
+        return $this->setDsnWrite($this->getDsnWrite())->insertEntity($Booking_consumeEntity);
+    }
     public function updateBookingConsume($whereCriteria, $arrayUpdateData, $update_type = '') {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('booking_consume')->update($whereCriteria, $arrayUpdateData, $update_type);
     }

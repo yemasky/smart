@@ -271,7 +271,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.actionAccounts = '账务项';
     $scope.actionEditLog = '日志项';
     $scope.bookDetail = {};$scope.roomDetail = {};
-    var asideEditRoomBook = '';
 	$scope.editRoomBook = function(detail, tab) {
 		$scope.param["valid"] = "1";
 		$scope.activeRoomBookEditTab = tab;
@@ -319,8 +318,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.bookDetail = $scope.bookList[booking_number];//订单详情
             $scope.consumeDetail = $scope.consumeList[booking_number];//消费详情
             $scope.accountDetail = $scope.accountsList[booking_number];//付款详情
-
-            asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
+            var asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
             asideEditRoomBook.$promise.then(function() {
                 asideEditRoomBook.show();
                 $(document).ready(function(){
@@ -677,15 +675,17 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		});
 	};
     //消费编辑
-    $scope.editConsume = function(consume) {
-        console.log(consume);
+    //$scope.asideConsume = '';
+    $scope.editConsume = function(consume) {console.log(consume);
+        $scope.thisConsume = consume;
         var title = '编辑消费';
         $scope.param = consume;
         $scope.param.item_id = consume.item_id+'';
-        $scope.payment_name = consume.payment_name;
-        asideAccounts = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
-        asideAccounts.$promise.then(function() {
-			asideAccounts.show();
+        $scope.consume_title = consume.consume_title;
+        $scope.param.money = consume.consume_price_total;
+        $scope.asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Consume.html',show: false});
+        $scope.asideConsume.$promise.then(function() {
+			$scope.asideConsume.show();
 			$(document).ready(function(){
 			});
 		});
@@ -698,9 +698,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             title = "借物";
             templateUrl = '/resource/views/Booking/Room/Borrowing.html';
         }
-		asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: templateUrl,show: false});
-        asideConsume.$promise.then(function() {
-			asideConsume.show();
+		$scope.asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: templateUrl,show: false});
+        $scope.asideConsume.$promise.then(function() {
+			$scope.asideConsume.show();
 			$(document).ready(function(){
 			});
 		});
@@ -708,6 +708,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.consume_title = '选择消费类别';
     $scope.selectConsume = function(consume) {
         if(angular.isDefined(consume)) {
+            $scope.thisConsume = consume;
+            $scope.consume_code = consume.consume_code;
             $scope.consume_title = consume.consume_title;
             $scope.channel_consume_id = consume.channel_consume_id;
             $scope.channel_consume_father_id =  consume.channel_consume_father_id;

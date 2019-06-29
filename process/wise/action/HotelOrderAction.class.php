@@ -108,9 +108,10 @@ class HotelOrderAction extends \BaseAction
         //查找[今日房态/今天预抵的] 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
         $whereCriteria = new \WhereCriteria();
         //$whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)
-        //->LE('check_in', $out_date);//->LE('check_in', $in_date)
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')
-            ->EQ('valid', '1')->GE('booking_detail_status', '0')->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_detail_id')->ORDER('check_in');
+        //->LE('check_in', $out_date);//->LE('check_in', $in_date)//->EQ('booking_type', 'room_day')
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')
+            ->EQ('valid', '1')->GE('booking_detail_status', '0')->ArrayIN('booking_number', $arrayBookingNumber)
+            ->setHashKey('booking_detail_id')->ORDER('check_in');
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
         if (!empty($bookingDetailRoom)) {
@@ -139,8 +140,8 @@ class HotelOrderAction extends \BaseAction
         //消费
         $arrayConsume = null;
         if (!empty($arrayBookingNumber)) {
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
+            $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('valid', '1');
             $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
                 ->setFatherKey('booking_detail_id')->setChildrenKey('consume_id');
             $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
@@ -179,8 +180,8 @@ class HotelOrderAction extends \BaseAction
         //账务
         $arrayAccounts = null;
         if (!empty($arrayBookingNumber)) {
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
+            $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('valid', '1');
             $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')->setChildrenKey('accounts_id');
             $arrayAccounts = BookingHotelServiceImpl::instance()->getBookingAccounts($whereCriteria);
             if (!empty($arrayAccounts)) {
@@ -204,7 +205,7 @@ class HotelOrderAction extends \BaseAction
             'in_date' => getDay(), 'out_date'=>getDay(24)];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
-
+    //
     protected function doRoomOrder(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         $method = $objRequest->method;
@@ -260,8 +261,8 @@ class HotelOrderAction extends \BaseAction
         $whereCriteria->setHashKey($hashKey)->setMultiple(false)->setFatherKey('category_item_id')->setChildrenKey('item_id');
         $arrayResult['layoutRoom'] = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, $field);
         //查找已住房间[远期房态]
-        $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GE('check_in', $in_date)->LE('check_in', $out_date);
+        $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->GE('check_in', $in_date)->LE('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayResult['bookingRoom'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
         //
@@ -282,8 +283,8 @@ class HotelOrderAction extends \BaseAction
         //
 
         //查找已住房间[远期房态]
-        $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->GT('check_in', $in_date)->LT('check_in', $out_date);
+        $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->GT('check_in', $in_date)->LT('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayResult['bookingRoom'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
         //:獲取價格
@@ -637,6 +638,52 @@ class HotelOrderAction extends \BaseAction
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
+    //消费
+    protected function doMethodSaveConsume(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        $book_id = decode($objRequest->getInput('book_id'));
+        $c_id = decode($objRequest->getInput('c_id'));
+        //
+        $item_name = $objRequest->getInput('item_name');
+        $item_id = $objRequest->getInput('item_id');
+        if(!empty($c_id)) {//update
+            if(!empty($item_name)) $arrayUpdate['item_name'] = $item_name;
+            $arrayUpdate['item_id'] = $item_id;
+            $arrayUpdate['original_price'] = $arrayUpdate['consume_price'] = $arrayUpdate['consume_price_total'] = $objRequest->getInput('money');
+            $arrayUpdate['consume_title'] = $objRequest->getInput('consume_title');
+            $arrayUpdate['consume_id'] = $objRequest->getInput('consume_id');
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('consume_id', $c_id);
+            BookingHotelServiceImpl::instance()->updateBookingConsume($whereCriteria, $arrayUpdate);
+
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['consume_id'=>$c_id, 'c_id'=>encode($c_id), 'business_day'=>'']);
+        } elseif ($book_id > 0 && $item_id > 0) {
+            $arrayInput = $objRequest->getInput();
+            $money = $objRequest->getInput('money');
+            //更新房间detail
+            $businessDay = LoginServiceImpl::getBusinessDay();
+            $Booking_consumeEntity = new Booking_consumeEntity($arrayInput);
+            $Booking_consumeEntity->setCompanyId($company_id);
+            $Booking_consumeEntity->setChannel($channel_id);
+            $Booking_consumeEntity->setOriginalPrice($money);
+            $Booking_consumeEntity->setConsumePrice($money);
+            $Booking_consumeEntity->setConsumePriceTotal($money);
+            $Booking_consumeEntity->setEmployeeId($objLoginEmployee->getEmployeeId());
+            $Booking_consumeEntity->setEmployeeName($objLoginEmployee->getEmployeeName());
+            $Booking_consumeEntity->setBusinessDay($businessDay);
+            $Booking_consumeEntity->setAddDatetime(getDateTime());
+            $consume_id = BookingHotelServiceImpl::instance()->saveBookingConsume($Booking_consumeEntity);
+            //
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['consume_id'=>$consume_id, 'c_id'=>encode($consume_id), 'business_day'=>$businessDay]);
+        }
+
+        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+
+    }
     //结账、退房
     protected function doMethodBookingClose(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
@@ -674,8 +721,8 @@ class HotelOrderAction extends \BaseAction
         $in_date = substr($objRequest->eta_date, 0, 7) . '-01';
         $out_date = date("Y-m-d", strtotime($in_date) - 0 + 5184000);
         //查找已住房间[远期房态]
-        $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel_id', $channel_id)->EQ('booking_type', 'room_day')->GT('check_in', $in_date)->LT('check_in', $out_date);
+        $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel_id', $channel_id)->GT('check_in', $in_date)->LT('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayResult['roomForwardList'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],$arrayResult);
@@ -691,8 +738,8 @@ class HotelOrderAction extends \BaseAction
         $search_value = $objRequest->getInput('search_value');
         $condition_date = $objRequest->getInput('condition_date');
         $search_date = $objRequest->getInput('search_date');
-        $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel_id', $channel_id)->EQ('booking_type', 'room_day')
+        $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel_id', $channel_id)
             ->setHashKey('booking_detail_id');
         if(!empty($condition_date) && !empty($search_date)) {
             $whereCriteria->EQ($condition_date, $search_date);
@@ -725,8 +772,8 @@ class HotelOrderAction extends \BaseAction
                 }
             }
             //单个订单下面的所有房间
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')
+            $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')
                 ->EQ('booking_number', $booking_number)->setHashKey('booking_detail_id')->ORDER('check_in');
             if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
             $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
@@ -753,8 +800,8 @@ class HotelOrderAction extends \BaseAction
             }
             //消费
             $arrayConsume = null;
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('booking_number', $booking_number)->setHashKey('booking_number')
+            $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_number', $booking_number)->setHashKey('booking_number')
                 ->setFatherKey('booking_detail_id')->setChildrenKey('consume_id');
             $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
             if (!empty($arrayConsume)) {
@@ -769,8 +816,8 @@ class HotelOrderAction extends \BaseAction
 
             //账务
             $arrayAccounts = null;
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_type', 'room_day')->EQ('valid', '1');
+            $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('valid', '1');
             $whereCriteria->EQ('booking_number', $booking_number)->setHashKey('booking_number')->setChildrenKey('accounts_id');
             $arrayAccounts = BookingHotelServiceImpl::instance()->getBookingAccounts($whereCriteria);
             if (!empty($arrayAccounts)) {

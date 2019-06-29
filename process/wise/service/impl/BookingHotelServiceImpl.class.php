@@ -87,6 +87,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         //每一间房消费
         $BookingDetailConsumeList   = array();
         $BookingDetailConsumeEntity = new Booking_consumeEntity($arrayAllBookData);
+        $BookingDetailConsumeEntity->setConsumeTitle('房费');
         //判断会员级别
         //
         //预订数据 每个房间1个BookingDetai，每个房间每天1个BookingConsume
@@ -306,6 +307,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                             $consume_key = $layout_item_id . '-' . $system_id . '-' . $i . '-' . substr($monthDate, 0, 8) . $day;
                                             $BookingDetailConsumeList[$consume_key]->setOriginalPrice($price);
                                             $BookingDetailConsumeList[$consume_key]->setConsumePrice($price);
+                                            $BookingDetailConsumeList[$consume_key]->setConsumePriceTotal($price);
                                         }
                                     }
                                 }
@@ -325,8 +327,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return $objSuccess->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '没有取到预订数据', []);
     }
 
-    public function saveBooking(BookingDataModel $BookingData): \SuccessService
-    {
+    public function saveBooking(BookingDataModel $BookingData): \SuccessService {
         CommonServiceImpl::instance()->startTransaction();
         $objSuccess = new \SuccessService();
         $bookingEntity = $BookingData->getBookingEntity();
@@ -533,6 +534,10 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     //取得消费记录
     public function getBookingConsume(\WhereCriteria $whereCriteria, $field = '*') {
         return BookingDao::instance()->getBookingConsume($whereCriteria, $field);
+    }
+
+    public function saveBookingConsume(Booking_consumeEntity $Booking_consumeEntity) {
+        return BookingDao::instance()->saveBookingConsume($Booking_consumeEntity);
     }
 
     public function updateBookingConsume($whereCriteria, $arrayUpdateData, $update_type = '') {

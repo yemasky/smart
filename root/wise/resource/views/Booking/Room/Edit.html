@@ -159,7 +159,7 @@
                                     <tr>
                                       <th class="w">房号</th>
                                       <th class="w">项目</th>
-                                      <th class="w">数量</th>
+                                      <!--<th class="w">数量</th>-->
                                       <th class="w">金额</th>
                                       <th class="w">营业日</th>
                                       <th class="col-xs-1">管理</th>
@@ -171,9 +171,9 @@
                                             <table class="table no-margin">
                                                 <tr ng-repeat="(i, consume) in consumes">
                                                     <td class="w">{{consume.item_name}}</td>
-                                                    <td class="w">{{consume.booking_type}}</td>
-                                                    <td class="w">{{consume.item_amount}}</td>
-                                                    <td class="w">{{consume.consume_price}}</td>
+                                                    <td class="w">{{consume.consume_title}}</td>
+                                                    <!--<td class="w">{{consume.item_amount}}</td>-->
+                                                    <td class="w">{{consume.consume_price_total}}</td>
                                                     <td class="w">{{consume.business_day}}</td>
                                                     <td class="col-xs-1">
                                                         <span class="btn-group">
@@ -275,14 +275,60 @@
   </div>
 </div>
 <script language="javascript">
-app.controller('BorrowingController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
+app.controller('EditBookRoomController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
+    //获取数据
+	var _channel = $scope.$stateParams.channel;
+	var _view = $scope.$stateParams.view,common = '';
+	var param = 'channel='+_channel+'&view='+_view;
     ////////begin Borrowing
     $scope.changeBorrowing = function() {
         $scope.param.money = $scope.borrowing.borrowing_price * $scope.param.borrowing_num;
     }
     $scope.saveBorrowing = function() {
-        
+        $scope.loading.show();$httpService.header('method', 'saveBorrowing');
+        $httpService.post('/app.do?'+param, $scope, function(result){
+            $httpService.deleteHeader('method');
+            $scope.loading.percent();
+            if(result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+        });
     }
     //////end Borrowing
+    
+    //////Consume
+    $scope.saveConsume = function() {
+        $scope.param.booking_number = $scope.bookDetail.booking_number;
+        $scope.param.channel = $scope.bookDetail.channel;
+        $scope.param.consume_title = $scope.consume_title;
+        $scope.param.booking_type = $scope.thisConsume.consume_code;
+        $scope.param.channel_consume_id = $scope.thisConsume.channel_consume_id;
+        $scope.param.channel_consume_father_id = $scope.thisConsume.channel_consume_father_id;
+        $scope.param.book_id = $scope.bookDetail.book_id;
+        $scope.loading.show();$httpService.header('method', 'saveConsume');
+        $httpService.post('/app.do?'+param, $scope, function(result){
+            $httpService.deleteHeader('method');
+            $scope.loading.percent();
+            if(result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+            var consume_id = result.data.item.consume_id, c_id = result.data.item.bc_id,business_day=result.data.item.business_day;
+            if(angular.isUndefined($scope.consumeDetail[$scope.param.booking_detail_id][consume_id])) { 
+                consume_price_total = result.data.item.consume_price_total;
+                $scope.param.consume_id = consume_id;$scope.param.c_id = c_id;
+                $scope.param.business_day = business_day;
+                $scope.param.consume_price_total = $scope.param.money;$scope.param.consume_price = $scope.param.money;
+                $scope.param.original_price = $scope.param.money;$scope.param.item_amount = 1;
+                
+            } 
+            $scope.consumeDetail[$scope.param.booking_detail_id][consume_id] = angular.copy($scope.param);
+            $scope.asideConsume.hide();
+        });
+    }
+    //////end Consume
 });    
 </script>

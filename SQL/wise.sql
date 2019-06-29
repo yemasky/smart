@@ -50,11 +50,9 @@ CREATE TABLE `booking` (
   `add_datetime` datetime DEFAULT NULL COMMENT '产生日期',
   `close_datetime` datetime DEFAULT NULL COMMENT '关闭日期',
   PRIMARY KEY (`booking_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking` */
-
-insert  into `booking`(`booking_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`member_email`,`booking_status`,`cash_pledge`,`employee_id`,`employee_name`,`check_in`,`in_time`,`check_out`,`out_time`,`business_day`,`sales_id`,`sales_name`,`booking_total_price`,`client`,`valid`,`node`,`remarks`,`add_datetime`,`close_datetime`) values (1,1905246424401,'',1,'Hotel',1,0,'张山峰','','kefu@yelove.cn','1',0.00,1,'有个员工','2019-05-24 00:00:00','14:00:00','2019-05-25 00:00:00','12:00:00','2019-05-24',0,'',0.00,'pms','1','','','2019-05-24 16:10:42',NULL);
 
 /*Table structure for table `booking_accounts` */
 
@@ -89,11 +87,9 @@ CREATE TABLE `booking_accounts` (
   `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '是否有效',
   `add_datetime` datetime NOT NULL,
   PRIMARY KEY (`accounts_id`,`business_day`,`valid`,`add_datetime`)
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking_accounts` */
-
-insert  into `booking_accounts`(`accounts_id`,`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`item_id`,`item_name`,`payment_id`,`payment_name`,`payment_father_id`,`money`,`credit_authorized_number`,`credit_card_number`,`credit_authorized_days`,`credit_authorized_money`,`accounts_type`,`account_hanging_money`,`accounts_status`,`employee_id`,`employee_name`,`business_day`,`valid`,`add_datetime`) values (1,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.07,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 16:59:32'),(2,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.02,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:00:02'),(3,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.03,'','',NULL,0.00,'refund',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:00:11'),(4,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.03,'','',NULL,0.00,'refund',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:00:22'),(5,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',10,'信用卡',9,0.03,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:26:08'),(6,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,5.00,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:42:30'),(7,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,7.00,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:42:58'),(8,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,5.00,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 17:43:56'),(9,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.02,'','',NULL,0.00,'refund',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 21:19:24'),(10,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.02,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:47:21'),(11,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.02,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:53:18'),(12,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.04,'','',NULL,0.00,'refund',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:53:54'),(13,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.07,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:57:13'),(14,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.07,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:57:36'),(15,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.04,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:58:28'),(16,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,9.00,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 22:59:06'),(17,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.02,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 23:12:23'),(18,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.02,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 23:13:30'),(19,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',2,'现金支付',1,0.03,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-15','1','2019-06-15 23:17:10'),(20,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',11,'信用卡预授权',9,0.01,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-16','1','2019-06-16 22:24:42'),(21,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.04,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-26','1','2019-06-26 21:54:04'),(22,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.02,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-26','1','2019-06-26 21:54:13'),(23,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.03,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-26','1','2019-06-26 21:54:17'),(24,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',11,'信用卡预授权',9,89.00,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-26','1','2019-06-26 22:38:42'),(25,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',11,'信用卡预授权',9,0.03,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-26','1','2019-06-26 23:34:51'),(26,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',11,'信用卡预授权',9,0.16,'','',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-27','1','2019-06-27 21:48:13'),(27,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',11,'信用卡预授权',9,0.16,'99','1121212',NULL,0.00,'receipts',0.00,'0',1,'有个员工','2019-06-27','1','2019-06-27 21:54:31'),(28,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',11,'信用卡预授权',9,0.19,'888','1121212','2019-04-27 22:04:09',0.00,'receipts',0.00,'0',1,'有个员工','2019-06-27','1','2019-06-27 22:04:27'),(29,1,1905246424401,'',1,'Hotel','room_day',1,0,1,'103',4,'支付宝',3,0.03,'','','2019-09-28 21:09:01',0.00,'receipts',0.00,'0',1,'有个员工','2019-06-28','1','2019-06-28 21:09:32');
 
 /*Table structure for table `booking_borrowing` */
 
@@ -131,7 +127,6 @@ CREATE TABLE `booking_consume` (
   `channel` enum('Hotel','Meal','Meeting','Shop','Service','Tour','Sport') NOT NULL COMMENT '频道',
   `channel_consume_father_id` int(11) NOT NULL DEFAULT '0',
   `channel_consume_id` int(11) NOT NULL DEFAULT '0',
-  `consume_title` varchar(64) NOT NULL DEFAULT '',
   `booking_type` varchar(64) NOT NULL DEFAULT 'room_rate' COMMENT '消费类型',
   `channel_id` int(11) NOT NULL,
   `member_id` int(11) NOT NULL COMMENT '会员',
@@ -149,6 +144,7 @@ CREATE TABLE `booking_consume` (
   `price_system_id` int(11) NOT NULL DEFAULT '0' COMMENT '价格体系',
   `price_system_name` varchar(64) NOT NULL DEFAULT '' COMMENT '价格体系',
   `original_price` float(12,2) NOT NULL COMMENT '原价',
+  `consume_title` varchar(64) NOT NULL DEFAULT '',
   `consume_price` float(12,2) NOT NULL COMMENT '消费价格',
   `consume_price_total` float(12,2) NOT NULL COMMENT '总价',
   `consume_status` enum('-9','-8','-7','-6','-5','-4','-3','-2','-1','0','1','2','3','4','5','6') NOT NULL DEFAULT '0' COMMENT '状态[-1结束 已完成]',
@@ -162,11 +158,9 @@ CREATE TABLE `booking_consume` (
   `valid` enum('0','1') NOT NULL DEFAULT '1',
   `add_datetime` datetime NOT NULL,
   PRIMARY KEY (`consume_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking_consume` */
-
-insert  into `booking_consume`(`consume_id`,`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`channel_consume_father_id`,`channel_consume_id`,`consume_title`,`booking_type`,`channel_id`,`member_id`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_amount`,`item_category_id`,`item_category_name`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`original_price`,`consume_price`,`consume_price_total`,`consume_status`,`employee_id`,`employee_name`,`business_day`,`confirm`,`confirm_employee_id`,`confirm_employee_name`,`confirm_datetime`,`valid`,`add_datetime`) values (1,1,1905246424401,'',1,'Hotel',0,0,'','room_day',1,0,1,2,'散客步入',1,'103',1,8,'双人间',0,'','0',3,'散客单早',2.00,2.00,2.00,'0',1,'有个员工','2019-05-24','0',0,'',NULL,'1','2019-05-24 16:10:42'),(2,2,1905246424401,'',1,'Hotel',0,0,'','room_day',1,0,1,2,'散客步入',-58685506,'',1,8,'双人间',0,'','0',3,'散客单早',2.00,2.00,2.00,'0',1,'有个员工','2019-05-27','0',0,'',NULL,'1','2019-05-24 16:11:45');
 
 /*Table structure for table `booking_detail` */
 
@@ -213,11 +207,9 @@ CREATE TABLE `booking_detail` (
   `add_datetime` datetime DEFAULT NULL COMMENT '产生日期',
   `close_datetime` datetime DEFAULT NULL COMMENT '关闭日期',
   PRIMARY KEY (`booking_detail_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `booking_detail` */
-
-insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`member_email`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1905246424401,'',1,'Hotel','room_day',1,0,'张山峰','','kefu@yelove.cn',1,2,'散客步入',1,'103',8,'双人间','2019-05-24','14:00:00','2019-05-25','12:00:00','2019-05-24 16:11:23','0000-00-00 00:00:00','1',1,'有个员工','2019-05-24',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-05-24 16:10:42',NULL),(2,1905246424401,'',1,'Hotel','room_day',1,0,'张山峰','','kefu@yelove.cn',1,2,'散客步入',-58685506,'',8,'双人间','2019-05-27','14:00:00','2019-05-28','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-05-24',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-05-24 16:11:45',NULL);
 
 /*Table structure for table `booking_discount` */
 

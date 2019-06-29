@@ -31,6 +31,7 @@ class Booking_consumeEntity extends \Entity {
 	protected $price_system_id = 0;
 	protected $price_system_name = '';
 	protected $original_price = 0.00;
+	protected $consume_title;
 	protected $consume_price = 0.00;
     protected $consume_price_total = 0.00;
 	protected $employee_id = 0;
@@ -352,6 +353,20 @@ class Booking_consumeEntity extends \Entity {
 	public function setOriginalPrice(float $original_price) {
 		$this->original_price = $original_price;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getConsumeTitle() {
+        return $this->consume_title;
+    }
+
+    /**
+     * @param mixed $consume_title
+     */
+    public function setConsumeTitle($consume_title) {
+        $this->consume_title = $consume_title;
+    }
 
 	/**
 	 * @return float
