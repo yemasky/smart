@@ -736,8 +736,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.editBorrowing = function(borrow) {
         var title = "借物";
         var templateUrl = '/resource/views/Booking/Room/Borrowing.html';
-        $scope.param = borrow;
-        $scope.param.item_id = borrow.item_id+"";
+        $scope.param = angular.copy(borrow);
+        $scope.param.item_id = angular.copy(borrow.item_id+"");
         $scope.param.money = borrow.cash_pledge;
         $scope.borrowing_name = borrow.borrowing_name;
         $scope.payment_name = borrow.payment_name;
