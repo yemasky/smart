@@ -21,6 +21,7 @@ class Action {
         $action         = $objRequest->action;
         $module         = $module_id == 'home' ? 'home' : '';
         $module_channel = 'Booking';
+        $module_name    = '首页';
         //
         $channel_id = $objRequest->id;
         $channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : null;
@@ -74,6 +75,7 @@ class Action {
                         $module         = $arrayEmployeeModule[$module_id]['module'];
                         $action         = !empty($arrayEmployeeModule[$module_id]['action']) ? $arrayEmployeeModule[$module_id]['action'] : $action;
                         $module_channel = $arrayEmployeeModule[$module_id]['module_channel'];
+                        $module_name    = $arrayEmployeeModule[$module_id]['module_name'];
                     } else {
                         return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['no_module']['code']);
                     }
@@ -101,6 +103,7 @@ class Action {
 
         //common setting
         $objResponse->__module_id  = $module_id;
+        $objResponse->__module_name  = $module_name;
         $objResponse->home_channel = \Encrypt::instance()->encode('home', getDay());
         //$objResponse->index_url       = 'app.do';
         //$objResponse->check_login_url = \BaseUrlUtil::getHtmlUrl(['method' => 'checkLogin']);

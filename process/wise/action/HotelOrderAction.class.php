@@ -7,10 +7,24 @@
 
 namespace wise;
 
-class HotelOrderAction extends \BaseAction
-{
+class HotelOrderAction extends \BaseAction {
+    protected $Booking_operationEntity;
     protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id = $objLoginEmployee->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        $this->Booking_operationEntity = new Booking_operationEntity();
+        $this->Booking_operationEntity->setAddDatetime(getDateTime());
+        $this->Booking_operationEntity->setBusinessDay(LoginServiceImpl::getBusinessDay());
+        $this->Booking_operationEntity->setEmployeeId($objLoginEmployee->getEmployeeId());
+        $this->Booking_operationEntity->setEmployeeName($objLoginEmployee->getEmployeeName());
+        $this->Booking_operationEntity->setCompanyId($company_id);
+        $this->Booking_operationEntity->setChannelId($channel_id);
+        $this->Booking_operationEntity->setModuleId($objResponse->__module_id);
+        $this->Booking_operationEntity->setModuleName($objResponse->__module_name);
+        $this->Booking_operationEntity->setMethod($objRequest->method);
     }
 
     protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -46,7 +60,7 @@ class HotelOrderAction extends \BaseAction
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
     }
 
-    //客房状态
+    //客房状态页面
     protected function doRoomStatus(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         $method = $objRequest->method;
@@ -195,7 +209,7 @@ class HotelOrderAction extends \BaseAction
             'in_date' => getDay(), 'out_date'=>getDay(24)];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
-    //预订
+    //预订页面booking
     protected function doRoomOrder(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         $method = $objRequest->method;
@@ -318,7 +332,11 @@ class HotelOrderAction extends \BaseAction
         $objSuccess = BookingHotelServiceImpl::instance()->beginBooking($objRequest, $objResponse);
         if ($objSuccess->isSuccess()) {
             $objSuccess = BookingHotelServiceImpl::instance()->saveBooking($objSuccess->getData());
-            if ($objSuccess->isSuccess()) return $objResponse->successResponse($objSuccess->getCode(), '');
+            if ($objSuccess->isSuccess()) {
+                $this->Booking_operationEntity->setOperationTitle('预订成功');
+                BookingOperationServiceImpl::instance()->saveBookingOperation($this->Booking_operationEntity);
+                return $objResponse->successResponse($objSuccess->getCode(), '');
+            }
         }
         return $objResponse->errorResponse($objSuccess->getCode(), $objSuccess->getData(), $objSuccess->getMessage());
     }
