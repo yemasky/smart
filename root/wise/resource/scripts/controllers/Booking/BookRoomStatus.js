@@ -48,7 +48,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $ocLazyLoad.load([$scope._resource + "styles/booking.css"]);
     //初始化数据
     //选择入住房
-    var selectLayoutRoom = {},arrayRoom = {},liveLayoutRoom = {};
+    var selectLayoutRoom = {},arrayRoom = {},liveLayoutRoom = {},billAccount={};
     $scope.selectLayoutRoom = {};
     //按房型选择房间 全部房型房间
     var layoutRoomList = {};
@@ -179,7 +179,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                             room['detail_id'] = live_inRoom[room.item_id]['booking_detail_id'];
                             if(angular.isDefined(bookConsume[live_inRoom[room.item_id].booking_number])) {
                                 var booking_number = live_inRoom[room.item_id].booking_number;
-                                room.roomAccount = $scope.arithmetic(bookAccount[booking_number], '-', bookConsume[booking_number], 2);
+                                var account = $scope.arithmetic(bookAccount[booking_number], '-', bookConsume[booking_number], 2);
+                                billAccount[booking_number] = account;
+                                room.roomAccount = account;
                             }
                         }
                         bookRoomStatus[room.item_id] = room;
@@ -215,6 +217,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			   }
 		    }
 			$scope.bookRoomStatus = bookRoomStatus;
+            $scope.billAccount = billAccount;
 		}
         var channelConsumeList = {};
         if(channelConsume!='') {
@@ -290,9 +293,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					$scope.roomDetailList[booking_number][detail.booking_detail_id] = detail;
                     $scope.bookList[booking_number] = result.data.item.book[booking_number];//订单详情
                     if(angular.isUndefined($scope.consumeList[booking_number])) {$scope.consumeList[booking_number] = {};}
-                    console.log(result.data.item.consume[booking_number]);
                     $scope.consumeList[booking_number] = angular.copy(result.data.item.consume[booking_number]);//消费详情
-                    console.log($scope.consumeList[booking_number]);
                     $scope.accountsList[booking_number] = result.data.item.accounts;//付款详情
                     //消费、账务计算
                     if($scope.consumeList[booking_number] != '') {//消费
@@ -308,6 +309,17 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                         }
                         $scope.bookConsumePrice[booking_number] = bookConsumePrice[booking_number];
                     }
+                    //付款
+                    if($scope.accountsList[booking_number] != '') {
+                        for(var i in $scope.accountsList[booking_number]) {
+                            var account = $scope.accountsList[booking_number][i];
+                            var symbol = '+';
+                            if(account.accounts_type == 'refund') symbol = '-';
+                            if(account.accounts_type == 'hanging') continue;//挂账不算金钱
+                            bookAccount[booking_number] = $scope.arithmetic(bookAccount[booking_number], symbol, account.money);
+                        }
+                    }
+                    
                     $scope.guestLiveInList[booking_number] = result.data.item.guestLiveIn;//
                     showEditRoomBook();
                 }
