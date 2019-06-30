@@ -24,10 +24,10 @@
 			<b class="caret m-h-xs hidden-sm"></b>
 		</a>
 	  </li>
-	  <li><a ui-sref="app.dashboard" translate="header.navbar.DASHBOARD">Dashboard</a></li>
-	  <li><a ui-sref="mail.inbox" translate="header.navbar.EMAIL">Email</a></li>
+	  <li><a ui-sref="app.home" translate="header.navbar.DASHBOARD">首页</a></li>
+	  <!--<li><a ui-sref="mail.inbox" translate="header.navbar.EMAIL">Email</a></li>
 	  <li><a ui-sref="ui.component.arrow" translate="header.navbar.UIKITS">UI Kits</a></li>
-	  <li><a ui-sref="page.profile" translate="header.navbar.PAGES">Pages</a></li>
+	  <li><a ui-sref="page.profile" translate="header.navbar.PAGES">Pages</a></li>-->
 	</ul>
 <!-- / nav -->
 <!-- nabar right -->
@@ -38,13 +38,13 @@
 		  <span class="visible-xs-inline">Settings</span>
 		</a>
 	  </li>
-	  <li>
+	  <!--<li>
 		<a href bs-aside="aside" data-template-url="/app/header/aside.tpl.chat.html" data-placement="right" data-animation="am-slide-right aside-open-inner modal-open" data-container="body">
 		  <i class="glyphicon glyphicon-comment"></i>
 		  <b class="badge badge-xs bg-warning up">3</b>
 		  <span class="visible-xs-inline">Notifications</span>
 		</a>
-	  </li>
+	  </li>-->
 	  <li class="hidden-xs">
 		<a href ui-fullscreen><i class="glyphicon glyphicon-resize-vertical"></i></a>
 	  </li>
@@ -169,10 +169,10 @@
 </script><!-- /app/header/aside.tpl.chat.html -->
 <script type="text/ng-template" id="/app/header/user.html">
 <ul class="dropdown-menu pull-right no-b-t">
-	<li><a ui-sref="page.profile">Profile</a></li>
+	<!--<li><a ui-sref="page.profile">Profile</a></li>
 	<li><a ui-sref="page.settings">Settings</a></li>
 	<li class="divider"></li>
-	<li><a ui-sref="lockme">Lock me</a></li>
+	<li><a ui-sref="lockme">Lock me</a></li>-->
 	<li><a ui-sref="app.logout">Logout</a></li>
 </ul>
 </script><!-- /app/header/user.html -->

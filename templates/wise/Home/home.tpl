@@ -4,7 +4,7 @@
       <div class="panel b-light">
         <div class="panel-heading p-v-xs p-h-sm">
           <span class="pull-right">80%</span>
-          Total Earnings
+          今日运营数据
         </div>
         <div class="progress progress-xxxs no-margin no-radius bg-white">
           <div class="progress-bar bg-light" style="width:80%"></div>
@@ -12,20 +12,9 @@
         <div class="panel-body p-sm">
           <div class="pull-left pull-none-sm p-h text-center m-r-xs">
             <div class="inline">
-              <div ui-jp="easyPieChart" ui-options="{
-                  percent:80,
-                  lineWidth: 5,
-                  trackColor: '#fff',
-                  barColor: '{{app.color.light}}',
-                  scaleColor: '#fff',
-                  size: 65,
-                  lineCap: 'butt',
-                  color: '{{app.color.success}}',
-                  animate: 3000
-                }">
-                <div class="text-white">
-                  80%
-                </div>
+              <div ui-jp="easyPieChart" ui-options="{percent:80,lineWidth: 5,trackColor: '#fff',barColor: '{{app.color.light}}',scaleColor: '#fff',
+                  size: 65,lineCap: 'butt',color: '{{app.color.success}}',animate: 3000}">
+                <div class="text-white"> 80% </div>
               </div>
             </div>
           </div>
@@ -39,28 +28,16 @@
     <div class="col-sm-4">
       <div class="panel b-light">
         <div class="panel-heading p-v-xs p-h-sm">
-          <span class="pull-right">20%</span>
-          New Visits
+          <span class="pull-right">20%</span> 新会员
         </div>
         <div class="progress progress-xxxs no-margin no-radius bg-white">
           <div class="progress-bar bg-light" style="width:20%"></div>
         </div>
         <div class="panel-body p-sm">
           <div class="pull-left pull-none-sm p-h text-center m-r-xs">
-            <div ui-jp="easyPieChart" ui-options="{
-                percent:20,
-                lineWidth: 5,
-                trackColor: '{{app.color.light}}',
-                barColor: '{{app.color.info}}',
-                scaleColor: '#fff',
-                size: 65,
-                lineCap: 'butt',
-                color: '{{app.color.inverse}}',
-                animate: 3000
-              }">
-              <div class="text-white">
-                20%
-              </div>
+            <div ui-jp="easyPieChart" ui-options="{percent:20,lineWidth: 5,trackColor: '{{app.color.light}}',
+                barColor: '{{app.color.info}}',scaleColor: '#fff',size: 65,lineCap: 'butt',color: '{{app.color.inverse}}',animate: 3000 }">
+              <div class="text-white"> 20%</div>
             </div>
           </div>
           <div class="clear">
@@ -74,7 +51,7 @@
       <div class="panel b-light">
         <div class="panel-heading p-v-xs p-h-sm">
           <span class="pull-right">50%</span>
-          Helpdesk
+          今日流水
         </div>
         <div class="progress progress-xxxs no-margin no-radius bg-white">
           <div class="progress-bar bg-light no-radius" style="width:50%"></div>
@@ -113,7 +90,7 @@
             <input type="checkbox" ng-model="showData">
             <i></i>
           </label>
-          <span>Sell monitor</span> <i class="fa fa-caret-up text-success"></i><span class="text-xs text-muted m-l-xs">1.5%</span>
+          <span>今日进店</span> <i class="fa fa-caret-up text-success"></i><span class="text-xs text-muted m-l-xs">1.5%</span>
         </div>
         <div class="panel-body">
           <div ui-jp="plot" ui-refresh="showData" ui-options="
@@ -148,7 +125,7 @@
       <div class="panel b-light">
         <div class="panel-heading">
           <a href=""></a>
-          Total revenue of this month
+          本月总收入
         </div>
         <div style="margin: 0 -2px">
           <div ui-jp="plot" ui-options="
@@ -260,7 +237,7 @@
   </div>
   <div class="row">
     <div class="col-sm-6">
-      <h5 class="no-margin m-b">Members</h5>
+      <h5 class="no-margin m-b">新加会员</h5>
       <ul class="list-group list-group-md">
         <li class="list-group-item">
           <a href class="pull-left w-thumb m-r b-b b-b-2x b-success"><img src="pages/images/a1.jpg" class="img-responsive"></a>
@@ -293,7 +270,7 @@
       </ul>
     </div>
     <div class="col-sm-6">
-      <h5 class="no-margin m-b">Feeds</h5>
+      <h5 class="no-margin m-b">最新留言</h5>
       <div class="list-group list-group-gap">
         <a href class="list-group-item b-l-inverse">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit
@@ -327,3 +304,14 @@ app.controller('HomeController', function($rootScope, $scope, $httpService, $loc
 });
 
 </script>
+<script src="<%$__RESOURCE%>vendor/jquery/easypiechart/jquery.easy-pie-chart.js"></script>
+<script src="<%$__RESOURCE%>vendor/jquery/flot/jquery.flot.min.js"></script>
+<script src="<%$__RESOURCE%>vendor/jquery/flot/jquery.flot.resize.js"></script>
+<script src="<%$__RESOURCE%>vendor/jquery/flot/jquery.flot.tooltip.min.js"></script>
+<script src="<%$__RESOURCE%>vendor/jquery/flot/jquery.flot.spline.js"></script>
+<script src="<%$__RESOURCE%>vendor/jquery/flot/jquery.flot.orderBars.js"></script>
+<script src="<%$__RESOURCE%>vendor/jquery/flot/jquery.flot.pie.min.js"></script>
+<script src="<%$__RESOURCE%>vendor/jquery/sparkline/jquery.sparkline.min.js"></script>
+<script src="<%$__RESOURCE%>vendor/jquery/jvectormap/jquery-jvectormap.min.js"></script>
+<script src="<%$__RESOURCE%>vendor/jquery/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
+<script src="<%$__RESOURCE%>vendor/jquery/jvectormap/jquery-jvectormap-us-aea-en.js"></script>

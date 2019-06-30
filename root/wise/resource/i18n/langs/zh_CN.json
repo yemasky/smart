@@ -1,7 +1,7 @@
 {
 "header" : {
 	"navbar" : {
-		"DASHBOARD" : "Dashboard",
+		"DASHBOARD" : "首页",
 		"EMAIL" : "Email",
 		"UIKITS" : "UI Kits",
 		"PAGES" : "Pages"
