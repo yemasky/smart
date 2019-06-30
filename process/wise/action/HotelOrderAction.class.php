@@ -503,9 +503,39 @@ class HotelOrderAction extends \BaseAction
             } elseif($liveInType == 'unall') {//反入住状态主订单
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
             } elseif($liveInType == 'one') {//入住单个房间
-
-
-                return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+                $detail_id = decode($objRequest->getInput('detail_id'));
+                if($detail_id > 0) {
+                    $businessDay = LoginServiceImpl::getBusinessDay();
+                    $whereCriteria->EQ('booking_number', $booking_number)->EQ('booking_status', '0');
+                    $updateData['booking_status'] = '1';
+                    BookingHotelServiceImpl::instance()->updateBooking($whereCriteria, $updateData);
+                    $updateData = [];
+                    $whereCriteria = new \WhereCriteria();
+                    $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number)
+                        ->EQ('booking_detail_status', '0')->EQ('booking_detail_id', $detail_id)->LE('check_in', $businessDay);
+                    $updateData['booking_detail_status'] = '1';
+                    $updateData['actual_check_in'] = getDateTime();
+                    BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $updateData);
+                    //取得入住房间
+                    $whereCriteria = new \WhereCriteria();
+                    $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)
+                        ->EQ('booking_number', $booking_number)->GT('item_id', 0)->EQ('booking_detail_id', $detail_id);
+                    $arrayLiveInItem = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria, 'item_id');
+                    if(!empty($arrayLiveInItem)) {
+                        $arrayItem = array_column($arrayLiveInItem, 'item_id');
+                        //更新房间入住状态
+                        $updateData = [];
+                        $updateData['booking_number'] = $booking_number;
+                        $updateData['status'] = 'live_in';
+                        foreach ($arrayItem as $i => $item_id) {
+                            $whereCriteria = new \WhereCriteria();
+                            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('status', '0');
+                            $whereCriteria->EQ('item_id', $item_id);
+                            ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $updateData);
+                        }
+                    }
+                    return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
+                }
             } elseif($liveInType == 'unone') {//反入住单个房间
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
             }
