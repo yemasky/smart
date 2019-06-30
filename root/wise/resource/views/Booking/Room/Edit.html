@@ -30,7 +30,7 @@
 				<li ng-class="{active:activeRoomBookEditTab==3}" ng-click="activeRoomBookEditTab=3">
                     <a ng-bind-html="actionAccounts"></a>
                 </li>
-                <li ng-class="{active:activeRoomBookEditTab==4}" ng-click="activeRoomBookEditTab=4">
+                <li ng-class="{active:activeRoomBookEditTab==4}" ng-click="activeRoomBookEditTab=4;getBookingOperation();">
                     <a ng-bind-html="actionEditLog"></a>
                 </li>
             </ul>
@@ -289,24 +289,20 @@
 						<table class="table bg-white">
 						  <thead>
 							<tr>
-							  <th translate="module.channel.market_name">客源市场</th>
-							  <th>房型</th>
-							  <th>房号</th>
-							  <th>客人名称</th>
-							  <th translate="module.channel.phone">电话</th>
-							  <th translate="module.channel.address">地址</th>
-							  <th translate="common.hint.date">日期</th>
+							  <th>时间</th>
+							  <th>标题</th>
+							  <th>内容</th>
+							  <th>操作人</th>
+							  <th></th>
 							</tr>
 						  </thead>
 						  <tbody>
-							<tr ng-repeat="(i, rDetail) in roomDetail">
-							  <td class="text-nowrap">{{rDetail.market_name}}</td>
-							  <td><span>{{rDetail.market_name}}</span></td>
-							  <td><a ng-click="config(Channel.id)">{{rDetail.channel_name}}</a></td>
-							  <td>{{rDetail.channel_en_name}}</td>
-							  <td>{{rDetail.phone}}</td>
-							  <td>{{rDetail.address}}</td>
-							  <td>{{rDetail.add_datetime}}</td>
+							<tr ng-repeat="(i, Operation) in bookingOperationList">
+							  <td class="text-nowrap">{{Operation.add_datetime}}</td>
+							  <td>{{Operation.operation_title}}</td>
+							  <td>{{Operation.operation_content}}</td>
+							  <td>{{Operation.employee_name}}</td>
+							  <td>{{Operation.request}}</td>
 							</tr>
 						  </tbody>
 						</table>

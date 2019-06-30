@@ -231,6 +231,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                     $arrayFormulaFatherPrice = $arrayPriceLayout[$formulaData['system_father_id']][$item_id];//取出父价格
                                     foreach ($arrayFormulaFatherPrice as $monthDate => $priceDateList) {
                                         //时间矩阵月的第几天
+                                        if (!isset($arrayDateMatrix[$monthDate])) continue;//在时间矩阵$arrayDateMatrix找不到则跳过
                                         $arrayThisDay = $arrayDateMatrix[$monthDate];
                                         //解析价格
                                         foreach ($arrayThisDay as $day => $price) {
@@ -291,6 +292,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                             if (isset($systemLayoutItem[$system_id]['layout_item_id'][$layout_item_id])) {
                                 foreach ($arrayMonthPrice as $monthDate => $priceDateList) {
                                     //时间矩阵月的第几天
+                                    if (!isset($arrayDateMatrix[$monthDate])) continue;//在时间矩阵$arrayDateMatrix找不到则跳过
                                     $arrayThisDay = $arrayDateMatrix[$monthDate];
                                     //解析价格
                                     foreach ($arrayThisDay as $day => $price) {
@@ -341,6 +343,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $whereCriteria->EQ('booking_id', $booking_id);
             BookingDao::instance()->updateBooking($whereCriteria, ['booking_number' => $bookingNumber]);
         }
+        $objSuccess->setData(['booking_number'=>$bookingNumber]);
         foreach ($bookDetailList as $k => $bookDetail) {
             $bookDetailList[$k]->setBookingNumber($bookingNumber);
         }

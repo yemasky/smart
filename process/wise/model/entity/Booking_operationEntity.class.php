@@ -11,13 +11,13 @@ namespace wise;
 
 class Booking_operationEntity extends \Entity {
     protected $operation_id = null;
-    protected $operation;
+    protected $booking_number;
     protected $company_id;
     protected $module_id;
     protected $module_name;
     protected $method;
     protected $channel_id;
-    protected $item_id;
+    protected $request;
     protected $operation_title;
     protected $operation_content;
     protected $business_day;
@@ -42,15 +42,15 @@ class Booking_operationEntity extends \Entity {
     /**
      * @return mixed
      */
-    public function getOperation() {
-        return $this->operation;
+    public function getBookingNumber() {
+        return $this->booking_number;
     }
 
     /**
-     * @param mixed $operation
+     * @param mixed $booking_number
      */
-    public function setOperation($operation): void {
-        $this->operation = $operation;
+    public function setBookingNumber($booking_number): void {
+        $this->booking_number = $booking_number;
     }
 
     /**
@@ -126,15 +126,15 @@ class Booking_operationEntity extends \Entity {
     /**
      * @return mixed
      */
-    public function getItemId() {
-        return $this->item_id;
+    public function getRequest() {
+        return $this->request;
     }
 
     /**
-     * @param mixed $item_id
+     * @param mixed $request
      */
-    public function setItemId($item_id): void {
-        $this->item_id = $item_id;
+    public function setRequest($request): void {
+        $this->request = $request;
     }
 
     /**
@@ -220,6 +220,7 @@ class Booking_operationEntity extends \Entity {
     public function setAddDatetime($add_datetime): void {
         $this->add_datetime = $add_datetime;
     }
+
 
 
 }

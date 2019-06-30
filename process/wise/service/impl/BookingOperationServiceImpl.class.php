@@ -18,8 +18,8 @@ class BookingOperationServiceImpl extends \BaseServiceImpl implements RoleServic
 		return self::$objService;
 	}
 
-	public function getBookingOperation() {
-
+	public function getBookingOperation(\WhereCriteria $whereCriteria, $field = '') {
+        return BookingOperationDao::instance()->getBookingOperation($whereCriteria, $field);
 	}
 
     public function saveBookingOperation(Booking_operationEntity $Booking_operationEntity) {

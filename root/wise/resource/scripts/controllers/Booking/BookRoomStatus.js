@@ -583,6 +583,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 } else {roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></a>';//空净
                 }
             }
+            if(editType == 'empty_room') {
+                roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></a>';//空净
+            }
             //附加
             if(angular.isDefined($scope.check_outRoom[bookRoomStatus.item_id])) {//预离
                 roomStatus = roomStatus + '<a class="fas fa-sign-out-alt text-warning" title="预离 &#8226; 查看订单"></a>';
@@ -834,9 +837,27 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			}
         });
     }
+    //操作记录
+    $scope.getBookingOperation = function() {
+        var booking_number = $scope.bookDetail.booking_number, book_id = $scope.bookDetail.book_id;
+        $scope.param.book_id = book_id;
+        $httpService.header('method', 'getBookingOperation');
+        $scope.loading.start();
+        $httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.loading.percent();
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0'){
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            } else {
+				$scope.bookingOperationList = result.data.item;
+			}
+        });
+    }
     //begin//远期房态/////////////////////////////////////////////////////////
 	$scope.roomForwardList = '';$scope.param.eta_date = $scope.getDay('yyyy-MM-dd');
-    $scope.roomForcasting =function(getRoomForward) {
+    $scope.roomForcasting = function(getRoomForward) {
 		if($scope.roomForwardList == '' || getRoomForward == true) {
             $scope.setForwardCalendar('2019-05-01', '2019-07-30');
 			$scope.loading.start();

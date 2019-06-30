@@ -21,7 +21,7 @@ class BookingOperationDao extends CommonDao {
 
     //--------BookingOperationDao//-----------//
     public function getBookingOperation(\WhereCriteria $whereCriteria, $field = '') {
-        if(empty($field)) $field = '*';
+        if(empty($field)) $field = 'operation_id,module_name,method,operation_title,operation_content,business_day,employee_name,add_datetime';
 
         return $this->setDsnRead($this->getDsnRead())->setTable('booking_operation')->getList($whereCriteria, $field);//->DBCache($cacheId)
     }

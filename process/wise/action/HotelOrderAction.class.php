@@ -25,6 +25,8 @@ class HotelOrderAction extends \BaseAction {
         $this->Booking_operationEntity->setModuleId($objResponse->__module_id);
         $this->Booking_operationEntity->setModuleName($objResponse->__module_name);
         $this->Booking_operationEntity->setMethod($objRequest->method);
+        $request = json_encode($objRequest->get()) . json_encode($objRequest->getInput()) . json_encode($objRequest->getPost());
+        $this->Booking_operationEntity->setRequest($request);
     }
 
     protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -334,6 +336,10 @@ class HotelOrderAction extends \BaseAction {
             $objSuccess = BookingHotelServiceImpl::instance()->saveBooking($objSuccess->getData());
             if ($objSuccess->isSuccess()) {
                 $this->Booking_operationEntity->setOperationTitle('预订成功');
+                $this->Booking_operationEntity->setOperationContent('预订成功');
+                $arrayData = $objSuccess->getData();
+                $booking_number = $arrayData['booking_number'];
+                $this->Booking_operationEntity->setBookingNumber($booking_number);
                 BookingOperationServiceImpl::instance()->saveBookingOperation($this->Booking_operationEntity);
                 return $objResponse->successResponse($objSuccess->getCode(), '');
             }
@@ -923,5 +929,21 @@ class HotelOrderAction extends \BaseAction {
         }
 
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
+    }
+    //查看日志
+    protected function doMethodGetBookingOperation(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        $booking_number = decode($objRequest->getInput('book_id'));
+        if(!empty($booking_number)) {
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)
+                ->EQ('booking_number', $booking_number);
+            $arrayBookingOperation = BookingOperationServiceImpl::instance()->getBookingOperation($whereCriteria);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayBookingOperation);
+        }
+        return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_found']);
     }
 }
