@@ -548,6 +548,10 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return BookingDao::instance()->getBookingBorrowing($whereCriteria, $field);
     }
 
+    public function saveBookingBorrowing(Booking_borrowingEntity $Booking_borrowingEntity) {
+        return BookingDao::instance()->saveBookingBorrowing($Booking_borrowingEntity);
+    }
+
     public function updateBookingBorrowing($whereCriteria, $arrayUpdateData, $update_type = '') {
         return BookingDao::instance()->updateBookingBorrowing($whereCriteria, $arrayUpdateData, $update_type);
     }

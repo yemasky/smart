@@ -48,9 +48,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $ocLazyLoad.load([$scope._resource + "styles/booking.css"]);
     //初始化数据
     //选择入住房
-    var selectLayoutRoom = {};$scope.selectLayoutRoom = {};
-    var arrayRoom = {};
-    var liveLayoutRoom = {};
+    var selectLayoutRoom = {},arrayRoom = {},liveLayoutRoom = {};
+    $scope.selectLayoutRoom = {};
     //按房型选择房间 全部房型房间
     var layoutRoomList = {};
     $scope.bookAta = '0';//预抵人数
@@ -87,6 +86,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.paymentTypeList   = result.data.item.paymentTypeList;//支付方式
 		$scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
         $scope.bookingSearchList = result.data.item.bookingDetailRoom;//所有订单
+        $scope.bookBorrowingList = result.data.item.bookBorrowingList;
 		$scope.marketList        = result.data.item.marketList;
         var channelBorrowing     = result.data.item.channelBorrowing;
         var channelConsume       = result.data.item.channelConsumeList;
@@ -264,7 +264,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			$scope.param["in_time"] = _thisDay+'T14:00:00.000Z';$scope.param["out_time"] = _thisDay+'T12:00:00.000Z';
 		});
 	});	
-	//单个预订编辑开始
+	////单个预订编辑开始//////////////////////////////////////////////////////////////////////////////////////////////////
     $scope.layoutSelectRoom = {};
     $scope.actionEdit = '客房项';
     $scope.actionConsume = '消费项';
@@ -318,6 +318,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.bookDetail = $scope.bookList[booking_number];//订单详情
             $scope.consumeDetail = $scope.consumeList[booking_number];//消费详情
             $scope.accountDetail = $scope.accountsList[booking_number];//付款详情
+            $scope.bookBorrowing = $scope.bookBorrowingList[booking_number];
             var asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
             asideEditRoomBook.$promise.then(function() {
                 asideEditRoomBook.show();
@@ -378,7 +379,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.setEditItemRoomName = function(item_name) {
         if(item_name != '') $scope.param.item_room_name = item_name;
     };
-	//设置入住客房
+	////设置入住客房//////////////////////////////////////////////////////////////////////////////////////////
 	$scope.liveInRoom = function(liveIn){
         $scope.beginLoading =! $scope.beginLoading;
 		$httpService.header('method', 'liveInRoom');
@@ -395,7 +396,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             } else {$scope.successAlert.startProgressBar();}
         });
 	};
-    //添加入住客人
+    ////添加入住客人////////////////////////////////////////////////////////////////////////////////////////////
     var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
     $scope.addGuestLiveIn = function(liveInGuest, ObjectLiveIn) {
 		if(liveInGuest == 'AddBookRoom') {
@@ -435,7 +436,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
         });
     };
-    //保存入住客人
+    ////保存入住客人//////////////////////////////////////////
     $scope.saveAddGuestLiveIn = function() {
         if(!$scope.setLiveInItemName()){return;};
         $httpService.header('method', 'saveGuestLiveIn');
@@ -495,16 +496,16 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param.booking_detail_id = $event.target.attributes.booking_detail_id.nodeValue;
         return true;
     }
-    //读取身份证
+    ////读取身份证/////////////////////////////////////////////////
     $scope.readGuestIdCard = function() {
         
     };
-    //设置room的各种状态
+    ////设置room的各种状态/////////////////////////////////////////////////////////////////
     $scope.statusRoom = {};
     $scope.setRoomStatus = function(room) {
         $scope.statusRoom = room;
     };
-    //lock unlock dirty clean repair room_card
+    ////lock unlock dirty clean repair room_card///////////////////////////////
     $scope.param.editType = '';var myOtherAside = '';
     $scope.editRoomStatus = function(editType) {
         $scope.param.editType = editType;
@@ -580,7 +581,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.bookRoomStatus[$scope.statusRoom.item_id].roomStatus = roomStatus;
         });
     };
-    //收款
+    ////收款//////////////////////////////////////////////////////////
     $scope.payment_name = '选择支付方式';
     var asideAccounts = '';
     $scope.bookingAccounts = function(account, type) {
@@ -588,7 +589,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         if(type == 'refund') {title = '退款';accounts_type = 'refund';};
         if(type == 'hanging') {title = '挂账';accounts_type = 'hanging';};
         if(type == 'edit') title = '修改账款';
-        $scope.param.credit_authorized_days = $scope.getDay('yyyy-mm-dd HH:mm:ss');
+        $scope.param.credit_authorized_days = $scope.getDay('yyyy-MM-dd HH:mm:ss');
         $scope.param.accounts_type = accounts_type;$scope.param.ba_id = '';
         asideAccounts = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
 		asideAccounts.$promise.then(function() {
@@ -606,6 +607,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $('#payment_ul').next().hide();
         }
 	};
+    //收款
     $scope.showPaymentUL = function() {$('#payment_ul').next().show();};
     $scope.saveAccounts = function() {
         $scope.beginLoading =! $scope.beginLoading;
@@ -647,7 +649,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.accountsList[booking_number] = $scope.accountDetail;
         });
     };
-    //账务编辑
+    ////账务编辑////////////////////////////////
     $scope.param.ba_id = '';
     $scope.editAccounts = function(accounts) {
         var title = '账务编辑';
@@ -674,7 +676,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 		});
 	};
-    //消费编辑
+    ////消费编辑///////////////////////////////////
     //$scope.asideConsume = '';
     $scope.editConsume = function(consume) {console.log(consume);
         $scope.thisConsume = consume;
@@ -690,7 +692,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 		});
 	};
-	//消费
+	////消费、借物//////////////////////////////////////////////////
 	$scope.bookingConsume = function(consume) {
         var title = '消费';
         var templateUrl = '/resource/views/Booking/Room/Consume.html';
@@ -716,7 +718,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $('#payment_ul').next().hide();
         }
     }
-    //借物
+    ////借物//////////////////////////////////////////////////////////////////
     $scope.borrowing_name = '选择借物';$scope.borrowing = {};
     $scope.selectBorrowing = function(borrowing) {
         if(angular.isDefined(borrowing)) {
@@ -731,7 +733,22 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.showBorrowingUL = function() {
         $('#borrowing_ul').next().show();
     }
-	//结账退房
+    $scope.editBorrowing = function(borrow) {
+        var title = "借物";
+        var templateUrl = '/resource/views/Booking/Room/Borrowing.html';
+        $scope.param = borrow;
+        $scope.param.item_id = borrow.item_id+"";
+        $scope.param.money = borrow.cash_pledge;
+        $scope.borrowing_name = borrow.borrowing_name;
+        $scope.payment_name = borrow.payment_name;
+		$scope.asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: templateUrl,show: false});
+        $scope.asideConsume.$promise.then(function() {
+			$scope.asideConsume.show();
+			$(document).ready(function(){
+			});
+		});
+    }
+	////结账退房////////////////////////////////////////////////////////////
 	$scope.bookingClose = function(bookDetail, closeType) {
         if(closeType == 'refund' || closeType == 'hanging') {
             var title = '退房';$scope.closeThisBooking = close;
@@ -765,7 +782,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             });
         }
 	};
-	////////////////////////////////////////////////night auditor
+	////night auditor////////////////////////////////////////////
 	$scope.nightAuditorList = '';
 	$scope.nightAuditor = function() {
 		$httpService.header('method', 'nightAuditor');
@@ -782,7 +799,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			}
         });
 	}
-	///////////////////////////////////////////////end night auditor
+	////end night auditor///////////////////////////////////////////
     $scope.searchBooking = function(condition) {
         if((angular.isDefined($scope.param.condition_date) && angular.isDefined($scope.param.search_date)) || 
            (angular.isDefined($scope.param.condition_key) && angular.isDefined($scope.param.search_value))) {
@@ -805,7 +822,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			}
         });
     }
-    //begin/////////////////////////////////////////远期房态//////////////////
+    //begin//远期房态/////////////////////////////////////////////////////////
 	$scope.roomForwardList = '';$scope.param.eta_date = $scope.getDay('yyyy-MM-dd');
     $scope.roomForcasting =function(getRoomForward) {
 		if($scope.roomForwardList == '' || getRoomForward == true) {

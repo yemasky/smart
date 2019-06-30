@@ -22,7 +22,7 @@
 		"manager":"管理",
 		"edit":"编辑",
 		"config":"配置",
-		"PayingTheBill":"结账","backout":"撤销"
+		"PayingTheBill":"结账","backout":"撤销","give_back":"归还"
 	}
 },
 "error" : {

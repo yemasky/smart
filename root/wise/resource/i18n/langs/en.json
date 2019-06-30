@@ -22,7 +22,7 @@
 		"manager":"Manager",
 		"edit":"Edit",
 		"config":"Config",
-		"PayingTheBill":"Paying the Bill","backout":"Backout"
+		"PayingTheBill":"Paying the Bill","backout":"Backout","give_back":"Give back"
 	}
 },
 "error" : {

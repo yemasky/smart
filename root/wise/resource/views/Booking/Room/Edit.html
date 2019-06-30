@@ -111,7 +111,7 @@
                     </div>
                 </div>
 				<div ng-show="activeRoomBookEditTab==2">
-                      <div class="table-responsive"> </div>
+                      <div class="table-responsive"></div>
                 </div>
                 <div ng-show="activeRoomBookEditTab==3">
                     <script type="text/ng-template" id="/app/checkOutMenu.html">
@@ -231,6 +231,54 @@
                                 </table>
                             </div>
                         </div>
+                        <div ng-show="activeBookAccountsEditTab==3">
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-striped bg-white text-nowrap">
+                                  <thead>
+                                    <tr>
+                                      <th class="w">房号</th>
+                                      <th class="w">物品</th>
+                                      <th class="w">数量</th>
+                                      <th class="w">押金</th>
+                                      <th class="w">时间</th>
+                                      <th class="w">已还</th>  
+                                      <th class="col-xs-1">管理</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    <tr ng-repeat="(detail_id, borrowing) in bookBorrowing">
+                                        <td colspan="7" class="no-padding panel">
+                                            <table class="table no-margin">
+                                                <tr ng-repeat="(borrow_id, borrow) in borrowing">
+                                                    <td class="w">{{borrow.item_name}}</td>
+                                                    <td class="w">{{borrow.borrowing_name}}</td>
+                                                    <td class="w">{{borrow.borrowing_num}}</td>
+                                                    <td class="w">{{borrow.cash_pledge}}</td>
+                                                    <td class="w">{{borrow.add_datetime}}</td>
+                                                    <td class="w">{{borrow.borrowing_return_num}}</td>
+                                                    <td class="col-xs-1">
+                                                        <span class="btn-group">
+                                                            <button class="btn btn-xs btn-default" ng-click="editBorrowing(borrow)"><span translate="common.hint.edit" >编辑</span></button>
+                                                            <button class="btn btn-xs btn-default" ng-click="editBorrowing(borrow)"><span translate="common.hint.give_back" >归还</span></button>
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                      <th class="text-nowrap">合计</th>
+                                      <td>收款</td>
+                                      <td></td>
+                                      <td>退款</td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                    </tr>  
+                                  </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                     
                 </div>
@@ -280,11 +328,16 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
 	var param = 'channel='+_channel+'&view='+_view;
-    ////////begin Borrowing
+    ////////begin Borrowing 借物
     $scope.changeBorrowing = function() {
         $scope.param.money = $scope.borrowing.borrowing_price * $scope.param.borrowing_num;
     }
     $scope.saveBorrowing = function() {
+        $scope.param.booking_number = $scope.bookDetail.booking_number;
+        $scope.param.channel = $scope.bookDetail.channel;
+        $scope.param.book_id = $scope.bookDetail.book_id;
+        $scope.param.borrowing_id = $scope.borrowing_id;
+        $scope.param.borrowing_name = $scope.borrowing_name;
         $scope.loading.show();$httpService.header('method', 'saveBorrowing');
         $httpService.post('/app.do?'+param, $scope, function(result){
             $httpService.deleteHeader('method');
@@ -294,8 +347,10 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
+            $scope.asideConsume.hide();
         });
-    }
+    };
+    
     //////end Borrowing
     
     //////Consume
@@ -321,11 +376,11 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 consume_price_total = result.data.item.consume_price_total;
                 $scope.param.consume_id = consume_id;$scope.param.c_id = c_id;
                 $scope.param.business_day = business_day;
-                $scope.param.consume_price_total = $scope.param.money;$scope.param.consume_price = $scope.param.money;
-                $scope.param.original_price = $scope.param.money;$scope.param.item_amount = 1;
-                
             } 
+            $scope.param.consume_price_total = $scope.param.money;$scope.param.consume_price = $scope.param.money;
+            $scope.param.original_price = $scope.param.money;$scope.param.item_amount = 1;
             $scope.consumeDetail[$scope.param.booking_detail_id][consume_id] = angular.copy($scope.param);
+            $scope.param.c_id = '';
             $scope.asideConsume.hide();
         });
     }
