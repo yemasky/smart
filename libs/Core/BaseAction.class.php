@@ -422,7 +422,14 @@ abstract class BaseAction {
      */
     protected abstract function service(HttpRequest $objRequest, HttpResponse $objResponse);
 
-    protected abstract function doMethod(HttpRequest $objRequest, HttpResponse $objResponse);
+    protected function doMethod(HttpRequest $objRequest, HttpResponse $objResponse) {
+        $method = $objRequest->method;
+        if (!empty($method)) {
+            $method = 'doMethod' . ucfirst($method);
+
+            return $this->$method($objRequest, $objResponse);
+        }
+    }
 
     protected function checkMethod(HttpRequest $objRequest, HttpResponse $objResponse) {
 

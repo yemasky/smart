@@ -338,6 +338,8 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         $scope.param.book_id = $scope.bookDetail.book_id;
         $scope.param.borrowing_id = $scope.borrowing_id;
         $scope.param.borrowing_name = $scope.borrowing_name;
+        $scope.param.payment_id = $scope.payment_id;
+        $scope.param.payment_name = $scope.payment_name;
         $scope.loading.show();$httpService.header('method', 'saveBorrowing');
         $httpService.post('/app.do?'+param, $scope, function(result){
             $httpService.deleteHeader('method');

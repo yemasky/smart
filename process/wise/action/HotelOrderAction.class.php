@@ -27,16 +27,6 @@ class HotelOrderAction extends \BaseAction
         }
     }
 
-    protected function doMethod(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        // TODO: Implement method() method.
-        $method = $objRequest->method;
-        if (!empty($method)) {
-            $method = 'doMethod' . ucfirst($method);
-
-            return $this->$method($objRequest, $objResponse);
-        }
-    }
-
     public function invoking(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->check($objRequest, $objResponse);
         $this->service($objRequest, $objResponse);
@@ -205,7 +195,7 @@ class HotelOrderAction extends \BaseAction
             'in_date' => getDay(), 'out_date'=>getDay(24)];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
-    //
+    //预订
     protected function doRoomOrder(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         $method = $objRequest->method;
@@ -704,15 +694,24 @@ class HotelOrderAction extends \BaseAction
             if(!empty($item_name)) $arrayUpdate['item_name'] = $item_name;
             $arrayUpdate['item_id'] = $item_id;
             $arrayUpdate['cash_pledge'] = $cash_pledge;
+            $arrayUpdate['borrowing_num'] = $objRequest->getInput('borrowing_num');
+            $arrayUpdate['payment_id'] = $objRequest->getInput('payment_id');
+            $arrayUpdate['payment_name'] = $objRequest->getInput('payment_name');
+            $arrayUpdate['borrowing_name'] = $objRequest->getInput('borrowing_name');
+            $arrayUpdate['booking_borrowing_id'] = $objRequest->getInput('booking_borrowing_id');
+
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_borrowing_id', $bb_id);
-            BookingHotelServiceImpl::instance()->updateBookingConsume($whereCriteria, $arrayUpdate);
+            BookingHotelServiceImpl::instance()->updateBookingBorrowing($whereCriteria, $arrayUpdate);
 
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['booking_borrowing_id'=>$bb_id, 'bb_id'=>encode($bb_id), 'business_day'=>'']);
         } elseif ($book_id > 0 && $item_id > 0) {
             $arrayInput = $objRequest->getInput();
-            $money = $objRequest->getInput('money');
-            //更新房间detail
+            //开启事务
+            CommonServiceImpl::instance()->startTransaction();
+            //收款
+
+            //插入数据
             $businessDay = LoginServiceImpl::getBusinessDay();
             $Booking_borrowingEntity = new Booking_borrowingEntity($arrayInput);
             $Booking_borrowingEntity->setCompanyId($company_id);
@@ -722,6 +721,7 @@ class HotelOrderAction extends \BaseAction
             $Booking_borrowingEntity->setCashPledge($cash_pledge);
             $Booking_borrowingEntity->setAddDatetime(getDateTime());
             $booking_borrowing_id = BookingHotelServiceImpl::instance()->saveBookingBorrowing($Booking_borrowingEntity);
+            CommonServiceImpl::instance()->commit();
             //
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['booking_borrowing_id'=>$booking_borrowing_id, 'bb_id'=>encode($booking_borrowing_id), 'business_day'=>$businessDay]);
         }
