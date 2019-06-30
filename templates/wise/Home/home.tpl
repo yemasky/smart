@@ -294,16 +294,6 @@
     </div>
   </div>
 </div>
-<script language="JavaScript">
-app.controller('HomeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
-    $scope.param = {};
-    $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css"]);
-    //初始化数据
-    
-    //选择入住房
-});
-
-</script>
 <script src="<%$__RESOURCE%>vendor/jquery/easypiechart/jquery.easy-pie-chart.js"></script>
 <script src="<%$__RESOURCE%>vendor/jquery/flot/jquery.flot.min.js"></script>
 <script src="<%$__RESOURCE%>vendor/jquery/flot/jquery.flot.resize.js"></script>
@@ -315,3 +305,61 @@ app.controller('HomeController', function($rootScope, $scope, $httpService, $loc
 <script src="<%$__RESOURCE%>vendor/jquery/jvectormap/jquery-jvectormap.min.js"></script>
 <script src="<%$__RESOURCE%>vendor/jquery/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
 <script src="<%$__RESOURCE%>vendor/jquery/jvectormap/jquery-jvectormap-us-aea-en.js"></script>
+<script language="JavaScript">
+angular.module("ui.jp", ["oc.lazyLoad", "ui.load"]).value("uiJpConfig", {}).directive("uiJp", ["uiJpConfig", "MODULE_CONFIG", "$ocLazyLoad", "uiLoad", "$timeout", function(a, b, c, d, e) {
+    return {
+        restrict: "A",
+        compile: function(c, f) {
+            var g = a && a[f.uiJp];
+            return function(a, c, f) {
+                function h() {
+                    var b = [];
+                    return f.uiOptions ? (b = a.$eval("[" + f.uiOptions + "]"), angular.isObject(g) && angular.isObject(b[0]) && (b[0] = angular.extend({}, g, b[0]))) : g && (b = [g]), b
+                }
+
+                function i() {
+                    e(function() {
+                        c[f.uiJp].apply(c, h())
+                    }, 0, !1)
+                }
+
+                function j() {
+                    f.uiRefresh && a.$watch(f.uiRefresh, function() {
+                        i()
+                    })
+                }
+                f.ngModel && c.is("select,input,textarea") && c.bind("change", function() {
+                    c.trigger("input")
+                });
+                var k = !1;
+                angular.forEach(b, function(a) {
+                    a.name == f.uiJp && (k = a.files)
+                }), k ? d.load(k).then(function() {
+                    i(), j()
+                }).catch(function() {}) : (i(), j())
+            }
+        }
+    }
+}]);
+ app.controller('HomeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
+    $scope.param = {};
+    $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css"]);
+    //初始化数据
+    $scope.plot_pie = [];
+    var series = Math.floor(Math.random() * 4) + 3;
+
+    for (var i = 0; i < series; i++) {
+    $scope.plot_pie[i] = {
+      label: "Series" + (i + 1),
+      data: Math.floor(Math.random() * 100) + 1
+    }
+    }
+
+    $scope.plot_line = [[1, 7.5], [2, 7.5], [3, 5.7], [4, 8.9], [5, 10], [6, 7], [7, 9], [8, 13], [9, 7], [10, 6]];
+    $scope.plot_line_1 = [[1, 9.5], [2, 9.4], [3, 9.5], [4, 9.5], [5, 9.7], [6, 9.6], [7, 9.3], [8, 9.5], [9, 9], [10, 9.9]];
+    $scope.plot_line_2 = [[1, 4.5], [2, 4.2], [3, 4.5], [4, 4.3], [5, 4.5], [6, 4.7], [7, 4.6], [8, 4.8], [9, 4.6], [10, 4.5]];
+    $scope.plot_line_3 = [[1, 14], [2, 5.7], [3, 9.6], [4, 7.8], [5, 6.6], [6, 10.5]];
+});
+
+</script>
+

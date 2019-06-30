@@ -35,7 +35,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param null $operation_id
      */
-    public function setOperationId($operation_id): void {
+    public function setOperationId($operation_id) {
         $this->operation_id = $operation_id;
     }
 
@@ -49,7 +49,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $booking_number
      */
-    public function setBookingNumber($booking_number): void {
+    public function setBookingNumber($booking_number) {
         $this->booking_number = $booking_number;
     }
 
@@ -63,7 +63,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $company_id
      */
-    public function setCompanyId($company_id): void {
+    public function setCompanyId($company_id) {
         $this->company_id = $company_id;
     }
 
@@ -77,7 +77,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $module_id
      */
-    public function setModuleId($module_id): void {
+    public function setModuleId($module_id) {
         $this->module_id = $module_id;
     }
 
@@ -91,7 +91,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $module_name
      */
-    public function setModuleName($module_name): void {
+    public function setModuleName($module_name) {
         $this->module_name = $module_name;
     }
 
@@ -105,7 +105,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $method
      */
-    public function setMethod($method): void {
+    public function setMethod($method) {
         $this->method = $method;
     }
 
@@ -119,7 +119,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $channel_id
      */
-    public function setChannelId($channel_id): void {
+    public function setChannelId($channel_id) {
         $this->channel_id = $channel_id;
     }
 
@@ -133,7 +133,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $request
      */
-    public function setRequest($request): void {
+    public function setRequest($request) {
         $this->request = $request;
     }
 
@@ -147,7 +147,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $operation_title
      */
-    public function setOperationTitle($operation_title): void {
+    public function setOperationTitle($operation_title) {
         $this->operation_title = $operation_title;
     }
 
@@ -161,7 +161,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $operation_content
      */
-    public function setOperationContent($operation_content): void {
+    public function setOperationContent($operation_content) {
         $this->operation_content = $operation_content;
     }
 
@@ -175,7 +175,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $business_day
      */
-    public function setBusinessDay($business_day): void {
+    public function setBusinessDay($business_day) {
         $this->business_day = $business_day;
     }
 
@@ -189,7 +189,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $employee_id
      */
-    public function setEmployeeId($employee_id): void {
+    public function setEmployeeId($employee_id) {
         $this->employee_id = $employee_id;
     }
 
@@ -203,7 +203,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $employee_name
      */
-    public function setEmployeeName($employee_name): void {
+    public function setEmployeeName($employee_name) {
         $this->employee_name = $employee_name;
     }
 
@@ -217,7 +217,7 @@ class Booking_operationEntity extends \Entity {
     /**
      * @param mixed $add_datetime
      */
-    public function setAddDatetime($add_datetime): void {
+    public function setAddDatetime($add_datetime) {
         $this->add_datetime = $add_datetime;
     }
 

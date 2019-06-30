@@ -46,8 +46,9 @@
 <script language="javascript" src="<%$__RESOURCE%>angular-lib-extend.min.js?<%$__VERSION%>"></script>
 <script language="javascript" src="<%$__RESOURCE%>vendor/modules/angular-strap/angular-strap.min.js?<%$__VERSION%>"></script>
 <script language="javascript">//'ui.jp',,'angular-popups', 'ui.select'
-var app = angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource','ngRoute','ngSanitize','ngTouch','pascalprecht.translate','ngStorage','ui.router','ui.utils','mgcrea.ngStrap','oc.lazyLoad','ui.load','angular-loading-bar'
-]).config(["$controllerProvider","$compileProvider","$filterProvider","$provide", "$ocLazyLoadProvider",
+angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource','ngRoute','ngSanitize','ngTouch','pascalprecht.translate','ngStorage','ui.router','ui.utils','mgcrea.ngStrap','oc.lazyLoad','ui.load','angular-loading-bar'
+]);
+var app = angular.module("app").config(["$controllerProvider","$compileProvider","$filterProvider","$provide", "$ocLazyLoadProvider",
 	function($controllerProvider, $compileProvider, $filterProvider, $provide) {
 		app.controller = $controllerProvider.register, 
 		app.directive  = $compileProvider.directive, 
@@ -211,12 +212,11 @@ app.filter('propsFilter', function() {
         }
         return out;
     };
-})
-angular.module("app").constant("MODULE_CONFIG", [{
-    name: "ui.select",
-    module: !0,
-    files: ["<%$__RESOURCE%>vendor/modules/angular-ui-select/select.min.js", "<%$__RESOURCE%>vendor/modules/angular-ui-select/select.min.css"]
-}]).config(["$ocLazyLoadProvider", "MODULE_CONFIG", function($ocLazyLoadProvider, MODULE_CONFIG) {
+});
+angular.module("app").constant("MODULE_CONFIG", [
+    {name: "ui.select",module: !0,files: ["<%$__RESOURCE%>vendor/modules/angular-ui-select/select.min.js", "<%$__RESOURCE%>vendor/modules/angular-ui-select/select.min.css"]}, 
+    {name: "easyPieChart",module: !1,files: ["<%$_RESOURCE%>vendor/jquery/easypiechart/jquery.easy-pie-chart.js"]}
+]).config(["$ocLazyLoadProvider", "MODULE_CONFIG", function($ocLazyLoadProvider, MODULE_CONFIG) {
     $ocLazyLoadProvider.config({
         debug: !1,
         events: !1,
