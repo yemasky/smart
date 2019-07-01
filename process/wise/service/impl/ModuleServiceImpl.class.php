@@ -22,7 +22,8 @@ class ModuleServiceImpl extends \BaseServiceImpl implements ModuleService {
         $whereCriteria = new \WhereCriteria();
         $cacheModuleId = CacheConfig::getCacheId('module', 'ALL');
         if ($isUpdate) {
-            $whereCriteria->ORDER('module_father_id', 'ASC')->setHashKey('module_id');
+            $whereCriteria->ORDER('module_father_id', 'ASC')->ORDER('module_order', 'ASC')
+                ->ORDER('action_order', 'ASC')->setHashKey('module_id');
             $arrayModule = ModuleDao::instance()->DBCache($cacheModuleId, -1)->getModule($whereCriteria);
         } else {
             $whereCriteria->setHashKey('module_id');
@@ -33,19 +34,24 @@ class ModuleServiceImpl extends \BaseServiceImpl implements ModuleService {
     }
 
     ////获取用户菜单
-    public function getModuleInModuleId($arrayModuleId, $field = '') {
+    public function getModuleInModuleId($arrayModuleId, $company_id, $employee_id, $isUpdate = false, $field = '') {
         if(empty($arrayModuleId)) return array();
         if(empty($field)) $field = 'module_id,module_channel,module_name,module_father_id,module_view,is_recommend,submenu_father_id,ico';
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->ArrayIN('module_id', $arrayModuleId)->EQ('is_menu', '1')->EQ('is_release', '1');
-        $whereCriteria->ORDER('module_order', 'ASC')->ORDER('action_order', 'ASC')->ORDER('module_id', 'ASC');
-        $arrayEmployeeModule = ModuleDao::instance()->getModule($whereCriteria, $field);
+        $whereCriteria->ArrayIN('module_id', $arrayModuleId)->EQ('is_menu', '1')->EQ('is_release', '1')
+            ->ORDER('module_father_id', 'ASC')->ORDER('module_order', 'ASC')->ORDER('action_order', 'ASC')
+            ->ORDER('module_id', 'ASC');
+        $cacheModuleId = CacheConfig::getCacheId('employee_module_menu', $company_id, $employee_id);
+        if ($isUpdate) {
+            $arrayEmployeeModule = ModuleDao::instance()->DBCache($cacheModuleId, -1)->getModule($whereCriteria, $field);
+        } else {
+            $arrayEmployeeModule = ModuleDao::instance()->DBCache($cacheModuleId)->getModule($whereCriteria, $field);
+        }
         if (!empty($arrayEmployeeModule)) {
             foreach ($arrayEmployeeModule as $k => $v) {
                 $arrayEmployeeModule[$k]['url'] = \Encrypt::instance()->encode($v['module_id'], getDay());
             }
         }
-
         return $arrayEmployeeModule;
     }
 
@@ -61,6 +67,12 @@ class ModuleServiceImpl extends \BaseServiceImpl implements ModuleService {
         if(isset(ModulesConfig::$module[$module][$action])) {
             return \Encrypt::instance()->encode(ModulesConfig::$module[$module][$action], getDay());
         }
+        $arrayModule = $this->getAllModuleCache();
+        foreach ($arrayModule as $module_id => $modules) {
+            if($modules['module'] == $module && $modules['action'] == $action) {
+                return \Encrypt::instance()->encode($module_id, getDay());
+            }
+        }
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('module', $module)->EQ('action', $action);
         $arrayModuleId = ModuleDao::instance()->getModule($whereCriteria, 'module_id');
@@ -73,6 +85,10 @@ class ModuleServiceImpl extends \BaseServiceImpl implements ModuleService {
     //update
     public function batchUpdateModule($arrayUpdate, \WhereCriteria $whereCriteria) {
         ModuleDao::instance()->batchUpdateModuleByKey($arrayUpdate, $whereCriteria);
+    }
+
+    public function saveModule($arrayUpdate) {
+        return ModuleDao::instance()->saveModule($arrayUpdate);
     }
 
 }

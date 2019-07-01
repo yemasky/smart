@@ -5,7 +5,7 @@
  * Time: 19:17
  */
 
-namespace wise;
+namespace member;
 
 class Action {
 	protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -54,7 +54,7 @@ class Action {
 			if(is_numeric($module_id) && $module_id > 0) {
 				////判断权限
 				$arrayEmployeeRoleModule = RoleServiceImpl::instance()->getEmployeeRoleModuleCache($objEmployee->getCompanyId(), $objEmployee->getEmployeeId());
-				if(isset($arrayEmployeeRoleModule[$module_id])) {
+				if(isset($arrayEmployeeRoleModule[$module_id])) {//有权限
 					$arrayEmployeeModule = ModuleServiceImpl::instance()->getAllModuleCache();
 					if(isset($arrayEmployeeModule[$module_id])) {
 						$module         = $arrayEmployeeModule[$module_id]['module'];
@@ -65,7 +65,7 @@ class Action {
 					}
 					$objResponse->__module = $arrayEmployeeModule[$module_id]['module'];
 					$_self_module          = $arrayEmployeeModule[$module_id];
-				} else {
+				} else {//无权限
 					return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['no_permission']['code']);
 				}
 			}

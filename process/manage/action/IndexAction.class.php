@@ -31,16 +31,6 @@ class IndexAction extends \BaseAction {
 		}
 	}
 
-	protected function doMethod(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-		// TODO: Implement method() method.
-		$method = $objRequest->method;
-		if(!empty($method)) {
-			$method = 'doMethod' . ucfirst($method);
-
-			return $this->$method($objRequest, $objResponse);
-		}
-	}
-
 	public function invoking(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$this->check($objRequest, $objResponse);
 		$this->service($objRequest, $objResponse);
@@ -97,9 +87,9 @@ class IndexAction extends \BaseAction {
 
 	protected function doMethodUpdateModule(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $arrayModule = $objRequest->getPost();
-        $arrayUpdateModule = $arrayModuleId = '';
+        $arrayUpdateModule = $arrayModuleId = [];
         if(!empty($arrayModule)) {
-	        $arrayBatchUpdate['key'] = 'module_id';
+            $arrayUpdateModule['key'] = 'module_id';
             foreach ($arrayModule as $field => $arrayData) {
                 foreach ($arrayData as $module_id => $value) {
                     if($field == '_module') $field = 'module';
@@ -118,4 +108,22 @@ class IndexAction extends \BaseAction {
         $arrayModule = \wise\ModuleServiceImpl::instance()->getAllModuleCache(true);
         $objResponse->arrayModule = $arrayModule;
 	}
+
+	protected function doMethodAddModule(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $arrayPost = $objRequest->getPost();
+        if(!empty($arrayPost)) {
+            if(isset($arrayPost['_module'])) {
+                $arrayPost['module'] = $arrayPost['_module'];
+                unset($arrayPost['_module']);
+            }
+            if(isset($arrayPost['_action'])) {
+                $arrayPost['action'] = $arrayPost['_action'];
+                unset($arrayPost['_action']);
+            }
+            \wise\ModuleServiceImpl::instance()->saveModule($arrayPost);
+        }
+
+        $arrayModule = \wise\ModuleServiceImpl::instance()->getAllModuleCache(true);
+        $objResponse->arrayModule = $arrayModule;
+    }
 }

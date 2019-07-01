@@ -326,7 +326,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
         }
         data: {pageTitle: '编辑角色'},*/
     }).state('app.Management', {
-        url: "/Management/:channel", //url: "/role/edit?id",
+        url: "/Management/:view/:channel", //url: "/role/edit?id",
         templateUrl: function($routeParams) {
             return 'resource/views/Management/'+$routeParams.view+'.html?<%$__VERSION%>';
         },
@@ -376,7 +376,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		isIE && angular.element($window.document.body).addClass("ie"); 
 		matchNavigator($window) && angular.element($window.document.body).addClass("smart");
 		$scope.app = {
-			name: "WiseHotel", version: "<%$__VERSION%>",
+			name: "HotelWork", version: "<%$__VERSION%>",
 			color: {
 				primary: "#155abb",info: "#2772ee",success: "#4bb622",warning: "#f88311",danger: "#e11144",
 				inverse: "#a66bee",light: "#f1f2f3",dark: "#202a3a"
@@ -420,12 +420,13 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         $scope.switchChannel = function(channel_id) {
             console.log($scope.employeeChannel[channel_id]);
         }
-		$rootScope.employeeMenu = {};
+		$rootScope.employeeMenu = {};$scope.hashEmployeeModule = {};
 		$scope.setMenu = function($menus, $module_channel) {
 			if($menus == '') $menus = $rootScope.employeeMenu;
-			var channels = {}, channel_i = 0, menus = {};
+			var channels = {}, channel_i = 0, menus = {}, hashEmployeeModule = {};
 			if($menus != null && $menus != '') {
 				for(var i in $menus) {
+                    hashEmployeeModule[$menus[i].module_id] = $menus[i];
 					if($menus[i].module_father_id == '-1') {
 						channels[channel_i] = $menus[i];channel_i++;
 					} else {
@@ -460,6 +461,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				}
 			}
 			$scope.menus = menus;$scope.channels = channels;
+            $scope.hashEmployeeModule = hashEmployeeModule;
 		};
 		$scope.checkMenuData = function($common) {
 			if($common == null || $common == '') return;
@@ -480,7 +482,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		};
 		$rootScope._self_module = '';
 		$scope.setActionNavName = function(module_id) {
-			var menus = $rootScope.employeeMenu, nav = '', _self_module = $rootScope._self_module;
+			var menus = $scope.menus, nav = '', _self_module = $rootScope._self_module;
 			if(typeof(menus[module_id]) != 'undefined') {
 				nav = menus[module_id].module_name;
 			} else if(_self_module != '' && _self_module.module_id == module_id) {
@@ -506,7 +508,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			$scope.action_nav_name = '' + nav;
 		};
         $scope.getChannelModule = function(module_id) {
-            return $rootScope.employeeMenu[module_id];
+            return $scope.hashEmployeeModule[module_id];
         }
         $rootScope.defaultChannel = {};
 		$scope.setCommonSetting = function(common) {//$common == null?

@@ -25,7 +25,7 @@
 <script type="text/ng-template" id="/login.html">
 <div class="container">  
   <div class="center-block w-xl w-auto-xs m-b-lg">
-    <div class="text-2x m-v-lg text-primary"><i class="glyphicon glyphicon-th-large text-xl"></i> {{app.name}}</div>
+    <div class="text-2x m-v-lg text-primary"><i class="fas fa-hotel text-xl"></i> {{app.name}}</div>
     <div class="m-b text-sm" translate="login.hint.WORD">Sign in with your Account</div>
     <form name="login_form" class="form-validation" ng-submit="login(login_form.$valid)" ng-controller="LoginController">
       <div class="form-group m-b-xs">

@@ -1,0 +1,14 @@
+<?php
+/**
+ * User: YEMASKY
+ * Date: 2016/7/23
+ * Time: 23:55
+ */
+namespace manage;
+interface CommonService extends \BaseService {
+    public function startTransaction();
+
+	public function commit();
+
+	public function rollback();
+}

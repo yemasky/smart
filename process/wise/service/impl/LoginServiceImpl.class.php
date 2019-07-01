@@ -97,7 +97,7 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
         $arrayEmployeeRoleModule = RoleServiceImpl::instance()->getEmployeeRoleModuleCache($company_id, $employee_id);
         $arrayEmployeeModule     = '';
         if (!empty($arrayEmployeeRoleModule)) {
-            $arrayEmployeeModule = ModuleServiceImpl::instance()->getModuleInModuleId($arrayEmployeeRoleModule);
+            $arrayEmployeeModule = ModuleServiceImpl::instance()->getModuleInModuleId($arrayEmployeeRoleModule, $company_id, $employee_id);
         }
 
         return $arrayEmployeeModule;

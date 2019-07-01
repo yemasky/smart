@@ -21,8 +21,7 @@ class ModuleDao extends CommonDao {
 
 	public function getModule(\WhereCriteria $whereCriteria, $field = '') {
 		if(empty($field)) $field = '*';
-        if(empty($whereCriteria->getHashKey())) $whereCriteria->setHashKey('module_id');
-
+        //if(empty($whereCriteria->getHashKey())) $whereCriteria->setHashKey('module_id');
 		return $this->setDsnRead($this->getDsnRead())->setTable('module')->getList($whereCriteria, $field);
 	}
 
