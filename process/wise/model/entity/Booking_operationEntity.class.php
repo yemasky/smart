@@ -221,6 +221,4 @@ class Booking_operationEntity extends \Entity {
         $this->add_datetime = $add_datetime;
     }
 
-
-
 }
