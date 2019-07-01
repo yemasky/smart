@@ -25,7 +25,7 @@
 <script type="text/ng-template" id="/login.html">
 <div class="container">  
   <div class="center-block w-xl w-auto-xs m-b-lg">
-    <div class="text-2x m-v-lg text-primary"><i class="fas fa-hotel text-xl"></i> {{app.name}}</div>
+    <div class="text-2x m-v-lg text-primary"><i class="fas fa-frog b-danger text-xl"></i> {{app.name}}</div>
     <div class="m-b text-sm" translate="login.hint.WORD">Sign in with your Account</div>
     <form name="login_form" class="form-validation" ng-submit="login(login_form.$valid)" ng-controller="LoginController">
       <div class="form-group m-b-xs">
@@ -115,46 +115,6 @@
   </div>
 </div>
 </script><!-- /app/aside.html -->
-<script type="text/ng-template" id="/app/header/aside.nav.menu.html">
-<nav ui-nav>
-  <ul class="nav">
-    <li class="nav-header h4 m-v-sm">
-      UI Kits
-    </li>
-	<li ng-repeat="(i, module) in menus" ui-sref-active="active" ng-class="" class="{{module.module_channel}} {{module.hide}} menu">
-		<a ng-if="module.have_children==1">
-          <i class="icon {{module.ico}} text-lt"></i>
-          <span>{{module.module_name}}</span>
-          <span class="text-muted" ng-if="module.have_children==1">
-           <i class="fa fa-caret-down"></i>
-          </span>
-		</a>
-        <a ng-if="module.have_children==0" ui-sref="app.{{module.module_channel}}({view:module.module_view,channel:module.url})" ng-click="setActionNavName(module.module_id)">
-          <i class="icon {{module.ico}} text-lt"></i>
-          <span>{{module.module_name}}</span>
-          <span class="pull-right text-muted" ng-if="module.have_children==1">
-           <i class="fa fa-caret-down"></i>
-          </span>
-		</a>
-		<ul class="nav nav-sub bg" ng-if="module.have_children==1">
-			<li ng-repeat="(children_id, children) in module.children">
-			  <a ui-sref="app.{{children.module_channel}}({view:children.module_view,channel:children.url})" ng-click="setActionNavName(children.module_id)">
-				<span class="font-normal">{{children.module_name}}</span>
-				<span class="pull-right text-muted" ng-if="children.have_children==1">
-				  <i class="fa fa-caret-down"></i>
-				</span>
-			  </a>
-			  <ul class="nav nav-sub bg" ng-if="children.have_children==1">
-				<li ng-repeat="(submenu_id, submenu) in children.submenu">
-				  <a ui-sref="app.{{submenu.module_channel}}({view:submenu.module_view,channel:submenu.url})" ng-click="setActionNavName(submenu.module_id)">{{submenu.module_name}}</a>
-				</li>
-			  </ul>
-			</li>        
-        </ul>
-	</li>
-  </ul>
-</nav>
-</script><!-- /app/header/aside.nav.menu.html -->
 <script type="text/ng-template" id="/app/footer.html">
 <div class="p bg-white text-xs">
   <div class="pull-right hidden-xs hidden-sm text-muted">

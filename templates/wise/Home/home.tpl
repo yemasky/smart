@@ -158,6 +158,7 @@
       </div>
     </div>    
   </div>
+  <!--
   <div class="box b-a bg-white m-b">
     <div class="col-md-8">
       <div class="panel-heading b-b b-light">World Market</div>
@@ -235,6 +236,7 @@
       </div>
     </div>
   </div>
+  -->
   <div class="row">
     <div class="col-sm-6">
       <h5 class="no-margin m-b">新加会员</h5>
@@ -293,6 +295,7 @@
       </div>
     </div>
   </div>
+  
 </div>
 <script src="<%$__RESOURCE%>vendor/jquery/easypiechart/jquery.easy-pie-chart.js"></script>
 <script src="<%$__RESOURCE%>vendor/jquery/flot/jquery.flot.min.js"></script>

@@ -1,130 +1,102 @@
 <span ng-include="'/resource/views/Common/nav.tpl.html'"></span>
-<div class="p-md" ng-controller="SectorController">
-	<div class="box b-a bg-white m-b">
-    	<div class="col-md-6">
-      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addPaymentType(0)"> </a></div>
-            <div class="p-md">
-            <div class="table-responsive">
-            <table class="table table-bordered table-striped bg-white">
-              <thead>
-                <tr>
-                  <th>类型</th>
-                  <th class="no-padding panel">
-                    <table class="table no-margin">
-                        <tbody>
-                            <tr>
-                                <th class="col-md-5">中文名称</th>
-                                <th class="col-md-4"></th>
-                                <th class="col-md-2">有效</th>
-                                <th class="col-md-1"></th>
-                            </tr>
-                        </tbody>
-                    </table>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr ng-repeat="(i, data) in dataList">
-                  <td class="text-nowrap">{{data.payment_name}}</td>
-                  <td class="no-padding panel">
-                    <table class="table no-margin">
-                        <tbody>
-                            <tr ng-repeat="(children_id, children) in data.children">
-                                <td class="col-md-5">{{children.payment_name}}</td>
-                                <td class="col-md-4">{{children.payment_en_name}}<span ng-if="children.payment_en_name==''">　</span> </td>
-                                <td class="col-md-2">
-                                	<i ng-if="children.valid==1" class="fa fa-dot-circle-o text-success"></i>
-                                	<i ng-if="children.valid==0" class="fa fa-ban text-warning"></i>
-                                </td>
-                                <td class="col-md-1">
-                                	<a class="pull-right" ng-click="addPaymentType(children)" ng-if="children.company_id>0"><i class="fa fa-edit"></i> </a>
-                                    <span class="pull-right" ng-if="children.company_id==0">　</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-            </div>
-            </div>
-        
-     	</div>
-     	<div class="col-md-6 b-l no-border-sm">
-     		<div class="panel-heading b-b b-light"> 应收账款</div>
-            <div class="list-group no-border no-radius">
-                <div class="list-group-item">
-                  <span class="pull-right">293,200</span>
-                  <i class="fa fa-fw fa-circle text-info"></i>
-                  Vatican City
-                </div>
-             </div>
-     	</div>
-     </div>
-</div>
-<script language="javascript">
-app.controller('SectorController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
-	//获取数据
-	var _channel = $scope.$stateParams.channel, common = '';
-	var _view = $scope.$stateParams.view;
-	var param = 'channel='+_channel+'&view='+_view;
-	$scope.loading.show();
-	$httpService.post('/app.do?'+param, $scope, function(result){
-		$scope.loading.hide();
-		if(result.data.success == '0') {
-			var message = $scope.getErrorByCode(result.data.code);
-			$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
-		}
-		common = result.data.common;
-		$scope.setCommonSetting(common);
-		var dataList = result.data.item;
-		if(angular.isDefined(dataList)) {
-			$scope.dataList = dataList;
-			var keyData = []; var i = 0;
-			for(var data_id in dataList) {
-				keyData[i] = {};
-				keyData[i]['value'] = dataList[data_id].payment_name;
-				keyData[i]['value_en'] = dataList[data_id].payment_en_name;
-				keyData[i]['value_id'] = dataList[data_id].payment_id;
-				keyData[i]['label'] = dataList[data_id].payment_id;
-				i++;
-			}
-			$scope.keyData = keyData;
-		}
-	});
-	//
-	var asidePaymentType = '';
-	$scope.addPaymentType = function(_this) {
-		$scope.param = {}; $scope.param["valid"] = "1";
-		if(_this != 0) $scope.param = _this;
-		$scope.action = '添加/编辑';
-		asidePaymentType = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/PaymentTypeAddEdit.tpl.html'});
-		asidePaymentType.$promise.then(function() {
-			asidePaymentType.show();
-			$(document).ready(function(){
-				
-			});
-		})
-		
-	};
-	$scope.saveData = function() {
-		var param = this.param;
-		if(param == null || param == '' || !angular.isDefined(param.payment_father_id)) {
-			$alert({title: 'Notice', content: '类型必须选择！', templateUrl: '/modal-warning.html', show: true});
-			return;
-		}
-		$scope.loading.show();
-		$scope.param = param;
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
-			$scope.loading.hide();
-			$scope.dataList = result.data.item;
-			asidePaymentType.hide();
-			
-		});
-	}
-	$httpService.deleteHeader('refresh');
-	
-});
+<div class="p-md" ng-controller="SectorPositionController">
 
+    <form name="SectorPositionForm" class="form-inline" role="form">
+        <ul class="nav nav-tabs" ui-nav>
+            <li class="active">
+                <a href>部门管理</a>
+            </li>
+            <li><a href="#!/app/Setting/{{position.view}}/{{position.url}}">职位管理</a></li>
+            <button class="btn btn-addon btn-default pull-right m-l" ng-click="addSectorPosition(0)"><i class="fa fa-plus"></i>新建价格类型</button>
+            <button type="button" class="btn btn-default pull-right" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择酒店">
+              Action <span class="caret"></span>
+            </button>
+        </ul>
+        <div class="p b-a no-b-t bg-white m-b table-responsive">
+            <table class="table table-bordered table-striped bg-white">
+                <thead>
+                    <tr>
+                        <th class="w">企业</th>
+                        <th class="w">一级部门</th>
+                        <th class="w-md">二级部门</th>
+                        <th class="col-sm-3"></th>
+                        <th class="col-sm-3"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="(i, system) in dataList">
+                        <td class="text-nowrap">{{system.price_system_name}}</td>
+                        <td><span ng-repeat="(j, market_id) in system.market_ids"><i class="fa fa-check-circle"> </i> {{marketChildrenHash[market_id].market_name}} </span></td>
+                        <th class="col-sm-3"></th>
+                        <td><a ng-click="addSectorPosition(system)" class="pull-right ng-scope"><i class="fa fa-edit"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+<script language="javascript" src="/resource/vendor/modules/angular-smart-table/smart-table.min.js"></script>
+<script language="javascript">
+    app.controller('SectorPositionController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
+        //获取数据
+        var _channel = $scope.$stateParams.channel; var _view = $scope.$stateParams.view, common = '';
+        var param = 'channel=' + _channel + '&view=' + _view;
+        $scope.loading.show();
+        $httpService.post('/app.do?' + param, $scope, function(result) {
+            $scope.loading.hide();
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                $alert({ title: 'Error',content: message,templateUrl: '/modal-warning.html',show: true});
+            }
+            common = result.data.common;
+            $scope.setCommonSetting(common);
+            $scope.setThisChannel('Hotel');
+            $scope.roomPriceListUrl = result.data.item.roomPriceListUrl;
+        });
+
+        //
+        var asideSectorPosition = '';
+        $scope.addSectorPosition = function(_this) {
+            $scope.param = {};$scope.param["_valid"] = "1";$scope.param["_price_system_type"] = "direct";
+            if (_this != 0) {
+                $scope.param = _this;
+            }
+
+            $scope.action = '添加/编辑';
+            asideSectorPosition = $aside({scope: $scope,title: $scope._self_module.module_name,placement: 'top',animation: 'am-fade-and-slide-top',backdrop: "static",container: 'body',templateUrl: '/resource/views/Setting/SectorPositionAddEdit.tpl.html'});
+            asideSectorPosition.$promise.then(function() {
+                asideSectorPosition.show();
+                $(document).ready(function() {
+
+                });
+            })
+        };
+
+        $scope.saveData = function() {
+            var param = this.param;
+            if (param._price_system_type == 'formula') {
+                if(param.price_system_father_id == '0' || param.price_system_father_id == 0) {
+					$alert({title: 'Notice', content: '公式价格放盘必须选择继承父价格！', templateUrl: '/modal-warning.html', show: true});
+                	return;
+				}
+            } else {
+				param.price_system_father_id = 0;
+			}
+            $scope.loading.show();
+            var formParam = $.serializeFormat('#thisForm');
+            formParam['cancellation_policy'] = param['policy'];
+            formParam['price_system_father_id'] = '0';
+            if (angular.isDefined(param['price_system_father_id']) && param['price_system_father_id'] > 0) formParam['price_system_father_id'] = param['price_system_father_id'];
+            formParam['price_system_id'] = param['price_system_id'];
+            $scope.param = formParam;
+            $httpService.post('/app.do?channel=' + common.saveAddEditUrl, $scope, function(result) {
+                $scope.loading.hide();
+                if (result.data.success == '0') return;
+                solutionData(result.data.item);
+                asideSectorPosition.hide();
+            });
+        }
+        
+        $httpService.deleteHeader('refresh');
+    });
 </script>

@@ -32,15 +32,11 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             var layoutRoom = result.data.item.layoutRoom;//房型房间
             if(angular.isDefined(channelItemList)) {$scope.setLayoutList(channelItemList, layoutRoom);}
             $scope.marketList = result.data.item.marketList;
-            //
-            var resultPriceLayout = result.data.item.priceLayout;
-            $scope.setPriceLayout(resultPriceLayout);//计算价格类型
             //按时间计算空房
             $scope.layoutRoom = result.data.item.layoutRoom;
             //所有价格类型
             $scope.priceSystemHash = result.data.item.priceSystemHash;
             //设置价格体系市场
-            //$scope.setPriceSystemMarket();
             var _thisDay = result.data.item.in_date;
             var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');
             var _nextDay = result.data.item.out_date;
@@ -65,6 +61,10 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $scope.defaultHotel = $rootScope.defaultChannel.channel_name;
             //设置客源市场 
             $scope.selectCustomerMarket($scope.marketList[1].children[2], false);
+            //
+            var resultPriceLayout = result.data.item.priceLayout;
+            $scope.setPriceLayout(resultPriceLayout);//计算价格类型
+            $scope.selectMarketLayoutPrice();//设置新价格
         });
     });
     //选择客人市场
@@ -328,7 +328,6 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 }
             }
         }
-        console.log(thisMarketPrice);
         $scope.marketChannelLayoutPrice = thisMarketPrice;
     }
     $scope.selectThisLayout = function($event) {}
