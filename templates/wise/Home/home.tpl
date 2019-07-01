@@ -12,7 +12,7 @@
         <div class="panel-body p-sm">
           <div class="pull-left pull-none-sm p-h text-center m-r-xs">
             <div class="inline">
-              <div ui-jp="easyPieChart" ui-options="{percent:80,lineWidth: 5,trackColor: '#fff',barColor: '{{app.color.light}}',scaleColor: '#fff',
+              <div ui-jq="easyPieChart" ui-options="{percent:80,lineWidth: 5,trackColor: '#fff',barColor: '{{app.color.light}}',scaleColor: '#fff',
                   size: 65,lineCap: 'butt',color: '{{app.color.success}}',animate: 3000}">
                 <div class="text-white"> 80% </div>
               </div>
@@ -35,7 +35,7 @@
         </div>
         <div class="panel-body p-sm">
           <div class="pull-left pull-none-sm p-h text-center m-r-xs">
-            <div ui-jp="easyPieChart" ui-options="{percent:20,lineWidth: 5,trackColor: '{{app.color.light}}',
+            <div ui-jq="easyPieChart" ui-options="{percent:20,lineWidth: 5,trackColor: '{{app.color.light}}',
                 barColor: '{{app.color.info}}',scaleColor: '#fff',size: 65,lineCap: 'butt',color: '{{app.color.inverse}}',animate: 3000 }">
               <div class="text-white"> 20%</div>
             </div>
@@ -58,7 +58,7 @@
         </div>
         <div class="panel-body p-sm">
           <div class="pull-left pull-none-sm p-h text-center m-r-xs">
-            <div ui-jp="easyPieChart" ui-options="{
+            <div ui-jq="easyPieChart" ui-options="{
               percent: 50,
               lineWidth: 28,
               trackColor: '#fff',
@@ -93,7 +93,7 @@
           <span>今日进店</span> <i class="fa fa-caret-up text-success"></i><span class="text-xs text-muted m-l-xs">1.5%</span>
         </div>
         <div class="panel-body">
-          <div ui-jp="plot" ui-refresh="showData" ui-options="
+          <div ui-jq="plot" ui-refresh="showData" ui-options="
             [
               {
                 data: {{plot_line}}, 
@@ -128,7 +128,7 @@
           本月总收入
         </div>
         <div style="margin: 0 -2px">
-          <div ui-jp="plot" ui-options="
+          <div ui-jq="plot" ui-options="
             [
               { data: {{plot_line_1}}, points: { show: true, radius: 0}, splines: { show: true, tension: 0.45, lineWidth: 1, fill: 0.2 } },
               { data: {{plot_line_2}}, points: { show: true, radius: 0}, splines: { show: true, tension: 0.45, lineWidth: 1, fill: 1 } }
@@ -151,7 +151,7 @@
               <span class="text-xl text-lt">$30,343 <i class="fa fa-caret-up text-muted"></i></span>
             </div>
             <div class="box-col text-right p-md w-xs">
-              <div ng-init="data1=[60,40]" ui-jp="sparkline" ui-options="{{data1}}, {type:'pie', height:35, sliceColors:['{{app.color.dark}}','#fff']}" class="sparkline inline"></div>
+              <div ng-init="data1=[60,40]" ui-jq="sparkline" ui-options="{{data1}}, {type:'pie', height:35, sliceColors:['{{app.color.dark}}','#fff']}" class="sparkline inline"></div>
             </div>
           </div>
         </div>
@@ -164,7 +164,7 @@
       <div class="panel-heading b-b b-light">World Market</div>
       <div class="panel-body">
         <p class="m-b-lg text-muted">Many maps of the world, world regions, countries and cities are available for download from <a href="http://jvectormap.com/">http://jvectormap.com/</a>. All of them are made from the data in public domain or data licensed under the free licenses, so you can use them for any purpose without of charge.</p>
-        <div class="m-b-lg" style="height:240px;" ui-jp="vectorMap" ui-options="{            
+        <div class="m-b-lg" style="height:240px;" ui-jq="vectorMap" ui-options="{            
           map: 'world_mill_en',
           markers: {{world_markers}},
           normalizeFunction: 'polynomial',
@@ -309,11 +309,11 @@
 <script src="<%$__RESOURCE%>vendor/jquery/jvectormap/jquery-jvectormap-world-mill-en.js"></script>
 <script src="<%$__RESOURCE%>vendor/jquery/jvectormap/jquery-jvectormap-us-aea-en.js"></script>
 <script language="JavaScript">
-angular.module("ui.jp", ["oc.lazyLoad", "ui.load"]).value("uiJpConfig", {}).directive("uiJp", ["uiJpConfig", "MODULE_CONFIG", "$ocLazyLoad", "uiLoad", "$timeout", function(a, b, c, d, e) {
+angular.module("ui.jq", ["oc.lazyLoad", "ui.load"]).value("uiJqConfig", {}).directive("uiJq", ["uiJqConfig", "MODULE_CONFIG", "$ocLazyLoad", "uiLoad", "$timeout", function(a, b, c, d, e) {
     return {
         restrict: "A",
         compile: function(c, f) {
-            var g = a && a[f.uiJp];
+            var g = a && a[f.uiJq];
             return function(a, c, f) {
                 function h() {
                     var b = [];
@@ -322,7 +322,7 @@ angular.module("ui.jp", ["oc.lazyLoad", "ui.load"]).value("uiJpConfig", {}).dire
 
                 function i() {
                     e(function() {
-                        c[f.uiJp].apply(c, h())
+                        c[f.uiJq].apply(c, h())
                     }, 0, !1)
                 }
 
@@ -336,7 +336,7 @@ angular.module("ui.jp", ["oc.lazyLoad", "ui.load"]).value("uiJpConfig", {}).dire
                 });
                 var k = !1;
                 angular.forEach(b, function(a) {
-                    a.name == f.uiJp && (k = a.files)
+                    a.name == f.uiJq && (k = a.files)
                 }), k ? d.load(k).then(function() {
                     i(), j()
                 }).catch(function() {}) : (i(), j())
@@ -346,7 +346,7 @@ angular.module("ui.jp", ["oc.lazyLoad", "ui.load"]).value("uiJpConfig", {}).dire
 }]);
  app.controller('HomeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
     $scope.param = {};
-    $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css"]);
+    $ocLazyLoad.load([$scope._resource + "styles/booking.css"]);
     //初始化数据
     $scope.plot_pie = [];
     var series = Math.floor(Math.random() * 4) + 3;
