@@ -392,7 +392,7 @@ class Booking_consumeEntity extends \Entity {
     /**
      * @param float $consume_price_total
      */
-    public function setConsumePriceTotal(float $consume_price_total): void {
+    public function setConsumePriceTotal(float $consume_price_total) {
         $this->consume_price_total = $consume_price_total;
     }
 

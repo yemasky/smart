@@ -237,7 +237,7 @@ class Booking_borrowingEntity extends \Entity {
     /**
      * @param mixed $payment_id
      */
-    public function setPaymentId($payment_id): void {
+    public function setPaymentId($payment_id) {
         $this->payment_id = $payment_id;
     }
 
@@ -251,7 +251,7 @@ class Booking_borrowingEntity extends \Entity {
     /**
      * @param mixed $payment_name
      */
-    public function setPaymentName($payment_name): void {
+    public function setPaymentName($payment_name) {
         $this->payment_name = $payment_name;
     }
 
@@ -265,7 +265,7 @@ class Booking_borrowingEntity extends \Entity {
     /**
      * @param mixed $employee_id
      */
-    public function setEmployeeId($employee_id): void {
+    public function setEmployeeId($employee_id) {
         $this->employee_id = $employee_id;
     }
 
@@ -279,7 +279,7 @@ class Booking_borrowingEntity extends \Entity {
     /**
      * @param mixed $employee_name
      */
-    public function setEmployeeName($employee_name): void {
+    public function setEmployeeName($employee_name) {
         $this->employee_name = $employee_name;
     }
 
