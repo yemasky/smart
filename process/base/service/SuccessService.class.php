@@ -38,7 +38,7 @@ class SuccessService {
     /**
      * @param bool $notice
      */
-    public function setNotice(bool $notice): void {
+    public function setNotice(bool $notice) {
         $this->notice = $notice;
     }
 
@@ -94,7 +94,7 @@ class SuccessService {
     /**
      * @param string $redirectUrl
      */
-    public function setRedirectUrl(string $redirectUrl): void {
+    public function setRedirectUrl(string $redirectUrl) {
         $this->redirectUrl = $redirectUrl;
     }
 

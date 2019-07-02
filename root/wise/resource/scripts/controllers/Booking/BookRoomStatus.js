@@ -90,7 +90,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.marketList        = result.data.item.marketList;
         var channelBorrowing     = result.data.item.channelBorrowing;
         var channelConsume       = result.data.item.channelConsumeList;
-        $scope.bookRoomStatus    =  {}; $scope.roomDetailList = {};$scope.roomLiveIn = {};$scope.check_outRoom = {};
+        $scope.bookRoomStatus    =  {}; $scope.check_inRoom = {};$scope.roomDetailList = {};
+        $scope.roomLiveIn        = {};$scope.check_outRoom = {};
         if($scope.roomList != '') {
 			//按当日计算预抵预离 过期忽略
 			var thisDay = $scope.getDay();
