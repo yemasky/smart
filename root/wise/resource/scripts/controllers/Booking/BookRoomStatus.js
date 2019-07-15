@@ -46,6 +46,8 @@ app.directive("showBookroomPrice", function($document){
 app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
     $scope.param = {};
     $ocLazyLoad.load([$scope._resource + "styles/booking.css"]);
+    $ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.css",
+                  $scope._resource + "vendor/modules/angular-ui-select/select.min.js"]);
     //初始化数据
     //选择入住房
     var selectLayoutRoom = {},arrayRoom = {},liveLayoutRoom = {},billAccount={};
@@ -90,6 +92,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.marketList        = result.data.item.marketList;
         var channelBorrowing     = result.data.item.channelBorrowing;
         var channelConsume       = result.data.item.channelConsumeList;
+        var priceSystemList   = result.data.item.priceSystemHash;
         $scope.bookRoomStatus    =  {}; $scope.check_inRoom = {};$scope.roomDetailList = {};
         $scope.roomLiveIn        = {};$scope.check_outRoom = {};
         if($scope.roomList != '') {
@@ -243,7 +246,14 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
         }
         $scope.channelConsumeList = channelConsumeList;
-		//借物
+        var systemList = [], j = 0;
+		if(priceSystemList != "") {
+            for(var key in priceSystemList) {
+                systemList[j] = priceSystemList[key];j++;
+            }
+        }
+        $scope.priceSystemList = systemList;
+        //借物
         var thisChannelBorrowing = {};
         if(channelBorrowing != '') {
            for(var i in channelBorrowing) {
@@ -358,36 +368,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		}
         $scope.editRoomBook($scope.bookingDetailRoom[detail_id], 1);
     }
-    var editBookRoomAside = '';
+    $scope.editBookRoomAside = '';
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
     $scope.showEditBookRoomAside = function(rDetail, tab) {
         $scope.layoutSelectRoom = layoutRoomList[rDetail.item_category_id];
         $scope.activeRoomBookTab = tab;
         $scope.roomDetailEdit = rDetail;
-        editBookRoomAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
-        editBookRoomAside.$promise.then(editBookRoomAside.show);
-    };
-    $scope.saveEditRoomForm = function (roomDetailEdit) {//单个roomDetail
-        $httpService.header('method', 'editBookRoom');
-        $scope.beginLoading =! $scope.beginLoading;
-        $scope.param.detail_id = roomDetailEdit.detail_id;
-        $httpService.post('/app.do?'+param, $scope, function(result) {
-            $scope.beginLoading =! $scope.beginLoading;
-            $httpService.deleteHeader('method');
-            if (result.data.success == '0') {
-                var message = $scope.getErrorByCode(result.data.code);
-                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
-                return;//错误返回
-            }
-            roomDetailEdit.item_id = $scope.param.item_room;
-            if($scope.param.item_room_name != '') roomDetailEdit.item_name = $scope.param.item_room_name;
-            //$scope.roomDetail.item_id = $scope.param.item_room;
-            //if($scope.param.item_room_name != '') $scope.roomDetail.item_name = $scope.param.item_room_name;
-            //$scope.roomDetailList[roomDetailEdit.booking_number] = $scope.roomDetail;
-            editBookRoomAside.$promise.then(editBookRoomAside.hide);
-            $scope.successAlert.startProgressBar();
-
-        });
+        $scope.editBookRoomAside = $aside({scope:$scope,container:'#MainController',templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
+        $scope.editBookRoomAside.$promise.then($scope.editBookRoomAside.show);
+        //$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
     };
     $scope.setEditItemRoomName = function(item_name) {
         if(item_name != '') $scope.param.item_room_name = item_name;

@@ -67,7 +67,7 @@
 										  </td>
 										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
 											<a class="fa pull-right" ng-click="showEditBookRoomAside(rDetail, 'Room')"></a></td>
-										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_category_name}}
+										  <td class="col-xs-2">{{rDetail.item_category_name}}
 											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'category')"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
 											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'market')"></a></td>
@@ -385,5 +385,53 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         });
     }
     //////end Consume
+    //选择客人市场
+    $scope.showCustomerMarket = function($event) {
+        //$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
+        $('#customer_ul').next().show();
+    }
+    $scope.market_id = '';
+    $scope.selectCustomerMarket = function(market, ajax) {
+        $scope.marketSystemLayout = {};
+        if(angular.isDefined(market)) {
+            $scope.market_name = market.market_name;
+            $scope.market_id = market.market_id;
+            $scope.market_father_id =  market.market_father_id;
+            $('#customer_ul').next().hide();
+            $scope.customer_name = $scope.roomDetailEdit.market_name;
+            if(market.market_father_id == '4') {//判断会员是否正确
+                $scope.customer_name = market.market_name;
+            }
+        }
+    };
+    ////保存编辑预订客源市场等
+    $scope.saveEditRoomForm = function (roomDetailEdit) {//单个roomDetail
+        $httpService.header('method', 'editBookRoom');
+        $scope.beginLoading =! $scope.beginLoading;
+        $scope.param.detail_id = roomDetailEdit.detail_id;
+        if(angular.isDefined($scope.market_id) && $scope.market_id > 0) {
+            $scope.param.market_id = $scope.market_id;
+            $scope.param.market_name = $scope.market_name;
+            $scope.param.market_father_id = $scope.market_father_id;
+        }
+        $httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+            roomDetailEdit.item_id = $scope.param.item_room;
+            if($scope.param.item_room_name != '') roomDetailEdit.item_name = $scope.param.item_room_name;
+            //$scope.roomDetail.item_id = $scope.param.item_room;
+            //if($scope.param.item_room_name != '') $scope.roomDetail.item_name = $scope.param.item_room_name;
+            //$scope.roomDetailList[roomDetailEdit.booking_number] = $scope.roomDetail;
+            $scope.editBookRoomAside.$promise.then($scope.editBookRoomAside.hide);
+            $scope.successAlert.startProgressBar();
+            $scope.param.market_id = '';
+
+        });
+    };
 });    
 </script>

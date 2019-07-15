@@ -145,3 +145,33 @@
       <li><a href ng-click="bookingAccounts('', 'hanging')"><i class="fas fa-comments-dollar"></i> 挂账</a></li>
     </ul>
 </script><!-- /app/accountsMenu.html -->
+<script type="text/ng-template" id="/app/customerMarket.html">
+<aside class="app-aside bg-white lt">
+<nav>
+  <ul class="nav">
+    <li>
+        <a class="btn btn-default customer_btn" style="padding:6px !important;" id="customer_ul" ng-mouseover="showCustomerMarket($event)">
+            <span class="pull-right text-muted">
+              <i class="fa fa-caret-down"></i>
+            </span>
+            <i class="icon fa fa-users text-lt"></i>
+            <span>{{market_name}}</span>
+         </a>
+         <ul class="nav nav-sub bg b">
+            <li ng-repeat="(i, father) in marketList">
+              <a class="">
+                <span class="pull-right text-muted" ng-if="father.children!=''">
+                  <i class="fa fa-caret-down"></i>
+                </span>
+                <span class="font-normal">{{father.market_name}}</span>
+              </a>
+              <ul class="nav nav-sub bg b" ng-if="father.children!=''">
+                <li ng-repeat="(j, market) in father.children"><a ng-click="selectCustomerMarket(market, true)">{{market.market_name}}</a></li>
+              </ul>
+            </li>
+         </ul>
+    </li>
+  </ul>
+</nav>
+</aside>
+</script><!-- /app/customerMarket.html -->

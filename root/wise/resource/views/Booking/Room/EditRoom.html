@@ -1,4 +1,4 @@
-<div class="aside col-sm-6 b-r box-shadow" tabindex="-1" role="dialog">
+<div class="aside col-sm-6 b-r box-shadow no-padding" tabindex="-1" role="dialog" ng-controller="EditBookRoomController">
   <div class="aside-dialog aside-lg">
     <div class="aside-content">
       <div class="aside-header">
@@ -13,25 +13,42 @@
                   <li ng-class="{active:activeRoomBookTab=='market'}" ng-click="activeRoomBookTab='market'">
                       <a translate="module.channel.market_name">客源市场</a>
                   </li>
-                  <li ng-class="{active:activeRoomBookTab=='category'}" ng-click="activeRoomBookTab='category'">
+                  <!--<li ng-class="{active:activeRoomBookTab=='category'}" ng-click="activeRoomBookTab='category'">
                       <a>房型</a>
-                  </li>
+                  </li>-->
                   <li ng-class="{active:activeRoomBookTab=='system'}" ng-click="activeRoomBookTab='system'">
-                      <a>价格</a>
+                      <a>价格类型</a>
                   </li>
                   <li ng-class="{active:activeRoomBookTab=='Room'}" ng-click="activeRoomBookTab='Room'">
-                      <a>房号</a>
+                      <a>选/换房号</a>
                   </li>
               </ul>
           </div>    
-          <div class="clearfix">
+          <div class="clearfix p">
             <div class="tab">
-                <div ng-show="activeRoomBookTab=='market'">
-                    {{roomDetailEdit.market_name}}
+                <div class="form-inline" ng-show="activeRoomBookTab=='market'">
+                    <div class="form-group p-xs">选择客源市场</div><div class="form-group" ng-include="'/app/customerMarket.html'"></div>
                 </div>
                 <div ng-show="activeRoomBookTab=='category'">
                 </div>
                 <div ng-show="activeRoomBookTab=='system'">
+                    <div class="w">
+                      <ui-select ng-model="person.selected" theme="bootstrap">
+                          <ui-select-match placeholder="Select or search a person in the list...">{{$select.selected.name}}</ui-select-match>
+                          <ui-select-choices repeat="item in priceSystemList | filter: $select.search">
+                            <div ng-bind-html="item.price_system_name | highlight: $select.search"></div>
+                            <small ng-bind-html="item.price_system_name | highlight: $select.search"></small>
+                          </ui-select-choices>
+                      </ui-select>
+                   </div>
+                   <div class="w">
+                      <ui-select ng-model="booking_room[channel_id][layout.item_id][layout_system.price_system_id]" ng-change="select_room(this)" theme="bootstrap">
+                          <ui-select-match placeholder="0　">{{$select.selected.value}}</ui-select-match>
+                          <ui-select-choices repeat="item in priceSystemList | filter: $select.search">
+                            <div ng-bind-html="item.price_system_name | highlight: $select.search"></div>
+                          </ui-select-choices>
+                      </ui-select>
+                   </div>
                 </div>
                 <div ng-show="activeRoomBookTab=='Room'">
                     <div class="table-responsive">

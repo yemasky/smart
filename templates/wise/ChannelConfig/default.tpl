@@ -190,6 +190,7 @@
 			$httpService.header('method', 'get');
 			var loading = $alert({content: 'Loading Room Data... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
 			$httpService.post('app.do?channel=<%$room_url%>&id=<%$channel_id%>', $scope, function(result){
+                $httpService.deleteHeader('method');
 				if(result.data.success == 1) {
 					$scope.roomList =  result.data.item;
 					setAttrRoom($scope.roomList);

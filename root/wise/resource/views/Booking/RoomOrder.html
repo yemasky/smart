@@ -14,36 +14,7 @@
                   <input type="text" size="6" class="form-control w-thumb-lg" style="" name="out_time" ng-model="param.out_time" data-autoclose="1" data-time-format="HH:mm" placeholder="12:00" value="12:00" data-length="3" data-minute-step="15" data-timezone="UTC" bs-timepicker>
                   <button class="btn btn-default check_date" type="button"><i class="fa fa-calendar text-info"> 选择日期</i></button>
                 </div>
-                <div class="form-group">    
-                    <aside class="app-aside bg-white lt">
-                    <nav>
-                      <ul class="nav">
-                      	<li>
-                        	<a class="btn btn-default customer_btn" style="padding:6px !important;" id="customer_ul">
-                                <span class="pull-right text-muted">
-                                  <i class="fa fa-caret-down"></i>
-                                </span>
-                                <i class="icon fa fa-users text-lt"></i>
-                                <span>{{market_name}}</span>
-                          	 </a>
-                             <ul class="nav nav-sub bg b">
-                             	<li ng-repeat="(i, father) in marketList">
-                                  <a class="">
-                                    <span class="pull-right text-muted" ng-if="father.children!=''">
-                                      <i class="fa fa-caret-down"></i>
-                                    </span>
-                                    <span class="font-normal">{{father.market_name}}</span>
-                                  </a>
-                                  <ul class="nav nav-sub bg b" ng-if="father.children!=''">
-                                    <li ng-repeat="(j, market) in father.children"><a ng-click="selectCustomerMarket(market, true)">{{market.market_name}}</a></li>
-                                  </ul>
-                                </li>
-                             </ul>
-                        </li>
-                      </ul>
-                    </nav>
-                    </aside>
-                </div>
+                <div class="form-group" ng-include="'/app/customerMarket.html'"></div>
                 <div class="form-group"><button class="btn btn-default" type="button" ng-click="checkOrderData()"><i class="fa fa-search"> </i> 查价格</button></div>
                 <!--<button type="button" class="btn btn-default" data-animation="am-flip-x" bs-dropdown aria-haspopup="true" aria-expanded="false" data-trigger=""><i class="icon fa fa-users text-lt"></i> {{market_name}} <i class="fa fa-caret-down"></i></button>
                     <ul class="dropdown-menu" role="menu" style="overflow:visible;">
