@@ -31,24 +31,16 @@
                 </div>
                 <div ng-show="activeRoomBookTab=='category'">
                 </div>
-                <div ng-show="activeRoomBookTab=='system'">
-                    <div class="w">
-                      <ui-select ng-model="person.selected" theme="bootstrap">
-                          <ui-select-match placeholder="Select or search a person in the list...">{{$select.selected.name}}</ui-select-match>
-                          <ui-select-choices repeat="item in priceSystemList | filter: $select.search">
-                            <div ng-bind-html="item.price_system_name | highlight: $select.search"></div>
-                            <small ng-bind-html="item.price_system_name | highlight: $select.search"></small>
-                          </ui-select-choices>
-                      </ui-select>
-                   </div>
-                   <div class="w">
-                      <ui-select ng-model="booking_room[channel_id][layout.item_id][layout_system.price_system_id]" ng-change="select_room(this)" theme="bootstrap">
-                          <ui-select-match placeholder="0　">{{$select.selected.value}}</ui-select-match>
+                <div class="form-inline" ng-show="activeRoomBookTab=='system'">
+                    <div class="form-group p-xs">选择价格类型</div>
+                    <div class="form-group w">
+                      <ui-select ng-model="param.selectSystem" theme="bootstrap" ng-change="selectPriceSystem($select.selected)" >
+                          <ui-select-match placeholder="{{roomDetailEdit.price_system_name}}">{{$select.selected.price_system_name}}</ui-select-match>
                           <ui-select-choices repeat="item in priceSystemList | filter: $select.search">
                             <div ng-bind-html="item.price_system_name | highlight: $select.search"></div>
                           </ui-select-choices>
                       </ui-select>
-                   </div>
+                    </div>
                 </div>
                 <div ng-show="activeRoomBookTab=='Room'">
                     <div class="table-responsive">
