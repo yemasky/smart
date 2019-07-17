@@ -383,7 +383,23 @@ class HotelOrderAction extends \BaseAction {
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
+    //延长、改变预抵预离时间
+    protected function doMethodChangeCheckDate(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $in_date = $objRequest->getInput('check_in');
+        $out_date = $objRequest->getInput('check_out');
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        //查找已住房间[远期房态]
+        $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->GE('check_in', $in_date)->LE('check_in', $out_date);
+        if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
+        $arrayResult['bookingRoom'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
 
+
+        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+    }
     //保存入住客人
     protected function doMethodSaveGuestLiveIn(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();

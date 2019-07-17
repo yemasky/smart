@@ -74,12 +74,14 @@
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
 											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'system')"></a></td>
 										  <td class="col-xs-1" show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{bookConsumePrice[rDetail.booking_number][rDetail.booking_detail_id]}}<a class="pull-right"></a></td>
-										  <td class="col-xs-1">{{rDetail.check_in}}</td>
-										  <td class="col-xs-1">{{rDetail.check_out}}</td>
+										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.check_in}}
+                                              <a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'eta_departure')" ng-if="rDetail.booking_detail_status==0"></a></td>
+										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.check_out}}
+                                              <a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'eta_departure')"</td>
 										  <td>
 											  <!--<button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i></button>-->
 											  <a class="btn btn-xs btn-default" ng-click="addGuestLiveIn('LiveInOne', rDetail)" ng-if="rDetail.booking_detail_status==0"><i class="fas fa-procedures"></i> 客房入住</a>
-											  <a class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'editLiveIn')" ng-if="rDetail.booking_detail_status==1"><i class="fas fa-edit"></i> 已入住</a>
+											  <a class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')" ng-if="rDetail.booking_detail_status==1"><i class="fas fa-edit"></i> 已入住</a>
 										  </td>
 									  </tr>
                                       <tr>
@@ -435,6 +437,23 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
     };
     $scope.selectPriceSystem = function(system) {
         console.log(system);
+    }
+    //延住
+    $scope.changeCheckDate = function(checkDate) {
+        console.log($scope.param);
+        $scope.beginLoading =! $scope.beginLoading;
+        $httpService.header('method', 'changeCheckDate');
+        $httpService.post('/app.do?'+param, $scope, function(result) {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.deleteHeader('method');
+            if (result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+            
+
+        });
     }
 });    
 </script>

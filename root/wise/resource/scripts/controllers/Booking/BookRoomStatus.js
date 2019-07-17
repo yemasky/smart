@@ -92,7 +92,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.marketList        = result.data.item.marketList;
         var channelBorrowing     = result.data.item.channelBorrowing;
         var channelConsume       = result.data.item.channelConsumeList;
-        var priceSystemList   = result.data.item.priceSystemHash;
+        var priceSystemList      = result.data.item.priceSystemHash;
         $scope.bookRoomStatus    =  {}; $scope.check_inRoom = {};$scope.roomDetailList = {};
         $scope.roomLiveIn        = {};$scope.check_outRoom = {};
         if($scope.roomList != '') {
@@ -253,6 +253,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
         }
         $scope.priceSystemList = systemList;
+        var layoutArray = [], j = 0;
+        if($scope.layoutList != "") {
+            for(var key in $scope.layoutList) {
+                layoutArray[j] = $scope.layoutList[key];j++;
+            }
+        }        
+        $scope.layoutArray = layoutArray;
         //借物
         var thisChannelBorrowing = {};
         if(channelBorrowing != '') {
@@ -374,6 +381,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.layoutSelectRoom = layoutRoomList[rDetail.item_category_id];
         $scope.activeRoomBookTab = tab;
         $scope.roomDetailEdit = rDetail;
+        $scope.param.check_in = rDetail.check_in;
+        $scope.param.check_out = rDetail.check_out;
+        //$scope.consumeDetail
+        $scope.consumeRoomDetail = $scope.consumeList[rDetail.booking_number][rDetail.booking_detail_id];
         $scope.editBookRoomAside = $aside({scope:$scope,container:'#MainController',templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
         $scope.editBookRoomAside.$promise.then($scope.editBookRoomAside.show);
         //$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
