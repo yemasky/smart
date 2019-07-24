@@ -286,10 +286,7 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 		return ChannelDao::instance()->batchInsertPriceSystemLayout($arrayData);
 	}
 
-	public function getLayoutPriceSystemLayout($market_id, $field = null) {
-		$whereCriteria = new \WhereCriteria();
-		$whereCriteria->EQ('market_id', $market_id);
-
+	public function getLayoutPriceSystemLayout(\WhereCriteria $whereCriteria, $field = null) {
 		return ChannelDao::instance()->getLayoutPriceSystemLayout($whereCriteria, $field);
 	}
 
@@ -336,7 +333,7 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 		return ChannelDao::instance()->getLayoutPrice($whereCriteria, $field);
 	}
 
-	public function getLayoutPrice($company_id, $channel_id, $arraySystemId = array(), $in_date, $out_date, $sql = '',
+	public function getLayoutPrice($company_id, $channel_id, $arraySystemId = array(), $item_category_id = null, $in_date, $out_date, $sql = '',
 		$arrayHashKey = array(), $field = null) {
 		$whereCriteria = new \WhereCriteria();
 		if($company_id > 0) $whereCriteria->EQ('company_id', $company_id);
@@ -344,6 +341,9 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 		if(!empty($arraySystemId)) {
 			$whereCriteria->ArrayIN('price_system_id', $arraySystemId);
 		}
+        if(!empty($item_category_id)) {
+            $whereCriteria->EQ('item_id', $item_category_id);
+        }
 		if(isset($arrayHashKey['hashKey'])) $whereCriteria->setHashKey($arrayHashKey['hashKey']);
 		if(isset($arrayHashKey['fatherKey'])) $whereCriteria->setFatherKey($arrayHashKey['fatherKey']);
 		if(isset($arrayHashKey['childrenKey'])) $whereCriteria->setChildrenKey($arrayHashKey['childrenKey']);

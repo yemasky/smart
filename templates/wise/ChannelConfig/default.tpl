@@ -147,7 +147,7 @@
 						var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
 						$httpService.header('method', 'attribute');
                         var postParam = {};postParam.param = '';
-						$httpService.post('app.do?channel=<%$channel_config_url%>&id=<%$channel_id%>&category_item_id='+item_id, postParam, function(result){
+						$httpService.post('app.do?channel=<%$channel_config_url%>&id=<%$channel_id%>&item_category_id='+item_id, postParam, function(result){
 							if(result.data.success == 1) {
 								if(result.data.item != '') setAttribute(result.data.item);
 							} 

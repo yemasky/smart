@@ -213,10 +213,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                             roomStatus = '<a class="fas fa-sign-in-alt text-success" title="预抵 &#8226; 查看订单"></a>'+roomStatus;
                         }
                         bookRoomStatus[room.item_id]['roomStatus'] = roomStatus;
-                        if(!angular.isDefined(layoutRoomList[$scope.layoutRoom[room.item_id].category_item_id])) {
-                            layoutRoomList[$scope.layoutRoom[room.item_id].category_item_id] = {};
+                        if(!angular.isDefined(layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id])) {
+                            layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id] = {};
                         }
-                        layoutRoomList[$scope.layoutRoom[room.item_id].category_item_id][room.item_id] = room;
+                        layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id][room.item_id] = room;
 					}
 			   }
 		    }
@@ -361,9 +361,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	$scope.closeAsideBookRoom = function(bookDetail) {if(asideBookRoom != '') {asideBookRoom.hide();};}
 	$scope.roomStatusBook = function(detail_id, room) {
 	    if(detail_id == 0) {//预定
-			room.item_father_id = $scope.layoutRoom[room.item_id].category_item_id;
+			room.item_father_id = $scope.layoutRoom[room.item_id].item_category_id;
             $scope.bookRoom = room;$scope.bookInfo = '';
-            var title = '预定 : '+$scope.layoutList[$scope.layoutRoom[room.item_id].category_item_id].item_name +'-'+room.item_name;
+            var title = '预定 : '+$scope.layoutList[$scope.layoutRoom[room.item_id].item_category_id].item_name +'-'+room.item_name;
 			asideBookRoom = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
 			asideBookRoom.$promise.then(function() {
 				asideBookRoom.show();
@@ -375,8 +375,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		}
         $scope.editRoomBook($scope.bookingDetailRoom[detail_id], 1);
     }
+    
     $scope.editBookRoomAside = '';
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
+    $scope.consumeRoomPrice = {};
     $scope.showEditBookRoomAside = function(rDetail, tab) {
         $scope.layoutSelectRoom = layoutRoomList[rDetail.item_category_id];
         $scope.activeRoomBookTab = tab;
@@ -384,7 +386,17 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param.check_in = rDetail.check_in;
         $scope.param.check_out = rDetail.check_out;
         //$scope.consumeDetail
-        $scope.consumeRoomDetail = $scope.consumeList[rDetail.booking_number][rDetail.booking_detail_id];
+        var consumeRoomDetail = $scope.consumeList[rDetail.booking_number][rDetail.booking_detail_id];
+        var consumeRoomPrice = {};
+        if(consumeRoomDetail != '') {
+            for(var key in consumeRoomDetail) {
+                var business_day = consumeRoomDetail[key].business_day;
+                consumeRoomPrice[business_day] = {};
+                consumeRoomPrice[business_day]['business_day'] = consumeRoomDetail[key].business_day;
+                consumeRoomPrice[business_day]['consume_price'] = consumeRoomDetail[key].consume_price;
+            }
+        }
+        $scope.consumeRoomPrice = consumeRoomPrice;
         $scope.editBookRoomAside = $aside({scope:$scope,container:'#MainController',templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
         $scope.editBookRoomAside.$promise.then($scope.editBookRoomAside.show);
         //$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});

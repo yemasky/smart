@@ -92,7 +92,7 @@ class HotelOrderAction extends \BaseAction {
         //
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id)->setHashKey('item_id');
-        $arrayLayoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, 'category_item_id,item_id');
+        $arrayLayoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, 'item_category_id,item_id');
         if (!empty($arrayLayoutRoom)) {
             foreach ($arrayLayoutRoom as $room_id => $value) {
                 $arrayLayoutRoom[$room_id]['r_id'] = encode($room_id);
@@ -244,7 +244,9 @@ class HotelOrderAction extends \BaseAction {
         //{:
         //獲取價格 所有手动输入价格
         $arraySystemId = null;
-        $arraySystem = ChannelServiceImpl::instance()->getLayoutPriceSystemLayout(2, 'DISTINCT price_system_id,price_system_father_id');
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('market_id', 2);
+        $arraySystem = ChannelServiceImpl::instance()->getLayoutPriceSystemLayout($whereCriteria, 'DISTINCT price_system_id,price_system_father_id');
         if (!empty($arraySystem)) {
             foreach ($arraySystem as $i => $systemList) {
                 if ($systemList['price_system_father_id'] > 0) {
@@ -255,7 +257,7 @@ class HotelOrderAction extends \BaseAction {
             }
         }
         //取出默认散客价格
-        $arrayResult['priceLayout'] = ChannelServiceImpl::instance()->getLayoutPrice($company_id, $channel_id, $arraySystemId, $arrayResult['in_date'], $arrayResult['out_date']);
+        $arrayResult['priceLayout'] = ChannelServiceImpl::instance()->getLayoutPrice($company_id, $channel_id, $arraySystemId, null, $arrayResult['in_date'], $arrayResult['out_date']);
 
         //:};
         //查找房型房间
@@ -265,9 +267,9 @@ class HotelOrderAction extends \BaseAction {
         if ($channel_id > 0) {
             $whereCriteria->EQ('channel_id', $channel_id);
         }
-        $field = 'channel_id,category_item_id,item_id,attr_type';
+        $field = 'channel_id,item_category_id,item_id,attr_type';
         $hashKey = 'channel_id';
-        $whereCriteria->setHashKey($hashKey)->setMultiple(false)->setFatherKey('category_item_id')->setChildrenKey('item_id');
+        $whereCriteria->setHashKey($hashKey)->setMultiple(false)->setFatherKey('item_category_id')->setChildrenKey('item_id');
         $arrayResult['layoutRoom'] = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, $field);
         //查找已住房间[远期房态]
         $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
@@ -283,12 +285,14 @@ class HotelOrderAction extends \BaseAction {
     //查询订房数据
     protected function doMethodCheckOrderData(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         $channel_id = $objRequest->channel_id;
         $arrayInput = $objRequest->getInput();
         $market_id = isset($arrayInput['market_id']) ? $arrayInput['market_id'] : 0;
         $in_date = $arrayInput['check_in'] . ' ' . $arrayInput['in_time'];
         $out_date = $arrayInput['check_out'] . ' ' . $arrayInput['out_time'];
+        $price_system_id = $objRequest->getInput('price_system_id');
+        $item_category_id = $objRequest->getInput('item_category_id');
         //
 
         //查找已住房间[远期房态]
@@ -299,7 +303,15 @@ class HotelOrderAction extends \BaseAction {
         //:獲取價格
         $arraySystemId = null;
         if ($market_id > 0) {
-            $arraySystem = ChannelServiceImpl::instance()->getLayoutPriceSystemLayout($market_id, 'DISTINCT price_system_id,price_system_father_id');
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('market_id', $market_id);
+            if(!empty($price_system_id)) {
+                $whereCriteria->EQ('price_system_id', $price_system_id);
+            }
+            if(!empty($item_category_id)) {
+                $whereCriteria->EQ('layout_item_id', $item_category_id);
+            }
+            $arraySystem = ChannelServiceImpl::instance()->getLayoutPriceSystemLayout($whereCriteria, 'DISTINCT price_system_id,price_system_father_id');
             if (!empty($arraySystem)) {
                 foreach ($arraySystem as $i => $systemList) {
                     if ($systemList['price_system_father_id'] > 0) {
@@ -310,7 +322,7 @@ class HotelOrderAction extends \BaseAction {
                 }
             }
         }
-        $arrayResult['priceLayout'] = ChannelServiceImpl::instance()->getLayoutPrice($company_id, $channel_id, $arraySystemId, $in_date, $out_date);
+        $arrayResult['priceLayout'] = ChannelServiceImpl::instance()->getLayoutPrice($company_id, $channel_id, $arraySystemId, $item_category_id, $in_date, $out_date);
         //:;
 
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
@@ -385,20 +397,7 @@ class HotelOrderAction extends \BaseAction {
     }
     //延长、改变预抵预离时间
     protected function doMethodChangeCheckDate(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $this->setDisplay();
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $in_date = $objRequest->getInput('check_in');
-        $out_date = $objRequest->getInput('check_out');
-        //获取channel
-        $channel_id = $objRequest->channel_id;
-        //查找已住房间[远期房态]
-        $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->GE('check_in', $in_date)->LE('check_in', $out_date);
-        if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
-        $arrayResult['bookingRoom'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
-
-
-        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+        return $this->doMethodCheckOrderData($objRequest, $objResponse);
     }
     //保存入住客人
     protected function doMethodSaveGuestLiveIn(\HttpRequest $objRequest, \HttpResponse $objResponse) {

@@ -207,7 +207,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $arrayHashKey['fatherKey']   = 'item_id';
                 $arrayHashKey['childrenKey'] = 'layout_price_date';
                 //根据价格体系ID取出價格 包含子价格和父价格
-                $arrayPriceLayout = ChannelServiceImpl::instance()->getLayoutPrice(null, $channel_id, null, $check_in,
+                $arrayPriceLayout = ChannelServiceImpl::instance()->getLayoutPrice(null, $channel_id, null, null, $check_in,
                     $check_out, $whereSqlStr, $arrayHashKey);
                 if (empty($arrayPriceLayout)) {
                     return $objSuccess->setSuccessService(false, '100001', '价格体系没有设置价格', []);
@@ -370,10 +370,10 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             //查找现有房间数
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id);
-            //$whereCriteria->setHashKey('category_item_id');
-            $field = 'channel_id,category_item_id,item_id,attr_type';
+            //$whereCriteria->setHashKey('item_category_id');
+            $field = 'channel_id,item_category_id,item_id,attr_type';
             //$hashKey = 'channel_id';
-            $whereCriteria->setHashKey('category_item_id')->setMultiple(false)->setChildrenKey('item_id');
+            $whereCriteria->setHashKey('item_category_id')->setMultiple(false)->setChildrenKey('item_id');
             $layoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, $field);
             //
             $totalDay      = (strtotime($check_out) - strtotime($check_in)) / 86400;

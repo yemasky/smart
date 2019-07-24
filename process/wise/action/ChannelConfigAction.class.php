@@ -237,7 +237,7 @@ class ChannelConfigAction extends \BaseAction {
 						$arrayInsertData[$k]['attribute_id']     = $attribute_id;
 						$arrayInsertData[$k]['company_id']       = $company_id;
 						$arrayInsertData[$k]['channel_id']       = $channel_id;
-						$arrayInsertData[$k]['category_item_id'] = $item_id;
+						$arrayInsertData[$k]['item_category_id'] = $item_id;
 						$arrayInsertData[$k]['item_id']          = $item_id;
 						$arrayInsertData[$k]['item_images_src']  = '';
 						$arrayInsertData[$k]['attr_value']       = $v;
@@ -250,7 +250,7 @@ class ChannelConfigAction extends \BaseAction {
 					$arrayInsertData[$k]['attribute_id']     = $attribute_id;
 					$arrayInsertData[$k]['company_id']       = $company_id;
 					$arrayInsertData[$k]['channel_id']       = $channel_id;
-					$arrayInsertData[$k]['category_item_id'] = $item_id;
+					$arrayInsertData[$k]['item_category_id'] = $item_id;
 					$arrayInsertData[$k]['item_id']          = $item_id;
 					$arrayInsertData[$k]['item_images_src']  = '';
 					$arrayInsertData[$k]['attr_value']       = $value;
@@ -267,7 +267,7 @@ class ChannelConfigAction extends \BaseAction {
 				$arrayInsertData[$k]['attribute_id']     = '0';
 				$arrayInsertData[$k]['company_id']       = $company_id;
 				$arrayInsertData[$k]['channel_id']       = $channel_id;
-				$arrayInsertData[$k]['category_item_id'] = $item_id;
+				$arrayInsertData[$k]['item_category_id'] = $item_id;
 				$arrayInsertData[$k]['item_id']          = $value;
 				$arrayInsertData[$k]['item_images_src']  = '';
 				$arrayInsertData[$k]['attr_value']       = '';
@@ -282,7 +282,7 @@ class ChannelConfigAction extends \BaseAction {
 				$arrayInsertData[$k]['attribute_id']     = '0';
 				$arrayInsertData[$k]['company_id']       = $company_id;
 				$arrayInsertData[$k]['channel_id']       = $channel_id;
-				$arrayInsertData[$k]['category_item_id'] = $item_id;
+				$arrayInsertData[$k]['item_category_id'] = $item_id;
 				$arrayInsertData[$k]['item_id']          = $item_id;
 				$arrayInsertData[$k]['item_images_src']  = $value['url'];
 				$arrayInsertData[$k]['attr_value']       = $value['name'];
@@ -295,7 +295,7 @@ class ChannelConfigAction extends \BaseAction {
 
 		if(!empty($sql_attr_type)) {
             $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('category_item_id', $item_id);
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_category_id', $item_id);
             $whereCriteria->ArrayIN('attr_type', $sql_attr_type);
 			ChannelServiceImpl::instance()->deleteAttributeValue($whereCriteria);
 			if(!empty($arrayInsertData)) ChannelServiceImpl::instance()->batchInsertAttrValue($arrayInsertData);
@@ -306,12 +306,12 @@ class ChannelConfigAction extends \BaseAction {
 		$company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
 		$channel_id = $objRequest->channel_id;
 		$item_id          = $objRequest->item_id;
-		$category_item_id = $objRequest->category_item_id;
+		$item_category_id = $objRequest->item_category_id;
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('channel_id', $channel_id)->EQ('company_id', $company_id);
 		if(is_numeric($item_id) && $item_id > 0) $whereCriteria->EQ('item_id', $item_id);
-		if(is_numeric($category_item_id) && $category_item_id > 0) $whereCriteria->EQ('category_item_id', $category_item_id);
-		$field = 'category_item_id, item_id, item_images_src, attribute_id, attr_value, attr_en_value, attr_type';
+		if(is_numeric($item_category_id) && $item_category_id > 0) $whereCriteria->EQ('item_category_id', $item_category_id);
+		$field = 'item_category_id, item_id, item_images_src, attribute_id, attr_value, attr_en_value, attr_type';
         $whereCriteria->setHashKey('attr_type')->setMultiple(true);
 		$arrayAttribute = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, $field);
 		return $arrayAttribute;

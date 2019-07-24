@@ -46,12 +46,12 @@
                           <thead>
                             <tr class="bg-light">
                               <th class="w-xs" style="padding:1px;"></th>
-                              <th class="w-xs col-sm-1 b-r" ng-repeat="(i, consumeRoom) in consumeRoomDetail" style="padding:1px;"><div class="w-xs"></div></th>
+                              <th class="w-xs col-sm-1 b-r" ng-repeat="(i, consumeRoom) in consumeRoomPrice" style="padding:1px;"><div class="w-xs"></div></th>
                               <th style="padding:1px;"></th>
                             </tr>
                             <tr class="bs-sidebar">
                               <th class="w-xs"><div class="w-xs">日期</div></th>
-                              <th class="w-xs col-sm-1 b-r" ng-repeat="(i, consumeRoom) in consumeRoomDetail">{{consumeRoom.business_day}}</th>
+                              <th class="w-xs col-sm-1 b-r" ng-repeat="(i, consumeRoom) in consumeRoomPrice">{{consumeRoom.business_day}}</th>
                               <th></th>
                             </tr>
                           </thead>
@@ -59,7 +59,7 @@
                           <tbody>
                             <tr><!--酒店房型列表 循环 i-->
                               <td>价格</td>
-                              <td class="w-xs col-sm-1 b-r cursor panel" ng-repeat="(i, consumeRoom) in consumeRoomDetail">{{consumeRoom.consume_price}}</td>
+                              <td class="w-xs col-sm-1 b-r cursor panel" ng-repeat="(i, consumeRoom) in consumeRoomPrice">{{consumeRoom.consume_price}}</td>
                               <td></td>
                             </tr>
                           </tbody>

@@ -440,7 +440,15 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
     }
     //延住
     $scope.changeCheckDate = function(checkDate) {
-        console.log($scope.param);
+        if(angular.isUndefined($scope.param.market_id) || $scope.param.market_id == '') {
+           $scope.param.market_id = $scope.roomDetailEdit.market_id;
+        }
+        if(angular.isUndefined($scope.param.price_system_id) || $scope.param.price_system_id == '') {
+           $scope.param.price_system_id = $scope.roomDetailEdit.price_system_id;
+        }
+        if(angular.isUndefined($scope.param.item_category_id) || $scope.param.item_category_id == '') {
+           $scope.param.item_category_id = $scope.roomDetailEdit.item_category_id;
+        }
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'changeCheckDate');
         $httpService.post('/app.do?'+param, $scope, function(result) {
@@ -451,8 +459,9 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
-            
-
+            //重新计算时间
+            var priceSystemList = $scope.priceSystemList;//价格体系
+            var price_system_id = $scope.param.price_system_id;
         });
     }
 });    
