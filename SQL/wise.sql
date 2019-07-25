@@ -528,19 +528,19 @@ DROP TABLE IF EXISTS `channel_item_attribute_value`;
 CREATE TABLE `channel_item_attribute_value` (
   `company_id` int(11) NOT NULL COMMENT '公司/品牌',
   `channel_id` int(11) NOT NULL COMMENT '频道ID',
-  `category_item_id` int(11) NOT NULL DEFAULT '0',
+  `item_category_id` int(11) NOT NULL DEFAULT '0' COMMENT 'item_category_id',
   `item_id` int(11) NOT NULL COMMENT 'item_id[房间ID]',
   `item_images_src` varchar(255) NOT NULL DEFAULT '' COMMENT '图片地址',
   `attribute_id` int(11) NOT NULL DEFAULT '0' COMMENT '属性ID',
   `attr_value` varchar(200) NOT NULL DEFAULT '' COMMENT '属性值[图片名称]',
   `attr_en_value` varchar(255) NOT NULL DEFAULT '' COMMENT '属性值英文[图片名称]',
   `attr_type` enum('images','attr_value','multipe_room') NOT NULL COMMENT 'multipe_room 混合房间',
-  PRIMARY KEY (`attribute_id`,`company_id`,`channel_id`,`category_item_id`,`item_id`,`item_images_src`,`attr_value`,`attr_en_value`,`attr_type`)
+  PRIMARY KEY (`attribute_id`,`company_id`,`channel_id`,`item_category_id`,`item_id`,`item_images_src`,`attr_value`,`attr_en_value`,`attr_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `channel_item_attribute_value` */
 
-insert  into `channel_item_attribute_value`(`company_id`,`channel_id`,`category_item_id`,`item_id`,`item_images_src`,`attribute_id`,`attr_value`,`attr_en_value`,`attr_type`) values (1,1,4,2,'',0,'','','multipe_room'),(1,1,4,3,'',0,'','','multipe_room'),(1,1,8,1,'',0,'','','multipe_room'),(1,1,8,8,'/data/images/2018/0429/20180429140906_41456.jpg',0,'','','images'),(1,1,17,17,'/data/images/2018/0429/20180429140906_41456.jpg',0,'','','images'),(1,1,18,18,'/data/images/2018/0501/20180501224018_82795.jpg',0,'匹配','','images'),(1,4,23,24,'',0,'','','multipe_room'),(1,1,8,8,'',1,'单人间','','attr_value'),(1,1,8,8,'',1,'山景房','','attr_value'),(1,1,8,8,'',1,'朝街房','','attr_value'),(1,1,8,8,'',1,'经济间','','attr_value'),(1,1,17,17,'',1,'单人间','','attr_value'),(1,1,17,17,'',1,'朝街房','','attr_value'),(1,1,17,17,'',1,'经济间','','attr_value'),(1,1,18,18,'',1,'双人间','','attr_value'),(1,1,18,18,'',1,'普通间','','attr_value'),(1,1,18,18,'',1,'背街房','','attr_value'),(1,1,21,21,'',1,'三人间','','attr_value'),(1,1,21,21,'',1,'四人间','','attr_value'),(1,1,21,21,'',1,'园景房','','attr_value'),(1,1,21,21,'',1,'豪华间','','attr_value'),(1,4,23,23,'',1,'海景房','','attr_value'),(1,5,22,22,'',1,'单人间','','attr_value'),(1,5,22,22,'',1,'双人间','','attr_value'),(1,5,22,22,'',1,'城景房','','attr_value'),(1,5,22,22,'',1,'大床间','','attr_value'),(1,5,22,22,'',1,'背街房','','attr_value'),(1,5,22,22,'',1,'高级间','','attr_value'),(1,1,4,4,'',3,'圆床','','attr_value'),(1,1,4,4,'',3,'情调床','','attr_value'),(1,1,4,4,'',3,'标准床','','attr_value'),(1,1,8,8,'',3,'圆床','','attr_value'),(1,1,8,8,'',3,'标准床','','attr_value'),(1,1,21,21,'',3,'标准床','','attr_value'),(1,1,4,4,'',4,'1.2米','','attr_value'),(1,1,4,4,'',4,'1.5米','','attr_value'),(1,1,4,4,'',5,'1','','attr_value'),(1,1,21,21,'',5,'1','','attr_value'),(1,1,8,8,'',6,'000','','attr_value'),(1,1,8,8,'',6,'中央空调','','attr_value'),(1,1,8,8,'',6,'分体空调','','attr_value'),(1,1,21,21,'',6,'中央空调','','attr_value'),(1,1,4,4,'',7,'1','','attr_value'),(1,1,8,8,'',7,'1','','attr_value'),(1,1,17,17,'',7,'1','','attr_value'),(1,1,18,18,'',7,'1','','attr_value'),(1,1,21,21,'',7,'1','','attr_value'),(1,4,23,23,'',7,'1','','attr_value'),(1,5,22,22,'',7,'1','','attr_value'),(1,1,8,8,'',8,'独立卫生间','','attr_value'),(1,1,21,21,'',8,'独立卫生间','','attr_value'),(1,1,8,8,'',9,'落地窗','','attr_value'),(1,1,8,8,'',10,'111','','attr_value'),(1,1,8,8,'',10,'222','','attr_value'),(1,1,8,8,'',10,'333','','attr_value');
+insert  into `channel_item_attribute_value`(`company_id`,`channel_id`,`item_category_id`,`item_id`,`item_images_src`,`attribute_id`,`attr_value`,`attr_en_value`,`attr_type`) values (1,1,4,2,'',0,'','','multipe_room'),(1,1,4,3,'',0,'','','multipe_room'),(1,1,8,1,'',0,'','','multipe_room'),(1,1,8,8,'/data/images/2018/0429/20180429140906_41456.jpg',0,'','','images'),(1,1,17,17,'/data/images/2018/0429/20180429140906_41456.jpg',0,'','','images'),(1,1,18,18,'/data/images/2018/0501/20180501224018_82795.jpg',0,'匹配','','images'),(1,4,23,24,'',0,'','','multipe_room'),(1,1,8,8,'',1,'单人间','','attr_value'),(1,1,8,8,'',1,'山景房','','attr_value'),(1,1,8,8,'',1,'朝街房','','attr_value'),(1,1,8,8,'',1,'经济间','','attr_value'),(1,1,17,17,'',1,'单人间','','attr_value'),(1,1,17,17,'',1,'朝街房','','attr_value'),(1,1,17,17,'',1,'经济间','','attr_value'),(1,1,18,18,'',1,'双人间','','attr_value'),(1,1,18,18,'',1,'普通间','','attr_value'),(1,1,18,18,'',1,'背街房','','attr_value'),(1,1,21,21,'',1,'三人间','','attr_value'),(1,1,21,21,'',1,'四人间','','attr_value'),(1,1,21,21,'',1,'园景房','','attr_value'),(1,1,21,21,'',1,'豪华间','','attr_value'),(1,4,23,23,'',1,'海景房','','attr_value'),(1,5,22,22,'',1,'单人间','','attr_value'),(1,5,22,22,'',1,'双人间','','attr_value'),(1,5,22,22,'',1,'城景房','','attr_value'),(1,5,22,22,'',1,'大床间','','attr_value'),(1,5,22,22,'',1,'背街房','','attr_value'),(1,5,22,22,'',1,'高级间','','attr_value'),(1,1,4,4,'',3,'圆床','','attr_value'),(1,1,4,4,'',3,'情调床','','attr_value'),(1,1,4,4,'',3,'标准床','','attr_value'),(1,1,8,8,'',3,'圆床','','attr_value'),(1,1,8,8,'',3,'标准床','','attr_value'),(1,1,21,21,'',3,'标准床','','attr_value'),(1,1,4,4,'',4,'1.2米','','attr_value'),(1,1,4,4,'',4,'1.5米','','attr_value'),(1,1,4,4,'',5,'1','','attr_value'),(1,1,21,21,'',5,'1','','attr_value'),(1,1,8,8,'',6,'000','','attr_value'),(1,1,8,8,'',6,'中央空调','','attr_value'),(1,1,8,8,'',6,'分体空调','','attr_value'),(1,1,21,21,'',6,'中央空调','','attr_value'),(1,1,4,4,'',7,'1','','attr_value'),(1,1,8,8,'',7,'1','','attr_value'),(1,1,17,17,'',7,'1','','attr_value'),(1,1,18,18,'',7,'1','','attr_value'),(1,1,21,21,'',7,'1','','attr_value'),(1,4,23,23,'',7,'1','','attr_value'),(1,5,22,22,'',7,'1','','attr_value'),(1,1,8,8,'',8,'独立卫生间','','attr_value'),(1,1,21,21,'',8,'独立卫生间','','attr_value'),(1,1,8,8,'',9,'落地窗','','attr_value'),(1,1,8,8,'',10,'111','','attr_value'),(1,1,8,8,'',10,'222','','attr_value'),(1,1,8,8,'',10,'333','','attr_value');
 
 /*Table structure for table `channel_layout_price` */
 
@@ -603,8 +603,8 @@ CREATE TABLE `channel_layout_price_system` (
   `channel_ids` varchar(1000) NOT NULL COMMENT '适用酒店',
   `price_system_name` varchar(100) NOT NULL COMMENT '名称',
   `price_system_en_name` varchar(100) NOT NULL DEFAULT '' COMMENT '英文名称',
-  `market_ids` varchar(2000) NOT NULL COMMENT '适用客源市场',
-  `layout_item` varchar(2000) NOT NULL COMMENT '适用房型ID',
+  `market_ids` varchar(2000) NOT NULL COMMENT '适用客源市场 json数据',
+  `layout_item` varchar(2000) NOT NULL COMMENT '适用房型ID json数据',
   `book_min_day` int(11) NOT NULL DEFAULT '1' COMMENT '最小预订天数',
   `cancellation_policy` varchar(200) NOT NULL DEFAULT '' COMMENT '取消政策',
   `price_system_type` enum('formula','direct') NOT NULL DEFAULT 'direct' COMMENT 'direct手输价格 formula公式价格',
@@ -627,13 +627,13 @@ CREATE TABLE `channel_layout_price_system_layout` (
   `price_system_father_id` int(11) NOT NULL DEFAULT '0',
   `channel_id` int(11) NOT NULL,
   `market_id` int(11) NOT NULL,
-  `layout_item_id` int(11) NOT NULL,
-  PRIMARY KEY (`price_system_id`,`channel_id`,`market_id`,`layout_item_id`)
+  `item_category_id` int(11) NOT NULL COMMENT '房型ID',
+  PRIMARY KEY (`price_system_id`,`channel_id`,`market_id`,`item_category_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `channel_layout_price_system_layout` */
 
-insert  into `channel_layout_price_system_layout`(`price_system_id`,`price_system_father_id`,`channel_id`,`market_id`,`layout_item_id`) values (1,0,1,19,4),(1,0,1,19,8),(1,0,1,19,17),(1,0,1,19,18),(1,0,1,19,21),(2,1,1,11,8),(2,1,1,13,8),(2,1,1,24,8),(3,1,1,2,4),(3,1,1,2,8),(3,1,1,2,17),(4,1,1,2,4),(4,1,1,2,8),(4,1,1,2,17),(4,1,1,2,18),(5,1,1,2,4),(5,1,1,2,17),(5,1,1,2,18),(5,1,1,3,4),(5,1,1,3,17),(5,1,1,3,18),(6,1,1,2,4),(6,1,1,2,17),(6,1,1,2,18);
+insert  into `channel_layout_price_system_layout`(`price_system_id`,`price_system_father_id`,`channel_id`,`market_id`,`item_category_id`) values (1,0,1,19,4),(1,0,1,19,8),(1,0,1,19,17),(1,0,1,19,18),(1,0,1,19,21),(2,1,1,11,8),(2,1,1,13,8),(2,1,1,24,8),(3,1,1,2,4),(3,1,1,2,8),(3,1,1,2,17),(4,1,1,2,4),(4,1,1,2,8),(4,1,1,2,17),(4,1,1,2,18),(5,1,1,2,4),(5,1,1,2,17),(5,1,1,2,18),(5,1,1,3,4),(5,1,1,3,17),(5,1,1,3,18),(6,1,1,2,4),(6,1,1,2,17),(6,1,1,2,18);
 
 /*Table structure for table `channel_setting` */
 
