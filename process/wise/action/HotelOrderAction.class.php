@@ -309,7 +309,7 @@ class HotelOrderAction extends \BaseAction {
                 $whereCriteria->EQ('price_system_id', $price_system_id);
             }
             if(!empty($item_category_id)) {
-                $whereCriteria->EQ('layout_item_id', $item_category_id);
+                $whereCriteria->EQ('item_category_id', $item_category_id);
             }
             $arraySystem = ChannelServiceImpl::instance()->getLayoutPriceSystemLayout($whereCriteria, 'DISTINCT price_system_id,price_system_father_id');
             if (!empty($arraySystem)) {

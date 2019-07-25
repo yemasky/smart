@@ -451,6 +451,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         }
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'changeCheckDate');
+        var source_consumeRoomPrice = angular.copy($scope.consumeRoomPrice);
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');
@@ -459,9 +460,31 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
-            //重新计算时间
+            //重新计算时间 价格
             var priceSystemList = $scope.priceSystemList;//价格体系
             var price_system_id = $scope.param.price_system_id;
+            var in_date = $scope.param.check_in;
+            var out_date = $scope.param.check_out;
+            //获取价格
+            var check_in = new Date(in_date.replace(/-/g, '/'));
+            var check_in_time = check_in.getTime(); 
+            var check_out = new Date(out_date.replace(/-/g, '/'));
+            var check_out_time = check_out.getTime();
+            var consumeRoomPrice = $scope.consumeRoomPrice;
+            for(var i = check_in_time; i < check_out_time; i += 86400000) {
+                var thisDate = new Date(i);var year = thisDate.getFullYear();
+                var month = thisDate.getMonth() - 0 + 1; if(month < 10) month = '0'+month;
+                var day = thisDate.getDate() - 0; if(day < 10) day = '0'+day;
+                //date_key = 年-月-日 2018-01-01
+                var date_key = year+'-'+month+'-'+day;
+                if(typeof(consumeRoomPrice[date_key]) == 'undefined') {
+                    consumeRoomPrice[date_key] = {};
+                }
+                consumeRoomPrice[date_key]['business_day'] = date_key;
+                consumeRoomPrice[date_key]['consume_price'] = day;
+            }
+            $scope.consumeRoomPrice = consumeRoomPrice;
+            
         });
     }
 });    

@@ -240,7 +240,7 @@ class PriceSettingAction extends \BaseAction {
 		if(isset($arrayInput['channel_ids']) && is_array($arrayInput['channel_ids'])) {
 			$arrayReplaceData[0] = $arrayInput['channel_ids'];
 		}
-		$keyReplace[1] = 'layout_item_id';
+		$keyReplace[1] = 'item_category_id';
 		if(isset($arrayInput['layout_item']) && is_array($arrayInput['layout_item'])) {
 			foreach($arrayInput['layout_item'] as $c_id => $item) {
 				foreach($item as $item_id => $layout) {
@@ -258,10 +258,10 @@ class PriceSettingAction extends \BaseAction {
 		$replaceData = [];
 		$k           = 0;
 		foreach($arrayReplaceData[0] as $channel_id => $v) {
-			foreach($arrayReplaceData[1] as $layout_item_id => $v) {
+			foreach($arrayReplaceData[1] as $item_category_id => $v) {
 				foreach($arrayReplaceData[2] as $market_id => $v) {
 					$replaceData[$k][$keyReplace[0]] = $channel_id;
-					$replaceData[$k][$keyReplace[1]] = $layout_item_id;
+					$replaceData[$k][$keyReplace[1]] = $item_category_id;
 					$replaceData[$k][$keyReplace[2]] = $market_id;
 					if($price_system_id > 0) $replaceData[$k]['price_system_id'] = $price_system_id;
 					$replaceData[$k]['price_system_father_id'] = $price_system_father_id;

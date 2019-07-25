@@ -153,8 +153,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         $scope.layoutList = layoutList;$scope.roomList = roomList;//$scope.booking_room = room_data;
     }
     //显示layout
-    $scope.showLayout = function(layout_item_id, show) {
-        $scope.layoutShow[layout_item_id] = show;
+    $scope.showLayout = function(item_category_id, show) {
+        $scope.layoutShow[item_category_id] = show;
     }
     //选择市场价格类别
     $scope.setPriceSystemMarket = function() {
@@ -171,25 +171,25 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 for(var channel_id in layout_item) {//历遍layout
                     if(typeof(marketSystemLayout[market_id][channel_id]) == 'undefined') marketSystemLayout[market_id][channel_id] = {};
                     if(typeof(layoutSystemMore[market_id][channel_id]) == 'undefined') layoutSystemMore[market_id][channel_id] = {};
-                    for(var layout_item_id in layout_item[channel_id]) {//历遍layout
-                        layoutShow[layout_item_id] = 0;
-                        var key = market_id + '-' + channel_id + '-' + layout_item_id;
-                        var systemKey = system_id + '-' + layout_item_id;
-                        if(!angular.isDefined(marketSystemLayout[market_id][channel_id][layout_item_id])) { 
-                            marketSystemLayout[market_id][channel_id][layout_item_id] = [];
+                    for(var item_category_id in layout_item[channel_id]) {//历遍layout
+                        layoutShow[item_category_id] = 0;
+                        var key = market_id + '-' + channel_id + '-' + item_category_id;
+                        var systemKey = system_id + '-' + item_category_id;
+                        if(!angular.isDefined(marketSystemLayout[market_id][channel_id][item_category_id])) { 
+                            marketSystemLayout[market_id][channel_id][item_category_id] = [];
                             k[key] = 0;
-                            layoutSystemMore[market_id][channel_id][layout_item_id] = 0;
+                            layoutSystemMore[market_id][channel_id][item_category_id] = 0;
                         } else {
                             k[key]++;
-                            layoutSystemMore[market_id][channel_id][layout_item_id] = 1;
+                            layoutSystemMore[market_id][channel_id][item_category_id] = 1;
                         }
-                        marketSystemLayout[market_id][channel_id][layout_item_id][k[key]] = priceSystemHash[system_id];
+                        marketSystemLayout[market_id][channel_id][item_category_id][k[key]] = priceSystemHash[system_id];
                         //此市场的价格
                     }
                 }
             }
         }
-        //$scope.selectMarketLayoutPrice();//channel_id, layout_item_id, system_id
+        //$scope.selectMarketLayoutPrice();//channel_id, item_category_id, system_id
         $scope.marketSystemLayout = marketSystemLayout;
         $scope.layoutShow = layoutShow;$scope.layoutSystemMore = layoutSystemMore;
     };
@@ -244,12 +244,12 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     $scope.marketChannelLayoutPrice = {};
     //选择价格体系 
     var thisMarketPrice = {};
-    $scope.selectMarketLayoutPrice = function() {//channel_id, layout_item_id, _system_id
+    $scope.selectMarketLayoutPrice = function() {//channel_id, item_category_id, _system_id
         //if(_system_id == '0' || typeof(_system_id) == 'undefined') return;//为0时不做任何操作
         var market_id = $scope.market_id;
         if(typeof(thisMarketPrice[market_id]) == 'undefined') thisMarketPrice[market_id] = {};
         var priceSystemHash = $scope.priceSystemHash;
-        //var channel_id = 1,layout_item_id = 1;
+        //var channel_id = 1,item_category_id = 1;
         for(var _system_id in priceSystemHash) {
             var priceSystem = priceSystemHash[_system_id];
             var channel_ids = priceSystem.channel_ids;
@@ -268,20 +268,20 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                     if(typeof($rootScope.channelSettingList[channel_id]) != 'undefined') 
                         decimal_price = $rootScope.channelSettingList[channel_id].decimal_price - 0;
                     if(typeof(thisMarketPrice[market_id][channel_id]) == 'undefined') thisMarketPrice[market_id][channel_id] = {};
-                    for(var layout_item_id in layout_item[channel_id]) {
-                        var key = channel_id + '-' + layout_item_id;
+                    for(var item_category_id in layout_item[channel_id]) {
+                        var key = channel_id + '-' + item_category_id;
                         var system_father_id = priceSystem['price_system_father_id'];
                         var layout_formula = channel_formula[key];
-                        if(typeof(thisMarketPrice[market_id][channel_id][layout_item_id]) == 'undefined') thisMarketPrice[market_id][channel_id][layout_item_id] = {};
-                        if(typeof(thisMarketPrice[market_id][channel_id][layout_item_id][_system_id]) == 'undefined') {
-                            thisMarketPrice[market_id][channel_id][layout_item_id][_system_id] = {};
+                        if(typeof(thisMarketPrice[market_id][channel_id][item_category_id]) == 'undefined') thisMarketPrice[market_id][channel_id][item_category_id] = {};
+                        if(typeof(thisMarketPrice[market_id][channel_id][item_category_id][_system_id]) == 'undefined') {
+                            thisMarketPrice[market_id][channel_id][item_category_id][_system_id] = {};
                         }
                         //如果价格体系在这个公司有设置
                         if(typeof(priceLayout[channel_id]) != 'undefined' && typeof(layout_formula) != 'undefined' && 
-                           typeof(priceLayout[channel_id][layout_item_id]) != 'undefined') {//根据公式算价格
+                           typeof(priceLayout[channel_id][item_category_id]) != 'undefined') {//根据公式算价格
                             //重新统计价格
-                            var thisPriceLayout = priceLayout[channel_id][layout_item_id][system_father_id];
-                            //thisMarketPrice[market_id][channel_id][layout_item_id][_system_id] = thisPriceLayout;[死循环]
+                            var thisPriceLayout = priceLayout[channel_id][item_category_id][system_father_id];
+                            //thisMarketPrice[market_id][channel_id][item_category_id][_system_id] = thisPriceLayout;[死循环]
                             for(var date in thisPriceLayout) {
                                 var thisPrice = thisPriceLayout[date];
                                 var year_month = date.substr(0,8);
@@ -297,7 +297,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                                     } else {
                                         price = '-';//未设置价格
                                     }
-                                    thisMarketPrice[market_id][channel_id][layout_item_id][_system_id][year_month+day] = price;
+                                    thisMarketPrice[market_id][channel_id][item_category_id][_system_id][year_month+day] = price;
                                 }
                             }
                         }
@@ -307,20 +307,20 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 for(var channel_id in channel_ids) {
                     if(typeof(layout_item[channel_id]) == 'undefined') continue;
                     if(typeof(thisMarketPrice[market_id][channel_id]) == 'undefined') thisMarketPrice[market_id][channel_id] = {};
-                    for(var layout_item_id in layout_item[channel_id]) {
-                        if(typeof(thisMarketPrice[market_id][channel_id][layout_item_id]) == 'undefined') thisMarketPrice[market_id][channel_id][layout_item_id] = {};
-                        if(typeof(thisMarketPrice[market_id][channel_id][layout_item_id][_system_id]) == 'undefined') {
-                            thisMarketPrice[market_id][channel_id][layout_item_id][_system_id] = {};
+                    for(var item_category_id in layout_item[channel_id]) {
+                        if(typeof(thisMarketPrice[market_id][channel_id][item_category_id]) == 'undefined') thisMarketPrice[market_id][channel_id][item_category_id] = {};
+                        if(typeof(thisMarketPrice[market_id][channel_id][item_category_id][_system_id]) == 'undefined') {
+                            thisMarketPrice[market_id][channel_id][item_category_id][_system_id] = {};
                         }
-                        if(typeof(priceLayout[channel_id]) != 'undefined' && typeof(priceLayout[channel_id][layout_item_id]) != 'undefined') {
-                            var thisPriceLayout = priceLayout[channel_id][layout_item_id][_system_id];
+                        if(typeof(priceLayout[channel_id]) != 'undefined' && typeof(priceLayout[channel_id][item_category_id]) != 'undefined') {
+                            var thisPriceLayout = priceLayout[channel_id][item_category_id][_system_id];
                             for(var date in thisPriceLayout) {
                                 var thisPrice = thisPriceLayout[date];
                                 var year_month = date.substr(0,8);
                                 for(var i = 1; i <= 31; i++) {
                                     var day = i < 10 ? '0'+i : i;//date_key = 年-月-日 2018-01-01
                                     var price = thisPrice['day_'+day];
-                                    thisMarketPrice[market_id][channel_id][layout_item_id][_system_id][year_month+day] = price;
+                                    thisMarketPrice[market_id][channel_id][item_category_id][_system_id][year_month+day] = price;
                                 }
                             }
                         }

@@ -261,12 +261,12 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 		return ChannelDao::instance()->getLayoutPriceSystem($whereCriteria, $field);
 	}
 
-	public function getLayoutPriceSystemHash($company_id, $valid = '', $channel_id = '', $market_id = '', $layout_item_id = '') {
+	public function getLayoutPriceSystemHash($company_id, $valid = '', $channel_id = '', $market_id = '', $item_category_id = '') {
 		$whereCriteria = new \WhereCriteria();
 		$whereCriteria->EQ('company_id', $company_id);
 		if(!empty($channel_id) && $channel_id > 0) $whereCriteria->MATCH('channel_ids', $channel_id);
 		if(!empty($market_id) && $market_id > 0) $whereCriteria->MATCH('market_ids', $market_id);
-		if(!empty($layout_item_id) && $layout_item_id > 0) $whereCriteria->MATCH('layout_item', $layout_item_id);
+		if(!empty($item_category_id) && $item_category_id > 0) $whereCriteria->MATCH('layout_item', $item_category_id);
 		if($valid !== '') $whereCriteria->EQ('valid', $valid);
 		$whereCriteria->setHashKey('price_system_id');
 		$field = 'price_system_id, price_system_father_id, channel_ids, price_system_name,price_system_en_name, market_ids, layout_item, book_min_day, cancellation_policy,' . 'formula,price_system_type, valid';
@@ -290,14 +290,14 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 		return ChannelDao::instance()->getLayoutPriceSystemLayout($whereCriteria, $field);
 	}
 
-	public function getPriceSystemLayout($market_id, $price_system_id = '', $channel_id = '', $layout_item_id = '') {
+	public function getPriceSystemLayout($market_id, $price_system_id = '', $channel_id = '', $item_category_id = '') {
 		$whereCriteria = new \WhereCriteria();
 		$whereCriteria->EQ('market_id', $market_id);
 		if($price_system_id > 0) $whereCriteria->EQ('price_system_id', $price_system_id);
 		if($price_system_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
-		if($price_system_id > 0) $whereCriteria->EQ('layout_item_id', $layout_item_id);
+		if($price_system_id > 0) $whereCriteria->EQ('item_category_id', $item_category_id);
 
-		return ChannelDao::instance()->getLayoutPriceSystem($whereCriteria, 'price_system_id,channel_id,market_id,layout_item_id');
+		return ChannelDao::instance()->getLayoutPriceSystem($whereCriteria, 'price_system_id,channel_id,market_id,item_category_id');
 	}
 
 	public function deletePriceSystemLayout(\WhereCriteria $whereCriteria) {
