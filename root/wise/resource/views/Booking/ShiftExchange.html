@@ -1,5 +1,5 @@
 <span ng-include="'/resource/views/Common/nav.tpl.html'"></span>
-<div class="p-md" ng-controller="RoomPriceListController">
+<div class="p-md" ng-controller="ShiftExchangeController">
 	<ul class="nav nav-tabs" ui-nav>
         <li class="active">
           <a href>{{_self_module.module_name}}</a>
@@ -68,11 +68,9 @@
         </table>
      </div>
 </div>
-<script language="javascript" src="/resource/vendor/libs/moment.min.js"></script>
-<script language="javascript" src="/resource/vendor/libs/daterangepicker.js"></script>
 <script language="javascript" src="/resource/vendor/modules/angular-smart-table/smart-table.min.js"></script>
 <script language="javascript">
-app.controller('RoomPriceListController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
+app.controller('ShiftExchangeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
 	//获取数据
 	var _channel = $scope.$stateParams.channel;var _view = $scope.$stateParams.view,common = '';
 	var param = 'channel='+_channel+'&view='+_view;
@@ -110,55 +108,7 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 		$scope.roomPriceSystemUrl = result.data.item.roomPriceSystemUrl;
 	});
 	//
-	$scope._beginDay = '';$scope._nextDay = '';	
-	var asideRoomPrice = '';
-	$scope.addRoomPrice = function(_this) {
-		$scope.param = {}; $scope.param["_valid"] = "1";$scope.thisPriceSystem = {};
-		if(_this != 0) {
-			
-		}
-		$scope.action = '添加/编辑';
-		asideRoomPrice = $aside({scope : $scope, title: $scope._self_module.module_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/RoomPriceAddEdit.tpl.html?'+version});
-		asideRoomPrice.$promise.then(function() {
-			asideRoomPrice.show();
-			$(document).ready(function(){
-				$scope._thisDay = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd')+ 'T00:00:00.000Z';//
-				$scope._beginDay = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd')+ 'T00:00:00.000Z';//
-				$scope._nextDay = $filter('date')($scope._baseDateTime() - 0 + 86400000 * 7, 'yyyy-MM-dd')+ 'T00:00:00.000Z';//
-                $scope._minDay = $filter('date')($scope._baseDateTime() - 0 - 86400000 * 15, 'yyyy-MM-dd');//过去15天內價格
-				$scope._maxDay = $filter('date')($scope._baseDateTime() - 0 + 86400000 * 90, 'yyyy-MM-dd');//天內價格
-			});
-		})
-	};
-	$scope.thisPriceSystem = {};$scope.price_system_id = 0;
-	$scope.selectPriceSystem = function(price_system_id) {
-		$scope.thisPriceSystem = {};var price_system_id = price_system_id - 0;
-		if(price_system_id == 0) {return;}
-		if(!angular.isDefined($scope.priceSystemHash[price_system_id])) {
-			//$alert({title: 'Error', content: '没找到价格体系！', templateUrl: '/modal-warning.html', show: true});
-			return;
-		}
-		if(typeof($scope.param) == 'undefined') $scope.param = {};
-		var thisPriceSystem = $scope.priceSystemHash[price_system_id];
-		thisPriceSystem['market_ids'] = angular.fromJson(thisPriceSystem['market_ids']);
-		thisPriceSystem['layout_item'] = angular.fromJson(thisPriceSystem['layout_item']);
-		$scope.thisPriceSystem = thisPriceSystem;
-		$(document).ready(function(){
-			if(thisPriceSystem['formula'] != '') {
-				var formula = angular.fromJson(thisPriceSystem['formula']);
-				for(var channel_layout in formula) {
-					var layout = channel_layout.split('-');var layout_id = layout[1];
-					var key = formula[channel_layout];
-					$('#formula_'+layout_id).val(key['formula']);
-					$('#formula_value_'+layout_id).val(key['formula_value']);
-					$('#formula_second_'+layout_id).val(key['formula_second']);
-					$('#formula_second_value_'+layout_id).val(key['formula_second_value']);
-					//$scope.param['formula_value['+layout_id+']'] = key['formula_value'];
-					//$scope.param['formula_second_value['+layout_id+']'] = key['formula_second_value'];
-				}
-			}
-		})
-	};
+	
 	$scope.saveData = function() {
 		var param = this.param;
 		if(param == null || param == '' || !angular.isDefined(param.market_father_id)) {
@@ -180,69 +130,7 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
             $alert({title: 'Notice', content: '保存成功！', templateUrl: '/modal-success.html', show: true});
 		});
 	}
-	$scope.yearWeekDays = {};
-	$scope.checkHistoryPrice = function(layout_id, channel_id) {
-		var yearWeekDays = {};
-        var decimal_price = 0;
-        if(typeof($rootScope.channelSettingList[channel_id]) != 'undefined') 
-            decimal_price = $rootScope.channelSettingList[channel_id].decimal_price - 0;
-		$scope.param['price_system_type'] = $scope.thisPriceSystem.price_system_type;
-		$scope.param['price_system_father_id'] = $scope.thisPriceSystem.price_system_father_id;
-		$scope.param['layout_id'] = layout_id;$scope.param['channel_id'] = channel_id;
-		$scope.param['begin_date'] = $('#begin_date').val().substr(0,10);
-		$scope.param['end_date'] = $('#end_date').val().substr(0,10);
-		$httpService.header('method', 'checkHistoryPrice');
-		$scope.loading.show();
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
-			$httpService.deleteHeader('method');
-            $scope.loading.hide();
-			if(result.data.success == '0') return; 
-			var year = $('#begin_date').val().substr(0,4);var month = $('#begin_date').val().substr(5,2);
-			var nextYear = $('#end_date').val().substr(0,4);var nextMonth = $('#end_date').val().substr(5,2);
-			var _nextMonth = nextMonth;
-			if(year > nextYear) _nextMonth = 12 + nextMonth;
-			for(var i = year; i <= nextYear; i++) {
-				for(var j = month; j<= _nextMonth; j++) {
-					var _m = j > 12 ? j - 12 : j; _m = _m - 0; if(_m < 10) _m = '0'+_m;
-					var weekDays = $scope.setCalendar(i, _m);
-					yearWeekDays[i + '-' + _m] = weekDays;
-				}
-			}
-			$scope.yearWeekDays = yearWeekDays;
-			var layoutPrice = [];
-			if(typeof(result.data.item.layoutPrice[layout_id]) != 'undefined') {
-				layoutPrice = result.data.item.layoutPrice[layout_id];
-				var _formula = '',_formula_value = '',_formula_second = '', _formula_second_value = '';
-				if($scope.thisPriceSystem['formula'] != '') {
-					var formula = angular.fromJson($scope.thisPriceSystem['formula']);
-					for(var channel_layout in formula) {
-						var layout = channel_layout.split('-');var _layout_id = layout[1];var key = formula[channel_layout];
-						if(_layout_id == layout_id) {
-							_formula = key['formula'];_formula_value = key['formula_value'];
-							_formula_second = key['formula_second'];_formula_second_value = key['formula_second_value'];
-							break;
-						}
-					}
-					for(var date in layoutPrice) {
-						for(var i = 1; i <=31; i++) {
-							var day = i < 10 ? '0'+i : i;
-							var price = layoutPrice[date]['day_'+day];
-							if(_formula_value != '' && price != '' && price > 0) {
-								price = $scope.arithmetic(price,_formula,_formula_value, decimal_price);
-							}
-							if(_formula_second_value != '' && price != '' && price > 0) {
-								price = $scope.arithmetic(price,_formula_second,_formula_second_value, decimal_price);
-							}
-							layoutPrice[date]['day_'+day] = price;
-						}
-					}
-				}
-			}
-			
-			$scope.layoutPrice = layoutPrice;
-		});
-		
-	};
+	
 	$httpService.deleteHeader('refresh');
 });
 
