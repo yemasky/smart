@@ -28,6 +28,15 @@
             <div class="tab">
                 <div class="form-inline" ng-show="activeRoomBookTab=='market'">
                     <div class="form-group p-xs">选择客源市场</div><div class="form-group" ng-include="'/app/customerMarket.html'"></div>
+                    <div class="form-group p-xs">选择价格类型</div>
+                    <div class="form-group w">
+                      <ui-select ng-model="param.price_system_name" theme="bootstrap" ng-change="selectPriceSystem($select.selected)" >
+                          <ui-select-match placeholder="{{roomDetailEdit.price_system_name}} 　">{{$select.selected.price_system_name}}</ui-select-match>
+                          <ui-select-choices repeat="item in priceSystemList | filter: $select.search">
+                            <div ng-bind-html="item.price_system_name | highlight: $select.search"></div>
+                          </ui-select-choices>
+                      </ui-select>
+                    </div>
                 </div>
                 <div ng-show="activeRoomBookTab=='eta_departure'">
                     <div class="form-inline">
@@ -67,15 +76,7 @@
                     </div>
                 </div>
                 <div class="form-inline" ng-show="activeRoomBookTab=='system'">
-                    <div class="form-group p-xs">选择价格类型</div>
-                    <div class="form-group w">
-                      <ui-select ng-model="param.price_system_name" theme="bootstrap" ng-change="selectPriceSystem($select.selected)" >
-                          <ui-select-match placeholder="{{roomDetailEdit.price_system_name}} 　">{{$select.selected.price_system_name}}</ui-select-match>
-                          <ui-select-choices repeat="item in priceSystemList | filter: $select.search">
-                            <div ng-bind-html="item.price_system_name | highlight: $select.search"></div>
-                          </ui-select-choices>
-                      </ui-select>
-                    </div>
+                    
                 </div>
                 <div ng-show="activeRoomBookTab=='Room'">
                     <div class="form-inline">
