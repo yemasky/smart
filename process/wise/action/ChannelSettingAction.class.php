@@ -26,6 +26,9 @@ class ChannelSettingAction extends \BaseAction {
 			case "market":
 				$this->doMarket($objRequest, $objResponse);
 			break;
+            case "MarketCommission":
+                $this->doMarketCommission($objRequest, $objResponse);
+                break;
 			default:
 				$this->doDefault($objRequest, $objResponse);
 			break;
@@ -98,6 +101,18 @@ class ChannelSettingAction extends \BaseAction {
 		$arrayCustomerMarket = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
 		$objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayCustomerMarket);
 	}
+
+    protected function doMarketCommission(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
+        $objResponse->setResponse('saveAddEditUrl', ModuleServiceImpl::instance()->getEncodeModuleId('ChannelSetting', 'marketAddEdit'));
+        //赋值
+        $arrayCustomerMarket = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
+        $successService  = new \SuccessService();
+        $successService->setCode(ErrorCodeConfig::$successCode['success']);
+        $arrayResult['marketList'] = $arrayCustomerMarket;
+        $successService->setData($arrayResult);
+        $objResponse->successServiceResponse($successService);
+    }
 
 	protected function doMarketAddEdit(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;

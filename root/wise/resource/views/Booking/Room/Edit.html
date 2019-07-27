@@ -439,6 +439,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         console.log(system);
     }
     //延住
+    var source_consumeRoomPrice = angular.copy($scope.consumeRoomPrice);
     $scope.changeCheckDate = function(checkDate) {
         if(angular.isUndefined($scope.param.market_id) || $scope.param.market_id == '') {
            $scope.param.market_id = $scope.roomDetailEdit.market_id;
@@ -451,7 +452,6 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         }
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'changeCheckDate');
-        var source_consumeRoomPrice = angular.copy($scope.consumeRoomPrice);
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');
@@ -460,28 +460,55 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
+            //重组按日期价格
+            var datePrice = {};
+            if(result.data.item.priceLayout != '') {
+                for(var i in result.data.item.priceLayout) {
+                    datePrice[result.data.item.priceLayout[i].layout_price_date] = result.data.item.priceLayout[i];
+                }
+            }
+            var channel_id = $scope.param.channel_id;
             //重新计算时间 价格
             var priceSystemList = $scope.priceSystemList;//价格体系
             var price_system_id = $scope.param.price_system_id;
             var in_date = $scope.param.check_in;
             var out_date = $scope.param.check_out;
+            var layoutPriceSystem = $scope.priceSystemList[price_system_id];
+            var channel_ids = angular.fromJson(layoutPriceSystem.channel_ids);
+            var layout_item = angular.fromJson(layoutPriceSystem.layout_item);
+            var channel_formula = layoutPriceSystem.formula != '' ? angular.fromJson(layoutPriceSystem.formula) : '';
+            var layout_formula = channel_formula != '' ? channel_formula[channel_id + '-' + $scope.param.item_category_id] : '';
+            //if(typeof(priceSystemHash[_system_id]) != 'undefined') {
+            var system_type = layoutPriceSystem.price_system_type;
+            var decimal_price = 0;
+            if(typeof($rootScope.channelSettingList[channel_id]) != 'undefined') 
+                decimal_price = $rootScope.channelSettingList[channel_id].decimal_price - 0;
+            console.log(channel_ids);console.log(layout_item);console.log(channel_formula);console.log(system_type);
             //获取价格
             var check_in = new Date(in_date.replace(/-/g, '/'));
             var check_in_time = check_in.getTime(); 
             var check_out = new Date(out_date.replace(/-/g, '/'));
             var check_out_time = check_out.getTime();
-            var consumeRoomPrice = $scope.consumeRoomPrice;
+            var consumeRoomPrice = angular.copy(source_consumeRoomPrice);
             for(var i = check_in_time; i < check_out_time; i += 86400000) {
                 var thisDate = new Date(i);var year = thisDate.getFullYear();
                 var month = thisDate.getMonth() - 0 + 1; if(month < 10) month = '0'+month;
                 var day = thisDate.getDate() - 0; if(day < 10) day = '0'+day;
+                var price_key = year+'-'+month+'-01';
                 //date_key = 年-月-日 2018-01-01
                 var date_key = year+'-'+month+'-'+day;
                 if(typeof(consumeRoomPrice[date_key]) == 'undefined') {
                     consumeRoomPrice[date_key] = {};
+                    var price = datePrice[price_key]['day_'+day];
+                    if(system_type == 'formula') {//公式
+                        if(layout_formula['formula_value'] - 0 > 0)
+                            price = $scope.arithmetic(price, layout_formula['formula'], layout_formula['formula_value'], decimal_price);
+                        if(layout_formula['formula_second_value'] - 0 > 0)
+                            price = $scope.arithmetic(price, layout_formula['formula_second'], layout_formula['formula_second_value'], decimal_price);
+                    }
+                    consumeRoomPrice[date_key]['business_day'] = date_key;
+                    consumeRoomPrice[date_key]['consume_price'] = price;
                 }
-                consumeRoomPrice[date_key]['business_day'] = date_key;
-                consumeRoomPrice[date_key]['consume_price'] = day;
             }
             $scope.consumeRoomPrice = consumeRoomPrice;
             

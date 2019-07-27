@@ -10,7 +10,7 @@
           <div class="panel-heading b-b b-light">价格放盘</div>
           <div class="panel-body">
           	<div class="clearfix">
-                <button type="button" class="btn btn-default w-sm text-left clearfix m-b" ng-model="param.price_system_id" data-html="1" data-toggle="true" bs-options="priceSystem.price_system_id as priceSystem.price_system_name for priceSystem in priceSystemList" bs-select placeholder="选择客房价格体系" ng-change="selectPriceSystem(param.price_system_id)">
+                <button type="button" class="btn btn-default w-sm text-left clearfix m-b" ng-model="param.price_system_id" data-html="1" data-toggle="true" bs-options="priceSystem.price_system_id as priceSystem.price_system_name for priceSystem in priceSystemList" bs-select placeholder="选择客房价格类型" ng-change="selectPriceSystem(param.price_system_id)">
                   Action <span class="caret"></span>
                 </button>
                 <div ng-show="thisPriceSystem.price_system_type=='direct'" class="m-b">

@@ -1,23 +1,28 @@
 <span ng-include="'/resource/views/Common/nav.tpl.html'"></span>
-<div class="p-md" ng-controller="CustomerMarketController">
+<div class="p-md" ng-controller="MarketCommissionController">
 	<div class="box b-a bg-white m-b">
-    	<div class="col-md-6">
-      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="action_nav_name"></span> <a class="pull-right fa fa-plus" ng-click="addCustomerMarket(0)"> </a></div>
+    	<div class="col-md-8">
+      		<div class="panel-heading b-b b-light">
+                <button type="button" class="btn btn-default" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择酒店">
+                  Action <span class="caret"></span>
+                </button>
+                <a class="pull-right fa fa-plus" ng-click="addMarketCommission(0)"> </a>
+            </div>
             <div class="p-md">
             <div class="table-responsive">
             <table class="table table-bordered table-striped bg-white">
               <thead>
                 <tr>
-                  <th>类别</th>
-                  <th>类型</th>
+                  <th>客源市场</th>
+                  <th>价格类型</th>
                   <th class="no-padding panel">
                     <table class="table no-margin">
                         <tbody>
                             <tr>
-                                <th class="col-md-5">中文名称</th>
-                                <th class="col-md-4"></th>
-                                <th class="col-md-2">有效</th>
-                                <th class="col-md-1"></th>
+                                <th class="col-md-5">佣金类型</th>
+                                <th class="col-md-4">佣金形式</th>
+                                <th class="col-md-2">佣金</th>
+                                <th class="col-md-1">有效</th>
                             </tr>
                         </tbody>
                     </table>
@@ -53,7 +58,7 @@
             </div>
         
      	</div>
-     	<div class="col-md-6 b-l no-border-sm">
+     	<div class="col-md-4 b-l no-border-sm">
      		<div class="panel-heading b-b b-light"> 会员设置</div>
             <div class="list-group no-border no-radius">
                 <div class="list-group-item">
@@ -82,7 +87,7 @@
      </div>
 </div>
 <script language="javascript">
-app.controller('CustomerMarketController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
+app.controller('MarketCommissionController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
 	//获取数据
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
@@ -96,31 +101,19 @@ app.controller('CustomerMarketController', function($rootScope, $scope, $httpSer
 		}
 		common = result.data.common;
 		$scope.setCommonSetting(common);
-		var dataList = result.data.item;
-		$scope.dataList = dataList;
-		if(angular.isDefined($scope.dataList)) {
-			var keyData = []; var i = 0;
-			for(var data_id in dataList) {
-				keyData[i] = {};
-				keyData[i]['value'] = dataList[data_id].market_name;
-				keyData[i]['value_en'] = dataList[data_id].market_en_name;
-				keyData[i]['value_id'] = dataList[data_id].market_id;
-				keyData[i]['label'] = dataList[data_id].market_id;
-				keyData[i]['marketing'] = dataList[data_id].marketing;
-				i++;
-			}
-			$scope.keyData = keyData;
-		}
+        $scope.setThisChannel('Hotel');
+		$scope.marketList = result.data.item.marketList;
+
 	});
 	//
-	var asideCustomerMarket = '';
-	$scope.addCustomerMarket = function(_this) {
+	var asideMarketCommission = '';
+	$scope.addMarketCommission = function(_this) {
 		$scope.param = {}; $scope.param["valid"] = "1";
 		if(_this != 0) $scope.param = _this;
 		$scope.action = '添加/编辑';
-		asideCustomerMarket = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketAddEdit.tpl.html'});
-		asideCustomerMarket.$promise.then(function() {
-			asideCustomerMarket.show();
+		asideMarketCommission = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Setting/MarketCommissionAddEdit.tpl.html'});
+		asideMarketCommission.$promise.then(function() {
+			asideMarketCommission.show();
 			$(document).ready(function(){
 				
 			});

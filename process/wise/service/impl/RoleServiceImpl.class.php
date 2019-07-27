@@ -23,8 +23,8 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
         $whereCriteria->EQ('company_id', $company_id)->EQ('employee_id', $employee_id);
 		$cacheRoleEmployeeId       = CacheConfig::getCacheId('role_employee', $company_id, $employee_id);
 		$arrayEmployeeRole         = RoleDao::instance()->DBCache($cacheRoleEmployeeId)->getRoleEmployee($whereCriteria);
-		$arrayEmployeeRoleModule   = array();
-		if(!empty($arrayEmployeeRole)) {
+        $arrayEmployeeModuleId = array();
+        if(!empty($arrayEmployeeRole)) {
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->ArrayIN('role_id', array_column($arrayEmployeeRole,'role_id'));
             $whereCriteria->setHashKey('module_id');
@@ -36,12 +36,16 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
 			$cacheCompanyModuleId      = CacheConfig::getCacheId('module_company', $company_id, $employee_id);
 			$arrayModuleCompany        = ModuleDao::instance()->DBCache($cacheCompanyModuleId)->getModuleCompany($whereCriteria, 'module_id');
 			if(!empty($arrayEmployeeRoleModule) && !empty($arrayModuleCompany)) {
-				$arrayEmployeeRoleModule = array_intersect(array_keys($arrayEmployeeRoleModule), array_keys($arrayModuleCompany));
+				foreach ($arrayEmployeeRoleModule as $module_id => $arrayEmployeeModule) {
+				    if(isset($arrayModuleCompany[$module_id])) {
+                        $arrayEmployeeModuleId[$module_id] = $module_id;
+                    }
+                }
 			} else {
 				return array();
 			}
 		}//array_flip($arrayEmployeeModule);//array_fill_keys($arrayEmployeeModule, '');
-		return $arrayEmployeeRoleModule;
+		return $arrayEmployeeModuleId;
 	}
 
 }
