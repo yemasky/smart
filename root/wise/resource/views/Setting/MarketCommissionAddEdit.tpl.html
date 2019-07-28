@@ -31,7 +31,7 @@
                       </div>
                       <div class="col-sm-2 w-sm">
                       	    <label>客房价格类型</label>
-                            <button type="button" class="btn btn-default w-sm text-left clearfix m-b" ng-model="param.price_system_id" data-html="1" data-toggle="true" bs-options="priceSystem.price_system_id as priceSystem.price_system_name for priceSystem in priceSystemList" bs-select placeholder="选择客房价格类型" ng-change="selectPriceSystem(param.price_system_id)">
+                            <button type="button" class="btn btn-default w-sm text-left clearfix m-b" ng-model="param.price_system_id" data-html="1" data-toggle="true" bs-options="priceSystem.price_system_id as priceSystem.price_system_name for priceSystem in marketPriceSystem[market_id]" bs-select placeholder="选择客房价格类型" ng-change="selectPriceSystem(param.price_system_id)">
                   Action <span class="caret"></span>
                             </button>
                       </div>  
