@@ -209,6 +209,8 @@ class PriceSettingAction extends \BaseAction {
 
 		//客源市场
 		$arrayResult['marketHash'] = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
+		//设置channel_id = ''
+        $objRequest->channel_id = '';
 		//房型
 		$objRequest->channel_config = 'layout';
 		$objRequest->hashKey        = 'item_id';

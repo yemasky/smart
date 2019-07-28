@@ -238,7 +238,20 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 
 		return ChannelDao::instance()->DBCache($cacheCustomerMarketId, -1)->updateCustomerMarket($whereCriteria, $arrayUpdateData, $update_type);
 	}
+    //channel_commision
+    public function getChannelCommisionCache($company_id) {
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id);
+        $field              = 'company_id,channel_id,market_id,price_system_id,commision_type,commision_form,commision_form_value,valid';
+        $cacheId = CacheConfig::getCacheId('commision', $company_id);
+        $whereCriteria->setHashKey('channel_id')->setMultiple(false)->setFatherKey('market_id')->setChildrenKey('price_system_id');
+        return ChannelDao::instance()->DBCache($cacheId)->getChannelCommision($whereCriteria, $field);
+    }
 
+    public function saveChannelCommision($arrayData, $insert_type = 'REPLACE') {
+        $cacheId = CacheConfig::getCacheId('commision', $arrayData['company_id']);
+        return ChannelDao::instance()->DBCache($cacheId, -1)->saveChannelCommision($arrayData, $insert_type);
+    }
 	//channel_layout_price_system
 	public function checkSameNamePriceSystem($company_id, $price_system_name = '', $price_system_en_name = '') {
 		$whereCriteria = new \WhereCriteria();

@@ -103,16 +103,48 @@ class ChannelSettingAction extends \BaseAction {
 	}
 
     protected function doMarketCommission(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-        $objResponse->setResponse('saveAddEditUrl', ModuleServiceImpl::instance()->getEncodeModuleId('ChannelSetting', 'marketAddEdit'));
+        $method = $objRequest->method;
+        if(!empty($method)) {
+            return $this->doMethod($objRequest, $objResponse);
+        }
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id = $objRequest->channel_id;
         //赋值
-        $arrayCustomerMarket = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
+        $arrayResult['marketList'] = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
+        //
+        //取出所有有效价格类型
+        $arrayResult['priceSystemHash'] = ChannelServiceImpl::instance()->getLayoutPriceSystemHash($company_id, 1);
+        //
+        $arrayResult['channelCommisionList'] = ChannelServiceImpl::instance()->getChannelCommisionCache($company_id);
+        //
         $successService  = new \SuccessService();
         $successService->setCode(ErrorCodeConfig::$successCode['success']);
-        $arrayResult['marketList'] = $arrayCustomerMarket;
         $successService->setData($arrayResult);
         $objResponse->successServiceResponse($successService);
     }
+
+    protected function doMethodAddEditMarketCommission(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+	    $this->setDisplay();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id = $objRequest->getInput('channel_id');
+        //
+        $arraySaveData['company_id'] = $company_id;
+        $arraySaveData['channel_id'] = $channel_id;
+        $arraySaveData['commision_form'] = $objRequest->getInput('commision_form');
+        $arraySaveData['commision_form_value'] = $objRequest->getInput('commision_form_value');
+        $arraySaveData['commision_type'] = $objRequest->getInput('commision_type');
+        $arraySaveData['market_id'] = $objRequest->getInput('market_id');
+        $arraySaveData['price_system_id'] = $objRequest->getInput('price_system_id');
+        $arraySaveData['valid'] = $objRequest->getInput('valid');
+        $arraySaveData['add_datetime'] = getDateTime();
+        ChannelServiceImpl::instance()->saveChannelCommision($arraySaveData);
+
+        $successService  = new \SuccessService();
+        $successService->setCode(ErrorCodeConfig::$successCode['success']);
+        $successService->setData('');
+        $objResponse->successServiceResponse($successService);
+    }
+
 
 	protected function doMarketAddEdit(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
