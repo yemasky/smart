@@ -407,13 +407,20 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
     ////保存编辑预订客源市场等
     $scope.saveEditRoomForm = function (roomDetailEdit) {//单个roomDetail
         $httpService.header('method', 'editBookRoom');
-        $scope.beginLoading =! $scope.beginLoading;
         $scope.param.detail_id = roomDetailEdit.detail_id;
         if(angular.isDefined($scope.market_id) && $scope.market_id > 0) {
             $scope.param.market_id = $scope.market_id;
             $scope.param.market_name = $scope.market_name;
             $scope.param.market_father_id = $scope.market_father_id;
         }
+        if(angular.isDefined($scope.param.item_category_id) && $scope.param.item_category_id > 0) {
+            var categoryRoom = $scope.layoutRoomList[$scope.param.item_category_id];
+            if(angular.isUndefined(categoryRoom[$scope.param.item_room])) {
+                $alert({title: 'Error', content: '请选择房型下的房间！', templateUrl: '/modal-warning.html', container: 'body', show: true});
+                return;
+            }
+        }
+        $scope.beginLoading =! $scope.beginLoading;
         $httpService.post('/app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');

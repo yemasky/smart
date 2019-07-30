@@ -50,7 +50,7 @@
 </div>
 </script><!-- /login.html -->
 <script type="text/ng-template" id="/modal-warning.html">
-<div class="modal" tabindex="-1" role="dialog" id="modal-warning">
+<div class="modal" style="z-index: 104000;" tabindex="-1" role="dialog" id="modal-warning">
   <div class="modal-dialog">
 	<div class="modal-content">
 	  <div class="modal-header" ng-show="title">
