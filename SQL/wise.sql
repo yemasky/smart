@@ -1,6 +1,6 @@
 /*
-SQLyog Ultimate v11.24 (32 bit)
-MySQL - 10.1.19-MariaDB : Database - wise
+SQLyog Ultimate v12.08 (64 bit)
+MySQL - 10.1.37-MariaDB : Database - wise
 *********************************************************************
 */
 
@@ -175,7 +175,7 @@ CREATE TABLE `booking_consume` (
 
 /*Data for the table `booking_consume` */
 
-insert  into `booking_consume`(`consume_id`,`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`channel_consume_father_id`,`channel_consume_id`,`booking_type`,`channel_id`,`member_id`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_amount`,`item_category_id`,`item_category_name`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`original_price`,`consume_title`,`consume_price`,`consume_price_total`,`consume_profit`,`commision_type`,`commision_form`,`commision_form_value`,`consume_status`,`employee_id`,`employee_name`,`business_day`,`confirm`,`confirm_employee_id`,`confirm_employee_name`,`confirm_datetime`,`valid`,`add_datetime`) values (1,1,1906309725801,'',1,'Hotel',0,0,'room_rate',1,0,1,2,'散客步入',3,'201',1,4,'标准间',0,'','0',3,'散客单早',1.00,'房费',1.00,1.00,0.00,'0','none',0,'0',1,'有个员工','2019-06-30','0',0,'',NULL,'1','2019-06-30 20:47:02'),(2,2,1907116723202,'',1,'Hotel',0,0,'room_rate',1,0,1,2,'散客步入',-62823335,'',1,4,'标准间',0,'','0',3,'散客单早',1.00,'房费',1.00,1.00,0.00,'0','none',0,'0',1,'有个员工','2019-07-11','0',0,'',NULL,'1','2019-07-11 13:35:34');
+insert  into `booking_consume`(`consume_id`,`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`channel_consume_father_id`,`channel_consume_id`,`booking_type`,`channel_id`,`member_id`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_amount`,`item_category_id`,`item_category_name`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`original_price`,`consume_title`,`consume_price`,`consume_price_total`,`consume_profit`,`commision_type`,`commision_form`,`commision_form_value`,`consume_status`,`employee_id`,`employee_name`,`business_day`,`confirm`,`confirm_employee_id`,`confirm_employee_name`,`confirm_datetime`,`valid`,`add_datetime`) values (1,1,1906309725801,'',1,'Hotel',0,0,'room_rate',1,0,4,19,'金卡会员',3,'201',1,4,'标准间',0,'','0',2,'携程现付双早',1.00,'房费',1.00,1.00,0.00,'0','none',0,'0',1,'有个员工','2019-06-30','0',0,'',NULL,'1','2019-06-30 20:47:02'),(2,2,1907116723202,'',1,'Hotel',0,0,'room_rate',1,0,1,2,'散客步入',-62823335,'',1,4,'标准间',0,'','0',3,'散客单早',1.00,'房费',1.00,1.00,0.00,'0','none',0,'0',1,'有个员工','2019-07-11','0',0,'',NULL,'1','2019-07-11 13:35:34');
 
 /*Table structure for table `booking_detail` */
 
@@ -226,7 +226,7 @@ CREATE TABLE `booking_detail` (
 
 /*Data for the table `booking_detail` */
 
-insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`member_email`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1906309725801,'',1,'Hotel','room_day',1,0,'张珊','','kefu@yelove.cn',1,2,'散客步入',3,'201',4,'标准间','2019-06-30','14:00:00','2019-07-01','12:00:00','2019-07-26 12:02:20','0000-00-00 00:00:00','1',1,'有个员工','2019-06-30',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-06-30 20:47:02',NULL),(2,1907116723202,'',1,'Hotel','room_day',1,0,'张珊','','kefu@yelove.cn',1,2,'散客步入',-62823335,'',4,'标准间','2019-07-11','14:00:00','2019-07-12','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-07-11',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-07-11 13:35:34',NULL);
+insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`member_email`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1906309725801,'',1,'Hotel','room_day',1,0,'张珊','','kefu@yelove.cn',4,19,'金卡会员',3,'201',4,'标准间','2019-06-30','14:00:00','2019-07-01','12:00:00','2019-07-26 12:02:20','0000-00-00 00:00:00','1',1,'有个员工','2019-06-30',0,'','0',2,'携程现付双早',0.00,0.00,'pms','1','2019-06-30 20:47:02',NULL),(2,1907116723202,'',1,'Hotel','room_day',1,0,'张珊','','kefu@yelove.cn',1,2,'散客步入',-62823335,'',4,'标准间','2019-07-11','14:00:00','2019-07-12','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-07-11',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-07-11 13:35:34',NULL);
 
 /*Table structure for table `booking_discount` */
 
@@ -481,7 +481,7 @@ CREATE TABLE `channel_commision` (
 
 /*Data for the table `channel_commision` */
 
-insert  into `channel_commision`(`company_id`,`channel_id`,`market_id`,`price_system_id`,`commision_type`,`commision_form`,`commision_form_value`,`valid`,`add_datetime`) values (1,1,2,3,'1','percent',5.00,'1','2019-07-29 08:58:29');
+insert  into `channel_commision`(`company_id`,`channel_id`,`market_id`,`price_system_id`,`commision_type`,`commision_form`,`commision_form_value`,`valid`,`add_datetime`) values (1,1,2,3,'1','percent',5.00,'1','2019-07-30 16:33:09'),(1,1,3,5,'2','night',1.00,'0','2019-07-30 16:33:06');
 
 /*Table structure for table `channel_consume` */
 

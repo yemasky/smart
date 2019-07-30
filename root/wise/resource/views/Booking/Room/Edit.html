@@ -441,6 +441,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
     $scope.selectItemCategory = function(itemCategory) {
         $scope.param.item_category_id = itemCategory.item_id;
         $scope.param.item_category_name = itemCategory.item_name;
+        $scope.layoutSelectRoom = $scope.layoutRoomList[itemCategory.item_id];
     }
     //延住
     var source_consumeRoomPrice = angular.copy($scope.consumeRoomPrice);

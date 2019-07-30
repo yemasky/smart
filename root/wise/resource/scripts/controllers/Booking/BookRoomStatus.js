@@ -177,6 +177,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 				    var floorRoom = $scope.roomList[building][floor];
 					for(var i in floorRoom) {
 						var room = floorRoom[i];
+                        //全部房间 arrayRoom
                         arrayRoom[room.item_id] = room;
                         room['detail_id'] = 0, room.roomAccount = 0;
 						if(angular.isDefined(live_inRoom[room.item_id])){
@@ -216,12 +217,14 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                         if(!angular.isDefined(layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id])) {
                             layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id] = {};
                         }
+                        //房型的所有房间
                         layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id][room.item_id] = room;
 					}
 			   }
 		    }
 			$scope.bookRoomStatus = bookRoomStatus;
             $scope.billAccount = billAccount;
+            $scope.layoutRoomList = layoutRoomList;
 		}
         var channelConsumeList = {};
         if(channelConsume!='') {
@@ -386,6 +389,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param.check_in = rDetail.check_in;
         $scope.param.check_out = rDetail.check_out;
         $scope.param.price = {};
+        $scope.market_name = rDetail.market_name;
         //$scope.consumeDetail
         var consumeRoomDetail = $scope.consumeList[rDetail.booking_number][rDetail.booking_detail_id];
         var consumeRoomPrice = {}, price = {};
@@ -709,7 +713,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	};
     ////消费编辑///////////////////////////////////
     //$scope.asideConsume = '';
-    $scope.editConsume = function(consume) {console.log(consume);
+    $scope.editConsume = function(consume) {
         $scope.thisConsume = consume;
         var title = '编辑消费';
         $scope.param = consume;

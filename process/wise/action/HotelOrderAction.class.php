@@ -362,7 +362,7 @@ class HotelOrderAction extends \BaseAction {
         return $objResponse->errorResponse($objSuccess->getCode(), $objSuccess->getData(), $objSuccess->getMessage());
     }
 
-    //排房
+    //排房 修改 延住 提前预离 换房等
     protected function doMethodEditBookRoom(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
@@ -372,22 +372,51 @@ class HotelOrderAction extends \BaseAction {
         $detail_id = decode($objRequest->getInput('detail_id'));
         $item_room_name = $objRequest->getInput('item_room_name');
         $item_room = $objRequest->getInput('item_room');
-        if ($detail_id > 0 && $item_room > 0) {
+        $item_category_id = $objRequest->getInput('item_category_id');
+        $item_category_name = $objRequest->getInput('item_category_name');
+        $market_father_id = $objRequest->getInput('market_father_id');
+        $market_id = $objRequest->getInput('market_id');
+        $market_name = $objRequest->getInput('market_name');
+        $price_system_id = $objRequest->getInput('price_system_id');
+        $price_system_name = $objRequest->getInput('price_system_name');
+        $arrayPrice = $objRequest->getInput('price');
+        //判断延住 提前预离 延期预抵
+        $check_in = $objRequest->getInput('check_in	');
+        $check_out = $objRequest->getInput('check_out');
+        //
+        $set_prices = $objRequest->getInput('set_prices');
+
+        $arrayUpdate = [];
+        if (!empty($item_room_name)) $arrayUpdate['item_name'] = $item_room_name;//item_room_name 为空则不更新
+        if (!empty($item_room)) $arrayUpdate['item_id'] = $item_room;
+        if (!empty($item_category_id)) $arrayUpdate['item_category_id'] = $item_category_id;//
+        if (!empty($item_category_name)) $arrayUpdate['item_category_name'] = $item_category_name;
+        if (!empty($market_father_id)) $arrayUpdate['market_father_id'] = $market_father_id;//
+        if (!empty($market_id)) $arrayUpdate['market_id'] = $market_id;
+        if (!empty($market_name)) $arrayUpdate['market_name'] = $market_name;//
+        if (!empty($price_system_id)) $arrayUpdate['price_system_id'] = $price_system_id;
+        if (!empty($price_system_name)) $arrayUpdate['price_system_name'] = $price_system_name;//
+
+        if ($detail_id > 0 && !empty($arrayUpdate)) {
             CommonServiceImpl::instance()->startTransaction();
+
             //更新房间detail
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
-            if (!empty($item_room_name)) $arrayUpdate['item_name'] = $item_room_name;//item_room_name 为空则不更新
-            $arrayUpdate['item_id'] = $item_room;
             BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $arrayUpdate);
             //更新消费
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_detail_id', $detail_id);
             BookingHotelServiceImpl::instance()->updateBookingConsume($whereCriteria, $arrayUpdate);
             //更新财会
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_detail_id', $detail_id);
-            BookingHotelServiceImpl::instance()->updateBookingAccounts($whereCriteria, $arrayUpdate);
+            if(!empty($item_room)) {
+                $arrayUpdateAccounts['item_id'] = $item_room;
+                if (!empty($item_room_name)) $arrayUpdateAccounts['item_name'] = $item_room_name;
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_detail_id', $detail_id);
+                BookingHotelServiceImpl::instance()->updateBookingAccounts($whereCriteria, $arrayUpdateAccounts);
+            }
+
             //
             CommonServiceImpl::instance()->commit();
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
