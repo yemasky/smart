@@ -34,6 +34,10 @@ class Booking_consumeEntity extends \Entity {
 	protected $consume_title;
 	protected $consume_price = 0.00;
     protected $consume_price_total = 0.00;
+    protected $consume_profit = 0.00;
+    protected $commision_type;
+    protected $commision_form;
+    protected $commision_form_value;
 	protected $employee_id = 0;
 	protected $employee_name = '';
 	protected $business_day;

@@ -385,18 +385,21 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.roomDetailEdit = rDetail;
         $scope.param.check_in = rDetail.check_in;
         $scope.param.check_out = rDetail.check_out;
+        $scope.param.price = {};
         //$scope.consumeDetail
         var consumeRoomDetail = $scope.consumeList[rDetail.booking_number][rDetail.booking_detail_id];
-        var consumeRoomPrice = {};
+        var consumeRoomPrice = {}, price = {};
         if(consumeRoomDetail != '') {
             for(var key in consumeRoomDetail) {
                 var business_day = consumeRoomDetail[key].business_day;
                 consumeRoomPrice[business_day] = {};
                 consumeRoomPrice[business_day]['business_day'] = consumeRoomDetail[key].business_day;
                 consumeRoomPrice[business_day]['consume_price'] = consumeRoomDetail[key].consume_price;
+                price[business_day] = consumeRoomDetail[key].consume_price;
             }
         }
         $scope.consumeRoomPrice = consumeRoomPrice;
+        $scope.param.price = price;
         $scope.editBookRoomAside = $aside({scope:$scope,container:'#MainController',templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
         $scope.editBookRoomAside.$promise.then($scope.editBookRoomAside.show);
         //$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});

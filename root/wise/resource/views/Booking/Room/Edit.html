@@ -1,4 +1,4 @@
-<div class="aside box-shadow h-10x col-sm-11 b-r box-shadow no-padding" tabindex="-1" role="dialog">
+<div class="aside box-shadow h-10x b-r box-shadow no-padding" tabindex="-1" role="dialog">
   <div class="aside-dialog">
     <div class="aside-content">
       <div class="aside-header" ng-show="title">
@@ -74,10 +74,8 @@
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
 											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'system')"></a></td>
 										  <td class="col-xs-1" show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{bookConsumePrice[rDetail.booking_number][rDetail.booking_detail_id]}}<a class="pull-right"></a></td>
-										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.check_in}}
-                                              <a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'eta_departure')" ng-if="rDetail.booking_detail_status==0"></a></td>
-										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.check_out}}
-                                              <a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'eta_departure')"</td>
+										  <td class="col-xs-1">{{rDetail.check_in}}</td>
+										  <td class="col-xs-1">{{rDetail.check_out}}</td>
 										  <td>
 											  <!--<button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i></button>-->
 											  <a class="btn btn-xs btn-default" ng-click="addGuestLiveIn('LiveInOne', rDetail)" ng-if="rDetail.booking_detail_status==0"><i class="fas fa-procedures"></i> 客房入住</a>
@@ -436,7 +434,13 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         });
     };
     $scope.selectPriceSystem = function(system) {
-        console.log(system);
+        $scope.param.price_system_id = system.price_system_id;
+        $scope.param.price_system_name = system.price_system_name;
+        $scope.param.cancellation_policy = system.cancellation_policy;
+    }
+    $scope.selectItemCategory = function(itemCategory) {
+        $scope.param.item_category_id = itemCategory.item_id;
+        $scope.param.item_category_name = itemCategory.item_name;
     }
     //延住
     var source_consumeRoomPrice = angular.copy($scope.consumeRoomPrice);
@@ -483,13 +487,13 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             var decimal_price = 0;
             if(typeof($rootScope.channelSettingList[channel_id]) != 'undefined') 
                 decimal_price = $rootScope.channelSettingList[channel_id].decimal_price - 0;
-            console.log(channel_ids);console.log(layout_item);console.log(channel_formula);console.log(system_type);
             //获取价格
             var check_in = new Date(in_date.replace(/-/g, '/'));
             var check_in_time = check_in.getTime(); 
             var check_out = new Date(out_date.replace(/-/g, '/'));
             var check_out_time = check_out.getTime();
-            var consumeRoomPrice = angular.copy(source_consumeRoomPrice);
+            var consumeRoomPrice = {};//angular.copy(source_consumeRoomPrice);
+            $scope.param.price = {};
             for(var i = check_in_time; i < check_out_time; i += 86400000) {
                 var thisDate = new Date(i);var year = thisDate.getFullYear();
                 var month = thisDate.getMonth() - 0 + 1; if(month < 10) month = '0'+month;
@@ -498,20 +502,25 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 //date_key = 年-月-日 2018-01-01
                 var date_key = year+'-'+month+'-'+day;
                 if(typeof(consumeRoomPrice[date_key]) == 'undefined') {
-                    consumeRoomPrice[date_key] = {};
-                    var price = datePrice[price_key]['day_'+day];
-                    if(system_type == 'formula') {//公式
-                        if(layout_formula['formula_value'] - 0 > 0)
-                            price = $scope.arithmetic(price, layout_formula['formula'], layout_formula['formula_value'], decimal_price);
-                        if(layout_formula['formula_second_value'] - 0 > 0)
-                            price = $scope.arithmetic(price, layout_formula['formula_second'], layout_formula['formula_second_value'], decimal_price);
+                    if(angular.isDefined(source_consumeRoomPrice[date_key])) {
+                        consumeRoomPrice[date_key] = angular.copy(source_consumeRoomPrice[date_key]);
+                        $scope.param.price[date_key] = consumeRoomPrice[date_key].consume_price;
+                    } else {
+                        consumeRoomPrice[date_key] = {};
+                        var price = datePrice[price_key]['day_'+day];
+                        if(system_type == 'formula') {//公式
+                            if(layout_formula['formula_value'] - 0 > 0)
+                                price = $scope.arithmetic(price, layout_formula['formula'], layout_formula['formula_value'], decimal_price);
+                            if(layout_formula['formula_second_value'] - 0 > 0)
+                                price = $scope.arithmetic(price, layout_formula['formula_second'], layout_formula['formula_second_value'], decimal_price);
+                        }
+                        consumeRoomPrice[date_key]['business_day'] = date_key;
+                        consumeRoomPrice[date_key]['consume_price'] = price;
+                        $scope.param.price[date_key] = price;
                     }
-                    consumeRoomPrice[date_key]['business_day'] = date_key;
-                    consumeRoomPrice[date_key]['consume_price'] = price;
-                }
+                } 
             }
             $scope.consumeRoomPrice = consumeRoomPrice;
-            
         });
     }
 });    

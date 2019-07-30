@@ -154,6 +154,9 @@ app.controller('MarketCommissionController', function($rootScope, $scope, $httpS
 	var asideMarketCommission = '';
 	$scope.addMarketCommission = function(_this) {
 		$scope.param = {}; $scope.param["valid"] = "1";
+        if(angular.isUndefined($scope.param.channel_id)) {
+            $scope.param.channel_id = angular.copy($scope.channel_id);
+        }
 		if(_this != 0) {
             $scope.param = _this;
             $scope.market_name = $scope.marketChildrenHash[_this.market_id].market_name;
