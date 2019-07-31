@@ -7,8 +7,10 @@
 
 namespace wise;
 
-class HotelOrderAction extends \BaseAction {
+class HotelOrderAction extends \BaseAction
+{
     protected $Booking_operationEntity;
+
     protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
@@ -209,11 +211,12 @@ class HotelOrderAction extends \BaseAction {
         //客源市场
         $arrayCustomerMarket = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
         $arrayResult = ['roomList' => $arrayRoomList, 'layoutList' => $arrayLayoutList, 'layoutRoom' => $arrayLayoutRoom, 'bookingDetailRoom' => $bookingDetailRoom,
-            'bookList' => $arrayBookList, 'consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn,'channelConsumeList'=>$arrayChannelConsume,
-            'paymentTypeList' => $arrayPaymentType, 'marketList' => $arrayCustomerMarket, 'channelBorrowing'=>$arrayChannelBorrowing, 'bookBorrowingList'=>$arrayBorrowing,
-            'priceSystemHash'=>$priceSystemHash, 'in_date' => getDay(), 'out_date'=>getDay(24)];
+            'bookList' => $arrayBookList, 'consumeList' => $arrayConsume, 'accountsList' => $arrayAccounts, 'guestLiveInList' => $arrayGuestLiveIn, 'channelConsumeList' => $arrayChannelConsume,
+            'paymentTypeList' => $arrayPaymentType, 'marketList' => $arrayCustomerMarket, 'channelBorrowing' => $arrayChannelBorrowing, 'bookBorrowingList' => $arrayBorrowing,
+            'priceSystemHash' => $priceSystemHash, 'in_date' => getDay(), 'out_date' => getDay(24)];
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
+
     //预订页面booking
     protected function doRoomOrder(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
@@ -305,10 +308,10 @@ class HotelOrderAction extends \BaseAction {
         if ($market_id > 0) {
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('market_id', $market_id);
-            if(!empty($price_system_id)) {
+            if (!empty($price_system_id)) {
                 $whereCriteria->EQ('price_system_id', $price_system_id);
             }
-            if(!empty($item_category_id)) {
+            if (!empty($item_category_id)) {
                 $whereCriteria->EQ('item_category_id', $item_category_id);
             }
             $arraySystem = ChannelServiceImpl::instance()->getLayoutPriceSystemLayout($whereCriteria, 'DISTINCT price_system_id,price_system_father_id');
@@ -365,69 +368,16 @@ class HotelOrderAction extends \BaseAction {
     //排房 修改 延住 提前预离 换房等
     protected function doMethodEditBookRoom(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        //获取channel
-        $channel_id = $objRequest->channel_id;
-        //
-        $detail_id = decode($objRequest->getInput('detail_id'));
-        $item_room_name = $objRequest->getInput('item_room_name');
-        $item_room = $objRequest->getInput('item_room');
-        $item_category_id = $objRequest->getInput('item_category_id');
-        $item_category_name = $objRequest->getInput('item_category_name');
-        $market_father_id = $objRequest->getInput('market_father_id');
-        $market_id = $objRequest->getInput('market_id');
-        $market_name = $objRequest->getInput('market_name');
-        $price_system_id = $objRequest->getInput('price_system_id');
-        $price_system_name = $objRequest->getInput('price_system_name');
-        $arrayPrice = $objRequest->getInput('price');
-        //判断延住 提前预离 延期预抵
-        $check_in = $objRequest->getInput('check_in	');
-        $check_out = $objRequest->getInput('check_out');
-        //
-        $set_prices = $objRequest->getInput('set_prices');
+        $successService = BookingHotelServiceImpl::instance()->editBooking($objRequest, $objResponse);
 
-        $arrayUpdate = [];
-        if (!empty($item_room_name)) $arrayUpdate['item_name'] = $item_room_name;//item_room_name 为空则不更新
-        if (!empty($item_room)) $arrayUpdate['item_id'] = $item_room;
-        if (!empty($item_category_id)) $arrayUpdate['item_category_id'] = $item_category_id;//
-        if (!empty($item_category_name)) $arrayUpdate['item_category_name'] = $item_category_name;
-        if (!empty($market_father_id)) $arrayUpdate['market_father_id'] = $market_father_id;//
-        if (!empty($market_id)) $arrayUpdate['market_id'] = $market_id;
-        if (!empty($market_name)) $arrayUpdate['market_name'] = $market_name;//
-        if (!empty($price_system_id)) $arrayUpdate['price_system_id'] = $price_system_id;
-        if (!empty($price_system_name)) $arrayUpdate['price_system_name'] = $price_system_name;//
-
-        if ($detail_id > 0 && !empty($arrayUpdate)) {
-            CommonServiceImpl::instance()->startTransaction();
-
-            //更新房间detail
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
-            BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $arrayUpdate);
-            //更新消费
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_detail_id', $detail_id);
-            BookingHotelServiceImpl::instance()->updateBookingConsume($whereCriteria, $arrayUpdate);
-            //更新财会
-            if(!empty($item_room)) {
-                $arrayUpdateAccounts['item_id'] = $item_room;
-                if (!empty($item_room_name)) $arrayUpdateAccounts['item_name'] = $item_room_name;
-                $whereCriteria = new \WhereCriteria();
-                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_detail_id', $detail_id);
-                BookingHotelServiceImpl::instance()->updateBookingAccounts($whereCriteria, $arrayUpdateAccounts);
-            }
-
-            //
-            CommonServiceImpl::instance()->commit();
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
-        }
-
-        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
+        $objResponse->successServiceResponse($successService);
     }
+
     //延长、改变预抵预离时间
     protected function doMethodChangeCheckDate(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         return $this->doMethodCheckOrderData($objRequest, $objResponse);
     }
+
     //保存入住客人
     protected function doMethodSaveGuestLiveIn(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
@@ -444,7 +394,7 @@ class HotelOrderAction extends \BaseAction {
         $is_live_in = $objRequest->getInput('is_live_in');
         //
         $live_in_edit_id = decode($objRequest->getInput('live_in_edit_id'));
-        if($live_in_edit_id > 0) {//update
+        if ($live_in_edit_id > 0) {//update
             //找寻会员 根据手机或身份证
             $member_id = 0;
             $arrayMember = \member\MemberServiceImpl::instance()->getMember($objRequest, 'member_id');
@@ -461,7 +411,7 @@ class HotelOrderAction extends \BaseAction {
             $updateData['member_idcard_type'] = $objRequest->getInput('member_idcard_type');
             $updateData['member_idcard_number'] = $objRequest->getInput('member_idcard_number');
             BookingHotelServiceImpl::instance()->updateGuestLiveIn($whereCriteria, $updateData);
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],['live_in_id'=>$live_in_edit_id, 'l_in_id'=>encode($live_in_edit_id)]);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['live_in_id' => $live_in_edit_id, 'l_in_id' => encode($live_in_edit_id)]);
         }
         if ($detail_id > 0) {
             //整合数据
@@ -473,7 +423,7 @@ class HotelOrderAction extends \BaseAction {
             $Booking_live_inEntity->setBookingNumber($booking_number);
             //检查客房是否能入住
             $arrayChannelItemStatus = null;
-            if($Booking_live_inEntity->getItemId() > 0) {//已排房
+            if ($Booking_live_inEntity->getItemId() > 0) {//已排房
                 $whereCriteria = new \WhereCriteria();
                 $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('item_type', 'item')->EQ('item_id', $Booking_live_inEntity->getItemId());
                 $arrayChannelItemStatus = ChannelServiceImpl::instance()->getChannelItem($whereCriteria, 'booking_number,`status`,clean,`lock`');
@@ -511,7 +461,7 @@ class HotelOrderAction extends \BaseAction {
             //更新
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
-            if($is_live_in == 1) $arrayUpdate['booking_detail_status'] = '1';//设置入住状态
+            if ($is_live_in == 1) $arrayUpdate['booking_detail_status'] = '1';//设置入住状态
             $arrayUpdate['actual_check_in'] = getDateTime();
             BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $arrayUpdate);
             //
@@ -524,11 +474,12 @@ class HotelOrderAction extends \BaseAction {
                 ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $arrayUpdate);
             }
             CommonServiceImpl::instance()->commit();
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['live_in_id'=>$live_in_id, 'l_in_id'=>encode($live_in_id)]);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['live_in_id' => $live_in_id, 'l_in_id' => encode($live_in_id)]);
         }
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
+
     //设置订单入住状态
     protected function doMethodLiveInRoom(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
@@ -537,10 +488,10 @@ class HotelOrderAction extends \BaseAction {
         $channel_id = $objRequest->channel_id;
         $booking_number = decode($objRequest->getInput('book_id'));
         $liveInType = $objRequest->getInput('liveInType');
-        if($booking_number > 0) {
+        if ($booking_number > 0) {
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
-            if($liveInType == 'all') {//设置入住状态
+            if ($liveInType == 'all') {//设置入住状态
                 $businessDay = LoginServiceImpl::getBusinessDay();
                 $whereCriteria->EQ('booking_number', $booking_number)->EQ('booking_status', '0');
                 $updateData['booking_status'] = '1';
@@ -557,7 +508,7 @@ class HotelOrderAction extends \BaseAction {
                 $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)
                     ->EQ('booking_number', $booking_number)->GT('item_id', 0);
                 $arrayLiveInItem = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria, 'item_id');
-                if(!empty($arrayLiveInItem)) {
+                if (!empty($arrayLiveInItem)) {
                     $arrayItem = array_column($arrayLiveInItem, 'item_id');
                     //更新房间入住状态
                     $updateData = [];
@@ -571,11 +522,11 @@ class HotelOrderAction extends \BaseAction {
                     }
                 }
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
-            } elseif($liveInType == 'unall') {//反入住状态主订单
+            } elseif ($liveInType == 'unall') {//反入住状态主订单
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
-            } elseif($liveInType == 'one') {//入住单个房间
+            } elseif ($liveInType == 'one') {//入住单个房间
                 $detail_id = decode($objRequest->getInput('detail_id'));
-                if($detail_id > 0) {
+                if ($detail_id > 0) {
                     $businessDay = LoginServiceImpl::getBusinessDay();
                     $whereCriteria->EQ('booking_number', $booking_number)->EQ('booking_status', '0');
                     $updateData['booking_status'] = '1';
@@ -592,7 +543,7 @@ class HotelOrderAction extends \BaseAction {
                     $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)
                         ->EQ('booking_number', $booking_number)->GT('item_id', 0)->EQ('booking_detail_id', $detail_id);
                     $arrayLiveInItem = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria, 'item_id');
-                    if(!empty($arrayLiveInItem)) {
+                    if (!empty($arrayLiveInItem)) {
                         $arrayItem = array_column($arrayLiveInItem, 'item_id');
                         //更新房间入住状态
                         $updateData = [];
@@ -607,7 +558,7 @@ class HotelOrderAction extends \BaseAction {
                     }
                     return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
                 }
-            } elseif($liveInType == 'unone') {//反入住单个房间
+            } elseif ($liveInType == 'unone') {//反入住单个房间
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
             }
         }
@@ -682,6 +633,7 @@ class HotelOrderAction extends \BaseAction {
         }
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
+
     //入账
     protected function doMethodSaveAccounts(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
@@ -694,14 +646,14 @@ class HotelOrderAction extends \BaseAction {
         $detail_id = decode($objRequest->getInput('detail_id'));
         $item_name = $objRequest->getInput('item_name');
         $item_id = $objRequest->getInput('item_id');
-        if(!empty($ba_id)) {
-            if(!empty($item_name)) $arrayUpdate['item_name'] = $item_name;
+        if (!empty($ba_id)) {
+            if (!empty($item_name)) $arrayUpdate['item_name'] = $item_name;
             $arrayUpdate['item_id'] = $item_id;
             $arrayUpdate['money'] = $objRequest->getInput('money');
             $arrayUpdate['payment_father_id'] = $objRequest->getInput('payment_father_id');
             $arrayUpdate['payment_id'] = $objRequest->getInput('payment_id');
             $arrayUpdate['payment_name'] = $objRequest->getInput('payment_name');
-            if($arrayUpdate['payment_id'] == '11') {
+            if ($arrayUpdate['payment_id'] == '11') {
                 $arrayUpdate['credit_authorized_number'] = $objRequest->getInput('credit_authorized_number');
                 $arrayUpdate['credit_card_number'] = $objRequest->getInput('credit_card_number');
             }
@@ -709,10 +661,10 @@ class HotelOrderAction extends \BaseAction {
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('accounts_id', $ba_id);
             BookingHotelServiceImpl::instance()->updateBookingAccounts($whereCriteria, $arrayUpdate);
 
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['accounts_id'=>$ba_id, 'ba_id'=>encode($ba_id), 'business_day'=>'']);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['accounts_id' => $ba_id, 'ba_id' => encode($ba_id), 'business_day' => '']);
         } elseif ($detail_id > 0 && $item_id > 0) {
             $arrayInput = $objRequest->getInput();
-            if($objRequest->getInput('payment_id') != 11) {
+            if ($objRequest->getInput('payment_id') != 11) {
                 unset($arrayInput['credit_authorized_days']);
             }
             //更新房间detail
@@ -727,11 +679,12 @@ class HotelOrderAction extends \BaseAction {
             $Booking_accountsEntity->setAddDatetime(getDateTime());
             $accounts_id = BookingHotelServiceImpl::instance()->saveBookingAccounts($Booking_accountsEntity);
             //
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['accounts_id'=>$accounts_id, 'ba_id'=>encode($accounts_id), 'business_day'=>$businessDay]);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['accounts_id' => $accounts_id, 'ba_id' => encode($accounts_id), 'business_day' => $businessDay]);
         }
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
+
     //消费
     protected function doMethodSaveConsume(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
@@ -744,8 +697,8 @@ class HotelOrderAction extends \BaseAction {
         //
         $item_name = $objRequest->getInput('item_name');
         $item_id = $objRequest->getInput('item_id');
-        if(!empty($c_id)) {//update
-            if(!empty($item_name)) $arrayUpdate['item_name'] = $item_name;
+        if (!empty($c_id)) {//update
+            if (!empty($item_name)) $arrayUpdate['item_name'] = $item_name;
             $arrayUpdate['item_id'] = $item_id;
             $arrayUpdate['original_price'] = $arrayUpdate['consume_price'] = $arrayUpdate['consume_price_total'] = $objRequest->getInput('money');
             $arrayUpdate['consume_title'] = $objRequest->getInput('consume_title');
@@ -754,7 +707,7 @@ class HotelOrderAction extends \BaseAction {
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('consume_id', $c_id);
             BookingHotelServiceImpl::instance()->updateBookingConsume($whereCriteria, $arrayUpdate);
 
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['consume_id'=>$c_id, 'c_id'=>encode($c_id), 'business_day'=>'']);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['consume_id' => $c_id, 'c_id' => encode($c_id), 'business_day' => '']);
         } elseif ($book_id > 0 && $item_id > 0) {
             $arrayInput = $objRequest->getInput();
             $money = $objRequest->getInput('money');
@@ -772,12 +725,13 @@ class HotelOrderAction extends \BaseAction {
             $Booking_consumeEntity->setAddDatetime(getDateTime());
             $consume_id = BookingHotelServiceImpl::instance()->saveBookingConsume($Booking_consumeEntity);
             //
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['consume_id'=>$consume_id, 'c_id'=>encode($consume_id), 'business_day'=>$businessDay]);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['consume_id' => $consume_id, 'c_id' => encode($consume_id), 'business_day' => $businessDay]);
         }
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
 
     }
+
     //借物
     protected function doMethodSaveBorrowing(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
@@ -791,8 +745,8 @@ class HotelOrderAction extends \BaseAction {
         //
         $item_name = $objRequest->getInput('item_name');
         $item_id = $objRequest->getInput('item_id');
-        if(!empty($bb_id)) {//update
-            if(!empty($item_name)) $arrayUpdate['item_name'] = $item_name;
+        if (!empty($bb_id)) {//update
+            if (!empty($item_name)) $arrayUpdate['item_name'] = $item_name;
             $arrayUpdate['item_id'] = $item_id;
             $arrayUpdate['cash_pledge'] = $cash_pledge;
             $arrayUpdate['borrowing_num'] = $objRequest->getInput('borrowing_num');
@@ -805,7 +759,7 @@ class HotelOrderAction extends \BaseAction {
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_borrowing_id', $bb_id);
             BookingHotelServiceImpl::instance()->updateBookingBorrowing($whereCriteria, $arrayUpdate);
 
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['booking_borrowing_id'=>$bb_id, 'bb_id'=>encode($bb_id), 'business_day'=>'']);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['booking_borrowing_id' => $bb_id, 'bb_id' => encode($bb_id), 'business_day' => '']);
         } elseif ($book_id > 0 && $item_id > 0) {
             $arrayInput = $objRequest->getInput();
             //开启事务
@@ -824,11 +778,12 @@ class HotelOrderAction extends \BaseAction {
             $booking_borrowing_id = BookingHotelServiceImpl::instance()->saveBookingBorrowing($Booking_borrowingEntity);
             CommonServiceImpl::instance()->commit();
             //
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['booking_borrowing_id'=>$booking_borrowing_id, 'bb_id'=>encode($booking_borrowing_id), 'business_day'=>$businessDay]);
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['booking_borrowing_id' => $booking_borrowing_id, 'bb_id' => encode($booking_borrowing_id), 'business_day' => $businessDay]);
         }
 
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
+
     //结账、退房
     protected function doMethodBookingClose(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
@@ -855,8 +810,9 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('business_day', $business_day);
         $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
 
-        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],['nightAuditorList'=>$arrayConsume, 'nightAuditorList'=>$arrayBookingDetail]);
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['nightAuditorList' => $arrayConsume, 'nightAuditorList' => $arrayBookingDetail]);
     }
+
     //远期房态
     protected function doMethodRoomForcasting(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
@@ -870,8 +826,9 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel_id', $channel_id)->GT('check_in', $in_date)->LT('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayResult['roomForwardList'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
-        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'],$arrayResult);
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
+
     //搜索订单
     protected function doMethodSearchBooking(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
@@ -886,15 +843,16 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel_id', $channel_id)
             ->setHashKey('booking_detail_id');
-        if(!empty($condition_date) && !empty($search_date)) {
+        if (!empty($condition_date) && !empty($search_date)) {
             $whereCriteria->EQ($condition_date, $search_date);
         }
-        if(!empty($condition_key) && !empty($search_value)) {
+        if (!empty($condition_key) && !empty($search_value)) {
             $whereCriteria->EQ($condition_key, $search_value);
         }
         $arrayResult['bookingSearchList'] = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
+
     //补全订单其它显示信息
     protected function doMethodGetEditRoomBookInfo(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $arrayResult = [];
@@ -972,11 +930,12 @@ class HotelOrderAction extends \BaseAction {
                     }
                 }
             }
-            $arrayResult = ['book'=>$arrayBookList, 'consume' => $arrayConsume, 'accounts' => $arrayAccounts, 'guestLiveIn' => $arrayGuestLiveIn, 'detailRoom'=>$bookingDetailRoom];
+            $arrayResult = ['book' => $arrayBookList, 'consume' => $arrayConsume, 'accounts' => $arrayAccounts, 'guestLiveIn' => $arrayGuestLiveIn, 'detailRoom' => $bookingDetailRoom];
         }
 
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
+
     //查看日志
     protected function doMethodGetBookingOperation(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
@@ -984,7 +943,7 @@ class HotelOrderAction extends \BaseAction {
         //获取channel
         $channel_id = $objRequest->channel_id;
         $booking_number = decode($objRequest->getInput('book_id'));
-        if(!empty($booking_number)) {
+        if (!empty($booking_number)) {
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)
                 ->EQ('booking_number', $booking_number);

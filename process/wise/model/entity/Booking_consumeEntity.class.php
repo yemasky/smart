@@ -15,6 +15,8 @@ class Booking_consumeEntity extends \Entity {
 	protected $booking_number_ext = '';
 	protected $company_id;
 	protected $channel;
+	protected $channel_consume_father_id;
+	protected $channel_consume_id;
 	protected $booking_type;
 	protected $channel_id;
 	protected $member_id = 0;
@@ -133,6 +135,34 @@ class Booking_consumeEntity extends \Entity {
 	public function setChannel($channel) {
 		$this->channel = $channel;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getChannelConsumeFatherId() {
+        return $this->channel_consume_father_id;
+    }
+
+    /**
+     * @param mixed $channel_consume_father_id
+     */
+    public function setChannelConsumeFatherId($channel_consume_father_id): void {
+        $this->channel_consume_father_id = $channel_consume_father_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChannelConsumeId() {
+        return $this->channel_consume_id;
+    }
+
+    /**
+     * @param mixed $channel_consume_id
+     */
+    public function setChannelConsumeId($channel_consume_id): void {
+        $this->channel_consume_id = $channel_consume_id;
+    }
 
 	/**
 	 * @return mixed
@@ -398,6 +428,62 @@ class Booking_consumeEntity extends \Entity {
      */
     public function setConsumePriceTotal(float $consume_price_total) {
         $this->consume_price_total = $consume_price_total;
+    }
+
+    /**
+     * @return float
+     */
+    public function getConsumeProfit(): float {
+        return $this->consume_profit;
+    }
+
+    /**
+     * @param float $consume_profit
+     */
+    public function setConsumeProfit(float $consume_profit): void {
+        $this->consume_profit = $consume_profit;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommisionType() {
+        return $this->commision_type;
+    }
+
+    /**
+     * @param mixed $commision_type
+     */
+    public function setCommisionType($commision_type): void {
+        $this->commision_type = $commision_type;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommisionForm() {
+        return $this->commision_form;
+    }
+
+    /**
+     * @param mixed $commision_form
+     */
+    public function setCommisionForm($commision_form): void {
+        $this->commision_form = $commision_form;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCommisionFormValue() {
+        return $this->commision_form_value;
+    }
+
+    /**
+     * @param mixed $commision_form_value
+     */
+    public function setCommisionFormValue($commision_form_value): void {
+        $this->commision_form_value = $commision_form_value;
     }
 
 	/**

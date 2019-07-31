@@ -93,6 +93,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         var channelBorrowing     = result.data.item.channelBorrowing;
         var channelConsume       = result.data.item.channelConsumeList;
         var priceSystemList      = result.data.item.priceSystemHash;
+        $scope.priceSystemHash   = result.data.item.priceSystemHash;
         $scope.bookRoomStatus    =  {}; $scope.check_inRoom = {};$scope.roomDetailList = {};
         $scope.roomLiveIn        = {};$scope.check_outRoom = {};
         if($scope.roomList != '') {
@@ -388,6 +389,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.roomDetailEdit = rDetail;
         $scope.param.check_in = rDetail.check_in;
         $scope.param.check_out = rDetail.check_out;
+        //原始预抵预离 用来判断延住 提前预离 延后预抵 减少居住时间
+        $scope.param.check_in_source = rDetail.check_in;
+        $scope.param.check_out_source = rDetail.check_out;
+        //
         $scope.param.price = {};
         $scope.market_name = rDetail.market_name;
         //$scope.consumeDetail

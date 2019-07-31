@@ -6,7 +6,8 @@
  */
 
 namespace wise;
-class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService {
+class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
+{
     private static $objService = null;
 
     public static function instance() {
@@ -32,26 +33,26 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
      * [channel_id => item_category_id => system_id => room_info]
      */
     public function beginBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
-        $objSuccess       = new \SuccessService();
-        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee();
-        $objEmployee      = $objLoginEmployee->getEmployeeInfo();
-        $company_id       = $objEmployee->getCompanyId();
-        $channel_id       = $objRequest->channel_id;
-        $arrayInput       = $objRequest->getInput();
-        $check_in         = $objRequest->validInput('check_in');
-        $check_out        = $objRequest->validInput('check_out');
-        $in_time          = $objRequest->validInput('in_time');
-        $out_time         = $objRequest->validInput('out_time');
-        $booking_number   = decode($objRequest->getInput('book_id'));
+        $objSuccess                        = new \SuccessService();
+        $objLoginEmployee                  = LoginServiceImpl::instance()->checkLoginEmployee();
+        $objEmployee                       = $objLoginEmployee->getEmployeeInfo();
+        $company_id                        = $objEmployee->getCompanyId();
+        $channel_id                        = $objRequest->channel_id;
+        $arrayInput                        = $objRequest->getInput();
+        $check_in                          = $objRequest->validInput('check_in');
+        $check_out                         = $objRequest->validInput('check_out');
+        $in_time                           = $objRequest->validInput('in_time');
+        $out_time                          = $objRequest->validInput('out_time');
+        $booking_number                    = decode($objRequest->getInput('book_id'));
         $arrayCommonData['booking_number'] = 0;
-        if(!empty($booking_number) && is_numeric($booking_number)) {
+        if (!empty($booking_number) && is_numeric($booking_number)) {
             $arrayCommonData['booking_number'] = $booking_number;
         }
         //mobile_email
         $mobile_email = $objRequest->validInput('mobile_email');
-        if(strlen($mobile_email) == 11 && is_numeric($mobile_email)) {//mobile
+        if (strlen($mobile_email) == 11 && is_numeric($mobile_email)) {//mobile
             $arrayCommonData['member_mobile'] = $mobile_email;
-        } elseif (strpos($mobile_email,'@') !== false) {
+        } elseif (strpos($mobile_email, '@') !== false) {
             $arrayCommonData['member_email'] = $mobile_email;
         }
         //
@@ -111,7 +112,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             //查找过滤有效的价格体系
             $_item_key = substr(getMicrotime(), 2);//构造虚拟item_id
             foreach ($arrayBookingData as $dateKey => $arrayChannelData) {
-                if(empty($arrayChannelData['booking_room'])) continue;//
+                if (empty($arrayChannelData['booking_room'])) continue;//
                 foreach ($arrayChannelData['booking_room'][$channel_id] as $item_category_id => $systemData) {//组合价格体系
                     foreach ($systemData as $system_id => $roomData) {
                         if (empty($roomData['value'])) continue;//房间数量为0 也直接跳过
@@ -181,7 +182,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                         $arrayFormulaSystem[$priceSystem['price_system_id']]['formula']           = $priceSystem['formula'];
                         //父价格[父价格设置相应的layout_item才行]
                         $arrayFormulaSystem[$priceSystem['price_system_id']]['system_father_id'] = $priceSystem['price_system_father_id'];
-                        $arrayFormulaSystem[$priceSystem['price_system_id']]['item_category_id']   = $systemLayoutItem[$priceSystem['price_system_id']]['item_category_id'];
+                        $arrayFormulaSystem[$priceSystem['price_system_id']]['item_category_id'] = $systemLayoutItem[$priceSystem['price_system_id']]['item_category_id'];
                         if (isset($systemLayoutItem[$priceSystem['price_system_father_id']])) {
                             $systemLayoutItem[$priceSystem['price_system_father_id']]['item_ids'] .= ',' . $systemLayoutItem[$priceSystem['price_system_id']]['item_ids'];
                         } else {
@@ -193,14 +194,14 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 }
 
                 if (empty($arrayDirectSystemId)) {
-                    return $objSuccess->setSuccessService(false,'000009','价格体系为空', []);
+                    return $objSuccess->setSuccessService(false, '000009', '价格体系为空', []);
                 }
                 //{begin} 根据手动放盘价格体系[$arrayDirectSystemId]查找房型房价 父价格 组合system 和 item_id
                 $whereSqlStr = '';
                 $or          = '';//
                 foreach ($arrayDirectSystemId as $system_id => $s_id) {
                     $item_category_ids = $systemLayoutItem[$system_id]['item_ids'];
-                    $whereSqlStr     .= $or . '(price_system_id = ' . $system_id . ' AND item_id IN(' . $item_category_ids . '))';
+                    $whereSqlStr       .= $or . '(price_system_id = ' . $system_id . ' AND item_id IN(' . $item_category_ids . '))';
                 }
                 if (!empty($whereSqlStr)) $whereSqlStr = ' (' . $whereSqlStr . ')';
                 $arrayHashKey['hashKey']     = 'price_system_id';
@@ -298,8 +299,8 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                     foreach ($arrayThisDay as $day => $price) {
                                         $insert_key = $channel_id . '-' . $system_id . '-' . $item_category_id . '-' . $monthDate . $day;
                                         //每一个price day是一个夜审价格
-                                        $price_day                       = 'day_' . $day;
-                                        $price                           = $priceDateList[$price_day];
+                                        $price_day = 'day_' . $day;
+                                        $price     = $priceDateList[$price_day];
                                         if (empty($price)) {
                                             return $objSuccess->setSuccessService(false, '100001', '时间：' . substr($monthDate, 0, 8) . $day, []);
                                         }
@@ -331,19 +332,19 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
 
     public function saveBooking(BookingDataModel $BookingData): \SuccessService {
         CommonServiceImpl::instance()->startTransaction();
-        $objSuccess = new \SuccessService();
-        $bookingEntity = $BookingData->getBookingEntity();
-        $bookDetailList = $BookingData->getBookDetailList();
+        $objSuccess               = new \SuccessService();
+        $bookingEntity            = $BookingData->getBookingEntity();
+        $bookDetailList           = $BookingData->getBookDetailList();
         $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();
-        $bookingNumber = $bookingEntity->getBookingNumber();
+        $bookingNumber            = $bookingEntity->getBookingNumber();
         if (empty($bookingNumber)) {
-            $booking_id = BookingDao::instance()->saveBooking($bookingEntity);
+            $booking_id    = BookingDao::instance()->saveBooking($bookingEntity);
             $bookingNumber = BookingUtil::instanct()->getBookingNumber($booking_id);
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('booking_id', $booking_id);
             BookingDao::instance()->updateBooking($whereCriteria, ['booking_number' => $bookingNumber]);
         }
-        $objSuccess->setData(['booking_number'=>$bookingNumber]);
+        $objSuccess->setData(['booking_number' => $bookingNumber]);
         foreach ($bookDetailList as $k => $bookDetail) {
             $bookDetailList[$k]->setBookingNumber($bookingNumber);
         }
@@ -419,7 +420,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                     }
                 }
             }
-            if($isOverBook) {
+            if ($isOverBook) {
                 CommonServiceImpl::instance()->rollback();
                 $objSuccess->setSuccess(false);
                 $objSuccess->setCode(ErrorCodeConfig::$errorCode['over_booking']);
@@ -431,14 +432,179 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return $objSuccess;
     }
 
-    public function closeBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
-        // TODO: Implement closeBooking() method.
-        $objSuccess               = new \SuccessService();
-        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+    public function editBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
+        $objSuccess = new \SuccessService();
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         //获取channel
         $channel_id = $objRequest->channel_id;
-        $closeType = $objRequest->getInput('closeType');
+        //
+        $detail_id          = decode($objRequest->getInput('detail_id'));
+        $item_room_name     = $objRequest->getInput('item_room_name');
+        $item_room          = $objRequest->getInput('item_room');
+        $item_category_id   = $objRequest->getInput('item_category_id');
+        $item_category_name = $objRequest->getInput('item_category_name');
+        $market_father_id   = $objRequest->getInput('market_father_id');
+        $market_id          = $objRequest->getInput('market_id');
+        $market_name        = $objRequest->getInput('market_name');
+        $price_system_id    = $objRequest->getInput('price_system_id');
+        $price_system_name  = $objRequest->getInput('price_system_name');
+        $arrayPrice         = $objRequest->getInput('price');
+        //
+        $arrayUpdate = [];
+        if (!empty($item_room_name)) $arrayUpdate['item_name'] = $item_room_name;//item_room_name 为空则不更新
+        if (!empty($item_room)) $arrayUpdate['item_id'] = $item_room;
+        if (!empty($item_category_id)) $arrayUpdate['item_category_id'] = $item_category_id;//
+        if (!empty($item_category_name)) $arrayUpdate['item_category_name'] = $item_category_name;
+        if (!empty($market_father_id)) $arrayUpdate['market_father_id'] = $market_father_id;//
+        if (!empty($market_id)) $arrayUpdate['market_id'] = $market_id;
+        if (!empty($market_name)) $arrayUpdate['market_name'] = $market_name;//
+        if (!empty($price_system_id)) $arrayUpdate['price_system_id'] = $price_system_id;
+        if (!empty($price_system_name)) $arrayUpdate['price_system_name'] = $price_system_name;//
+        //判断延住 提前预离 延期预抵
+        $check_in         = trim($objRequest->getInput('check_in'));
+        $check_out        = trim($objRequest->getInput('check_out'));
+        $check_in_source  = trim($objRequest->getInput('check_in_source'));
+        $check_out_source = trim($objRequest->getInput('check_out_source'));
+        $arrayCancelsDay  = [];
+        $arrayAddDay      = [];
+        if ($check_in != $check_in_source || $check_out != $check_out_source) {
+            $in_date         = strtotime($check_in);
+            $in_date_source  = strtotime($check_in_source);
+            $out_date        = strtotime($check_out);
+            $out_date_source = strtotime($check_out_source);
+            if ($check_in != $check_in_source) {
+                if ($in_date_source > $in_date) {//提前预抵 至少1天 计算提前的天数 需计算是否超订
+                    for ($i = $in_date; $i < $in_date_source; $i += 86400) {
+                        $businessDay                   = date("Y-m-d", $i);
+                        $arrayCancelsDay[$businessDay] = $businessDay;
+                    }
+                }
+                if ($in_date_source < $in_date) {//延后预抵 至少1天 减少的天数无效计算天数，但入住过后的不能取消 无需重新计算超订
+                    for ($i = $in_date_source; $i < $in_date; $i += 86400) {
+                        $businessDay               = date("Y-m-d", $i);
+                        $arrayAddDay[$businessDay] = $businessDay;
+                    }
+                    if ($in_date >= $check_out_source) {//旧数据全部不要 完全延后
+
+                    }
+                }
+                $arrayUpdate['check_in'] = $check_in;
+            }
+            if ($check_out != $check_out_source) {
+                if ($out_date < $out_date_source) {//提前预离 至少1天 减少的天数无效计算天数，但入住过后的不能取消 无需重新计算超订
+                    for ($i = $out_date_source; $i < $out_date; $i += 86400) {
+                        $businessDay                   = date("Y-m-d", $i);
+                        $arrayCancelsDay[$businessDay] = $businessDay;
+                    }
+                    if ($out_date <= $in_date_source) {//旧数据全部不要 完全提前
+
+                    }
+                }
+                if ($out_date > $out_date_source) {//延后预离 至少1天 计算提前的天数 需计算是否超订
+                    for ($i = $out_date_source; $i < $out_date; $i += 86400) {
+                        $businessDay               = date("Y-m-d", $i);
+                        $arrayAddDay[$businessDay] = $businessDay;
+                    }
+                }
+                $arrayUpdate['check_out'] = $check_out;
+            }
+            if (!empty($arrayCancelsDay) && !empty($arrayAddDay)) {//去除无效部分即有效
+                foreach ($arrayCancelsDay as $day => $arrayCancels) {
+                    if (isset($arrayAddDay[$day])) {
+                        unset($arrayAddDay[$day]);
+                    }
+                }
+
+            }
+            //&market_id=&price_system_id=2&item_category_id=4
+            if (empty($item_room_name)) $item_room_name = $objRequest->item_room_name;//item_room_name 为空则不更新
+            if (empty($item_room)) $item_room = $objRequest->item_room;
+            if (empty($item_category_id)) $item_category_id = $objRequest->item_category_id;//
+            if (empty($item_category_name)) $item_category_name = $objRequest->item_category_name;
+            if (empty($market_father_id)) $market_father_id = $objRequest->market_father_id;//
+            if (empty($market_id)) $market_id = $objRequest->market_id;
+            if (empty($market_name)) $market_name = $objRequest->market_name;//
+            if (empty($price_system_id)) $price_system_id = $objRequest->price_system_id;
+            if (empty($price_system_name)) $price_system_name = $objRequest->price_system_name;//
+            //逻辑：1、把cancels的删除 2、把add的添加，判断是否超订
+            //每一间房消费
+            $BookingDetailConsumeList = array();
+            $BookingConsumeEntity     = new Booking_consumeEntity($arrayUpdate);
+            $BookingConsumeEntity->setConsumeTitle('房费');
+            $BookingConsumeEntity->setChannelConsumeFatherId(1);
+            $BookingConsumeEntity->setChannelConsumeId(2);//2 代表房费
+            $BookingConsumeEntity->setBookingDetailId($detail_id);
+            $BookingConsumeEntity->setCompanyId($company_id);
+            $BookingConsumeEntity->setChannelId($channel_id);
+            $BookingConsumeEntity->setChannel('Hotel');
+            //
+            $BookingConsumeEntity->setItemName($item_room_name);
+            $BookingConsumeEntity->setItemId($item_room);
+            $BookingConsumeEntity->setItemCategoryId($item_category_id);
+            $BookingConsumeEntity->setItemCategoryName($item_category_name);
+            $BookingConsumeEntity->setMarketFatherId($market_father_id);
+            $BookingConsumeEntity->setMarketId($market_id);
+            $BookingConsumeEntity->setMarketName($market_name);
+            $BookingConsumeEntity->setPriceSystemId($price_system_id);
+            $BookingConsumeEntity->setPriceSystemName($price_system_name);
+
+
+        }
+        //
+        $set_prices = $objRequest->getInput('set_prices');
+        //
+
+        if ($detail_id > 0) {
+            CommonServiceImpl::instance()->startTransaction();
+
+            //更新房间detail
+            if (!empty($arrayUpdate)) {
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('booking_detail_id', $detail_id);
+                BookingHotelServiceImpl::instance()->updateBookingDetail($whereCriteria, $arrayUpdate);
+            }
+            //更新消费
+            if (!isset($arrayUpdate['check_in']) && !isset($arrayUpdate['check_out'])) {
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_detail_id', $detail_id);
+                BookingHotelServiceImpl::instance()->updateBookingConsume($whereCriteria, $arrayUpdate);
+            } else {//涉及延住 提前预离 提前预抵 延后预抵
+                if (!empty($arrayAddDay)) {
+                    foreach ($arrayAddDay as $day => $arrayAdd) {
+                        $BookingConsume = clone $BookingConsumeEntity;
+                        $BookingConsume->setBusinessDay($day);
+                        $BookingDetailConsumeList[] = $BookingConsume;
+                    }
+                    BookingDao::instance()->saveBookingDetailConsumeList($BookingDetailConsumeList);
+                    //超订检查
+                }
+            }
+
+            //更新财会
+            if (!empty($item_room)) {
+                $arrayUpdateAccounts['item_id'] = $item_room;
+                if (!empty($item_room_name)) $arrayUpdateAccounts['item_name'] = $item_room_name;
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_detail_id', $detail_id);
+                BookingHotelServiceImpl::instance()->updateBookingAccounts($whereCriteria, $arrayUpdateAccounts);
+            }
+            //
+            CommonServiceImpl::instance()->commit();
+            return $objSuccess;
+        }
+
+        $objSuccess->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
+        return $objSuccess;
+    }
+
+    public function closeBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
+        // TODO: Implement closeBooking() method.
+        $objSuccess       = new \SuccessService();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        $closeType  = $objRequest->getInput('closeType');
         //
         $booking_number = decode($objRequest->getInput('book_id'));
 
@@ -449,7 +615,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1')
                 ->GE('booking_detail_status', '0')->EQ('booking_number', $booking_number)->setHashKey('item_id');
             $arrayLiveInRoom = $this->getBookingDetailList($whereCriteria, 'item_id');
-            if(empty($arrayLiveInRoom)) {
+            if (empty($arrayLiveInRoom)) {
                 $objSuccess->setSuccess(false);
                 $objSuccess->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
                 return $objSuccess;
@@ -460,7 +626,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
             $arrayConsume = $this->getBookingConsume($whereCriteria);
             $totalConsume = 0;
-            if(!empty($arrayConsume)) {
+            if (!empty($arrayConsume)) {
                 foreach ($arrayConsume as $i => $consume) {
                     $totalConsume = bcadd($consume['consume_price_total'], $totalConsume, 2);
                 }
@@ -470,14 +636,14 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
             $arrayAccounts = $this->getBookingAccounts($whereCriteria);
             $totalAccounts = 0;
-            if(!empty($arrayAccounts)) {
+            if (!empty($arrayAccounts)) {
                 foreach ($arrayAccounts as $i => $account) {
-                    if($account['accounts_type'] == 'receipts') $totalAccounts = bcadd($account['money'], $totalAccounts, 2);
-                    if($account['accounts_type'] == 'refund') $totalAccounts = bcsub($totalAccounts, $account['money'], 2);
-                    if($account['accounts_type'] == 'hanging') $totalAccounts = bcadd($account['money'], $totalAccounts, 2);
+                    if ($account['accounts_type'] == 'receipts') $totalAccounts = bcadd($account['money'], $totalAccounts, 2);
+                    if ($account['accounts_type'] == 'refund') $totalAccounts = bcsub($totalAccounts, $account['money'], 2);
+                    if ($account['accounts_type'] == 'hanging') $totalAccounts = bcadd($account['money'], $totalAccounts, 2);
                 }
             }
-            if($totalConsume != $totalAccounts && $closeType != 'escape') {//$totalConsume == 0 || $totalAccounts == 0 || 走结无需平账
+            if ($totalConsume != $totalAccounts && $closeType != 'escape') {//$totalConsume == 0 || $totalAccounts == 0 || 走结无需平账
                 $objSuccess->setNotice(true);
                 $objSuccess->setCode(ErrorCodeConfig::$notice['no_equal_account']);
                 $objSuccess->setData([bcsub($totalAccounts, $totalConsume, 2)]);
@@ -485,30 +651,30 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             }
             CommonServiceImpl::instance()->startTransaction();
             //取消订单
-            if($closeType != 'cancel') {
+            if ($closeType != 'cancel') {
                 //结账退房//更新数据
                 $whereCriteria = new \WhereCriteria();
                 $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->ArrayIN('item_id', $arrayLiveInRoomId);
                 $updateData['booking_number'] = '';//取消关联ID
-                $updateData['clean'] = 'dirty';//设置脏房
-                $updateData['status'] = '0';//取消入住状态
+                $updateData['clean']          = 'dirty';//设置脏房
+                $updateData['status']         = '0';//取消入住状态
                 ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $updateData);
             }
             //设置预订完成
-            $updateData = [];
+            $updateData                   = [];
             $updateData['booking_status'] = '-1';//[-1结束 已完成] 设置booking
-            if($closeType == 'cancel') $updateData['booking_status'] = '-2';//[-2结束 取消订单] 设置booking
-            if($closeType == 'hanging') $updateData['booking_status'] = '-4';//[-4 挂账退房订单]
-            if($closeType == 'escape') $updateData['booking_status'] = '-5';//[-5 走结退房订单]
+            if ($closeType == 'cancel') $updateData['booking_status'] = '-2';//[-2结束 取消订单] 设置booking
+            if ($closeType == 'hanging') $updateData['booking_status'] = '-4';//[-4 挂账退房订单]
+            if ($closeType == 'escape') $updateData['booking_status'] = '-5';//[-5 走结退房订单]
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number);
             $this->updateBooking($whereCriteria, $updateData);
             //
-            $updateData = [];
+            $updateData                          = [];
             $updateData['booking_detail_status'] = '-1';//[-1退房]
-            if($closeType == 'cancel') $updateData['booking_detail_status'] = '-2';//[-2 取消订单]
-            if($closeType == 'hanging') $updateData['booking_detail_status'] = '-4';//[-4 挂账退房订单]
-            if($closeType == 'escape') $updateData['booking_detail_status'] = '-5';//[-5 走结退房订单]
+            if ($closeType == 'cancel') $updateData['booking_detail_status'] = '-2';//[-2 取消订单]
+            if ($closeType == 'hanging') $updateData['booking_detail_status'] = '-4';//[-4 挂账退房订单]
+            if ($closeType == 'escape') $updateData['booking_detail_status'] = '-5';//[-5 走结退房订单]
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number)->EQ('valid', '1');
             $this->updateBookingDetail($whereCriteria, $updateData);
@@ -534,6 +700,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     public function updateBooking($whereCriteria, $arrayUpdateData, $update_type = '') {
         return BookingDao::instance()->updateBooking($whereCriteria, $arrayUpdateData, $update_type);
     }
+
     //取得消费记录
     public function getBookingConsume(\WhereCriteria $whereCriteria, $field = '*') {
         return BookingDao::instance()->getBookingConsume($whereCriteria, $field);
@@ -546,6 +713,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     public function updateBookingConsume($whereCriteria, $arrayUpdateData, $update_type = '') {
         return BookingDao::instance()->updateBookingConsume($whereCriteria, $arrayUpdateData, $update_type);
     }
+
     //取得借物
     public function getBookingBorrowing(\WhereCriteria $whereCriteria, $field = '*') {
         return BookingDao::instance()->getBookingBorrowing($whereCriteria, $field);
@@ -558,6 +726,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     public function updateBookingBorrowing($whereCriteria, $arrayUpdateData, $update_type = '') {
         return BookingDao::instance()->updateBookingBorrowing($whereCriteria, $arrayUpdateData, $update_type);
     }
+
     //取得账务
     public function getBookingAccounts(\WhereCriteria $whereCriteria, $field = '*') {
         return BookingDao::instance()->getBookingAccounts($whereCriteria, $field);
@@ -570,6 +739,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
     public function saveBookingAccounts(Booking_accountsEntity $Booking_accountsEntity) {
         return BookingDao::instance()->saveBookingAccounts($Booking_accountsEntity);
     }
+
     //入住信息
     public function saveGuestLiveIn(Booking_live_inEntity $Booking_live_inEntity) {
         return BookingDao::instance()->saveGuestLiveIn($Booking_live_inEntity);
@@ -579,7 +749,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         return BookingDao::instance()->updateGuestLiveIn($whereCriteria, $updateData);
     }
 
-    public function getGuestLiveIn(\WhereCriteria $whereCriteria, $field = null) : array {
+    public function getGuestLiveIn(\WhereCriteria $whereCriteria, $field = null): array {
         return BookingDao::instance()->getGuestLiveIn($whereCriteria, $field);
     }
 

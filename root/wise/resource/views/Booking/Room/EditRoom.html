@@ -53,7 +53,7 @@
                     <div class="form-group col-sm-12 m-t">
                         <label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵</label>
                         <div class="form-group">
-                          <input type="text" size="9" class="form-control w-thumb-lg" name="check_in" ng-model="param.check_in" data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="true" data-min-date="{{getDay('MM/dd/yyyy')}}" data-autoclose="1" bs-datepicker value="" ng-change="changeCheckDate('check_in')">
+                          <input type="text" size="9" class="form-control w-thumb-lg" name="check_in" ng-model="param.check_in" data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="true" data-min-date="{{getDay('MM/dd/yyyy')}}" data-autoclose="1" bs-datepicker value="" ng-change="changeCheckDate('check_in')" ng-readonly="roomDetailEdit.booking_detail_status!=0">
        
                         </div>
                         <label class="control-label m-b"><i class="fa fa-clock-o"></i> 预离</label>

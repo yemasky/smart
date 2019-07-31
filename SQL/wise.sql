@@ -187,7 +187,7 @@ CREATE TABLE `booking_detail` (
   `booking_number_ext` varchar(64) NOT NULL DEFAULT '' COMMENT 'ota订单\\外部订单号',
   `company_id` int(11) NOT NULL COMMENT '品牌 公司ID',
   `channel` enum('Hotel','Meal','Meeting','Shop','Service','Tour','Sport') NOT NULL DEFAULT 'Hotel' COMMENT '频道',
-  `booking_type` enum('room_hour','room_day','goods') NOT NULL DEFAULT 'room_day',
+  `booking_type` enum('room_hour','room_day','goods') NOT NULL DEFAULT 'room_day' COMMENT 'room_day 全日房 room_hour 小时房',
   `channel_id` int(11) NOT NULL,
   `member_id` int(11) NOT NULL DEFAULT '0' COMMENT '会员',
   `member_name` varchar(50) NOT NULL DEFAULT '',
@@ -226,7 +226,7 @@ CREATE TABLE `booking_detail` (
 
 /*Data for the table `booking_detail` */
 
-insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`member_email`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1906309725801,'',1,'Hotel','room_day',1,0,'张珊','','kefu@yelove.cn',4,19,'金卡会员',3,'201',4,'标准间','2019-06-30','14:00:00','2019-07-01','12:00:00','2019-07-26 12:02:20','0000-00-00 00:00:00','1',1,'有个员工','2019-06-30',0,'','0',2,'携程现付双早',0.00,0.00,'pms','1','2019-06-30 20:47:02',NULL),(2,1907116723202,'',1,'Hotel','room_day',1,0,'张珊','','kefu@yelove.cn',1,2,'散客步入',-62823335,'',4,'标准间','2019-07-11','14:00:00','2019-07-12','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-07-11',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-07-11 13:35:34',NULL);
+insert  into `booking_detail`(`booking_detail_id`,`booking_number`,`booking_number_ext`,`company_id`,`channel`,`booking_type`,`channel_id`,`member_id`,`member_name`,`member_mobile`,`member_email`,`market_father_id`,`market_id`,`market_name`,`item_id`,`item_name`,`item_category_id`,`item_category_name`,`check_in`,`in_time`,`check_out`,`out_time`,`actual_check_in`,`actual_check_out`,`booking_detail_status`,`employee_id`,`employee_name`,`business_day`,`sales_id`,`sales_name`,`discount_type`,`price_system_id`,`price_system_name`,`source_price`,`total_price`,`client`,`valid`,`add_datetime`,`close_datetime`) values (1,1906309725801,'',1,'Hotel','room_day',1,0,'张珊','','kefu@yelove.cn',4,19,'金卡会员',3,'201',4,'标准间','2019-06-30','14:00:00','2019-07-03','12:00:00','2019-07-26 12:02:20','0000-00-00 00:00:00','1',1,'有个员工','2019-06-30',0,'','0',2,'携程现付双早',0.00,0.00,'pms','1','2019-06-30 20:47:02',NULL),(2,1907116723202,'',1,'Hotel','room_day',1,0,'张珊','','kefu@yelove.cn',1,2,'散客步入',-62823335,'',4,'标准间','2019-07-11','14:00:00','2019-07-12','12:00:00','0000-00-00 00:00:00','0000-00-00 00:00:00','0',1,'有个员工','2019-07-11',0,'','0',3,'散客单早',0.00,0.00,'pms','1','2019-07-11 13:35:34',NULL);
 
 /*Table structure for table `booking_discount` */
 

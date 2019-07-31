@@ -16,6 +16,8 @@ interface BookingService extends \BaseService {
 
     public function saveBooking(BookingDataModel $BookingData): \SuccessService;
 
+    public function editBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService;
+
     public function closeBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService;
 
 

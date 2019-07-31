@@ -62,7 +62,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
         prefix: "<%$__RESOURCE%>i18n/langs/",
         suffix: ".json"
     }), $translateProvider.preferredLanguage("en"), $translateProvider.useLocalStorage(),$translateProvider.useSanitizeValueStrategy('sanitize');
-}]).factory("$httpFactory", function($http, $modal, $translate, $alert) {
+}]).factory("$httpFactory", function($http, $modal, $translate, $alert, cfpLoadingBar) {
     var factory = {};
     factory.post = function($url, $scope, callBack) {//,'Content-Type': 'application/json'
         //$http.defaults.headers.common.ajaxrequest = true;
@@ -83,6 +83,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 				$modal({title: 'Error', content: '请求错误，请检查!', templateUrl: '/modal-warning.html', show: true});
 			}
 			callBack(response);
+            cfpLoadingBar.complete();
 		}, function(response){
 			if(response != null && typeof(response['status']) != 'undefined' && response['status'] == -1) {
 				$modal({title: 'Time out', content: '连接服务器超时，时间5秒!', templateUrl: '/modal-warning.html', show: true});
@@ -90,6 +91,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 				$modal({title: 'Error', content: '请求错误数据解析返回出错，请检查!', templateUrl: '/modal-warning.html', show: true});
 			}
 			callBack({'data':{'success':0,'code':'000000'}});
+            cfpLoadingBar.complete();
 		});
     }
 	factory.get = function($url, $scope, callBack) {//,'Content-Type': 'application/json'
@@ -104,6 +106,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 				$modal({title: 'Error', content: '请求错误，请检查!', templateUrl: '/modal-warning.html', show: true});
 			}
 			callBack(response);
+            cfpLoadingBar.complete();
 		}, function(response){
 			if(response != null && typeof(response['status']) != 'undefined' && response['status'] == -1) {
 				$modal({title: 'Time out', content: '连接服务器超时，时间5秒!', templateUrl: '/modal-warning.html', show: true});
@@ -111,6 +114,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 				$modal({title: 'Error', content: '请求错误数据解析返回出错，请检查!', templateUrl: '/modal-warning.html', show: true});
 			}
 			callBack({'data':{'success':0,'code':'000000'}});
+            cfpLoadingBar.complete();
 		});
     }
 	factory.header = function($key, $value) {

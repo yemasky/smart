@@ -413,16 +413,46 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             $scope.param.market_name = $scope.market_name;
             $scope.param.market_father_id = $scope.market_father_id;
         }
-        if(angular.isDefined($scope.param.item_category_id) && $scope.param.item_category_id > 0) {
+        if(angular.isDefined($scope.param.item_category_id) && $scope.param.item_category_id > 0 && 
+           angular.isDefined($scope.param.item_room) && $scope.param.item_room > 0) {
             var categoryRoom = $scope.layoutRoomList[$scope.param.item_category_id];
             if(angular.isUndefined(categoryRoom[$scope.param.item_room])) {
                 $alert({title: 'Error', content: '请选择房型下的房间！', templateUrl: '/modal-warning.html', container: 'body', show: true});
                 return;
             }
         }
+        var postParam = '';
+        if($scope.param.changeCheckDate == 1) {
+            var market_id,market_name,market_father_id,price_system_id,price_system_name,item_category_id,item_category_name,item_room,item_room_name;
+            if(angular.isUndefined($scope.param.market_id)) {
+                market_id = $scope.roomDetailEdit.market_id;market_name = $scope.roomDetailEdit.market_name;market_father_id = $scope.roomDetailEdit.market_father_id;
+            } else {
+                market_id = $scope.param.market_id;market_name = $scope.param.market_name;market_father_id = $scope.param.market_father_id;
+            }
+            postParam += '&market_id='+market_id+'&market_name='+market_name+'&market_father_id='+market_father_id;
+            if(angular.isUndefined($scope.param.price_system_id)) {
+                price_system_id = $scope.roomDetailEdit.price_system_id; price_system_name = $scope.roomDetailEdit.price_system_name;
+            } else {
+                price_system_id = $scope.param.price_system_id;price_system_name = $scope.param.price_system_name;
+            }
+            postParam += '&price_system_id='+price_system_id+'&price_system_name='+price_system_name;
+            if(angular.isUndefined($scope.param.item_category_id)) {
+                item_category_id = $scope.roomDetailEdit.item_category_id;item_category_name = $scope.roomDetailEdit.item_category_name;
+            } else {
+                item_category_id = $scope.param.item_category_id;item_category_name = $scope.param.item_category_name;
+            }
+            postParam += '&item_category_id='+item_category_id+'&item_category_name='+item_category_name;
+            if(angular.isUndefined($scope.param.item_room)) {
+                item_room = $scope.roomDetailEdit.item_id;item_room_name = $scope.roomDetailEdit.item_name;
+            } else {
+                item_room = $scope.param.item_room;item_room_name = $scope.param.item_room_name;
+            }
+            postParam += '&item_room='+item_room+'&item_room_name='+item_room_name;
+        }
         $scope.beginLoading =! $scope.beginLoading;
-        $httpService.post('/app.do?'+param, $scope, function(result) {
+        $httpService.post('/app.do?'+param+postParam, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
+            $scope.param.changeCheckDate = 0;
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);
@@ -437,6 +467,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             $scope.editBookRoomAside.$promise.then($scope.editBookRoomAside.hide);
             $scope.successAlert.startProgressBar();
             $scope.param.market_id = '';
+            console.log($rootScope);console.log($scope);
 
         });
     };
@@ -453,19 +484,28 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
     //延住
     var source_consumeRoomPrice = angular.copy($scope.consumeRoomPrice);
     $scope.changeCheckDate = function(checkDate) {
-        if(angular.isUndefined($scope.param.market_id) || $scope.param.market_id == '') {
-           $scope.param.market_id = $scope.roomDetailEdit.market_id;
+        var postParam = '',market_id,price_system_id,item_category_id;
+        if(angular.isUndefined($scope.param.market_id)) {
+            market_id = $scope.roomDetailEdit.market_id;
+        } else {
+            market_id = $scope.param.market_id;
         }
-        if(angular.isUndefined($scope.param.price_system_id) || $scope.param.price_system_id == '') {
-           $scope.param.price_system_id = $scope.roomDetailEdit.price_system_id;
+        if(angular.isUndefined($scope.param.price_system_id)) {
+            price_system_id = $scope.roomDetailEdit.price_system_id;
+        } else {
+            price_system_id = $scope.param.price_system_id;
         }
-        if(angular.isUndefined($scope.param.item_category_id) || $scope.param.item_category_id == '') {
-           $scope.param.item_category_id = $scope.roomDetailEdit.item_category_id;
+        if(angular.isUndefined($scope.param.item_category_id)) {
+            item_category_id = $scope.roomDetailEdit.item_category_id;
+        } else {
+            item_category_id = $scope.param.item_category_id;
         }
+        postParam = '&market_id='+market_id+'&price_system_id='+price_system_id+'&item_category_id='+item_category_id;
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'changeCheckDate');
-        $httpService.post('/app.do?'+param, $scope, function(result) {
+        $httpService.post('/app.do?'+param+postParam, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
+            $scope.param.changeCheckDate = 1;
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);
@@ -481,15 +521,26 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             }
             var channel_id = $scope.param.channel_id;
             //重新计算时间 价格
-            var priceSystemList = $scope.priceSystemList;//价格体系
-            var price_system_id = $scope.param.price_system_id;
+            var priceSystemHash = $scope.priceSystemHash;//价格体系
             var in_date = $scope.param.check_in;
             var out_date = $scope.param.check_out;
-            var layoutPriceSystem = $scope.priceSystemList[price_system_id];
+            var layoutPriceSystem = $scope.priceSystemHash[price_system_id];
             var channel_ids = angular.fromJson(layoutPriceSystem.channel_ids);
             var layout_item = angular.fromJson(layoutPriceSystem.layout_item);
             var channel_formula = layoutPriceSystem.formula != '' ? angular.fromJson(layoutPriceSystem.formula) : '';
-            var layout_formula = channel_formula != '' ? channel_formula[channel_id + '-' + $scope.param.item_category_id] : '';
+            var layout_formula = {};
+            if(channel_formula != '' && angular.isUndefined(channel_formula[channel_id + '-' + item_category_id])) {
+                //未设置房型价格
+                layout_formula = -999;//表示未设置房型价格
+                $scope.param.set_prices = 1;
+                var message = '价格类型："'+$scope.priceSystemHash[price_system_id].price_system_name 
+                             +'" 对应房型："'+$scope.layoutList[item_category_id].item_name+'" 未设置价格！使用默认价格！';
+                $alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+            } else if(channel_formula != '' && angular.isDefined(channel_formula[channel_id + '-' + item_category_id])) {
+                layout_formula = channel_formula[channel_id + '-' + item_category_id];
+            } else {
+                channel_formula = '';
+            }
             //if(typeof(priceSystemHash[_system_id]) != 'undefined') {
             var system_type = layoutPriceSystem.price_system_type;
             var decimal_price = 0;
@@ -516,7 +567,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                     } else {
                         consumeRoomPrice[date_key] = {};
                         var price = datePrice[price_key]['day_'+day];
-                        if(system_type == 'formula') {//公式
+                        if(system_type == 'formula' && layout_formula != -999) {//公式
                             if(layout_formula['formula_value'] - 0 > 0)
                                 price = $scope.arithmetic(price, layout_formula['formula'], layout_formula['formula_value'], decimal_price);
                             if(layout_formula['formula_second_value'] - 0 > 0)
