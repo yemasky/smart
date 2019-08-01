@@ -146,7 +146,7 @@ class Booking_consumeEntity extends \Entity {
     /**
      * @param mixed $channel_consume_father_id
      */
-    public function setChannelConsumeFatherId($channel_consume_father_id): void {
+    public function setChannelConsumeFatherId($channel_consume_father_id) {
         $this->channel_consume_father_id = $channel_consume_father_id;
     }
 
@@ -160,7 +160,7 @@ class Booking_consumeEntity extends \Entity {
     /**
      * @param mixed $channel_consume_id
      */
-    public function setChannelConsumeId($channel_consume_id): void {
+    public function setChannelConsumeId($channel_consume_id) {
         $this->channel_consume_id = $channel_consume_id;
     }
 
@@ -440,7 +440,7 @@ class Booking_consumeEntity extends \Entity {
     /**
      * @param float $consume_profit
      */
-    public function setConsumeProfit(float $consume_profit): void {
+    public function setConsumeProfit(float $consume_profit) {
         $this->consume_profit = $consume_profit;
     }
 
@@ -454,7 +454,7 @@ class Booking_consumeEntity extends \Entity {
     /**
      * @param mixed $commision_type
      */
-    public function setCommisionType($commision_type): void {
+    public function setCommisionType($commision_type) {
         $this->commision_type = $commision_type;
     }
 
@@ -468,7 +468,7 @@ class Booking_consumeEntity extends \Entity {
     /**
      * @param mixed $commision_form
      */
-    public function setCommisionForm($commision_form): void {
+    public function setCommisionForm($commision_form) {
         $this->commision_form = $commision_form;
     }
 
@@ -482,7 +482,7 @@ class Booking_consumeEntity extends \Entity {
     /**
      * @param mixed $commision_form_value
      */
-    public function setCommisionFormValue($commision_form_value): void {
+    public function setCommisionFormValue($commision_form_value) {
         $this->commision_form_value = $commision_form_value;
     }
 

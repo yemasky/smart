@@ -421,34 +421,35 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 return;
             }
         }
-        var postParam = '';
+        var postParam = '';var roomDetailEdit = angular.copy($scope.roomDetailEdit);
         if($scope.param.changeCheckDate == 1) {
             var market_id,market_name,market_father_id,price_system_id,price_system_name,item_category_id,item_category_name,item_room,item_room_name;
-            if(angular.isUndefined($scope.param.market_id)) {
-                market_id = $scope.roomDetailEdit.market_id;market_name = $scope.roomDetailEdit.market_name;market_father_id = $scope.roomDetailEdit.market_father_id;
+            if(angular.isUndefined($scope.param.market_id) || $scope.param.market_id == '') {
+                market_id = roomDetailEdit.market_id;market_name = roomDetailEdit.market_name;market_father_id = roomDetailEdit.market_father_id;
             } else {
                 market_id = $scope.param.market_id;market_name = $scope.param.market_name;market_father_id = $scope.param.market_father_id;
             }
             postParam += '&market_id='+market_id+'&market_name='+market_name+'&market_father_id='+market_father_id;
             if(angular.isUndefined($scope.param.price_system_id)) {
-                price_system_id = $scope.roomDetailEdit.price_system_id; price_system_name = $scope.roomDetailEdit.price_system_name;
+                price_system_id = roomDetailEdit.price_system_id; price_system_name = roomDetailEdit.price_system_name;
             } else {
                 price_system_id = $scope.param.price_system_id;price_system_name = $scope.param.price_system_name;
             }
             postParam += '&price_system_id='+price_system_id+'&price_system_name='+price_system_name;
             if(angular.isUndefined($scope.param.item_category_id)) {
-                item_category_id = $scope.roomDetailEdit.item_category_id;item_category_name = $scope.roomDetailEdit.item_category_name;
+                item_category_id = roomDetailEdit.item_category_id;item_category_name = roomDetailEdit.item_category_name;
             } else {
                 item_category_id = $scope.param.item_category_id;item_category_name = $scope.param.item_category_name;
             }
             postParam += '&item_category_id='+item_category_id+'&item_category_name='+item_category_name;
             if(angular.isUndefined($scope.param.item_room)) {
-                item_room = $scope.roomDetailEdit.item_id;item_room_name = $scope.roomDetailEdit.item_name;
+                item_room = roomDetailEdit.item_id;item_room_name = roomDetailEdit.item_name;
             } else {
                 item_room = $scope.param.item_room;item_room_name = $scope.param.item_room_name;
             }
             postParam += '&item_room='+item_room+'&item_room_name='+item_room_name;
         }
+        $scope.param.booking_number = roomDetailEdit.booking_number;
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.post('/app.do?'+param+postParam, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
@@ -467,8 +468,6 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             $scope.editBookRoomAside.$promise.then($scope.editBookRoomAside.hide);
             $scope.successAlert.startProgressBar();
             $scope.param.market_id = '';
-            console.log($rootScope);console.log($scope);
-
         });
     };
     $scope.selectPriceSystem = function(system) {

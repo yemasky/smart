@@ -518,7 +518,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             }
             //&market_id=&price_system_id=2&item_category_id=4
             if (empty($item_room_name)) $item_room_name = $objRequest->item_room_name;//item_room_name 为空则不更新
-            if (empty($item_room)) $item_room = $objRequest->item_room;
+            if (empty($item_room)) $item_room = trim($objRequest->item_room) - 0;
             if (empty($item_category_id)) $item_category_id = $objRequest->item_category_id;//
             if (empty($item_category_name)) $item_category_name = $objRequest->item_category_name;
             if (empty($market_father_id)) $market_father_id = $objRequest->market_father_id;//
@@ -547,6 +547,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $BookingConsumeEntity->setMarketName($market_name);
             $BookingConsumeEntity->setPriceSystemId($price_system_id);
             $BookingConsumeEntity->setPriceSystemName($price_system_name);
+            $BookingConsumeEntity->setAddDatetime(getDateTime());
 
 
         }
@@ -569,10 +570,16 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_detail_id', $detail_id);
                 BookingHotelServiceImpl::instance()->updateBookingConsume($whereCriteria, $arrayUpdate);
             } else {//涉及延住 提前预离 提前预抵 延后预抵
+                $arrayPrice = $objRequest->price;
                 if (!empty($arrayAddDay)) {
                     foreach ($arrayAddDay as $day => $arrayAdd) {
+                        $price = $arrayPrice[$day];
                         $BookingConsume = clone $BookingConsumeEntity;
                         $BookingConsume->setBusinessDay($day);
+                        $BookingConsume->setOriginalPrice($price);
+                        $BookingConsume->setConsumePrice($price);
+                        $BookingConsume->setConsumePriceTotal($price);
+                        $BookingConsume->setConsumeProfit($price);
                         $BookingDetailConsumeList[] = $BookingConsume;
                     }
                     BookingDao::instance()->saveBookingDetailConsumeList($BookingDetailConsumeList);
