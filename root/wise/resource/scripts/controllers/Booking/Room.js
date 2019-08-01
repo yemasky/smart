@@ -10,7 +10,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
     $ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.js"]);
-    $scope.booking_room = {};$scope.booking_price = {}; $scope.system_price = {};var priceLayout = {};
+    $scope.booking_room = {};$scope.booking_price = {}; $scope.system_price = {};
+    var priceLayout = {};//房型价格
     //选择客源市场
     $scope.market_name = '散客步入';$scope.market_id = '2';$scope.customer_name = '预订人';
     var _channel = angular.isDefined($scope.getChannelModule(12)) ? $scope.getChannelModule(12).url : $scope.$stateParams.channel;
@@ -28,12 +29,12 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         $scope.setCommonSetting(common);
         $scope.setThisChannel('Hotel');
         $(document).ready(function(){
-            var channelItemList = result.data.item.arrayChannelItem;
+            $scope.channelItemList = result.data.item.arrayChannelItem;
             var layoutRoom = result.data.item.layoutRoom;//房型房间
-            if(angular.isDefined(channelItemList)) {$scope.setLayoutList(channelItemList, layoutRoom);}
+            $scope.layoutRoom = result.data.item.layoutRoom;
+            $scope.setLayoutList();//计算房型列表
             $scope.marketList = result.data.item.marketList;
             //按时间计算空房
-            $scope.layoutRoom = result.data.item.layoutRoom;
             //所有价格类型
             $scope.priceSystemHash = result.data.item.priceSystemHash;
             //设置价格体系市场
@@ -68,7 +69,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         });
     });
     //选择客人市场
-    $scope.selectCustomerMarket = function(market, ajax) {
+    $scope.selectCustomerMarket = function(market, ajaxRoomForcasting) {
         $scope.marketSystemLayout = {};
         if(angular.isDefined(market)) {
             $scope.market_name = market.market_name;
@@ -79,11 +80,12 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             if(market.market_father_id == '4') {//判断会员是否正确
                 $scope.customer_name = market.market_name;
             }
+            $scope.setLayoutList();
             $scope.setPriceSystemMarket();
-            if(ajax == true) {$scope.checkOrderData();}//取出客源市场价格及远期房态
+            if(ajaxRoomForcasting == true) {$scope.checkOrderData();}//远期房态及取出客源市场价格 远期房态需要从数据库获取
         }
     };
-    //设置房型价格
+    //设置房型价格 priceLayout ： 全局变量; 
     $scope.setPriceLayout = function (resultPriceLayout) {
         if(resultPriceLayout != '') {
             for(var i in resultPriceLayout) {
@@ -101,7 +103,10 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             }
         }
     };
-    $scope.setLayoutList = function (channelItemList, layoutRoom) {
+    //设置 layoutList 所有酒店房型 筛选 等
+    $scope.setLayoutList = function () {
+        $scope.layoutList = {};$scope.roomList = {};
+        var channelItemList = $scope.channelItemList;var layoutRoom = $scope.layoutRoom;
         var layoutList = {};//房型
         var roomList = {},room_data = {};//房间
         for(var channel_id in channelItemList) {
@@ -118,28 +123,22 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                     if(typeof(thisLayoutRoom[thisItemList[i]['item_id']]) != 'undefined') {
                         for(var j in thisLayoutRoom[thisItemList[i]['item_id']]) {
                             num++;
-                        }
-                        //room_data[channel_id][thisItemList[i]['item_id']] = thisItemList[i]['item_id'];
+                        }//room_data[channel_id][thisItemList[i]['item_id']] = thisItemList[i]['item_id'];
                     }
                     layoutList[channel_id][i]['room_num'] = num;
                     room_data[channel_id][thisItemList[i]['item_id']] = 0;
                     var select_room_num = [];
-					if(isBookRoom) {
-						select_room_num[0] = {};
-						select_room_num[0]['room_info'] = {};
-						select_room_num[0]['room_info']['item_name'] = '';
+					if(isBookRoom) {//预订单独房间
+						select_room_num[0] = {};select_room_num[0]['value'] = '0';
+						select_room_num[0]['room_info'] = {};select_room_num[0]['room_info']['item_name'] = '';
 						select_room_num[0]['room_info']['item_category_name'] = '';
-						select_room_num[0]['value'] = '0';
-						select_room_num[1] = {};
-						select_room_num[1]['room_info'] = {};
-						select_room_num[1]['room_info']['item_name'] = $scope.bookRoom.item_name;
+						select_room_num[1] = {};select_room_num[1]['value'] = $scope.bookRoom.item_name;
+						select_room_num[1]['room_info'] = {};select_room_num[1]['room_info']['item_name'] = $scope.bookRoom.item_name;
                         select_room_num[1]['room_info']['item_id'] = $scope.bookRoom.item_id;
 						select_room_num[1]['room_info']['item_category_name'] = thisItemList[i].item_name;//房型名称
-						select_room_num[1]['value'] = $scope.bookRoom.item_name;
 					} else {
 						for(var j = 0; j <= num; j++) {//房型的房间
-							select_room_num[j] = {};
-							select_room_num[j]['room_info'] = {};
+							select_room_num[j] = {};select_room_num[j]['room_info'] = {};
 							select_room_num[j]['room_info']['item_name'] = '';
 							select_room_num[j]['room_info']['item_category_name'] = thisItemList[i].item_name;//房型名称
 							select_room_num[j]['value'] = j;
@@ -157,7 +156,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     $scope.showLayout = function(item_category_id, show) {
         $scope.layoutShow[item_category_id] = show;
     }
-    //选择市场价格类别
+    //选择市场价格类别 [房型当价格类型比较多的时候 用向下箭头表示]
     $scope.setPriceSystemMarket = function() {
         $scope.marketSystemLayout = {};$scope.layoutShow = {};$scope.layoutSystemMore = {};//多个价格体系
         //marketSystemLayout：市场价格类别[市场有什么价格类别按layout排序]
@@ -243,7 +242,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         $scope.bookingCalendar = bookingCalendar;$scope.colspan = colspan;
     };		
     $scope.marketChannelLayoutPrice = {};
-    //选择价格体系 
+    //选择价格体系 [根据channel_id 房型 价格体系决定显示价格]
     var thisMarketPrice = {};
     $scope.selectMarketLayoutPrice = function() {//channel_id, item_category_id, _system_id
         //if(_system_id == '0' || typeof(_system_id) == 'undefined') return;//为0时不做任何操作
@@ -329,7 +328,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 }
             }
         }
-        $scope.marketChannelLayoutPrice = thisMarketPrice;
+        $scope.marketChannelLayoutPrice = thisMarketPrice;//[根据channel_id 房型 价格体系决定显示价格]
     }
     $scope.selectThisLayout = function($event) {}
     $scope.selectAllLayout = function($event) {

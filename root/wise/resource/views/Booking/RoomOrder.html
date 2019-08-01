@@ -127,24 +127,12 @@
                       	            <span class="label bg-light" style="margin-top:-1px; margin-left:-1px;">{{layout.room_num}}</span>
                                     <!--<span ng-model="booking_price[channel_id][layout.item_id][layout_system.price_system_id]" ng-if="param.set_prices==''">{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}</span>-->
                                     <!--booking_room[channel_id][layout.item_id][layout_system.price_system_id]-->
-                                    <span ng-model="booking_price[channel_id][layout.item_id][layout_system.price_system_id]"><input type="text" ng-model="marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]" class="form-control w-xs" size="7" value="{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}" ng-class="param.set_prices?'enable_select':'unable_select'" ng-readonly="param.set_prices==''"></span>
+                                    <span><input type="text" ng-model="marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]" class="form-control w-xs" size="6" value="{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}" ng-class="param.set_prices?'enable_select':'unable_select'" ng-readonly="param.set_prices==''"></span>
                                 </td>
                             </tr>
                           </table>
                       </td>
                       <td></td>
-                      <!--<td class="no-padding">
-                      	<table class="table no-margin" style="width:auto;">
-                            <tbody>
-                                <tr>
-                                    <td class="w-xs col-sm-1 b-r" ng-repeat="(thisDate, date) in bookingCalendar">
-                                    <span class="label bg-light pull-left" style="margin-top:-7px; margin-left:-14px;">{{layout.room_num}}</span>
-                                    <span class="pull-right">{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                      </td>-->
                     </tr>
                   </tbody>
                 </table>
