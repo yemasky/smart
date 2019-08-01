@@ -337,8 +337,23 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         $scope.param["channel_father_id"] = $rootScope.employeeChannel[channel_id].channel_father_id;
     };
     //选择房间数量
-    $scope.select_room = function(_this) {
-    	//console.log(_this);
+    $scope.select_room = function(selectRoom,channel_id,item_category_id,price_system_id) {
+        var market_id = $scope.market_id;
+        var bookingCalendar = $scope.bookingCalendar;
+        var marketChannelLayoutPrice = $scope.marketChannelLayoutPrice[market_id][channel_id][item_category_id][price_system_id];
+        //找出预订有效数据
+        if(angular.isUndefined($scope.booking_price[channel_id])) $scope.booking_price[channel_id] = {};
+        if(angular.isUndefined($scope.booking_price[channel_id][item_category_id])) 
+            $scope.booking_price[channel_id][item_category_id] = {};
+        var booking_price = {};
+        if(selectRoom.value > 0) {
+            for(var day in bookingCalendar) {
+                booking_price[day] = marketChannelLayoutPrice[day];
+            }
+            $scope.booking_price[channel_id][item_category_id][price_system_id] = booking_price;
+        } else {//删除为0的数据 -1为删除
+            $scope.booking_price[channel_id][item_category_id][price_system_id] = -1;
+        }
     };
     //开始预订
     $scope.beginBooking = function(search) {

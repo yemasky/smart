@@ -44,6 +44,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $in_time                           = $objRequest->validInput('in_time');
         $out_time                          = $objRequest->validInput('out_time');
         $booking_number                    = decode($objRequest->getInput('book_id'));
+        $set_prices                        = $objRequest->set_prices;
         $arrayCommonData['booking_number'] = 0;
         if (!empty($booking_number) && is_numeric($booking_number)) {
             $arrayCommonData['booking_number'] = $booking_number;
@@ -113,6 +114,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $_item_key = substr(getMicrotime(), 2);//构造虚拟item_id
             foreach ($arrayBookingData as $dateKey => $arrayChannelData) {
                 if (empty($arrayChannelData['booking_room'])) continue;//
+                $arrayBookingPrice = $arrayChannelData['booking_price'];//自定价格 如果是自定价格不用查找价格体系 直接可以入库
                 foreach ($arrayChannelData['booking_room'][$channel_id] as $item_category_id => $systemData) {//组合价格体系
                     foreach ($systemData as $system_id => $roomData) {
                         if (empty($roomData['value'])) continue;//房间数量为0 也直接跳过

@@ -109,7 +109,7 @@
                             <tr ng-repeat="layout_system in marketSystemLayout[market_id][channel_id][layout.item_id] track by $index" ng-show="$index==0 || layoutShow[layout.item_id]==1">
                                 <td style="padding:1px 0px 2px 1px;">
                                     <div class="w-xs">
-                                      <ui-select ng-model="booking_room[channel_id][layout.item_id][layout_system.price_system_id]" ng-change="select_room(this)" theme="bootstrap">
+                                      <ui-select ng-model="booking_room[channel_id][layout.item_id][layout_system.price_system_id]" ng-change="select_room($select.selected, channel_id,layout.item_id,layout_system.price_system_id)" theme="bootstrap">
                                           <ui-select-match placeholder="0　">{{$select.selected.value}}</ui-select-match>
                                           <ui-select-choices repeat="room in layout.select_room_num | filter: $select.search">
                                             <div ng-bind-html="room.value | highlight: $select.search" ng-init="room.room_info.price_system_name=layout_system.price_system_name"></div>
@@ -126,6 +126,7 @@
                                 <td style="padding:1px 0px 1px 1px;">
                       	            
                                     <!--<span ng-model="booking_price[channel_id][layout.item_id][layout_system.price_system_id]" ng-if="param.set_prices==''">{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}</span>-->
+                                    <!--booking_room[channel_id][layout.item_id][layout_system.price_system_id]-->
                                     <span ng-model="booking_price[channel_id][layout.item_id][layout_system.price_system_id]"><input type="text" ng-model="marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]" class="form-control w-xs" size="7" value="{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}" ng-class="param.set_prices?'enable_select':'unable_select'" ng-readonly="param.set_prices==''"></span>
                                 </td>
                             </tr>
