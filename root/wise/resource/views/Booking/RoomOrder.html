@@ -62,7 +62,9 @@
                     </tr>
                     <tr class="bs-sidebar hidden-print">
                       <th class="w"><div class="w-xs">房型\日期</div></th>
-                      <th class="w">客源市场价格</th>
+                      <th class="w">客源市场价格 
+                          <label class="ui-checks small"><input type="checkbox" value="1" ng-model="param.set_prices" ng-init="param.set_prices=''"><i></i>自定房价</label>
+                      </th>
                       <th class="w-xs bg-light" ng-bind-html="bookRoom_quantity">数量</th>
                       <th class="w-xs col-sm-1 b-r bg-light" ng-repeat="(thisDate, date) in bookingCalendar">
                       	{{date.day}}<span class="text-xs text-muted m-l-xs"><small>{{date.week}}</small></span>
@@ -85,6 +87,7 @@
                     <tr><th colspan="{{colspan}}">{{employeeChannel[channel_id].channel_name}}</th></tr>
                     <tr ng-repeat="(i, layout) in layouts" ng-if="layout.item_type=='category'&&layout.isBookRoom==true"><!--酒店房型列表 循环 i-->
                       <td>{{layout.item_name}}
+                        <span class="label bg-light" style="margin-top:-1px; margin-left:-1px;">{{layout.room_num}}</span>
                         <i class="ti-angle-double-down small pull-right cursor" ng-show="layoutShow[layout.item_id]==0&&layoutSystemMore[market_id][channel_id][layout.item_id]==1" ng-click="showLayout(layout.item_id, 1)"></i>
                         <i class="ti-angle-up small pull-right cursor" ng-show="layoutShow[layout.item_id]==1" ng-click="showLayout(layout.item_id, 0)"></i>
                       </td>
@@ -120,9 +123,10 @@
                       <td class="w-xs col-sm-1 b-r cursor no-padding panel" ng-repeat="(thisDate, date) in bookingCalendar" ng-click="selectThisLayout($event)">
                         <table class="table no-margin">
                             <tr ng-repeat="layout_system in marketSystemLayout[market_id][channel_id][layout.item_id] track by $index" ng-show="$index==0||layoutShow[layout.item_id]==1">
-                                <td>
-                      	            <span class="label bg-light pull-left" style="margin-top:-7px; margin-left:-14px;">{{layout.room_num}}</span>
-                                    <span ng-model="booking_price[channel_id][layout.item_id][layout_system.price_system_id]">{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}</span>
+                                <td style="padding:1px 0px 1px 1px;">
+                      	            
+                                    <!--<span ng-model="booking_price[channel_id][layout.item_id][layout_system.price_system_id]" ng-if="param.set_prices==''">{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}</span>-->
+                                    <span ng-model="booking_price[channel_id][layout.item_id][layout_system.price_system_id]"><input type="text" ng-model="marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]" class="form-control w-xs" size="7" value="{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}" ng-class="param.set_prices?'enable_select':'unable_select'" ng-readonly="param.set_prices==''"></span>
                                 </td>
                             </tr>
                           </table>

@@ -10,3 +10,7 @@ margin-top:-9px;
 margin-left:-15px;
 position:absolute;
 }
+.enable_select{}
+.unable_select{
+    border-color:#FFFFFF;background-color:#FFFFFF !important;cursor:pointer !important;
+}
