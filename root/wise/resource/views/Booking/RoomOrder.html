@@ -124,7 +124,7 @@
                         <table class="table no-margin">
                             <tr ng-repeat="layout_system in marketSystemLayout[market_id][channel_id][layout.item_id] track by $index" ng-show="$index==0||layoutShow[layout.item_id]==1">
                                 <td style="padding:1px 0px 1px 1px;">
-                      	            
+                      	            <span class="label bg-light" style="margin-top:-1px; margin-left:-1px;">{{layout.room_num}}</span>
                                     <!--<span ng-model="booking_price[channel_id][layout.item_id][layout_system.price_system_id]" ng-if="param.set_prices==''">{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}</span>-->
                                     <!--booking_room[channel_id][layout.item_id][layout_system.price_system_id]-->
                                     <span ng-model="booking_price[channel_id][layout.item_id][layout_system.price_system_id]"><input type="text" ng-model="marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]" class="form-control w-xs" size="7" value="{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}" ng-class="param.set_prices?'enable_select':'unable_select'" ng-readonly="param.set_prices==''"></span>

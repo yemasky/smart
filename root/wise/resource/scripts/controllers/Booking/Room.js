@@ -1,16 +1,16 @@
 
 app.controller('RoomOrderController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter) {
     "use strict"; 
-	$scope.loading.start();
-	var bookRoomFather_id = 0, isBookRoom = false; $scope.bookRoom_quantity = '数量';
-	if(angular.isDefined($scope.bookRoom) && $scope.bookRoom !== '') {
-		bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房号';
+	$scope.loading.start();$scope.param = {};
+	var bookRoomFather_id = 0, isBookRoom = false; $scope.bookRoom_quantity = '数量';$scope.param.isBookRoom = 0;
+	if(angular.isDefined($scope.bookRoom) && $scope.bookRoom !== '') {//预定特定的房间 从房态页点过来
+		bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房号';$scope.param.isBookRoom = 1;//单独预定一个房间
 	}
     //日历部分
     $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
     $ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.js"]);
-    $scope.param = {};$scope.booking_room = {};$scope.booking_price = {}; $scope.system_price = {};var priceLayout = {};
+    $scope.booking_room = {};$scope.booking_price = {}; $scope.system_price = {};var priceLayout = {};
     //选择客源市场
     $scope.market_name = '散客步入';$scope.market_id = '2';$scope.customer_name = '预订人';
     var _channel = angular.isDefined($scope.getChannelModule(12)) ? $scope.getChannelModule(12).url : $scope.$stateParams.channel;
@@ -133,14 +133,15 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
 						select_room_num[1] = {};
 						select_room_num[1]['room_info'] = {};
 						select_room_num[1]['room_info']['item_name'] = $scope.bookRoom.item_name;
-						select_room_num[1]['room_info']['item_category_name'] = thisItemList[i].item_name;
+                        select_room_num[1]['room_info']['item_id'] = $scope.bookRoom.item_id;
+						select_room_num[1]['room_info']['item_category_name'] = thisItemList[i].item_name;//房型名称
 						select_room_num[1]['value'] = $scope.bookRoom.item_name;
 					} else {
 						for(var j = 0; j <= num; j++) {//房型的房间
 							select_room_num[j] = {};
 							select_room_num[j]['room_info'] = {};
 							select_room_num[j]['room_info']['item_name'] = '';
-							select_room_num[j]['room_info']['item_category_name'] = thisItemList[i].item_name;
+							select_room_num[j]['room_info']['item_category_name'] = thisItemList[i].item_name;//房型名称
 							select_room_num[j]['value'] = j;
 						}
 					}

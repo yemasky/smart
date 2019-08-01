@@ -44,7 +44,8 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $in_time                           = $objRequest->validInput('in_time');
         $out_time                          = $objRequest->validInput('out_time');
         $booking_number                    = decode($objRequest->getInput('book_id'));
-        $set_prices                        = $objRequest->set_prices;
+        $set_prices                        = $objRequest->set_prices;//手动设置房型价格
+        $isBookRoom                        = $objRequest->isBookRoom;//单独预定1个房间
         $arrayCommonData['booking_number'] = 0;
         if (!empty($booking_number) && is_numeric($booking_number)) {
             $arrayCommonData['booking_number'] = $booking_number;
@@ -114,10 +115,11 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $_item_key = substr(getMicrotime(), 2);//构造虚拟item_id
             foreach ($arrayBookingData as $dateKey => $arrayChannelData) {
                 if (empty($arrayChannelData['booking_room'])) continue;//
+                //$arrayBookingPrice[channel_id][item_category_id][system_id][businessDay]
                 $arrayBookingPrice = $arrayChannelData['booking_price'];//自定价格 如果是自定价格不用查找价格体系 直接可以入库
                 foreach ($arrayChannelData['booking_room'][$channel_id] as $item_category_id => $systemData) {//组合价格体系
                     foreach ($systemData as $system_id => $roomData) {
-                        if (empty($roomData['value'])) continue;//房间数量为0 也直接跳过
+                        if (empty($roomData['value'])) continue;//房间数量为0 说明不预定 也直接跳过
                         $arrayLayoutRooms[$item_category_id][$system_id]['value'] = $roomData['value'];//预订的价格体系的房型数量
                         //有效system_id
                         $arraySystemId[$system_id] = $system_id;//价格体系
@@ -127,14 +129,28 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                             $systemLayoutItem[$system_id]['item_ids'] = $item_category_id;
                         }
                         $systemLayoutItem[$system_id]['item_category_id'][$item_category_id] = $item_category_id;
+                        //手动设置价格计算
+                        if($set_prices) {
+                            $arrayBusinessDayPrice = $arrayBookingPrice[$channel_id][$item_category_id][$system_id];
+                        }
                         //预订的房型房子
                         $roomInfo = $roomData['room_info'];
-                        for ($i = 0; $i < $roomData['value']; $i++) {
+                        $room_quantity = $roomData['value'];
+                        $room_name = '';
+                        if($isBookRoom == 1) {//如果是预定单独的房子 那么数量是1  因为是预定单独的房间
+                            $room_name = $roomData['value'];//or $room_name = $roomInfo['item_name']
+                            $room_quantity = 1;
+                        }
+                        for ($i = 0; $i < $room_quantity; $i++) {//总共预定此价格体系多少间房子
                             $_item_key++;
-                            $_item_id     = '-' . $_item_key;
+                            if($isBookRoom == 1) {
+                                $_item_id = $roomInfo['item_id'];
+                            } else {
+                                $_item_id     = '-' . $_item_key;
+                            }
                             $DetailEntity = clone $BookingDetailEntity;
                             $DetailEntity->setItemId($_item_id);//
-                            $DetailEntity->setItemName('');
+                            $DetailEntity->setItemName($room_name);
                             $DetailEntity->setItemCategoryId($item_category_id);
                             $DetailEntity->setItemCategoryName($roomInfo['item_category_name']);
                             $DetailEntity->setPriceSystemId($system_id);
@@ -145,11 +161,19 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                 $consume_key         = $item_category_id . '-' . $system_id . '-' . $i . '-' . $arrayBusinessDay[$j];
                                 $DetailConsumeEntity = clone $BookingDetailConsumeEntity;
                                 $DetailConsumeEntity->setItemId($_item_id);
+                                $DetailConsumeEntity->setItemName($room_name);
                                 $DetailConsumeEntity->setItemCategoryId($item_category_id);
                                 $DetailConsumeEntity->setItemCategoryName($roomInfo['item_category_name']);
                                 $DetailConsumeEntity->setPriceSystemId($system_id);
                                 $DetailConsumeEntity->setPriceSystemName($roomInfo['price_system_name']);
                                 $DetailConsumeEntity->setBusinessDay($arrayBusinessDay[$j]);
+                                if($set_prices) {//手动设置价格
+                                    $price = $arrayBusinessDayPrice[$arrayBusinessDay[$j]];
+                                    $DetailConsumeEntity->setOriginalPrice($price);
+                                    $DetailConsumeEntity->setConsumePrice($price);
+                                    $DetailConsumeEntity->setConsumePriceTotal($price);
+                                }
+                                //
                                 $BookingDetailConsumeList[$consume_key] = $DetailConsumeEntity;
                             }
                         }
@@ -165,7 +189,8 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $bookData['price_system_id']    = '';
             $bookData['price_system_name']  = '';
 
-            if (!empty($arraySystemId)) {
+            //计算房型价格 只计算不是手动设置价格
+            if (!empty($arraySystemId) && !$set_prices) {
                 $whereCriteria = new \WhereCriteria();
                 $whereCriteria->EQ('valid', '1')->ArrayIN('price_system_id', $arraySystemId);
                 $field = 'price_system_id,price_system_name,price_system_father_id,book_min_day,cancellation_policy,price_system_type,formula';
@@ -260,7 +285,13 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                             $price = decimal($price, $objLoginEmployee->getChannelSetting($channel_id)->getDecimalPrice());
                                             //sprintf("%.2f", $price);//小数点后2位
                                             //$bookPrice[$insert_key]['price'] = $price;//售卖价格
-                                            for ($i = 0; $i < $arrayLayoutRooms[$item_category_id][$price_system_id]['value']; $i++) {//订相同的房间的价格
+                                            //$room_quantity = $roomData['value'] = $arrayLayoutRooms[$item_category_id][$price_system_id]['value'];
+                                            $room_quantity = $arrayLayoutRooms[$item_category_id][$price_system_id]['value'];
+                                            if($isBookRoom == 1) {//如果是预定单独的房子 那么数量是1  因为是预定单独的房间
+                                                $room_name = $room_quantity;
+                                                $room_quantity = 1;
+                                            }
+                                            for ($i = 0; $i < $room_quantity; $i++) {//订相同的房间的价格
                                                 //消费//2018-08-
                                                 $consume_key = $item_category_id . '-' . $price_system_id . '-' . $i . '-' . substr($monthDate, 0, 8) . $day;
                                                 $BookingDetailConsumeList[$consume_key]->setOriginalPrice($price);
@@ -307,7 +338,13 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                             return $objSuccess->setSuccessService(false, '100001', '时间：' . substr($monthDate, 0, 8) . $day, []);
                                         }
                                         $bookPrice[$insert_key]['price'] = $price;//售卖价格
-                                        for ($i = 0; $i < $arrayLayoutRooms[$item_category_id][$system_id]['value']; $i++) {
+                                        //$room_quantity = $roomData['value'] = $arrayLayoutRooms[$item_category_id][$system_id]['value'];
+                                        $room_quantity = $arrayLayoutRooms[$item_category_id][$system_id]['value'];
+                                        if($isBookRoom == 1) {//如果是预定单独的房子 那么数量是1  因为是预定单独的房间
+                                            $room_name = $room_quantity;
+                                            $room_quantity = 1;
+                                        }
+                                        for ($i = 0; $i < $room_quantity; $i++) {
                                             //2018-08-
                                             $consume_key = $item_category_id . '-' . $system_id . '-' . $i . '-' . substr($monthDate, 0, 8) . $day;
                                             $BookingDetailConsumeList[$consume_key]->setOriginalPrice($price);
@@ -320,12 +357,12 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                         }
                     }
                 }
-                $BookingData = new BookingDataModel();
-                $BookingData->setBookingEntity($BookingEntity);
-                $BookingData->setBookDetailList($arrayBookDetailList);
-                $BookingData->setBookingDetailConsumeList($BookingDetailConsumeList);
-                return $objSuccess->setSuccessService(true, ErrorCodeConfig::$successCode['success'], '', $BookingData);
             }
+            $BookingData = new BookingDataModel();
+            $BookingData->setBookingEntity($BookingEntity);
+            $BookingData->setBookDetailList($arrayBookDetailList);
+            $BookingData->setBookingDetailConsumeList($BookingDetailConsumeList);
+            return $objSuccess->setSuccessService(true, ErrorCodeConfig::$successCode['success'], '', $BookingData);
         }
 
         //返回参数错误
