@@ -433,8 +433,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     };
     //选择房间数量
     $scope.select_room = function(selectRoom,channel_id,item_category_id,price_system_id) {
-        var market_id = $scope.market_id;
-        var bookingCalendar = $scope.bookingCalendar;
+        var market_id = $scope.market_id;var bookingCalendar = $scope.bookingCalendar;
         var marketChannelLayoutPrice = $scope.marketChannelLayoutPrice[market_id][channel_id][item_category_id][price_system_id];
         //找出预订有效数据
         if(angular.isUndefined($scope.booking_price[channel_id])) $scope.booking_price[channel_id] = {};
@@ -450,6 +449,29 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $scope.booking_price[channel_id][item_category_id][price_system_id] = -1;
         }
     };
+    var inputPriceChangeEvent = '';
+    $scope.inputPriceChange = function(channel_id,item_category_id,price_system_id) {
+        var market_id = $scope.market_id;var bookingCalendar = $scope.bookingCalendar;
+        var marketChannelLayoutPrice = $scope.marketChannelLayoutPrice[market_id][channel_id][item_category_id][price_system_id];
+        var booking_room = $scope.booking_room;
+        if(angular.isUndefined(booking_room[channel_id])) return;
+        if(angular.isUndefined(booking_room[channel_id][item_category_id])) return;
+        if(angular.isUndefined(booking_room[channel_id][item_category_id][price_system_id])) return;
+        var selectRoom = booking_room[channel_id][item_category_id][price_system_id];
+        var booking_price = {};
+        if(selectRoom.value > 0) {
+            for(var day in bookingCalendar) {
+                booking_price[day] = marketChannelLayoutPrice[day];
+            }
+            $scope.booking_price[channel_id][item_category_id][price_system_id] = booking_price;
+        } else {//删除为0的数据 -1为删除
+            $scope.booking_price[channel_id][item_category_id][price_system_id] = -1;
+        }
+        //var booking_price = $(inputPriceChangeEvent.target).value;
+    }
+    $scope.inputPriceChangeClick = function($event) {
+        inputPriceChangeEvent = $event;
+    }
     //开始预订
     $scope.beginBooking = function(search) {
         if($scope.market_father_id == '4' || search == 'member') {//判断会员是否正确
