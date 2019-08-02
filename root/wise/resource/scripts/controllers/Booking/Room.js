@@ -29,6 +29,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         $scope.setCommonSetting(common);
         $scope.setThisChannel('Hotel');
         $(document).ready(function(){
+            $scope.bookingRoomList = result.data.item.bookingRoom;//已预订的房间
             $scope.channelItemList = result.data.item.arrayChannelItem;
             var layoutRoom = result.data.item.layoutRoom;//房型房间
             $scope.layoutRoom = result.data.item.layoutRoom;
@@ -80,7 +81,6 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             if(market.market_father_id == '4') {//判断会员是否正确
                 $scope.customer_name = market.market_name;
             }
-            $scope.setLayoutList();
             $scope.setPriceSystemMarket();
             if(ajaxRoomForcasting == true) {$scope.checkOrderData();}//远期房态及取出客源市场价格 远期房态需要从数据库获取
         }
@@ -103,7 +103,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             }
         }
     };
-    //设置 layoutList 所有酒店房型 筛选 等
+    //设置 layoutList 列出所有酒店房型 筛选 等
     $scope.setLayoutList = function () {
         $scope.layoutList = {};$scope.roomList = {};
         var channelItemList = $scope.channelItemList;var layoutRoom = $scope.layoutRoom;
@@ -114,7 +114,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             if(typeof(layoutList[channel_id]) == 'undefined') {layoutList[channel_id] = {};room_data[channel_id] = {};}
             if(typeof(layoutRoom[channel_id]) != 'undefined') thisLayoutRoom = layoutRoom[channel_id];
             for(var i in thisItemList) {
-                if(thisItemList[i].channel_config == 'room') {//房间
+                if(thisItemList[i].channel_config == 'room') {//房间 根据房型进行排序
                     roomList[thisItemList[i]['item_id']] = thisItemList[i];
                 }
                 if(thisItemList[i].channel_config == "layout") {//房型
@@ -129,8 +129,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                     room_data[channel_id][thisItemList[i]['item_id']] = 0;
                     var select_room_num = [];
 					if(isBookRoom) {//预订单独房间
-						select_room_num[0] = {};select_room_num[0]['value'] = '0';
-						select_room_num[0]['room_info'] = {};select_room_num[0]['room_info']['item_name'] = '';
+						select_room_num[0] = {};select_room_num[0].value = '0';
+						select_room_num[0].room_info = {};select_room_num[0].room_info.item_name = '';
 						select_room_num[0]['room_info']['item_category_name'] = '';
 						select_room_num[1] = {};select_room_num[1]['value'] = $scope.bookRoom.item_name;
 						select_room_num[1]['room_info'] = {};select_room_num[1]['room_info']['item_name'] = $scope.bookRoom.item_name;
@@ -221,10 +221,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     }
     
     $scope.setBookingCalendar = function(in_date, out_date) {//设置日期
-        var check_in = new Date(in_date.replace(/-/g, '/'));
-        var check_in_time = check_in.getTime(); 
-        var check_out = new Date(out_date.replace(/-/g, '/'));
-        var check_out_time = check_out.getTime();
+        var check_in = new Date(in_date.replace(/-/g, '/'));var check_in_time = check_in.getTime(); 
+        var check_out = new Date(out_date.replace(/-/g, '/'));var check_out_time = check_out.getTime();
         var bookingCalendar = {}, colspan = 4;
         for(var i = check_in_time; i < check_out_time; i += 86400000) {
             var thisDate = new Date(i);var year = thisDate.getFullYear();

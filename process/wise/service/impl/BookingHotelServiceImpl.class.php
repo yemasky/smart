@@ -132,6 +132,9 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                         //手动设置价格计算
                         if($set_prices) {
                             $arrayBusinessDayPrice = $arrayBookingPrice[$channel_id][$item_category_id][$system_id];
+                            if($arrayBusinessDayPrice == -1) {
+                                return $objSuccess->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '自定价格为-1', []);
+                            }
                         }
                         //预订的房型房子
                         $roomInfo = $roomData['room_info'];
