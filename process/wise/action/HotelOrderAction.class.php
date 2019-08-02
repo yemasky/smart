@@ -292,15 +292,15 @@ class HotelOrderAction extends \BaseAction
         $channel_id = $objRequest->channel_id;
         $arrayInput = $objRequest->getInput();
         $market_id = isset($arrayInput['market_id']) ? $arrayInput['market_id'] : 0;
-        $in_date = $arrayInput['check_in'] . ' ' . $arrayInput['in_time'];
-        $out_date = $arrayInput['check_out'] . ' ' . $arrayInput['out_time'];
+        $in_date = $arrayInput['check_in'];// . ' ' . $arrayInput['in_time'];
+        $out_date = $arrayInput['check_out'];// . ' ' . $arrayInput['out_time'];
         $price_system_id = $objRequest->getInput('price_system_id');
         $item_category_id = $objRequest->getInput('item_category_id');
         //
 
         //查找已住房间[远期房态]
         $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->GT('check_in', $in_date)->LT('check_in', $out_date);
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->GE('check_in', $in_date)->LE('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayResult['bookingRoom'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
         //:獲取價格

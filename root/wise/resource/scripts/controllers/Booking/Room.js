@@ -67,7 +67,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             var resultPriceLayout = result.data.item.priceLayout;
             $scope.setPriceLayout(resultPriceLayout);//计算价格类型
             $scope.selectMarketLayoutPrice();//设置新价格
-            $scope.calculatingAmountOfRoom();//设置可订房数量
+            $scope.calculatingAmountOfRoom(result.data.item.bookingRoom);//设置可订房数量
         });
     });
     //选择客人市场
@@ -216,10 +216,11 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 $alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
             } else {
                 var resultPriceLayout = result.data.item.priceLayout;
+                $scope.bookingRoomList = result.data.item.bookingRoom;
                 //$scope.marketChannelLayoutPrice = {};
                 $scope.setPriceLayout(resultPriceLayout);
                 $scope.selectMarketLayoutPrice();//设置新价格
-                $scope.calculatingAmountOfRoom();//设置可订房数量
+                $scope.calculatingAmountOfRoom(result.data.item.bookingRoom);//设置可订房数量
             }
         })
     }
@@ -244,8 +245,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         $scope.bookingCalendar = bookingCalendar;$scope.colspan = colspan;
     };	
     //根据预定日历和取出来的远期房态计算每天每个房型的房量
-    $scope.calculatingAmountOfRoom = function() {
-        var bookingRoomList = $scope.bookingRoomList;//已预定房间数量
+    $scope.calculatingAmountOfRoom = function(bookingRoomList) {
+        if(bookingRoomList == '') bookingRoomList = $scope.bookingRoomList;//已预定房间数量
         var layoutList = $scope.layoutList;//房型数据 
         var bookingCalendar = angular.copy($scope.bookingCalendar);//预定日历
         var bookingCategory = {};
@@ -287,19 +288,18 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                         channelRoomReservation[channel_id][item_category_id][date_key] = {};
                         channelRoomReservation[channel_id][item_category_id][date_key]['room_num'] = room_num;//date_key当天可定全部房量
                     }
-                    if(angular.isUndefined(bookingCategory[channel_id])) continue;
-                    if(angular.isUndefined(bookingCategory[channel_id][item_category_id])) continue;
-                    if(angular.isUndefined(bookingCategory[channel_id][item_category_id][date_key])) continue;
+                    if(angular.isUndefined(bookingCategory[channel_id])) continue;//如果没有这个预定这跳过
+                    if(angular.isUndefined(bookingCategory[channel_id][item_category_id])) continue;//如果没有这个预定这跳过
+                    if(angular.isUndefined(bookingCategory[channel_id][item_category_id][date_key])) continue;//如果没有这个预定这跳过
                     if(angular.isDefined(bookingCategory[channel_id][item_category_id][date_key])) {//已定房量
-                        var book_num = bookingCategory[channel_id][item_category_id][date_key].book_num;
-                        var room_num = channelRoomReservation[channel_id][item_category_id][date_key]['room_num'];
-                        room_num = room_num - book_num;
-                        channelRoomReservation[channel_id][item_category_id][date_key]['room_num'] = room_num;
+                        var book_num = angular.copy(bookingCategory[channel_id][item_category_id][date_key].book_num);//已定房量
+                        var _room_num = angular.copy(channelRoomReservation[channel_id][item_category_id][date_key]['room_num']);
+                        var room_num_reservation = _room_num - book_num;//总房量-已定房量
+                        channelRoomReservation[channel_id][item_category_id][date_key]['room_num'] = room_num_reservation;
                         var max_room_num = maxChannelRoomReservation[channel_id][item_category_id].room_num;
-                        if(room_num < max_room_num) maxChannelRoomReservation[channel_id][item_category_id].room_num = room_num;
+                        if(room_num_reservation < max_room_num) maxChannelRoomReservation[channel_id][item_category_id].room_num = room_num_reservation;
                     }
                 }
-                
             }
         }
         //计算最大可定
@@ -325,7 +325,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     var thisMarketPrice = {};
     $scope.selectMarketLayoutPrice = function() {//channel_id, item_category_id, _system_id
         //if(_system_id == '0' || typeof(_system_id) == 'undefined') return;//为0时不做任何操作
-        var market_id = $scope.market_id;
+        var market_id = $scope.market_id,booking_room = $scope.booking_room;
         if(typeof(thisMarketPrice[market_id]) == 'undefined') thisMarketPrice[market_id] = {};
         var priceSystemHash = $scope.priceSystemHash;
         //var channel_id = 1,item_category_id = 1;
@@ -343,7 +343,6 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                 for(var channel_id in channel_ids) {
                     if(typeof(layout_item[channel_id]) == 'undefined') continue;
                     var decimal_price = 0;
-                    //console.log($rootScope.channelSettingList[channel_id]);
                     if(typeof($rootScope.channelSettingList[channel_id]) != 'undefined') 
                         decimal_price = $rootScope.channelSettingList[channel_id].decimal_price - 0;
                     if(typeof(thisMarketPrice[market_id][channel_id]) == 'undefined') thisMarketPrice[market_id][channel_id] = {};
@@ -380,8 +379,14 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                                 }
                             }
                         }
-                        //
-                        //booking_room[channel_id][item_category_id][_system_id] = 0;
+                        //清空选择的booking_room数据
+                        if(angular.isDefined(booking_room[channel_id])) {
+                            if(angular.isDefined(booking_room[channel_id][item_category_id])) {
+                               if(angular.isDefined(booking_room[channel_id][item_category_id][_system_id])) {
+                                   booking_room[channel_id][item_category_id][_system_id] = ''
+                               }
+                            }
+                        }
                     }
                 }
             } else {
@@ -405,13 +410,20 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                                 }
                             }
                         }
-                        //
-                        //booking_room[channel_id][item_category_id][_system_id] = 0;
+                        //清空选择的booking_room数据
+                        if(angular.isDefined(booking_room[channel_id])) {
+                            if(angular.isDefined(booking_room[channel_id][item_category_id])) {
+                               if(angular.isDefined(booking_room[channel_id][item_category_id][_system_id])) {
+                                   booking_room[channel_id][item_category_id][_system_id] = ''
+                               }
+                            }
+                        }
                     }
                 }
             }
         }
         $scope.marketChannelLayoutPrice = thisMarketPrice;//[根据channel_id 房型 价格体系决定显示价格]
+        if(booking_room != '') $scope.booking_room = booking_room;
     }
     $scope.selectThisLayout = function($event) {}
     $scope.selectAllLayout = function($event) {

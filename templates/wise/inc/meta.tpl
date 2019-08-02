@@ -219,7 +219,7 @@ app.filter('propsFilter', function() {
 });
 angular.module("app").constant("MODULE_CONFIG", [
     {name: "ui.select",module: !0,files: ["<%$__RESOURCE%>vendor/modules/angular-ui-select/select.min.js", "<%$__RESOURCE%>vendor/modules/angular-ui-select/select.min.css"]}, 
-    {name: "easyPieChart",module: !1,files: ["<%$_RESOURCE%>vendor/jquery/easypiechart/jquery.easy-pie-chart.js"]}
+    {name: "easyPieChart",module: !1,files: ["<%$__RESOURCE%>vendor/jquery/easypiechart/jquery.easy-pie-chart.js"]}
 ]).config(["$ocLazyLoadProvider", "MODULE_CONFIG", function($ocLazyLoadProvider, MODULE_CONFIG) {
     $ocLazyLoadProvider.config({
         debug: !1,
