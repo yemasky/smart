@@ -380,6 +380,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                                 }
                             }
                         }
+                        //
+                        //booking_room[channel_id][item_category_id][_system_id] = 0;
                     }
                 }
             } else {
@@ -403,6 +405,8 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
                                 }
                             }
                         }
+                        //
+                        //booking_room[channel_id][item_category_id][_system_id] = 0;
                     }
                 }
             }
