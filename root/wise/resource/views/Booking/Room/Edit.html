@@ -77,9 +77,9 @@
 										  <td class="col-xs-1">{{rDetail.check_in}}</td>
 										  <td class="col-xs-1">{{rDetail.check_out}}</td>
 										  <td>
-											  <!--<button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')"><i class="glyphicon glyphicon-edit"></i></button>-->
+											  <button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')"><i class="glyphicon glyphicon-edit text-info"></i></button>
 											  <a class="btn btn-xs btn-default" ng-click="addGuestLiveIn('LiveInOne', rDetail)" ng-if="rDetail.booking_detail_status==0"><i class="fas fa-procedures"></i> 客房入住</a>
-											  <a class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')" ng-if="rDetail.booking_detail_status==1"><i class="fas fa-edit"></i> 已入住</a>
+											  <a class="btn btn-xs btn-default" ng-if="rDetail.booking_detail_status==1"><i class="ti-user"></i> 已入住</a>
 										  </td>
 									  </tr>
                                       <tr>
@@ -99,7 +99,8 @@
                                                           {{LiveIn.member_idcard_type=='hk_permit'?'港澳台通行证':''}}
                                                           {{LiveIn.member_idcard_type=='other_permit'?'其它':''}}
                                                       </td>
-                                                      <td>{{LiveIn.member_idcard_number}}</td>
+                                                      <td class="col-xs-1">{{LiveIn.member_idcard_number}}</td>
+                                                      <td><a class="btn btn-xs btn-default"><i class="ti-credit-card"></i> 做门卡</a></td>
                                                       <td colspan="2"></td>
                                                   </tr>
                                                 </table>
@@ -484,21 +485,12 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
     var source_consumeRoomPrice = angular.copy($scope.consumeRoomPrice);
     $scope.changeCheckDate = function(checkDate) {
         var getParam = '',market_id,price_system_id,item_category_id;
-        if(angular.isUndefined($scope.param.market_id)) {
-            market_id = $scope.roomDetailEdit.market_id;
-        } else {
-            market_id = $scope.param.market_id;
-        }
-        if(angular.isUndefined($scope.param.price_system_id)) {
-            price_system_id = $scope.roomDetailEdit.price_system_id;
-        } else {
-            price_system_id = $scope.param.price_system_id;
-        }
-        if(angular.isUndefined($scope.param.item_category_id)) {
-            item_category_id = $scope.roomDetailEdit.item_category_id;
-        } else {
-            item_category_id = $scope.param.item_category_id;
-        }
+        if(angular.isUndefined($scope.param.market_id)) {market_id = $scope.roomDetailEdit.market_id;
+        } else {market_id = $scope.param.market_id;}
+        if(angular.isUndefined($scope.param.price_system_id)) {price_system_id = $scope.roomDetailEdit.price_system_id;
+        } else {price_system_id = $scope.param.price_system_id;}
+        if(angular.isUndefined($scope.param.item_category_id)) {item_category_id = $scope.roomDetailEdit.item_category_id;
+        } else {item_category_id = $scope.param.item_category_id;}
         getParam = '&market_id='+market_id+'&price_system_id='+price_system_id+'&item_category_id='+item_category_id;
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'changeCheckDate');
@@ -521,13 +513,12 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             var channel_id = $scope.param.channel_id;
             //重新计算时间 价格
             var priceSystemHash = $scope.priceSystemHash;//价格体系
-            var in_date = $scope.param.check_in;
-            var out_date = $scope.param.check_out;
+            var in_date = $scope.param.check_in,out_date = $scope.param.check_out;
             var layoutPriceSystem = $scope.priceSystemHash[price_system_id];
-            var channel_ids = angular.fromJson(layoutPriceSystem.channel_ids);
-            var layout_item = angular.fromJson(layoutPriceSystem.layout_item);
+            var channel_ids = angular.fromJson(layoutPriceSystem.channel_ids),layout_item = angular.fromJson(layoutPriceSystem.layout_item);
             var channel_formula = layoutPriceSystem.formula != '' ? angular.fromJson(layoutPriceSystem.formula) : '';
-            var layout_formula = {};
+            var layout_formula = {},roomList = $scope.roomList;//客房列表 总共有几个客房
+            var layoutRoom = $scope.layoutRoom;//房型房间对应关系;
             if(channel_formula != '' && angular.isUndefined(channel_formula[channel_id + '-' + item_category_id])) {
                 //未设置房型价格
                 layout_formula = -999;//表示未设置房型价格
@@ -541,15 +532,12 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 channel_formula = '';
             }
             //if(typeof(priceSystemHash[_system_id]) != 'undefined') {
-            var system_type = layoutPriceSystem.price_system_type;
-            var decimal_price = 0;
+            var system_type = layoutPriceSystem.price_system_type,decimal_price = 0;
             if(typeof($rootScope.channelSettingList[channel_id]) != 'undefined') 
                 decimal_price = $rootScope.channelSettingList[channel_id].decimal_price - 0;
             //获取价格
-            var check_in = new Date(in_date.replace(/-/g, '/'));
-            var check_in_time = check_in.getTime(); 
-            var check_out = new Date(out_date.replace(/-/g, '/'));
-            var check_out_time = check_out.getTime();
+            var check_in = new Date(in_date.replace(/-/g, '/')),check_out = new Date(out_date.replace(/-/g, '/'));
+            var check_in_time = check_in.getTime(),check_out_time = check_out.getTime();
             var consumeRoomPrice = {};//angular.copy(source_consumeRoomPrice);
             $scope.param.price = {};
             for(var i = check_in_time; i < check_out_time; i += 86400000) {
