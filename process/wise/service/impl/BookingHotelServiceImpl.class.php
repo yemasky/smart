@@ -481,6 +481,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $channel_id = $objRequest->channel_id;
         //
         $detail_id          = decode($objRequest->getInput('detail_id'));
+        $booking_number     = decode($objRequest->getInput('book_id'));
         $item_room_name     = $objRequest->getInput('item_room_name');
         $item_room          = $objRequest->getInput('item_room');
         $item_category_id   = $objRequest->getInput('item_category_id');
@@ -490,7 +491,6 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $market_name        = $objRequest->getInput('market_name');
         $price_system_id    = $objRequest->getInput('price_system_id');
         $price_system_name  = $objRequest->getInput('price_system_name');
-        $arrayPrice         = $objRequest->getInput('price');
         //
         $arrayUpdate = [];
         if (!empty($item_room_name)) $arrayUpdate['item_name'] = $item_room_name;//item_room_name 为空则不更新
@@ -579,6 +579,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $BookingConsumeEntity->setCompanyId($company_id);
             $BookingConsumeEntity->setChannelId($channel_id);
             $BookingConsumeEntity->setChannel('Hotel');
+            $BookingConsumeEntity->setBookingNumber($booking_number);
             //
             $BookingConsumeEntity->setItemName($item_room_name);
             $BookingConsumeEntity->setItemId($item_room);
@@ -590,8 +591,6 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $BookingConsumeEntity->setPriceSystemId($price_system_id);
             $BookingConsumeEntity->setPriceSystemName($price_system_name);
             $BookingConsumeEntity->setAddDatetime(getDateTime());
-
-
         }
         //
         $set_prices = $objRequest->getInput('set_prices');
@@ -599,7 +598,6 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
 
         if ($detail_id > 0) {
             CommonServiceImpl::instance()->startTransaction();
-
             //更新房间detail
             if (!empty($arrayUpdate)) {
                 $whereCriteria = new \WhereCriteria();
@@ -625,10 +623,14 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                         $BookingDetailConsumeList[] = $BookingConsume;
                     }
                     BookingDao::instance()->saveBookingDetailConsumeList($BookingDetailConsumeList);
-                    //超订检查
+                    //超订检查[延住超订 提前预抵超订 变更时间超订 变更房型超订]
+
+
+
+
+
                 }
             }
-
             //更新财会
             if (!empty($item_room)) {
                 $arrayUpdateAccounts['item_id'] = $item_room;
@@ -641,7 +643,6 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             CommonServiceImpl::instance()->commit();
             return $objSuccess;
         }
-
         $objSuccess->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
         return $objSuccess;
     }

@@ -125,6 +125,7 @@ class HotelOrderAction extends \BaseAction
         if (!empty($bookingDetailRoom)) {
             foreach ($bookingDetailRoom as $detail_id => $v) {
                 $bookingDetailRoom[$detail_id]['detail_id'] = encode($v['booking_detail_id']);
+                $bookingDetailRoom[$detail_id]['book_id'] = encode($v['booking_number']);
             }
         }
         //入住人数

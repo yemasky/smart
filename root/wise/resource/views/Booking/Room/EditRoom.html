@@ -84,7 +84,7 @@
                           <tbody>
                             <tr><!--酒店房型列表 循环 i-->
                               <td>价格</td>
-                                <td class="w-xs col-sm-1 b-r cursor panel" ng-repeat="(i, consumeRoom) in consumeRoomPrice"><span ng-if="param.set_prices==''">{{consumeRoom.consume_price}}</span><span ng-if="param.set_prices==1"><input type="text" ng-model="param.price[consumeRoom.business_day]" class="form-control w-xs" size="8" value="{{consumeRoom.consume_price}}"></span></td>
+                                <td class="w-xs col-sm-1 b-r cursor panel book_input" ng-repeat="(i, consumeRoom) in consumeRoomPrice"><input type="text" ng-model="param.price[consumeRoom.business_day]" class="form-control w-xs" ng-class="param.set_prices?'enable_select':'unable_select_edit'" size="8" value="{{consumeRoom.consume_price}}"></td>
                               <td></td>
                             </tr>
                           </tbody>

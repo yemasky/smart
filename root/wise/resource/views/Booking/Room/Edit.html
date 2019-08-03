@@ -449,7 +449,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             }
             postParam += '&item_room='+item_room+'&item_room_name='+item_room_name;
         }
-        $scope.param.booking_number = roomDetailEdit.booking_number;
+        $scope.param.book_id = roomDetailEdit.book_id;
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.post('/app.do?'+param+postParam, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
