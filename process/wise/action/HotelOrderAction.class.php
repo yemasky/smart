@@ -64,7 +64,7 @@ class HotelOrderAction extends \BaseAction
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success']);
     }
 
-    //客房状态页面
+    //客房状态页面 单个channel_id 的数据 并无多个，如需切换，则重新获取数据
     protected function doRoomStatus(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
         $method = $objRequest->method;

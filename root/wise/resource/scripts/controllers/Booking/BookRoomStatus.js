@@ -1,4 +1,4 @@
-
+//单个channel_id 的数据 并无多个，如需切换，则重新获取数据
 app.directive("showBookroomPrice", function($document){
   return{
     restrict: "A",
@@ -62,233 +62,236 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
 	var param = 'channel='+_channel+'&view='+_view;
-	$scope.loading.show();
-	$httpService.post('/app.do?'+param, $scope, function(result){
-		$scope.loading.percent();
-		if(result.data.success == '0') {
-			var message = $scope.getErrorByCode(result.data.code);
-			//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
-			return;//错误返回
-		}
-		common = result.data.common;
-		$scope.setCommonSetting(common);
-		$scope.setThisChannel('Hotel');//酒店频道
-        $(document).ready(function(){
-            $scope.param["channel_id"] = $rootScope.defaultChannel["channel_id"];
-            $scope.param["channel_father_id"] = $rootScope.defaultChannel["channel_father_id"];
-            $scope.defaultHotel = $rootScope.defaultChannel["channel_name"];
-        });
-        $scope.bookList          = result.data.item.bookList;//预订列表
-        $scope.roomList          = result.data.item.roomList;//客房列表
-        $scope.layoutList        = result.data.item.layoutList;//房型列表
-		$scope.layoutRoom        = result.data.item.layoutRoom;//房型房间对应关系
-        $scope.consumeList       = result.data.item.consumeList;//消费
-        $scope.accountsList      = result.data.item.accountsList;//账户信息
-        $scope.guestLiveInList   = result.data.item.guestLiveInList;//入住客人
-        $scope.paymentTypeList   = result.data.item.paymentTypeList;//支付方式
-		$scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
-        $scope.bookingSearchList = result.data.item.bookingDetailRoom;//所有订单
-        $scope.bookBorrowingList = result.data.item.bookBorrowingList;
-		$scope.marketList        = result.data.item.marketList;
-        var channelBorrowing     = result.data.item.channelBorrowing;
-        var channelConsume       = result.data.item.channelConsumeList;
-        var priceSystemList      = result.data.item.priceSystemHash;
-        $scope.priceSystemHash   = result.data.item.priceSystemHash;
-        $scope.bookRoomStatus    =  {}; $scope.check_inRoom = {};$scope.roomDetailList = {};
-        $scope.roomLiveIn        = {};$scope.check_outRoom = {};
-        if($scope.roomList != '') {
-			//按当日计算预抵预离 过期忽略
-			var thisDay = $scope.getDay();
-			var check_inRoom = {},check_outRoom = {}, live_inRoom = {},roomDetailList = {};
-            var bookAta = 0,dueOut = 0;
-			if($scope.bookingDetailRoom != '') {
-                var thisDayTimestamp = Date.parse(new Date(thisDay)); 
-				for(var detail_id in $scope.bookingDetailRoom) {
-					var detail = $scope.bookingDetailRoom[detail_id];
-                    live_inRoom[detail.item_id] = detail;
-                    if(detail.check_in == thisDay && detail.booking_detail_status == '0') {
-						check_inRoom[detail.item_id] = detail; 
-                        bookAta++;//预抵人数
-					}
-					/*if(detail.check_out.substr(0, 10) == thisDay) {
-						check_outRoom[detail.item_id] = detail;
-                        dueOut++;
-					}*/
-                    var checkOutTimestamp = Date.parse(new Date(detail.check_out)); 
-                    if(checkOutTimestamp <= thisDayTimestamp) {
-                        check_outRoom[detail.item_id] = detail;
-                        dueOut++;//预离人数
+    beginRoomStatus();//开始执行
+    function beginRoomStatus() {
+        $scope.loading.show();
+        $httpService.post('/app.do?'+param, $scope, function(result){
+            $scope.loading.percent();
+            if(result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+            common = result.data.common;
+            $scope.setCommonSetting(common);
+            $scope.setThisChannel('Hotel');//酒店频道
+            $(document).ready(function(){
+                $scope.param["channel_id"] = $rootScope.defaultChannel["channel_id"];
+                $scope.param["channel_father_id"] = $rootScope.defaultChannel["channel_father_id"];
+                $scope.defaultHotel = $rootScope.defaultChannel["channel_name"];
+            });
+            $scope.bookList          = result.data.item.bookList;//预订列表
+            $scope.roomList          = result.data.item.roomList;//客房列表
+            $scope.layoutList        = result.data.item.layoutList;//房型列表
+            $scope.layoutRoom        = result.data.item.layoutRoom;//房型房间对应关系
+            $scope.consumeList       = result.data.item.consumeList;//消费
+            $scope.accountsList      = result.data.item.accountsList;//账户信息
+            $scope.guestLiveInList   = result.data.item.guestLiveInList;//入住客人
+            $scope.paymentTypeList   = result.data.item.paymentTypeList;//支付方式
+            $scope.bookingDetailRoom = result.data.item.bookingDetailRoom;//预订详情
+            $scope.bookingSearchList = result.data.item.bookingDetailRoom;//所有订单
+            $scope.bookBorrowingList = result.data.item.bookBorrowingList;
+            $scope.marketList        = result.data.item.marketList;
+            var channelBorrowing     = result.data.item.channelBorrowing;
+            var channelConsume       = result.data.item.channelConsumeList;
+            var priceSystemList      = result.data.item.priceSystemHash;
+            $scope.priceSystemHash   = result.data.item.priceSystemHash;
+            $scope.bookRoomStatus    =  {}; $scope.check_inRoom = {};$scope.roomDetailList = {};
+            $scope.roomLiveIn        = {};$scope.check_outRoom = {};
+            if($scope.roomList != '') {
+                //按当日计算预抵预离 //过期忽略
+                var thisDay = $scope.getDay();
+                var check_inRoom = {},check_outRoom = {}, live_inRoom = {},roomDetailList = {};
+                var bookAta = 0,dueOut = 0;
+                if($scope.bookingDetailRoom != '') {
+                    var thisDayTimestamp = Date.parse(new Date(thisDay)); 
+                    for(var detail_id in $scope.bookingDetailRoom) {
+                        var detail = $scope.bookingDetailRoom[detail_id];
+                        live_inRoom[detail.item_id] = detail;
+                        if(detail.check_in == thisDay && detail.booking_detail_status == '0') {
+                            check_inRoom[detail.item_id] = detail; 
+                            bookAta++;//预抵人数
+                        }
+                        /*if(detail.check_out.substr(0, 10) == thisDay) {
+                            check_outRoom[detail.item_id] = detail;
+                            dueOut++;
+                        }*/
+                        var checkOutTimestamp = Date.parse(new Date(detail.check_out)); 
+                        if(checkOutTimestamp <= thisDayTimestamp) {
+                            check_outRoom[detail.item_id] = detail;
+                            dueOut++;//预离人数
+                        }
+                        if(!angular.isDefined(roomDetailList[detail.booking_number])) {
+                            roomDetailList[detail.booking_number] = {};
+                        }
+                        roomDetailList[detail.booking_number][detail.booking_detail_id] = detail;
                     }
-					if(!angular.isDefined(roomDetailList[detail.booking_number])) {
-						roomDetailList[detail.booking_number] = {};
-					}
-					roomDetailList[detail.booking_number][detail.booking_detail_id] = detail;
-				}
-                $scope.bookAta = bookAta;
-                $scope.dueOut = dueOut;
-                $scope.check_outRoom = check_outRoom;$scope.check_inRoom = check_inRoom;
-			}
-			//入住客人
-            var roomLiveIn = {};
-            if($scope.guestLiveInList != '') {
-                for(var number in $scope.guestLiveInList) {
-                    for(var booking_detail_id in $scope.guestLiveInList[number]) {
-                        var roomi = 0;
-                        for(var i in $scope.guestLiveInList[number][booking_detail_id]) {
-                            var LiveIn = $scope.guestLiveInList[number][booking_detail_id][i];
-                            if(angular.isUndefined(roomLiveIn[LiveIn.item_id])) roomLiveIn[LiveIn.item_id] = {};
-                            roomLiveIn[LiveIn.item_id][roomi] = LiveIn;roomi++;
+                    $scope.bookAta = bookAta;
+                    $scope.dueOut = dueOut;
+                    $scope.check_outRoom = check_outRoom;$scope.check_inRoom = check_inRoom;
+                }
+                //入住客人
+                var roomLiveIn = {};
+                if($scope.guestLiveInList != '') {
+                    for(var number in $scope.guestLiveInList) {
+                        for(var booking_detail_id in $scope.guestLiveInList[number]) {
+                            var roomi = 0;
+                            for(var i in $scope.guestLiveInList[number][booking_detail_id]) {
+                                var LiveIn = $scope.guestLiveInList[number][booking_detail_id][i];
+                                if(angular.isUndefined(roomLiveIn[LiveIn.item_id])) roomLiveIn[LiveIn.item_id] = {};
+                                roomLiveIn[LiveIn.item_id][roomi] = LiveIn;roomi++;
+                            }
                         }
                     }
                 }
-            }
-            $scope.roomLiveIn = roomLiveIn;
-            $scope.roomDetailList = roomDetailList;
-            //消费、账务计算
-			var bookConsume = {}, bookAccount = {}, bookBalance = {}, bookConsumePrice = {};
-			if($scope.consumeList != '') {//消费
-				for(var booking_number in $scope.consumeList) {
-                    bookConsume[booking_number] = 0; bookAccount[booking_number] = 0; bookConsumePrice[booking_number] = {};
-					for(var detail_id in $scope.consumeList[booking_number]) {
-                        bookConsumePrice[booking_number][detail_id] = 0;
-						for(var i in $scope.consumeList[booking_number][detail_id]) {
-							var consume = $scope.consumeList[booking_number][detail_id][i];
-							bookConsume[booking_number] = $scope.arithmetic(consume.consume_price_total, '+', bookConsume[booking_number]);
-                            bookConsumePrice[booking_number][detail_id] = $scope.arithmetic(consume.consume_price_total, '+',bookConsumePrice[booking_number][detail_id]);
-						}
-					}
-				}				
-			}
-            $scope.bookConsumePrice = bookConsumePrice;
-			if($scope.accountsList != '') {//账务
-				for(var booking_number in $scope.accountsList) {
-					for(var i in $scope.accountsList[booking_number]) {
-						var account = $scope.accountsList[booking_number][i];
-						var symbol = '+';
-                        if(account.accounts_type == 'refund') symbol = '-';
-                        if(account.accounts_type == 'hanging') continue;//挂账不算金钱
-						bookAccount[booking_number] = $scope.arithmetic(bookAccount[booking_number], symbol, account.money);
-					}
-				}				
-			}
-            //房间状态
-			var bookRoomStatus = {};
-		    for(var building in $scope.roomList) {
-			    for(var floor in $scope.roomList[building]) {
-				    var floorRoom = $scope.roomList[building][floor];
-					for(var i in floorRoom) {
-						var room = floorRoom[i];
-                        //全部房间 arrayRoom
-                        arrayRoom[room.item_id] = room;
-                        room['detail_id'] = 0, room.roomAccount = 0;
-						if(angular.isDefined(live_inRoom[room.item_id])){
-                            room['detail_id'] = live_inRoom[room.item_id]['booking_detail_id'];
-                            if(angular.isDefined(bookConsume[live_inRoom[room.item_id].booking_number])) {
-                                var booking_number = live_inRoom[room.item_id].booking_number;
-                                var account = $scope.arithmetic(bookAccount[booking_number], '-', bookConsume[booking_number], 2);
-                                billAccount[booking_number] = account;
-                                room.roomAccount = account;
+                $scope.roomLiveIn = roomLiveIn;
+                $scope.roomDetailList = roomDetailList;
+                //消费、账务计算
+                var bookConsume = {}, bookAccount = {}, bookBalance = {}, bookConsumePrice = {};
+                if($scope.consumeList != '') {//消费
+                    for(var booking_number in $scope.consumeList) {
+                        bookConsume[booking_number] = 0; bookAccount[booking_number] = 0; bookConsumePrice[booking_number] = {};
+                        for(var detail_id in $scope.consumeList[booking_number]) {
+                            bookConsumePrice[booking_number][detail_id] = 0;
+                            for(var i in $scope.consumeList[booking_number][detail_id]) {
+                                var consume = $scope.consumeList[booking_number][detail_id][i];
+                                bookConsume[booking_number] = $scope.arithmetic(consume.consume_price_total, '+', bookConsume[booking_number]);
+                                bookConsumePrice[booking_number][detail_id] = $scope.arithmetic(consume.consume_price_total, '+',bookConsumePrice[booking_number][detail_id]);
                             }
                         }
-                        bookRoomStatus[room.item_id] = room;
-                        bookRoomStatus[room.item_id].check_in = '',bookRoomStatus[room.item_id].check_out = '';
-                        if(angular.isDefined(live_inRoom[room.item_id])) {
-                            bookRoomStatus[room.item_id].check_in = live_inRoom[room.item_id].check_in;
-                            bookRoomStatus[room.item_id].check_out = live_inRoom[room.item_id].check_out;
+                    }				
+                }
+                $scope.bookConsumePrice = bookConsumePrice;
+                if($scope.accountsList != '') {//账务
+                    for(var booking_number in $scope.accountsList) {
+                        for(var i in $scope.accountsList[booking_number]) {
+                            var account = $scope.accountsList[booking_number][i];
+                            var symbol = '+';
+                            if(account.accounts_type == 'refund') symbol = '-';
+                            if(account.accounts_type == 'hanging') continue;//挂账不算金钱
+                            bookAccount[booking_number] = $scope.arithmetic(bookAccount[booking_number], symbol, account.money);
                         }
-						//glyphicon-log-in 预抵 glyphicon-log-out 预离 
-                        var roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></a>';//空净
-                        if(room.status == 'live_in') {//在住
-                            roomStatus = '<a class="ui-icon glyphicon glyphicon-user bg-inverse" title="住净 &#8226; 查看订单"></a>';//住净
-                            if(room.clean == 'dirty') roomStatus = '<a class="ui-icon glyphicon glyphicon-user bg-danger" title="住脏 &#8226; 查看订单"></a>';//住脏
-                        } else {
-                            if(room.clean == 'dirty') roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-dark" title="空脏"></i>';//空脏
+                    }				
+                }
+                //房间状态
+                var bookRoomStatus = {};
+                for(var building in $scope.roomList) {
+                    for(var floor in $scope.roomList[building]) {
+                        var floorRoom = $scope.roomList[building][floor];
+                        for(var i in floorRoom) {
+                            var room = floorRoom[i];
+                            //全部房间 arrayRoom
+                            arrayRoom[room.item_id] = room;
+                            room['detail_id'] = 0, room.roomAccount = 0;
+                            if(angular.isDefined(live_inRoom[room.item_id])){
+                                room['detail_id'] = live_inRoom[room.item_id]['booking_detail_id'];
+                                if(angular.isDefined(bookConsume[live_inRoom[room.item_id].booking_number])) {
+                                    var booking_number = live_inRoom[room.item_id].booking_number;
+                                    var account = $scope.arithmetic(bookAccount[booking_number], '-', bookConsume[booking_number], 2);
+                                    billAccount[booking_number] = account;
+                                    room.roomAccount = account;
+                                }
+                            }
+                            bookRoomStatus[room.item_id] = room;
+                            bookRoomStatus[room.item_id].check_in = '',bookRoomStatus[room.item_id].check_out = '';
+                            if(angular.isDefined(live_inRoom[room.item_id])) {
+                                bookRoomStatus[room.item_id].check_in = live_inRoom[room.item_id].check_in;
+                                bookRoomStatus[room.item_id].check_out = live_inRoom[room.item_id].check_out;
+                            }
+                            //glyphicon-log-in 预抵 glyphicon-log-out 预离 
+                            var roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-info" title="空净 &#8226; 预订"></a>';//空净
+                            if(room.status == 'live_in') {//在住
+                                roomStatus = '<a class="ui-icon glyphicon glyphicon-user bg-inverse" title="住净 &#8226; 查看订单"></a>';//住净
+                                if(room.clean == 'dirty') roomStatus = '<a class="ui-icon glyphicon glyphicon-user bg-danger" title="住脏 &#8226; 查看订单"></a>';//住脏
+                            } else {
+                                if(room.clean == 'dirty') roomStatus = '<a class="ui-icon glyphicon glyphicon-bed bg-dark" title="空脏"></i>';//空脏
+                            }
+                            //锁房 维修房
+                            if(room.lock == 'lock') roomStatus ='<a class="fas fa-lock text-warning" title="锁房"></a> ';//锁房
+                            if(room.lock == 'repair') roomStatus = '<a class="fas fa-tools text-warning" title="维修房"></a>';//维修房
+                            //附加
+                            if(angular.isDefined(check_outRoom[room.item_id])) {//预离
+                                roomStatus = roomStatus + '<a class="fas fa-sign-out-alt text-warning" title="预离 &#8226; 查看订单"></a>';
+                            }
+                            if(angular.isDefined(check_inRoom[room.item_id]) && room.status != 'live_in') {//预抵
+                                roomStatus = '<a class="fas fa-sign-in-alt text-success" title="预抵 &#8226; 查看订单"></a>'+roomStatus;
+                            }
+                            bookRoomStatus[room.item_id]['roomStatus'] = roomStatus;
+                            if(!angular.isDefined(layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id])) {
+                                layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id] = {};
+                            }
+                            //房型的所有房间
+                            layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id][room.item_id] = room;
                         }
-                        //锁房 维修房
-                        if(room.lock == 'lock') roomStatus ='<a class="fas fa-lock text-warning" title="锁房"></a> ';//锁房
-						if(room.lock == 'repair') roomStatus = '<a class="fas fa-tools text-warning" title="维修房"></a>';//维修房
-                        //附加
-				   		if(angular.isDefined(check_outRoom[room.item_id])) {//预离
-                            roomStatus = roomStatus + '<a class="fas fa-sign-out-alt text-warning" title="预离 &#8226; 查看订单"></a>';
-                        }
-						if(angular.isDefined(check_inRoom[room.item_id]) && room.status != 'live_in') {//预抵
-                            roomStatus = '<a class="fas fa-sign-in-alt text-success" title="预抵 &#8226; 查看订单"></a>'+roomStatus;
-                        }
-                        bookRoomStatus[room.item_id]['roomStatus'] = roomStatus;
-                        if(!angular.isDefined(layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id])) {
-                            layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id] = {};
-                        }
-                        //房型的所有房间
-                        layoutRoomList[$scope.layoutRoom[room.item_id].item_category_id][room.item_id] = room;
-					}
-			   }
-		    }
-			$scope.bookRoomStatus = bookRoomStatus;
-            $scope.billAccount = billAccount;
-            $scope.layoutRoomList = layoutRoomList;
-		}
-        var channelConsumeList = {};
-        if(channelConsume!='') {
-            for(var i in channelConsume) {
-                var consume = channelConsume[i];
-                var consume_id = consume.channel_consume_id;
-                var consume_father_id = consume.channel_consume_father_id;
-                if(consume_id == consume_father_id) {
-                    var children = {}
-                    if(angular.isDefined(channelConsumeList[consume_father_id])) {
-                        children = channelConsumeList[consume_father_id].children;
-                    }
-                    consume['children'] = children;
-                    channelConsumeList[consume_father_id] = consume;
-                } else {
-                    if(angular.isUndefined(channelConsumeList[consume_father_id])) {
-                        channelConsumeList[consume_father_id] = {};
-                        channelConsumeList[consume_father_id]['children'] = {};
-                    }
-                    channelConsumeList[consume_father_id]['children'][consume_id] = consume;
-                }             
+                   }
+                }
+                $scope.bookRoomStatus = bookRoomStatus;
+                $scope.billAccount = billAccount;
+                $scope.layoutRoomList = layoutRoomList;
             }
-        }
-        $scope.channelConsumeList = channelConsumeList;
-        var systemList = [], j = 0;
-		if(priceSystemList != "") {
-            for(var key in priceSystemList) {
-                systemList[j] = priceSystemList[key];j++;
+            var channelConsumeList = {};
+            if(channelConsume!='') {
+                for(var i in channelConsume) {
+                    var consume = channelConsume[i];
+                    var consume_id = consume.channel_consume_id;
+                    var consume_father_id = consume.channel_consume_father_id;
+                    if(consume_id == consume_father_id) {
+                        var children = {}
+                        if(angular.isDefined(channelConsumeList[consume_father_id])) {
+                            children = channelConsumeList[consume_father_id].children;
+                        }
+                        consume['children'] = children;
+                        channelConsumeList[consume_father_id] = consume;
+                    } else {
+                        if(angular.isUndefined(channelConsumeList[consume_father_id])) {
+                            channelConsumeList[consume_father_id] = {};
+                            channelConsumeList[consume_father_id]['children'] = {};
+                        }
+                        channelConsumeList[consume_father_id]['children'][consume_id] = consume;
+                    }             
+                }
             }
-        }
-        $scope.priceSystemList = systemList;
-        var layoutArray = [], j = 0;
-        if($scope.layoutList != "") {
-            for(var key in $scope.layoutList) {
-                layoutArray[j] = $scope.layoutList[key];j++;
+            $scope.channelConsumeList = channelConsumeList;
+            var systemList = [], j = 0;
+            if(priceSystemList != "") {
+                for(var key in priceSystemList) {
+                    systemList[j] = priceSystemList[key];j++;
+                }
             }
-        }        
-        $scope.layoutArray = layoutArray;
-        //借物
-        var thisChannelBorrowing = {};
-        if(channelBorrowing != '') {
-           for(var i in channelBorrowing) {
-               var borrowing = channelBorrowing[i], tag = channelBorrowing[i].borrowing_tag;
-               var borrowing_id = borrowing.borrowing_id;
-               if(angular.isUndefined(thisChannelBorrowing[tag])) {
-                   thisChannelBorrowing[tag] = {};
-                   thisChannelBorrowing[tag]['borrowing_tag'] = tag;
-                   thisChannelBorrowing[tag]['children'] = {};
+            $scope.priceSystemList = systemList;
+            var layoutArray = [], j = 0;
+            if($scope.layoutList != "") {
+                for(var key in $scope.layoutList) {
+                    layoutArray[j] = $scope.layoutList[key];j++;
+                }
+            }        
+            $scope.layoutArray = layoutArray;
+            //借物
+            var thisChannelBorrowing = {};
+            if(channelBorrowing != '') {
+               for(var i in channelBorrowing) {
+                   var borrowing = channelBorrowing[i], tag = channelBorrowing[i].borrowing_tag;
+                   var borrowing_id = borrowing.borrowing_id;
+                   if(angular.isUndefined(thisChannelBorrowing[tag])) {
+                       thisChannelBorrowing[tag] = {};
+                       thisChannelBorrowing[tag]['borrowing_tag'] = tag;
+                       thisChannelBorrowing[tag]['children'] = {};
+                   }
+                   thisChannelBorrowing[tag]['children'][borrowing_id] = borrowing;
                }
-               thisChannelBorrowing[tag]['children'][borrowing_id] = borrowing;
-           }
-        }
-        $scope.thisChannelBorrowing = thisChannelBorrowing;
-        //时间
-		$(document).ready(function(){
-			var _thisDay = result.data.item.in_date;
-			var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');
-			var _nextDay = result.data.item.out_date;
-			$scope.param["check_in"] = _thisDay;$scope.param["check_out"] = _nextDay;
-			$('.check_in').val(_thisDay);$('.check_out').val(_nextDay);
-			$scope.param["in_time"] = _thisDay+'T14:00:00.000Z';$scope.param["out_time"] = _thisDay+'T12:00:00.000Z';
-		});
-	});	
+            }
+            $scope.thisChannelBorrowing = thisChannelBorrowing;
+            //时间
+            $(document).ready(function(){
+                var _thisDay = result.data.item.in_date;
+                var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');
+                var _nextDay = result.data.item.out_date;
+                $scope.param["check_in"] = _thisDay;$scope.param["check_out"] = _nextDay;
+                $('.check_in').val(_thisDay);$('.check_out').val(_nextDay);
+                $scope.param["in_time"] = _thisDay+'T14:00:00.000Z';$scope.param["out_time"] = _thisDay+'T12:00:00.000Z';
+            });
+        });	
+    }
 	////单个预订编辑开始//////////////////////////////////////////////////////////////////////////////////////////////////
     $scope.layoutSelectRoom = {};
     $scope.actionEdit = '客房项';

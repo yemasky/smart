@@ -421,7 +421,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 return;
             }
         }
-        var postParam = '';var roomDetailEdit = angular.copy($scope.roomDetailEdit);
+        var getParam = '';var roomDetailEdit = angular.copy($scope.roomDetailEdit);
         if($scope.param.changeCheckDate == 1) {
             var market_id,market_name,market_father_id,price_system_id,price_system_name,item_category_id,item_category_name,item_room,item_room_name;
             if(angular.isUndefined($scope.param.market_id) || $scope.param.market_id == '') {
@@ -429,29 +429,29 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             } else {
                 market_id = $scope.param.market_id;market_name = $scope.param.market_name;market_father_id = $scope.param.market_father_id;
             }
-            postParam += '&market_id='+market_id+'&market_name='+market_name+'&market_father_id='+market_father_id;
+            getParam += '&market_id='+market_id+'&market_name='+market_name+'&market_father_id='+market_father_id;
             if(angular.isUndefined($scope.param.price_system_id)) {
                 price_system_id = roomDetailEdit.price_system_id; price_system_name = roomDetailEdit.price_system_name;
             } else {
                 price_system_id = $scope.param.price_system_id;price_system_name = $scope.param.price_system_name;
             }
-            postParam += '&price_system_id='+price_system_id+'&price_system_name='+price_system_name;
+            getParam += '&price_system_id='+price_system_id+'&price_system_name='+price_system_name;
             if(angular.isUndefined($scope.param.item_category_id)) {
                 item_category_id = roomDetailEdit.item_category_id;item_category_name = roomDetailEdit.item_category_name;
             } else {
                 item_category_id = $scope.param.item_category_id;item_category_name = $scope.param.item_category_name;
             }
-            postParam += '&item_category_id='+item_category_id+'&item_category_name='+item_category_name;
+            getParam += '&item_category_id='+item_category_id+'&item_category_name='+item_category_name;
             if(angular.isUndefined($scope.param.item_room)) {
                 item_room = roomDetailEdit.item_id;item_room_name = roomDetailEdit.item_name;
             } else {
                 item_room = $scope.param.item_room;item_room_name = $scope.param.item_room_name;
             }
-            postParam += '&item_room='+item_room+'&item_room_name='+item_room_name;
+            getParam += '&item_room='+item_room+'&item_room_name='+item_room_name;
         }
         $scope.param.book_id = roomDetailEdit.book_id;
         $scope.beginLoading =! $scope.beginLoading;
-        $httpService.post('/app.do?'+param+postParam, $scope, function(result) {
+        $httpService.post('/app.do?'+param+getParam, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $scope.param.changeCheckDate = 0;
             $httpService.deleteHeader('method');
@@ -483,7 +483,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
     //延住
     var source_consumeRoomPrice = angular.copy($scope.consumeRoomPrice);
     $scope.changeCheckDate = function(checkDate) {
-        var postParam = '',market_id,price_system_id,item_category_id;
+        var getParam = '',market_id,price_system_id,item_category_id;
         if(angular.isUndefined($scope.param.market_id)) {
             market_id = $scope.roomDetailEdit.market_id;
         } else {
@@ -499,10 +499,10 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         } else {
             item_category_id = $scope.param.item_category_id;
         }
-        postParam = '&market_id='+market_id+'&price_system_id='+price_system_id+'&item_category_id='+item_category_id;
+        getParam = '&market_id='+market_id+'&price_system_id='+price_system_id+'&item_category_id='+item_category_id;
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'changeCheckDate');
-        $httpService.post('/app.do?'+param+postParam, $scope, function(result) {
+        $httpService.post('/app.do?'+param+getParam, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $scope.param.changeCheckDate = 1;
             $httpService.deleteHeader('method');

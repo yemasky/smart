@@ -32,7 +32,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $scope.bookingRoomList = result.data.item.bookingRoom;//已预订的房间
             $scope.channelItemList = result.data.item.arrayChannelItem;
             var layoutRoom = result.data.item.layoutRoom;//房型房间
-            $scope.layoutRoom = result.data.item.layoutRoom;
+            $scope.layoutRoom = result.data.item.layoutRoom;//所有房型的房间
             $scope.setLayoutList();//计算房型列表
             $scope.marketList = result.data.item.marketList;
             //按时间计算空房
@@ -113,7 +113,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         for(var channel_id in channelItemList) {
             var thisItemList = channelItemList[channel_id], thisLayoutRoom = {};
             if(typeof(layoutList[channel_id]) == 'undefined') {layoutList[channel_id] = {};room_data[channel_id] = {};}
-            if(typeof(layoutRoom[channel_id]) != 'undefined') thisLayoutRoom = layoutRoom[channel_id];
+            if(typeof(layoutRoom[channel_id]) != 'undefined') thisLayoutRoom = layoutRoom[channel_id];//单个channel_id的所有房型房间
             for(var i in thisItemList) {
                 if(thisItemList[i].channel_config == 'room') {//房间 根据房型进行排序
                     roomList[thisItemList[i]['item_id']] = thisItemList[i];
