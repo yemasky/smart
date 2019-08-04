@@ -351,7 +351,6 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             $scope.asideConsume.hide();
         });
     };
-    
     //////end Borrowing
     
     //////Consume
@@ -493,8 +492,8 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         } else {item_category_id = $scope.param.item_category_id;}
         getParam = '&market_id='+market_id+'&price_system_id='+price_system_id+'&item_category_id='+item_category_id;
         $scope.beginLoading =! $scope.beginLoading;
-        $httpService.header('method', 'changeCheckDate');
-        $httpService.post('/app.do?'+param+getParam, $scope, function(result) {
+        $httpService.header('method', 'changeCheckDate');console.log(item_category_id);
+        $httpService.post('/app.do?'+param+getParam, $scope, function(result) {console.log(item_category_id);
             $scope.beginLoading =! $scope.beginLoading;
             $scope.param.changeCheckDate = 1;
             $httpService.deleteHeader('method');
@@ -503,6 +502,10 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             }
+            var priceSystemHash = $scope.priceSystemHash;//价格体系
+            //房量
+            var bookingRoomList = result.data.item.bookingRoom;//已定房量
+            var layoutList = $scope.layoutList;//房型数据 
             //重组按日期价格
             var datePrice = {};
             if(result.data.item.priceLayout != '') {
@@ -512,7 +515,6 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             }
             var channel_id = $scope.param.channel_id;
             //重新计算时间 价格
-            var priceSystemHash = $scope.priceSystemHash;//价格体系
             var in_date = $scope.param.check_in,out_date = $scope.param.check_out;
             var layoutPriceSystem = $scope.priceSystemHash[price_system_id];
             var channel_ids = angular.fromJson(layoutPriceSystem.channel_ids),layout_item = angular.fromJson(layoutPriceSystem.layout_item);
@@ -522,7 +524,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             if(channel_formula != '' && angular.isUndefined(channel_formula[channel_id + '-' + item_category_id])) {
                 //未设置房型价格
                 layout_formula = -999;//表示未设置房型价格
-                $scope.param.set_prices = 1;
+                $scope.param.set_prices = 1;console.log(item_category_id);
                 var message = '价格类型："'+$scope.priceSystemHash[price_system_id].price_system_name 
                              +'" 对应房型："'+$scope.layoutList[item_category_id].item_name+'" 未设置价格！使用默认价格！';
                 $alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
@@ -539,7 +541,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             var check_in = new Date(in_date.replace(/-/g, '/')),check_out = new Date(out_date.replace(/-/g, '/'));
             var check_in_time = check_in.getTime(),check_out_time = check_out.getTime();
             var consumeRoomPrice = {};//angular.copy(source_consumeRoomPrice);
-            $scope.param.price = {};
+            $scope.param.price = {};var bookingCalendar = {};//预定日历
             for(var i = check_in_time; i < check_out_time; i += 86400000) {
                 var thisDate = new Date(i);var year = thisDate.getFullYear();
                 var month = thisDate.getMonth() - 0 + 1; if(month < 10) month = '0'+month;
@@ -547,6 +549,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 var price_key = year+'-'+month+'-01';
                 //date_key = 年-月-日 2018-01-01
                 var date_key = year+'-'+month+'-'+day;
+                bookingCalendar[date_key] = {};
                 if(typeof(consumeRoomPrice[date_key]) == 'undefined') {
                     if(angular.isDefined(source_consumeRoomPrice[date_key])) {
                         consumeRoomPrice[date_key] = angular.copy(source_consumeRoomPrice[date_key]);
@@ -567,6 +570,31 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
                 } 
             }
             $scope.consumeRoomPrice = consumeRoomPrice;
+            //计算已预定房型数据
+            var bookingCategory = {};
+            var categoryRoom = $scope.layoutRoomList[item_category_id];//全部该房型下全部想房间
+            for(var i in bookingRoomList) {
+                var bookingRoom = bookingRoomList[i];
+                var check_in_time = new Date(bookingRoom.check_in.replace(/-/g, '/')).getTime(); 
+                var check_out_time = new Date(bookingRoom.check_out.replace(/-/g, '/')).getTime();
+                var channel_id = bookingRoom.channel_id,item_category_id = bookingRoom.item_category_id;
+                var book_room_id = bookingRoom.item_id;
+                for(var i = check_in_time; i < check_out_time; i += 86400000) {
+                    var thisDate = new Date(i);var year = thisDate.getFullYear();
+                    var month = thisDate.getMonth() - 0 + 1; if(month < 10) month = '0'+month;
+                    var day = thisDate.getDate() - 0; if(day < 10) day = '0'+day;
+                    //date_key = 年-月-日 2018-01-01
+                    var date_key = year+'-'+month+'-'+day;
+                    if(angular.isUndefined(bookingCategory[item_category_id])) bookingCategory[item_category_id] = {};
+                    if(angular.isUndefined(bookingCategory[item_category_id][date_key])) {
+                        bookingCategory[item_category_id][date_key] = {};
+                        bookingCategory[item_category_id][date_key]['book_num'] = 0;
+                        bookingCategory[item_category_id][date_key]['book_room'] = {};
+                    }
+                    bookingCategory[item_category_id][date_key]['book_num']++;
+                    bookingCategory[item_category_id][date_key]['book_room'][book_room_id] = book_room_id;
+                }
+            }
         });
     }
 });    

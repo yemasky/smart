@@ -52,8 +52,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     //选择入住房
     var selectLayoutRoom = {},arrayRoom = {},liveLayoutRoom = {},billAccount={};
     $scope.selectLayoutRoom = {};
-    //按房型选择房间 全部房型房间
-    var layoutRoomList = {};
+    var layoutRoomList = {};//按房型选择房间 全部房型房间
     $scope.bookAta = '0';//预抵人数
     $scope.dueOut = '0';//预离人数
 	//选择客源市场
@@ -112,10 +111,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                             check_inRoom[detail.item_id] = detail; 
                             bookAta++;//预抵人数
                         }
-                        /*if(detail.check_out.substr(0, 10) == thisDay) {
-                            check_outRoom[detail.item_id] = detail;
-                            dueOut++;
-                        }*/
+                        /*if(detail.check_out.substr(0, 10) == thisDay) {check_outRoom[detail.item_id] = detail;dueOut++;}*/
                         var checkOutTimestamp = Date.parse(new Date(detail.check_out)); 
                         if(checkOutTimestamp <= thisDayTimestamp) {
                             check_outRoom[detail.item_id] = detail;
@@ -227,7 +223,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 }
                 $scope.bookRoomStatus = bookRoomStatus;
                 $scope.billAccount = billAccount;
-                $scope.layoutRoomList = layoutRoomList;
+                $scope.layoutRoomList = layoutRoomList;//房型的房间列表
             }
             var channelConsumeList = {};
             if(channelConsume!='') {
