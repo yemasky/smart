@@ -45,7 +45,8 @@
 		"100003":"lock room.",
 		"100004":"repair room.",
 		"100005":"dirty room.",
-		"100006":"live in room."
+		"100006":"live in room.",
+        "100007":"No Room Number."
 	}
 },
 "notice" : {

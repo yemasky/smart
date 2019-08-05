@@ -560,7 +560,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             }
             //&market_id=&price_system_id=2&item_category_id=4
             if (empty($item_room_name)) $item_room_name = $objRequest->item_room_name;//item_room_name 为空则不更新
-            if (empty($item_room)) $item_room = trim($objRequest->item_room) - 0;
+            if (empty($item_room)) $item_room = trim($objRequest->item_room);
             if (empty($item_category_id)) $item_category_id = $objRequest->item_category_id;//
             if (empty($item_category_name)) $item_category_name = $objRequest->item_category_name;
             if (empty($market_father_id)) $market_father_id = $objRequest->market_father_id;//
@@ -624,11 +624,72 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                     }
                     BookingDao::instance()->saveBookingDetailConsumeList($BookingDetailConsumeList);
                     //超订检查[延住超订 提前预抵超订 变更时间超订 变更房型超订]
-
-
-
-
-
+                    //超订检查
+                    $whereCriteria = new \WhereCriteria();
+                    $whereCriteria->EQ('item_category_id', $item_category_id)->EQ('channel_id', $channel_id)->LE('check_in', $check_out)->GE('check_out', $check_in)
+                        ->EQ('valid', '1')->GE('booking_detail_status', '0');
+                    //已定房间
+                    $arrayHaveBook = BookingDao::instance()->getBookingDetailList($whereCriteria, 'item_id, item_category_id, check_in, check_out, price_system_id');
+                    //查找现有房间数
+                    $whereCriteria = new \WhereCriteria();
+                    $whereCriteria->EQ('attr_type', 'multipe_room')->EQ('channel_id', $channel_id)->EQ('item_category_id', $item_category_id);
+                    //$whereCriteria->setHashKey('item_category_id');
+                    $field = 'channel_id,item_category_id,item_id,attr_type';
+                    //$hashKey = 'channel_id';
+                    $whereCriteria->setHashKey('item_category_id')->setMultiple(false)->setChildrenKey('item_id');
+                    $layoutRoom = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, $field);
+                    //
+                    $totalDay      = (strtotime($check_out) - strtotime($check_in)) / 86400;
+                    $matrixRoomDay = [];
+                    if (!empty($layoutRoom)) {
+                        foreach ($layoutRoom as $category_id => $value) {
+                            $layoutRoom[$category_id]['room_num'] = count($value);
+                            //矩阵化
+                            $matrixDay = $check_in;
+                            for ($i = 0; $i < $totalDay; $i++) {
+                                if ($i > 0) $matrixDay = date("Y-m-d", strtotime("$matrixDay +24 HOUR"));
+                                $matrixRoomDay[$matrixDay][$category_id] = $layoutRoom[$category_id]['room_num'];
+                            }
+                        }
+                    }
+                    //计算超定
+                    $isOverBook    = false;
+                    $overBook      = array();//超定
+                    $overI         = '';
+                    $arrayLockRoom = null;
+                    foreach ($arrayHaveBook as $i => $arrayBookRoomLayout) {
+                        foreach ($matrixRoomDay as $matrixDay => $LayoutRoomNum) {
+                            if (isset($arrayLockRoom[$matrixDay][$arrayBookRoomLayout['item_category_id']])) {
+                                //锁房、维修房
+                                $matrixRoomDay[$matrixDay][$arrayBookRoomLayout['item_category_id']] -= $arrayLockRoom[$matrixDay][$arrayBookRoomLayout['item_category_id']];//全日房状态
+                                unset($arrayLockRoom[$matrixDay][$arrayBookRoomLayout['item_category_id']]);
+                            }
+                            $nCin  = substr($arrayBookRoomLayout['check_in'], 0, 10);
+                            $nCout = substr($arrayBookRoomLayout['check_out'], 0, 10);
+                            if ($nCin <= $matrixDay && $matrixDay < $nCout && $nCout != $matrixDay) {
+                                $matrixRoomDay[$matrixDay][$arrayBookRoomLayout['item_category_id']]--;//全日房状态
+                            }
+                            if ($nCin == $nCout) {
+                                $matrixRoomDay[$matrixDay][$arrayBookRoomLayout['item_category_id']]--;
+                            }
+                            if ($matrixRoomDay[$matrixDay][$arrayBookRoomLayout['item_category_id']] < 0) {
+                                $isOverBook                           = true;
+                                $overI = $matrixDay . '-' . $arrayBookRoomLayout['item_category_id'];
+                                $overBook[$overI]['price_system_id']  = $arrayBookRoomLayout['price_system_id'];
+                                $overBook[$overI]['item_category_id'] = $arrayBookRoomLayout['item_category_id'];
+                                $overBook[$overI]['over_num']         = $matrixRoomDay[$matrixDay][$arrayBookRoomLayout['item_category_id']];
+                                $overBook[$overI]['day']              = $matrixDay;
+                            }
+                        }
+                    }
+                    if ($isOverBook) {
+                        CommonServiceImpl::instance()->rollback();
+                        $objSuccess->setSuccess(false);
+                        $objSuccess->setCode(ErrorCodeConfig::$errorCode['over_booking']);
+                        $objSuccess->setData($overBook);
+                        return $objSuccess;
+                    }
+                    //////////////////////////
                 }
             }
             //更新财会
@@ -673,7 +734,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $arrayLiveInRoomId = array_keys($arrayLiveInRoom);
             //计算消费
             $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1')->EQ('booking_number', $booking_number);
             $arrayConsume = $this->getBookingConsume($whereCriteria);
             $totalConsume = 0;
             if (!empty($arrayConsume)) {
@@ -683,7 +744,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             }
             //计算账务
             $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1')->EQ('booking_number', $booking_number);
             $arrayAccounts = $this->getBookingAccounts($whereCriteria);
             $totalAccounts = 0;
             if (!empty($arrayAccounts)) {

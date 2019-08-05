@@ -381,7 +381,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     
     $scope.editBookRoomAside = '';
     // Show when some event occurs (use $promise property to ensure the template has been loaded)
-    $scope.consumeRoomPrice = {};
+    $scope.consumeRoomPrice = {};//单个rDetail的消费记录
     $scope.showEditBookRoomAside = function(rDetail, tab) {
         $scope.layoutSelectRoom = layoutRoomList[rDetail.item_category_id];
         $scope.activeRoomBookTab = tab;

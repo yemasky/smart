@@ -76,7 +76,7 @@
                             </tr>
                             <tr class="bs-sidebar">
                               <th class="w-xs"><div class="w-xs">日期</div></th>
-                              <th class="w-xs col-sm-1 b-r" ng-repeat="(i, consumeRoom) in consumeRoomPrice">{{consumeRoom.business_day}}</th>
+                              <td class="w-xs col-sm-1 b-r" ng-repeat="(i, consumeRoom) in consumeRoomPrice">{{consumeRoom.business_day}}<span class="badge badge-xs" ng-if="channelRoomReservation[consumeRoom.business_day].room_num<=0">满</span></td>
                               <th></th>
                             </tr>
                           </thead>
