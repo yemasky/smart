@@ -64,6 +64,7 @@
 										  <td class="col-xs-1 small">
                                               <a class="fas fa-user-plus" ng-click="addGuestLiveIn('AddLiveIn', rDetail)" title="添加住客"></a>
 											  <code class="small" ng-if="rDetail.booking_detail_status==0">预抵</code>
+											  <a class="btn btn-xs btn-default" ng-if="rDetail.booking_detail_status==1"> 已入住</a>
 										  </td>
 										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
 											<a class="fa pull-right" ng-click="showEditBookRoomAside(rDetail, 'Room')"></a></td>
@@ -78,8 +79,7 @@
 										  <td class="col-xs-1">{{rDetail.check_out}}</td>
 										  <td>
 											  <button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')"><i class="glyphicon glyphicon-edit text-info"></i></button>
-											  <a class="btn btn-xs btn-default" ng-click="addGuestLiveIn('LiveInOne', rDetail)" ng-if="rDetail.booking_detail_status==0"><i class="fas fa-procedures"></i> 客房入住</a>
-											  <a class="btn btn-xs btn-default" ng-if="rDetail.booking_detail_status==1"><i class="ti-user"></i> 已入住</a>
+											  <a class="btn btn-xs btn-default" ng-click="addGuestLiveIn('LiveInOne', rDetail)" ng-if="rDetail.booking_detail_status==0"><i class="fas fa-procedures"></i> 入住</a>
 										  </td>
 									  </tr>
                                       <tr>
