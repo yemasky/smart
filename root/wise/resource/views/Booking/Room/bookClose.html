@@ -1,4 +1,4 @@
-<div class="aside col-sm-11 h-10x b-r box-shadow no-padding" tabindex="-1" role="dialog">
+<div class="aside col-sm-5 h-10x b-r box-shadow no-padding" tabindex="-1" role="dialog">
   <div class="aside-dialog">
     <div class="aside-content">
      <form name="AccountsForm" class="form-validation" id="thisAccountsForm" ng-submit="closeThisBooking()">
@@ -12,6 +12,13 @@
               <span class="small fas fa-coins" ng-class="billAccount[bookDetail.booking_number]>0?'text-success-dk':billAccount[bookDetail.booking_number]<0?'text-danger-dk':''">{{billAccount[bookDetail.booking_number]}}</span>
           </div>
           <div class="form-inline">
+              <div class="form-group p-v-xs">
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button">押金</button>
+                    </span>
+                 </div>
+              </div>
               <div class="form-group p-v-xs">
                  <aside class="app-aside bg-white lt w-sm">
                     <nav>

@@ -118,7 +118,7 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 			
 		}
 		$scope.action = '添加/编辑';
-		asideRoomPrice = $aside({scope : $scope, title: $scope._self_module.module_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/RoomPriceAddEdit.tpl.html?'+version});
+		asideRoomPrice = $aside({scope : $scope, title: $scope._self_module.module_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/RoomPriceAddEdit.tpl.html?'+__VERSION});
 		asideRoomPrice.$promise.then(function() {
 			asideRoomPrice.show();
 			$(document).ready(function(){
