@@ -73,40 +73,34 @@
                         <input class="input-sm form-control" name="items" id="items" type="number" ng-model="itemsByPage" >
                       </form>
                     </div>
-                    <table st-table="rowCollectionPage" class="table table-striped">
-                      <thead>
+                    <table st-table="displayed" class="table table-striped">
+                        <thead>
                         <tr>
-                          <th st-sort="firstName">first name</th>
-                          <th st-sort="lastName">last name</th>
-                          <th st-sort="birthDate">birth date</th>
-                          <th st-sort="balance">balance</th>
-                          <th>email</th>
+                            <th st-ratio="20" st-sort="firstName">first name</th>
+                            <th st-ratio="20" st-sort="lastName">last name</th>
+                            <th st-ratio="10" st-sort="age">age</th>
+                            <th st-ratio="30" st-sort="email">email</th>
+                            <th st-ratio="20" st-sort="balance">balance</th>
                         </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="row in displayed">
+                            <td st-ratio="20">{{row.firstName}}</td>
+                            <td st-ratio="20">{{row.lastName | uppercase}}</td>
+                            <td st-ratio="10">{{row.age}}</td>
+                            <td st-ratio="30">{{row.email}}</td>
+                            <td st-ratio="20">{{row.balance | currency}}</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
                         <tr>
-                          <th>
-                            <input st-search="'firstName'" placeholder="search for firstname" class="input-sm form-control" type="search"/>
-                          </th>
-                          <th colspan="4">
-                            <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
-                          </th>
+                            <td colspan="5" class="text-center">
+                                <div st-items-by-page="10" st-pagination="" st-template="pagination.custom.html">
+                                    
+                                </div>
+                            </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        <tr ng-repeat="row in rowCollectionPage">
-                          <td>{{row.firstName | uppercase}}</td>
-                          <td>{{row.lastName}}</td>
-                          <td>{{row.birthDate | date}}</td>
-                          <td>{{row.balance | currency}}</td>
-                          <td><a ng-href="mailto:{{row.email}}">email</a></td>
-                        </tr>
-                      </tbody>
-                      <tfoot>
-                        <tr>
-                          <td colspan="5" class="text-center">
-                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7" class="no-margin"></div>
-                          </td>
-                        </tr>
-                      </tfoot>
+                        </tfoot>
                     </table>
                   </div>
                 <!----- ------>
@@ -114,8 +108,20 @@
      	</div>
      </div>
 </div>
-<script language="javascript">
-app.controller('CustomerMarketController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
+<script language="javascript">  
+app.directive('pageSelect', function() {
+      return {
+        restrict: 'E',
+        template: '<input type="text" class="select-page" ng-model="inputPage" ng-change="selectPage(inputPage)">',
+        link: function(scope, element, attrs) {
+          scope.$watch('currentPage', function(c) {
+            scope.inputPage = c;
+          });
+        }
+      }
+});
+app.controller('CustomerMarketController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert,$ocLazyLoad) {
+    //$ocLazyLoad.load([$scope._resource + "vendor/modules/angular-smart-table/smart-table.debug.js"]);
 	//获取数据
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
@@ -185,7 +191,6 @@ app.controller('CustomerMarketController', function($rootScope, $scope, $httpSer
 		});
 	}
     //
-    //
     var asideReceivable = '';
 	$scope.addReceivable = function(_this) {
 		$scope.param = {}; $scope.param["valid"] = "1";
@@ -223,59 +228,69 @@ app.controller('CustomerMarketController', function($rootScope, $scope, $httpSer
 			
 		});
 	}
-    //
-    var firstnames = ['Laurent', 'Blandine', 'Olivier', 'Max'];
-  var lastnames = ['Renard', 'Faivre', 'Frere', 'Eponge'];
-  var dates = ['1987-05-21', '1987-04-25', '1955-08-27', '1966-06-06'];
-  var id = 1;
+    /////////
+    var
+        nameList = ['Pierre', 'Pol', 'Jacques', 'Robert', 'Elisa'],
+        familyName = ['Dupont', 'Germain', 'Delcourt', 'bjip', 'Menez'];
 
-  function generateRandomItem(id) {
+    function createRandomItem() {
+        var
+            firstName = nameList[Math.floor(Math.random() * 4)],
+            lastName = familyName[Math.floor(Math.random() * 4)],
+            age = Math.floor(Math.random() * 100),
+            email = firstName + lastName + '@whatever.com',
+            balance = Math.random() * 3000;
 
-      var firstname = firstnames[Math.floor(Math.random() * 3)];
-      var lastname = lastnames[Math.floor(Math.random() * 3)];
-      var birthdate = dates[Math.floor(Math.random() * 3)];
-      var balance = Math.floor(Math.random() * 2000);
-
-      return {
-          id: id,
-          firstName: firstname,
-          lastName: lastname,
-          birthDate: new Date(birthdate),
-          balance: balance
-      }
-  }
-      //  pagination
-    $scope.itemsByPage=10;
-
-    $scope.rowCollectionPage = [];
-        for (var j = 0; j < 200; j++) {
-        $scope.rowCollectionPage.push(generateRandomItem(j));
+        return{
+            firstName: firstName,
+            lastName: lastName,
+            age: age,
+            email: email,
+            balance: balance
+        };
     }
 
-    // pip
-    var promise = null;
-    $scope.isLoading = false;
-    $scope.rowCollectionPip = [];
-    $scope.getPage = function() {
-        $scope.rowCollectionPip=[];
-        for (var j = 0; j < 20; j++) {
-          $scope.rowCollectionPip.push(generateRandomItem(j));
-        }
+
+    $scope.displayed = [];
+    for (var j = 0; j < 500; j++) {
+        $scope.displayed.push(createRandomItem());
     }
-
-    $scope.callServer = function getData(tableState) {
-        //here you could create a query string from tableState
-        //fake ajax call
-        $scope.isLoading = true;
-
-        $timeout(function () {
-        $scope.getPage();
-        $scope.isLoading = false;
-        }, 2000);
-    };
-
-    $scope.getPage();
+    ////////
+    
 	$httpService.deleteHeader('refresh');
 });
+app.directive('stRatio',function(){
+        return {
+          link:function(scope, element, attr){
+            var ratio=+(attr.stRatio);
+            
+            element.css('width',ratio+'%');
+            
+          }
+        };
+    });
 
 </script>
+<style type="text/css">
+.select-page {
+  width: 50px;
+  text-align: center;
+}
+.pagination li a input {
+  padding: 0;
+  margin: -5px 0;
+}
+</style>
+
+<script type="text/ng-template" id="pagination.custom.html">
+<nav ng-if="pages.length >= 2">
+  <ul class="pagination">
+    <li><a ng-click="selectPage(1)">First</a>
+    </li><li><a ng-click="selectPage(currentPage - 1)">&lt;</a>
+    </li><li><a><page-select></page-select> of {{numPages}}</a>
+    </li><li><a ng-click="selectPage(currentPage + 1)">&gt;</a>
+    </li><li><a ng-click="selectPage(numPages)">Last</a></li>
+  </ul>
+</nav>
+</script>
+

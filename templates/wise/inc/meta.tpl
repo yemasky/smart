@@ -45,8 +45,9 @@
 <script language="javascript" src="<%$__RESOURCE%>angular-lib.min.js?<%$__VERSION%>"></script>
 <script language="javascript" src="<%$__RESOURCE%>angular-lib-extend.min.js?<%$__VERSION%>"></script>
 <script language="javascript" src="<%$__RESOURCE%>vendor/modules/angular-strap/angular-strap.min.js?<%$__VERSION%>"></script>
+<script language="javascript" src="<%$__RESOURCE%>vendor/modules/angular-smart-table/smart-table.debug.js?<%$__VERSION%>"></script>   
 <script language="javascript">//'ui.jp',,'angular-popups', 'ui.select'
-angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource','ngRoute','ngSanitize','ngTouch','pascalprecht.translate','ngStorage','ui.router','ui.utils','mgcrea.ngStrap','oc.lazyLoad','ui.load','angular-loading-bar'
+angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource','ngRoute','ngSanitize','ngTouch','pascalprecht.translate','ngStorage','ui.router','ui.utils','mgcrea.ngStrap','oc.lazyLoad','ui.load','angular-loading-bar','smart-table'
 ]);
 var app = angular.module("app").config(["$controllerProvider","$compileProvider","$filterProvider","$provide", "$ocLazyLoadProvider",
 	function($controllerProvider, $compileProvider, $filterProvider, $provide) {
