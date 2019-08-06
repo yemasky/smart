@@ -57,25 +57,17 @@
      		<div class="panel-heading b-b b-light"> 会员设置</div>
             <div class="list-group no-border no-radius">
                 <div class="list-group-item">
-                  <span class="pull-right">293,200</span>
+                  <span class="pull-right"> </span>
                   <i class="fa fa-fw fa-circle text-info"></i>
-                  Vatican City
+                   
                 </div>
              </div>
-             <div class="panel-heading b-b b-light"> 协议客源</div>
+             <div class="panel-heading b-b b-light"> 协议客源 <a class="pull-right fa fa-plus" ng-click="addReceivable(0)"> </a></div>
              <div class="list-group no-border no-radius">
                 <div class="list-group-item">
-                  <span class="pull-right">293,200</span>
+                  <span class="pull-right"> </span>
                   <i class="fa fa-fw fa-circle text-info"></i>
-                  Vatican City
-                </div>
-             </div>
-             <div class="panel-heading b-b b-light"> 佣金设置</div>
-             <div class="list-group no-border no-radius">
-                <div class="list-group-item">
-                  <span class="pull-right">293,200</span>
-                  <i class="fa fa-fw fa-circle text-info"></i>
-                  Vatican City
+                   
                 </div>
              </div>
      	</div>
@@ -138,6 +130,43 @@ app.controller('CustomerMarketController', function($rootScope, $scope, $httpSer
 		param['marketing'] = market['marketing'];
 		$scope.param = param;
 		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+			$scope.loading.hide();
+			$scope.dataList = result.data.item;
+			asideCustomerMarket.hide();
+			
+		});
+	}
+    //
+    //
+    var asideReceivable = '';
+	$scope.addReceivable = function(_this) {
+		$scope.param = {}; $scope.param["valid"] = "1";
+		if(_this != 0) $scope.param = _this;
+		$scope.action = '添加/编辑';
+		asideReceivable = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketReceivableAddEdit.tpl.html'});
+		asideReceivable.$promise.then(function() {
+			asideReceivable.show();
+			$(document).ready(function(){
+				
+			});
+		})
+		
+	};
+	$scope.saveReceivableData = function() {
+		var param = this.param;
+		if(param == null || param == '' || !angular.isDefined(param.market_father_id)) {
+			$alert({title: 'Notice', content: '类型必须选择！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		}
+		$scope.loading.show();
+		var market = $scope.dataList[param['market_father_id']];
+		param['marketing'] = market['marketing'];
+		$scope.param = param;
+        $scope.beginLoading =! $scope.beginLoading;
+        $httpService.header('method', 'Receivable');
+		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.deleteHeader('method');
 			$scope.loading.hide();
 			$scope.dataList = result.data.item;
 			asideCustomerMarket.hide();

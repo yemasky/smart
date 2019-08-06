@@ -23,6 +23,7 @@ class Booking_accountsEntity extends \Entity {
 	protected $payment_id;
 	protected $payment_name;
 	protected $payment_father_id;
+	protected $receivable_id;
 	protected $money;
 	protected $credit_authorized_number;
 	protected $credit_card_number;
@@ -30,6 +31,7 @@ class Booking_accountsEntity extends \Entity {
 	protected $credit_authorized_money;
 	protected $accounts_type;
 	protected $account_hanging_money;
+	protected $account_cash_return;
 	protected $accounts_status;
 	protected $employee_id;
 	protected $employee_name;
@@ -201,7 +203,7 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @param mixed $payment_id
      */
-    public function setPaymentId($payment_id): void {
+    public function setPaymentId($payment_id) {
         $this->payment_id = $payment_id;
     }
 
@@ -215,7 +217,7 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @param mixed $payment_name
      */
-    public function setPaymentName($payment_name): void {
+    public function setPaymentName($payment_name) {
         $this->payment_name = $payment_name;
     }
 
@@ -229,8 +231,22 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @param mixed $payment_father_id
      */
-    public function setPaymentFatherId($payment_father_id): void {
+    public function setPaymentFatherId($payment_father_id) {
         $this->payment_father_id = $payment_father_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getReceivableId() {
+        return $this->receivable_id;
+    }
+
+    /**
+     * @param mixed $receivable_id
+     */
+    public function setReceivableId($receivable_id) {
+        $this->receivable_id = $receivable_id;
     }
 
     /**
@@ -257,7 +273,7 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @param mixed $credit_authorized_number
      */
-    public function setCreditAuthorizedNumber($credit_authorized_number): void {
+    public function setCreditAuthorizedNumber($credit_authorized_number) {
         $this->credit_authorized_number = $credit_authorized_number;
     }
 
@@ -271,7 +287,7 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @param mixed $credit_card_number
      */
-    public function setCreditCardNumber($credit_card_number): void {
+    public function setCreditCardNumber($credit_card_number) {
         $this->credit_card_number = $credit_card_number;
     }
 
@@ -285,7 +301,7 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @param mixed $credit_authorized_days
      */
-    public function setCreditAuthorizedDays($credit_authorized_days): void {
+    public function setCreditAuthorizedDays($credit_authorized_days) {
         $this->credit_authorized_days = $credit_authorized_days;
     }
 
@@ -299,7 +315,7 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @param mixed $credit_authorized_money
      */
-    public function setCreditAuthorizedMoney($credit_authorized_money): void {
+    public function setCreditAuthorizedMoney($credit_authorized_money) {
         $this->credit_authorized_money = $credit_authorized_money;
     }
 
@@ -327,10 +343,24 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @param mixed $account_hanging_money
      */
-    public function setAccountHangingMoney($account_hanging_money): void {
+    public function setAccountHangingMoney($account_hanging_money) {
         $this->account_hanging_money = $account_hanging_money;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getAccountCashReturn() {
+        return $this->account_cash_return;
+    }
+
+    /**
+     * @param mixed $account_cash_return
+     */
+    public function setAccountCashReturn($account_cash_return) {
+        $this->account_cash_return = $account_cash_return;
+    }
+    
     /**
      * @return mixed
      */
@@ -341,7 +371,7 @@ class Booking_accountsEntity extends \Entity {
     /**
      * @param mixed $accounts_status
      */
-    public function setAccountsStatus($accounts_status): void {
+    public function setAccountsStatus($accounts_status) {
         $this->accounts_status = $accounts_status;
     }
 

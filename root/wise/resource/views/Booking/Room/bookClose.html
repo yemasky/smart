@@ -16,8 +16,9 @@
                 <div class="input-group">
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button">
-							<span ng-if="billAccount[bookDetail.booking_number]<0">收款</span>
-							<span ng-if="billAccount[bookDetail.booking_number]>0">退款</span>
+							<span ng-if="param.closeType!='hanging'&&billAccount[bookDetail.booking_number]<0">收款</span>
+							<span ng-if="param.closeType!='hanging'&&billAccount[bookDetail.booking_number]>0">退款</span>
+                            <span ng-if="param.closeType=='hanging'">挂账</span>
 						</button>
                     </span>
                  </div>

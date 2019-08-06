@@ -15,6 +15,7 @@ class BookingEntity extends \Entity {
 	protected $company_id;
 	protected $channel = 'Hotel';
 	protected $channel_id;
+	protected $receivable_id = 0;
 	protected $member_id = 0;
 	protected $member_name = '';
 	protected $member_mobile = '';
@@ -124,6 +125,20 @@ class BookingEntity extends \Entity {
 	public function setChannelId($channel_id) {
 		$this->channel_id = $channel_id;
 	}
+
+    /**
+     * @return int
+     */
+    public function getReceivableId(): int {
+        return $this->receivable_id;
+    }
+
+    /**
+     * @param int $receivable_id
+     */
+    public function setReceivableId(int $receivable_id) {
+        $this->receivable_id = $receivable_id;
+    }
 
 	/**
 	 * @return int
