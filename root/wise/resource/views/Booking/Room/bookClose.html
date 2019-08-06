@@ -15,7 +15,10 @@
               <div class="form-group p-v-xs">
                 <div class="input-group">
                     <span class="input-group-btn">
-                        <button class="btn btn-default" type="button">押金</button>
+                        <button class="btn btn-default" type="button">
+							<span ng-if="billAccount[bookDetail.booking_number]<0">收款</span>
+							<span ng-if="billAccount[bookDetail.booking_number]>0">退款</span>
+						</button>
                     </span>
                  </div>
               </div>
@@ -55,7 +58,7 @@
             </select>
             <div class="form-group p-v-xs">
                 <div class="input-group w-sm">
-                    <input name="money" size="9" type="number" string-to-number step="0.01" min="0" id="money" value="{{billAccount[bookDetail.booking_number]}}" class="form-control" ng-model="param.money" required>
+                    <input name="money" size="9" type="number" string-to-number step="0.01" min="0" id="money" value="{{payMoney}}" class="form-control" ng-model="param.money" required>
                     <span class="input-group-btn">
                         <button class="btn btn-default" type="button"><span class="fas fa-yen-sign"></span></button>
                     </span>

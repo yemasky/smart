@@ -789,6 +789,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     }
 	////结账退房////////////////////////////////////////////////////////////
 	$scope.bookingClose = function(bookDetail, closeType) {
+		var payMoney = $scope.billAccount[bookDetail.booking_number];
+		if(payMoney < 0) payMoney = -payMoney;
+		$scope.payMoney = payMoney;$scope.param.money = payMoney;
         if(closeType == 'refund' || closeType == 'hanging') {
             var title = '退房';$scope.closeThisBooking = close;
             if(closeType == 'hanging') {title = '挂账退房';};
@@ -807,7 +810,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $httpService.header('method', 'bookingClose');
             $scope.param['booking_number'] = bookDetail.booking_number;
             $scope.param['book_id'] = bookDetail.book_id;
-            $scope.param['closeType'] = closeType;
+            $scope.param['closeType'] = closeType;// = accounts_type
+			$scope.param['payment_name'] = $scope.payment_name;
+        	$scope.param['payment_id'] = $scope.payment_id;
+        	$scope.param['payment_father_id'] = $scope.payment_father_id;
             $httpService.post('/app.do?'+param, $scope, function(result) {
                 $scope.beginLoading =! $scope.beginLoading;
                 $httpService.deleteHeader('method');
