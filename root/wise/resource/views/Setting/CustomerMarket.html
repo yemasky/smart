@@ -64,11 +64,52 @@
              </div>
              <div class="panel-heading b-b b-light"> 协议客源 <a class="pull-right fa fa-plus" ng-click="addReceivable(0)"> </a></div>
              <div class="list-group no-border no-radius">
-                <div class="list-group-item">
-                  <span class="pull-right"> </span>
-                  <i class="fa fa-fw fa-circle text-info"></i>
-                   
-                </div>
+                <!----- ------>
+                 <div class="panel panel-default no-border">
+                    <div class="panel-heading">Client side Pagination</div>
+                    <div class="panel-body">
+                      <form>
+                        <label>items by page</label>
+                        <input class="input-sm form-control" name="items" id="items" type="number" ng-model="itemsByPage" >
+                      </form>
+                    </div>
+                    <table st-table="rowCollectionPage" class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th st-sort="firstName">first name</th>
+                          <th st-sort="lastName">last name</th>
+                          <th st-sort="birthDate">birth date</th>
+                          <th st-sort="balance">balance</th>
+                          <th>email</th>
+                        </tr>
+                        <tr>
+                          <th>
+                            <input st-search="'firstName'" placeholder="search for firstname" class="input-sm form-control" type="search"/>
+                          </th>
+                          <th colspan="4">
+                            <input st-search placeholder="global search" class="input-sm form-control" type="search"/>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr ng-repeat="row in rowCollectionPage">
+                          <td>{{row.firstName | uppercase}}</td>
+                          <td>{{row.lastName}}</td>
+                          <td>{{row.birthDate | date}}</td>
+                          <td>{{row.balance | currency}}</td>
+                          <td><a ng-href="mailto:{{row.email}}">email</a></td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="5" class="text-center">
+                            <div st-pagination="" st-items-by-page="itemsByPage" st-displayed-pages="7" class="no-margin"></div>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                <!----- ------>
              </div>
      	</div>
      </div>
@@ -102,6 +143,13 @@ app.controller('CustomerMarketController', function($rootScope, $scope, $httpSer
 				i++;
 			}
 			$scope.keyData = keyData;
+            $scope.receivableData = {};var receivableData = [], i = 0;
+            for(var key in $scope.dataList[6].children) {
+                receivableData[i] = $scope.dataList[6].children[key]; i++;
+            }
+            $scope.receivableData = receivableData;
+            var receivableType = [{'id':'personal','value':'个人'},{'id':'company','value':'公司'},{'id':'OTA','value':'OTA'}];
+            $scope.receivableType = receivableType;
 		}
 	});
 	//
@@ -154,13 +202,15 @@ app.controller('CustomerMarketController', function($rootScope, $scope, $httpSer
 	};
 	$scope.saveReceivableData = function() {
 		var param = this.param;
-		if(param == null || param == '' || !angular.isDefined(param.market_father_id)) {
+		if(param == null || param == '' || !angular.isDefined(param.market_id)) {
+			$alert({title: 'Notice', content: '协议客源必须选择！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		}
+        if(!angular.isDefined(param.receivable_type)) {
 			$alert({title: 'Notice', content: '类型必须选择！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
 		$scope.loading.show();
-		var market = $scope.dataList[param['market_father_id']];
-		param['marketing'] = market['marketing'];
 		$scope.param = param;
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'Receivable');
@@ -173,6 +223,58 @@ app.controller('CustomerMarketController', function($rootScope, $scope, $httpSer
 			
 		});
 	}
+    //
+    var firstnames = ['Laurent', 'Blandine', 'Olivier', 'Max'];
+  var lastnames = ['Renard', 'Faivre', 'Frere', 'Eponge'];
+  var dates = ['1987-05-21', '1987-04-25', '1955-08-27', '1966-06-06'];
+  var id = 1;
+
+  function generateRandomItem(id) {
+
+      var firstname = firstnames[Math.floor(Math.random() * 3)];
+      var lastname = lastnames[Math.floor(Math.random() * 3)];
+      var birthdate = dates[Math.floor(Math.random() * 3)];
+      var balance = Math.floor(Math.random() * 2000);
+
+      return {
+          id: id,
+          firstName: firstname,
+          lastName: lastname,
+          birthDate: new Date(birthdate),
+          balance: balance
+      }
+  }
+      //  pagination
+    $scope.itemsByPage=10;
+
+    $scope.rowCollectionPage = [];
+        for (var j = 0; j < 200; j++) {
+        $scope.rowCollectionPage.push(generateRandomItem(j));
+    }
+
+    // pip
+    var promise = null;
+    $scope.isLoading = false;
+    $scope.rowCollectionPip = [];
+    $scope.getPage = function() {
+        $scope.rowCollectionPip=[];
+        for (var j = 0; j < 20; j++) {
+          $scope.rowCollectionPip.push(generateRandomItem(j));
+        }
+    }
+
+    $scope.callServer = function getData(tableState) {
+        //here you could create a query string from tableState
+        //fake ajax call
+        $scope.isLoading = true;
+
+        $timeout(function () {
+        $scope.getPage();
+        $scope.isLoading = false;
+        }, 2000);
+    };
+
+    $scope.getPage();
 	$httpService.deleteHeader('refresh');
 });
 

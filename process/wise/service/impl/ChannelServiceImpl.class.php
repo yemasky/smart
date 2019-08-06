@@ -434,10 +434,6 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
         return ChannelDao::instance()->getChannelConsume($whereCriteria, $field);
     }
 
-    public function getChannelConsumeCache($company_id, $channel_id = '', $policy_id = '') {
-
-    }
-
     public function checkSameChannelConsume($company_id, $consume_title = '', $policy_en_name = '') {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->ArrayIN('company_id', [$company_id, '0']);
@@ -511,4 +507,16 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 		return $arrayBusinessDay[0]['business_day'];
 	}
 
+	//channel_receivable
+    public function saveChannelReceivable(Channel_receivableEntity $Channel_receivableEntity) {
+        return ChannelDao::instance()->saveChannelReceivable($Channel_receivableEntity);
+    }
+
+    public function getChannelReceivable(\WhereCriteria $whereCriteria, $field = '') {
+        return ChannelDao::instance()->getChannelReceivable($whereCriteria, $field);
+    }
+
+    public function updateChannelReceivable(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
+        return ChannelDao::instance()->updateChannelReceivable($whereCriteria, $arrayUpdateData, $update_type);
+    }
 }

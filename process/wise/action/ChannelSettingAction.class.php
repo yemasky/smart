@@ -147,6 +147,10 @@ class ChannelSettingAction extends \BaseAction {
 
 
 	protected function doMarketAddEdit(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $method = $objRequest->method;
+        if(!empty($method)) {
+            return $this->doMethod($objRequest, $objResponse);
+        }
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
 		$arrayInput = $objRequest->getInput();
 		if(isset($arrayInput['market_id']) && $arrayInput['market_id'] > 0) {//update
@@ -174,4 +178,22 @@ class ChannelSettingAction extends \BaseAction {
 		return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
 	}
 
+	protected function doMethodReceivable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+	    $arrayLoginEmployee = LoginServiceImpl::instance()->getLoginInfo();
+        $company_id = $arrayLoginEmployee->getCompanyId();
+        $channel_id = $objRequest->getInput('channel_id');
+        $arrayInput = $objRequest->getInput();
+        $Channel_receivableEntity = new Channel_receivableEntity($arrayInput);
+        $Channel_receivableEntity->setCreditUsed(0);
+        $Channel_receivableEntity->setTheCumulative(0);
+        $Channel_receivableEntity->setTheCumulativePayback(0);
+        $Channel_receivableEntity->setEmployeeId($arrayLoginEmployee->getEmployeeId());
+        $Channel_receivableEntity->setEmployeeName($arrayLoginEmployee->getEmployeeName());
+        $Channel_receivableEntity->setAddDatetime(getDateTime());
+
+        ChannelServiceImpl::instance()->saveChannelReceivable($Channel_receivableEntity);
+
+        $successService = new \SuccessService();
+        return $objResponse->successServiceResponse($successService);
+    }
 }

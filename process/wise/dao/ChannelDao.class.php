@@ -233,4 +233,18 @@ class ChannelDao extends CommonDao {
     public function updateBusinessDay(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_business_day')->update($whereCriteria, $arrayUpdateData, $update_type);
     }
+
+    //channel_receivable
+    public function saveChannelReceivable(Channel_receivableEntity $Channel_receivableEntity) {
+        return $this->setDsnWrite($this->getDsnWrite())->insertEntity($Channel_receivableEntity);
+    }
+
+    public function getChannelReceivable(\WhereCriteria $whereCriteria, $field = '') {
+        return $this->setDsnRead($this->getDsnRead())->setTable('channel_receivable')->getList($whereCriteria, $field);
+    }
+
+    public function updateChannelReceivable(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_receivable')->update($whereCriteria, $arrayUpdateData, $update_type);
+
+    }
 }
