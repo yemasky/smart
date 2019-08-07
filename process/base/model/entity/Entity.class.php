@@ -20,14 +20,20 @@ abstract class Entity {
 		return $this->{$pname};
 	}
 
-	public function setPrototype(array $array) {
-		foreach($array as $key => $value) {
-			if(property_exists($this, $key)) {
+    public function setPrototype(array $array) {
+        foreach($array as $key => $value) {
+            if(property_exists($this, $key)) {
                 $this->{$key} = $value;
+            } else {
+                $functionKey = ucfirst($key);
+                if(property_exists($this, $functionKey)) {
+                    $function = 'set' . $functionKey;
+                    $this->{$function}($value);
+                }
             }
-		}
-		return $this;
-	}
+        }
+        return $this;
+    }
 
 	public function getField() : string {
         return implode(',', array_keys(get_object_vars($this)));

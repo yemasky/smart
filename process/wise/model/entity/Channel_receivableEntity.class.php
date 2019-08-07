@@ -11,6 +11,8 @@ namespace wise;
 
 class Channel_receivableEntity extends \Entity {
     protected $receivable_id = null;
+    protected $company_id;
+    protected $channel_id;
     protected $receivable_name;
     protected $receivable_type;
     protected $receivable_address;
@@ -30,6 +32,7 @@ class Channel_receivableEntity extends \Entity {
     protected $employee_id;
     protected $employee_name;
     protected $add_datetime;
+    protected $valid;
 
     /**
      * @return null
@@ -43,6 +46,34 @@ class Channel_receivableEntity extends \Entity {
      */
     public function setReceivableId($receivable_id) {
         $this->receivable_id = $receivable_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCompanyId() {
+        return $this->company_id;
+    }
+
+    /**
+     * @param mixed $company_id
+     */
+    public function setCompanyId($company_id) {
+        $this->company_id = $company_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChannelId() {
+        return $this->channel_id;
+    }
+
+    /**
+     * @param mixed $channel_id
+     */
+    public function setChannelId($channel_id) {
+        $this->channel_id = $channel_id;
     }
 
     /**
@@ -309,6 +340,20 @@ class Channel_receivableEntity extends \Entity {
      */
     public function setAddDatetime($add_datetime) {
         $this->add_datetime = $add_datetime;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getValid() {
+        return $this->valid;
+    }
+
+    /**
+     * @param mixed $valid
+     */
+    public function setValid($valid) {
+        $this->valid = $valid;
     }
     
     

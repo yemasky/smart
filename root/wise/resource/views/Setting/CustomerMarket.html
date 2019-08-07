@@ -62,34 +62,35 @@
                    
                 </div>
              </div>
-             <div class="panel-heading b-b b-light"> 协议客源 <a class="pull-right fa fa-plus" ng-click="addReceivable(0)"> </a></div>
+             <div class="panel-heading b-b b-light"></div>
              <div class="list-group no-border no-radius">
                 <!----- ------>
                  <div class="panel panel-default no-border">
-                    <div class="panel-heading">Client side Pagination</div>
-                    <div class="panel-body">
-                      <form>
-                        <label>items by page</label>
-                        <input class="input-sm form-control" name="items" id="items" type="number" ng-model="itemsByPage" >
-                      </form>
-                    </div>
-                    <table st-table="displayed" class="table table-striped">
+                    <div class="panel-heading">协议客源  <a class="pull-right fa fa-plus" ng-click="addReceivable(0)"> </a></div>
+                    <table st-pipe="callServer" st-table="displayed" class="table table-striped">
                         <thead>
                         <tr>
-                            <th st-ratio="20" st-sort="firstName">first name</th>
-                            <th st-ratio="20" st-sort="lastName">last name</th>
-                            <th st-ratio="10" st-sort="age">age</th>
-                            <th st-ratio="30" st-sort="email">email</th>
-                            <th st-ratio="20" st-sort="balance">balance</th>
+                            <th st-ratio="40" st-sort="receivable_name">应收账款名称</th>
+                            <th st-ratio="10" st-sort="receivable_type">类型</th>
+                            <th st-ratio="15" st-sort="credit">信用额度</th>
+                            <th st-ratio="15" st-sort="credit_used">已用额度</th>
+                            <th st-ratio="15" st-sort="valid_date">有效期</th>
+                            <th st-ratio="5"></th>
+                        </tr>
+                        <tr>
+                            <td colspan="6">
+                                <input st-search="" class="input-sm form-control w" name="receivable_name" id="receivable_name" type="text" ng-model="receivable_name" >
+                            </td>
                         </tr>
                         </thead>
                         <tbody>
                         <tr ng-repeat="row in displayed">
-                            <td st-ratio="20">{{row.firstName}}</td>
-                            <td st-ratio="20">{{row.lastName | uppercase}}</td>
-                            <td st-ratio="10">{{row.age}}</td>
-                            <td st-ratio="30">{{row.email}}</td>
-                            <td st-ratio="20">{{row.balance | currency}}</td>
+                            <td st-ratio="40">{{row.receivable_name}}</td>
+                            <td st-ratio="10">{{row.receivable_type}}</td>
+                            <td st-ratio="15">{{row.credit}}</td>
+                            <td st-ratio="15">{{row.credit_used}}</td>
+                            <td st-ratio="15">{{row.valid_date}}</td>
+                            <td st-ratio="5"><a class="pull-right" ng-click="addReceivable(row)"><i class="fa fa-edit"></i></a></td>
                         </tr>
                         </tbody>
                         <tfoot>
@@ -109,20 +110,10 @@
      </div>
 </div>
 <script language="javascript">  
-app.directive('pageSelect', function() {
-      return {
-        restrict: 'E',
-        template: '<input type="text" class="select-page" ng-model="inputPage" ng-change="selectPage(inputPage)">',
-        link: function(scope, element, attrs) {
-          scope.$watch('currentPage', function(c) {
-            scope.inputPage = c;
-          });
-        }
-      }
-});
-app.controller('CustomerMarketController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert,$ocLazyLoad) {
+app.controller('CustomerMarketController', function($rootScope,$scope,$httpService,$location,$translate,$aside,$alert,$ocLazyLoad) {
     //$ocLazyLoad.load([$scope._resource + "vendor/modules/angular-smart-table/smart-table.debug.js"]);
 	//获取数据
+    $scope.param = {};
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
 	var param = 'channel='+_channel+'&view='+_view;
@@ -135,7 +126,7 @@ app.controller('CustomerMarketController', function($rootScope, $scope, $httpSer
 		}
 		common = result.data.common;
 		$scope.setCommonSetting(common);
-		var dataList = result.data.item;
+		var dataList = result.data.item.customerMarket;
 		$scope.dataList = dataList;
 		if(angular.isDefined($scope.dataList)) {
 			var keyData = []; var i = 0;
@@ -185,9 +176,8 @@ app.controller('CustomerMarketController', function($rootScope, $scope, $httpSer
 		$scope.param = param;
 		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
 			$scope.loading.hide();
-			$scope.dataList = result.data.item;
+			//$scope.dataList = result.data.item;
 			asideCustomerMarket.hide();
-			
 		});
 	}
     //
@@ -223,40 +213,25 @@ app.controller('CustomerMarketController', function($rootScope, $scope, $httpSer
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');
 			$scope.loading.hide();
-			$scope.dataList = result.data.item;
-			asideCustomerMarket.hide();
-			
+			asideReceivable.hide();
 		});
 	}
     /////////
-    var
-        nameList = ['Pierre', 'Pol', 'Jacques', 'Robert', 'Elisa'],
-        familyName = ['Dupont', 'Germain', 'Delcourt', 'bjip', 'Menez'];
-
-    function createRandomItem() {
-        var
-            firstName = nameList[Math.floor(Math.random() * 4)],
-            lastName = familyName[Math.floor(Math.random() * 4)],
-            age = Math.floor(Math.random() * 100),
-            email = firstName + lastName + '@whatever.com',
-            balance = Math.random() * 3000;
-
-        return{
-            firstName: firstName,
-            lastName: lastName,
-            age: age,
-            email: email,
-            balance: balance
-        };
-    }
-
-
     $scope.displayed = [];
-    for (var j = 0; j < 500; j++) {
-        $scope.displayed.push(createRandomItem());
-    }
+    $scope.callServer = function callServer(tableState) {
+        $scope.param = {};        
+        $scope.param.tableState = tableState;
+        $scope.loading.start();
+        $httpService.header('method', 'ReceivablePagination');
+        $httpService.post('/app.do?'+param, $scope, function(result){
+            $scope.loading.percent();
+            $httpService.deleteHeader('method');
+            $scope.displayed = result.data.item.receivableData.data;
+            tableState.pagination.numberOfPages = result.data.item.receivableData.numberOfPages;
+        });
+    };
+
     ////////
-    
 	$httpService.deleteHeader('refresh');
 });
 app.directive('stRatio',function(){
@@ -271,26 +246,5 @@ app.directive('stRatio',function(){
     });
 
 </script>
-<style type="text/css">
-.select-page {
-  width: 50px;
-  text-align: center;
-}
-.pagination li a input {
-  padding: 0;
-  margin: -5px 0;
-}
-</style>
 
-<script type="text/ng-template" id="pagination.custom.html">
-<nav ng-if="pages.length >= 2">
-  <ul class="pagination">
-    <li><a ng-click="selectPage(1)">First</a>
-    </li><li><a ng-click="selectPage(currentPage - 1)">&lt;</a>
-    </li><li><a><page-select></page-select> of {{numPages}}</a>
-    </li><li><a ng-click="selectPage(currentPage + 1)">&gt;</a>
-    </li><li><a ng-click="selectPage(numPages)">Last</a></li>
-  </ul>
-</nav>
-</script>
 

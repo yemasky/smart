@@ -80,8 +80,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
-                        <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
+                        <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" ng-checked="param.valid==1"> 有效</label>
+                        <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid" ng-checked="param.valid==0"> 无效</label>
                         <input type="hidden" value="" name="market_id" ng-model="param.market_id">
                     </div>
                     <div class="form-group"></div>

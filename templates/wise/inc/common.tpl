@@ -175,3 +175,14 @@
 </nav>
 </aside>
 </script><!-- /app/customerMarket.html -->
+<script type="text/ng-template" id="pagination.custom.html">
+<nav ng-if="pages.length >= 2">
+  <ul class="pagination">
+    <li><a ng-click="selectPage(1)">First</a></li>
+    <li><a ng-click="selectPage(currentPage - 1)">&lt;</a></li>
+    <li class=""><a><page-select></page-select> of {{numPages}}</a></li>
+    <li><a ng-click="selectPage(currentPage + 1)">&gt;</a></li>
+    <li><a ng-click="selectPage(numPages)">Last</a></li>
+  </ul>
+</nav>
+</script><!-- pagination.custom.html -->

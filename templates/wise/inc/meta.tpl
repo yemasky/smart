@@ -45,7 +45,7 @@
 <script language="javascript" src="<%$__RESOURCE%>angular-lib.min.js?<%$__VERSION%>"></script>
 <script language="javascript" src="<%$__RESOURCE%>angular-lib-extend.min.js?<%$__VERSION%>"></script>
 <script language="javascript" src="<%$__RESOURCE%>vendor/modules/angular-strap/angular-strap.min.js?<%$__VERSION%>"></script>
-<script language="javascript" src="<%$__RESOURCE%>vendor/modules/angular-smart-table/smart-table.debug.js?<%$__VERSION%>"></script>   
+<script language="javascript" src="<%$__RESOURCE%>vendor/modules/angular-smart-table/smart-table.min.2.1.10.js?<%$__VERSION%>"></script>   
 <script language="javascript">//'ui.jp',,'angular-popups', 'ui.select'
 angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource','ngRoute','ngSanitize','ngTouch','pascalprecht.translate','ngStorage','ui.router','ui.utils','mgcrea.ngStrap','oc.lazyLoad','ui.load','angular-loading-bar','smart-table'
 ]);
@@ -703,6 +703,18 @@ app.controller("LoginController",function($rootScope, $scope, $httpService, $mod
 		});
 	}
 });	
+//plugin
+app.directive('pageSelect', function() {
+      return {
+        restrict: 'E',
+        template: '<input type="text" class="select-page" ng-model="inputPage" ng-change="selectPage(inputPage)">',
+        link: function(scope, element, attrs) {
+          scope.$watch('currentPage', function(c) {
+            scope.inputPage = c;
+          });
+        }
+      }
+});
 </script>
 <script language="javascript" src="<%$__RESOURCE%>vendor/libs/moment.min.js?<%$__VERSION%>"></script>
 <script language="javascript" src="<%$__RESOURCE%>vendor/libs/daterangepicker.js?<%$__VERSION%>"></script>

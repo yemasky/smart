@@ -348,44 +348,6 @@ if(!defined("INC_FUNC_COMMON")) {
 		return substr($str, 0, $loop);
 	}
 
-	function page($pn, $all_page_num, $list_data, $parameters, $show_pages = 5) {
-		if(empty($all_page_num)) return array('page' => 0, 'list_data' => '');
-		$arrayResultPage = "";
-		$mod_pn          = $pn % $show_pages;
-		if($mod_pn != 0) {
-		} else {
-			$mod_pn = $show_pages;
-		}
-		if($pn > $show_pages) {
-			$arrayResultPage[0]['pn']  = $pn - $mod_pn - $show_pages + 1;
-			$parameters['pn']          = $arrayResultPage[0]['pn'];
-			$arrayResultPage[0]['url'] = \BaseUrlUtil::Url($parameters);
-		} else {
-			$arrayResultPage[0]['pn']  = '';
-			$arrayResultPage[0]['url'] = '#no_page';
-		}
-		if(($all_page_num - $pn) < $show_pages) {
-			if($mod_pn <= ($all_page_num % $show_pages)) {
-				$show_pages = $all_page_num % $show_pages;
-			}
-		}
-		for($i = 1; $i <= $show_pages; $i++) {
-			$arrayResultPage[$i]['pn']  = $pn - $mod_pn + $i;
-			$parameters['pn']           = $arrayResultPage[$i]['pn'];
-			$arrayResultPage[$i]['url'] = \BaseUrlUtil::Url($parameters);
-		}
-		if($pn < ($all_page_num - $show_pages)) {
-			$arrayResultPage[$i]['pn']  = $arrayResultPage[$i - 1]['pn'] + 1;
-			$parameters['pn']           = $arrayResultPage[$i]['pn'];
-			$arrayResultPage[$i]['url'] = \BaseUrlUtil::Url($parameters);
-		} else {
-			$arrayResultPage[$i]['pn']  = '';
-			$arrayResultPage[$i]['url'] = '#no_page';
-		}
-
-		return array('page' => $arrayResultPage, 'list_data' => $list_data);
-	}
-
 	function getModelByUri() {
 		$model = 'index'; // REDIRECT_URL
 		if(isset($_SERVER['REDIRECT_URL'])) {
@@ -483,6 +445,17 @@ if(!defined("INC_FUNC_COMMON")) {
 		}
 
 		return $result;
+	}
+
+	function objectToArray($array) {
+		if(is_object($array)) {
+			$array = (array)$array;
+		} if(is_array($array)) {
+			foreach($array as $key=>$value) {
+				$array[$key] = objectToArray($value);
+			}
+		}
+		return $array;
 	}
 
 	function phpCall($phpfile, $backgroupFlag = true, $outFile = "") {

@@ -243,6 +243,10 @@ class ChannelDao extends CommonDao {
         return $this->setDsnRead($this->getDsnRead())->setTable('channel_receivable')->getList($whereCriteria, $field);
     }
 
+    public function getChannelReceivableCount(\WhereCriteria $whereCriteria, $field = '') {
+        return $this->setDsnRead($this->getDsnRead())->setTable('channel_receivable')->getCount($whereCriteria, $field);
+    }
+
     public function updateChannelReceivable(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_receivable')->update($whereCriteria, $arrayUpdateData, $update_type);
 

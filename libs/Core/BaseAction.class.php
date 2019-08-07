@@ -1402,8 +1402,8 @@ class WhereCriteria {
      * @param string $key ,$value
      * LIKE $key LIKE ($value)
      */
-    public function LIKE(string $key, array $value): WhereCriteria {
-        $this->where   .= $this->AND . '`' . $key . '` LIKE (%?%)';
+    public function LIKE(string $key, string $value): WhereCriteria {
+        $this->where   .= $this->AND . '`' . $key . '` LIKE (?)';
         $this->param[] = $value;
         $this->AND     = ' AND ';
         $param_type    = "s";
@@ -1415,9 +1415,9 @@ class WhereCriteria {
 
     /**
      * @param string $key ,$value
-     * MATCH $key MATCH ($value)
+     * MATCH $key AGAINST ($value)
      */
-    public function MATCH(string $key, array $value): WhereCriteria {
+    public function MATCH(string $key, string $value): WhereCriteria {
         $this->where   .= $this->AND . 'MATCH (' . $key . ') AGAINST (?)';
         $this->param[] = $value;
         $this->AND     = ' AND ';

@@ -516,6 +516,44 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
         return ChannelDao::instance()->getChannelReceivable($whereCriteria, $field);
     }
 
+    public function getChannelReceivablePage(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $tableState = $objRequest->tableState;
+        if(empty($tableState)) $tableState = array();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id = $objRequest->channel_id;
+        $tableStateModel = new TableStateModel($tableState);
+        $objPagination = $tableStateModel->getPagination();
+        $objSearch = $tableStateModel->getSearch();
+        $objSort = $tableStateModel->getSort();
+
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->ArrayIN('channel_id', [0, $channel_id]);
+        if(!empty($searchValue = $objSearch->getPredicateObject())) {
+            //$whereCriteria->MATCH('receivable_name', $searchValue['$']);
+            $whereCriteria->LIKE('receivable_name', '%'.$searchValue['$'].'%');
+        }
+        $receivableCount = ChannelDao::instance()->getChannelReceivableCount($whereCriteria, 'receivable_id');
+        $objPagination->setTotalItemCount($receivableCount);
+        $number = $objPagination->getNumber();
+        $numberOfPages = ceil($receivableCount/$number);
+        $objPagination->setNumberOfPages($numberOfPages);
+        if(!empty($predicate = $objSort->getPredicate())) {
+            $reverse = $objSort->isReverse() ? 'DESC' : 'ASC';
+            $whereCriteria->ORDER($predicate, $reverse);
+        }
+        $start = $objPagination->getStart();
+        $whereCriteria->LIMIT($start, $number);
+
+        $arrayData = ChannelDao::instance()->getChannelReceivable($whereCriteria);
+        if(!empty($arrayData)) {
+            foreach ($arrayData as $i => $data) {
+                $arrayData[$i]['cr_id'] = encode($data['receivable_id']);
+            }
+        }
+        $tableStateModel->setItemData($arrayData);
+        return ['numberOfPages'=>$numberOfPages, 'data'=>$arrayData];
+    }
+
     public function updateChannelReceivable(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
         return ChannelDao::instance()->updateChannelReceivable($whereCriteria, $arrayUpdateData, $update_type);
     }
