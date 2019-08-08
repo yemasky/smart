@@ -373,7 +373,7 @@ class HotelOrderAction extends \BaseAction {
         $objResponse->successServiceResponse($successService);
     }
 
-    //延长、改变预抵预离时间
+    //查询订房数据
     protected function doMethodChangeCheckDate(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         return $this->doMethodCheckOrderData($objRequest, $objResponse);
     }
@@ -833,20 +833,49 @@ class HotelOrderAction extends \BaseAction {
 
         return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
+        //夜审过营业日
+    protected function doMethodPassBusinessDay(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
+        $businessDay = LoginServiceImpl::getBusinessDay();
+        $successService = new \SuccessService();
+        if(getDay() == $businessDay) {
+            $successService->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
+            return $objResponse->successServiceResponse($successService);
+        }
+        $newBusinessDay = date("Y-m-d", strtotime($businessDay) - 0 + 86400);
+        $arrayBusinessDay['company_id'] = $company_id;
+        $arrayBusinessDay['channel_id'] = $channel_id;
+        $arrayBusinessDay['business_day'] = $newBusinessDay;
+        $arrayBusinessDay['add_datetime'] = getDateTime();
+        ChannelServiceImpl::instance()->saveBusinessDay($arrayBusinessDay);
 
+        $successService->setCode(ErrorCodeConfig::$successCode['success']);
+        $successService->setData(['business_day'=>$newBusinessDay]);
+        return $objResponse->successServiceResponse($successService);
+    }
     //远期房态
     protected function doMethodRoomForcasting(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
         $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         //获取channel
         $channel_id = $objRequest->channel_id;
-        $in_date    = substr($objRequest->eta_date, 0, 7) . '-01';
-        $out_date   = date("Y-m-d", strtotime($in_date) - 0 + 5184000);
+        $in_date    = $objRequest->eta_date;
+        $out_date   = date("Y-m-d", strtotime($in_date) - 0 + 2678400);//5184000
         //查找已住房间[远期房态]
-        $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+        /*$whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('channel_id', $channel_id)->GT('check_in', $in_date)->LT('check_in', $out_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
+        $arrayResult['roomForwardList'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);*/
+
+        //查找已住房间[远期房态]
+        $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->LE('check_in', $out_date)->GE('check_out', $in_date);
+        if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayResult['roomForwardList'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria);
+
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 

@@ -505,7 +505,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             return $scope.hashEmployeeModule[module_id];
         }
         $rootScope.defaultChannel = {};
-        $scope.business_day = '';
+        $rootScope.business_day = $scope.business_day = '';
 		$scope.setCommonSetting = function(common) {//$common == null?
 			if(angular.isDefined(common) && common != '') {
 				if(typeof(common.employeeMenu) != 'undefined') {
@@ -530,12 +530,15 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				if(typeof(common._self_module) != 'undefined') {
 					$rootScope._self_module = common._self_module;
 				}
-                $scope.business_day = common.business_day;
+                if(angular.isDefined(common.business_day)) $rootScope.business_day = $scope.business_day = common.business_day;
 				if(angular.isDefined(common.__module_id)) $scope.setActionNavName(common.__module_id);
 			}
 		};
+        $scope.getBusinessDay = function() {
+            return $rootScope.business_day;
+        };
 		$rootScope.employeeChannel = {};
-		$scope.setThisChannel = function(channel) {
+        $scope.setThisChannel = function(channel) {
 			var thisChannel = [];
 			var employeeChannel = $rootScope.employeeChannel;
 			var k = 0, thisChannel_id = '';

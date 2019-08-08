@@ -14,7 +14,7 @@
             <span class="btn btn-xs bg-warning">维修</span>
             <span class="btn btn-xs btn-rounded bg-dark">空脏</span>
           </div>
-          <div class="btn-group pull-right"><button type="button" class="btn btn-xs btn-default">营业日 {{business_day}}</button></div>
+          <div class="btn-group pull-right"><button type="button" class="btn btn-xs btn-default">营业日 {{getBusinessDay()}}</button></div>
           
         </div>
         <div class="box-row">
@@ -231,7 +231,7 @@
                                 <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.night_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-autoclose="true" data-max-date="{{getDay('MM/dd/yyyy')}}" data-autoclose="1" name="night_date" bs-datepicker value="{{getDay('yyyy-MM-dd')}}">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" type="submit"> Go!</button>
-                                    <button class="btn btn-default" type="button" ng-click="passBusinessDay()">夜审完毕 过营业日</button>
+                                    <button class="btn btn-default" type="button" ng-click="passBusinessDay()"><i class="ti-calendar"></i> 夜审完毕 过营业日</button>
                                 </span>
                             </div>
                           </div>
@@ -275,7 +275,7 @@
 							  <div class="form-inline form-group">
                                 <label class="control-label m-b"><i class="fa fa-clock-o"></i> 月份</label>
                                 <div class="input-group">
-                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.eta_date" data-date-format="yyyy-MM-dd" data-date-type="number" data-start-view="1" data-min-view="1" data-autoclose="true" data-min-date="{{getDay('MM/dd/yyyy')}}" data-autoclose="1" name="eta_date" bs-datepicker value="">
+                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.eta_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="1" data-min-view="1" data-autoclose="true" data-min-date="{{getDay('MM/01/yyyy')}}" data-autoclose="1" name="eta_date" bs-datepicker value="">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" type="submit"> Go!</button>
                                     </span>
@@ -288,14 +288,12 @@
                                     <tr class="bg-light">
                                       <th class="w" style="padding:1px;"></th>
                                       <th class="w" style="padding:1px;"></th>
-                                      <th class="w-xs" style="padding:1px;"></th>
                                       <th class="w-xs col-sm-1 b-r" ng-repeat="(thisDate, date) in forwardCalendar" style="padding:1px;"><div class="w-xs"></div></th>
                                       <th style="padding:1px;"></th>
                                     </tr>
                                     <tr class="bs-sidebar">
                                       <th class="w"><div class="w-xs">房型\日期</div></th>
-                                      <th class="w">客源市场价格</th>
-                                      <th class="w-xs" ng-bind-html="bookRoom_quantity">数量</th>
+                                      <th class="w">房间号</th>
                                       <th class="w-xs col-sm-1 b-r" ng-repeat="(thisDate, date) in forwardCalendar">
                                         {{date.day}}<span class="text-xs text-muted m-l-xs"><small>{{date.week}}</small></span>
                                       </th>
@@ -304,44 +302,24 @@
                                   </thead>
                                   <!--房型列表-->
                                   <tbody>
-                                    <tr><th colspan="{{forwardColspan}}">{{employeeChannel[channel_id].channel_name}}</th></tr>
-                                    <tr  ng-repeat="(layout_id, layout) in layoutList"><!--酒店房型列表 循环 i-->
-                                      <td>{{layout.item_name}}
-                                        <i class="ti-angle-double-down small pull-right cursor" ng-show="layoutShow[layout.item_id]==0&&layoutSystemMore[market_id][channel_id][layout.item_id]==1" ng-click="showLayout(layout.item_id, 1)"></i>
-                                        <i class="ti-angle-up small pull-right cursor" ng-show="layoutShow[layout.item_id]==1" ng-click="showLayout(layout.item_id, 0)"></i>
-                                      </td>
+                                    <tr><th colspan="{{forwardColspan}}"></th></tr>
+                                    <tr ng-repeat="(layout_id, layout) in layoutList"><!--酒店房型列表 循环 i-->
+                                      <td ng-init="forwardLayoutShow[layout.item_id]=0">{{layout.item_name}} <code class="small" ng-if="layoutRoomNum[layout_id]>0">{{layoutRoomNum[layout_id]}}</code> <i class="ti-angle-double-down small pull-right cursor" ng-show="forwardLayoutShow[layout.item_id]==0" ng-click="setForwardLayoutShow(layout.item_id, 1)"></i> <i class="ti-angle-up small pull-right cursor" ng-show="forwardLayoutShow[layout.item_id]==1" ng-click="setForwardLayoutShow(layout.item_id, 0)"></i>  </td>
                                       <td class="no-padding panel">
-                                          
-                                          <table class="table no-margin"><!--酒店价格体系列表 循环 i-->
-                                            <tr ng-repeat="layout_system in marketSystemLayout[market_id][channel_id][layout.item_id] track by $index" ng-show="$index==0||layoutShow[layout.item_id]==1">
-                                                <td>{{layout_system.price_system_name}}</td>
-                                            </tr>
-                                          </table>
-                                      </td>
-                                      <td class="w-xs no-padding panel">
-                                          
-                                          <table class="table no-margin">
-                                            <tr ng-repeat="layout_system in marketSystemLayout[market_id][channel_id][layout.item_id] track by $index" ng-show="$index==0 || layoutShow[layout.item_id]==1">
-                                                <td style="padding:1px 0px 2px 1px;">
-                                                    <div class="w-xs">
-                                                      <ui-select ng-model="booking_room[channel_id][layout.item_id][layout_system.price_system_id]" ng-change="select_room(this)" theme="bootstrap">
-                                                          <ui-select-match placeholder="0　">{{$select.selected.value}}</ui-select-match>
-                                                          <ui-select-choices repeat="room in layout.select_room_num | filter: $select.search">
-                                                            <div ng-bind-html="room.value | highlight: $select.search" ng-init="room.room_info.price_system_name=layout_system.price_system_name"></div>
-                                                          </ui-select-choices>
-                                                      </ui-select>
-                                                   </div>
-                                                </td>
+                                          <table class="table no-margin"><!--酒店房型的房间列表 循环 i-->
+                                            <tr><td>　</td></tr>
+                                            <tr ng-repeat="room in layoutRoomList[layout.item_id] track by $index" ng-show="forwardLayoutShow[layout.item_id]==1">
+                                                <td>{{room.item_name}}</td>
                                             </tr>
                                           </table>
                                       </td>
                                       <td class="w-xs col-sm-1 b-r cursor no-padding panel" ng-repeat="(thisDate, date) in forwardCalendar" ng-click="selectThisLayout($event)">
                                         <table class="table no-margin">
-                                            <tr ng-repeat="layout_system in marketSystemLayout[market_id][channel_id][layout.item_id] track by $index" ng-show="$index==0||layoutShow[layout.item_id]==1">
-                                                <td>
-                                                    <span class="label bg-light pull-left" style="margin-top:-7px; margin-left:-14px;">{{layout.room_num}}</span>
-                                                    <span ng-model=""></span>
-                                                </td>
+                                            <tr>
+                                                <td class="p-xs">{{layoutRoomNum[layout_id]}}</td>
+                                            </tr>
+                                            <tr ng-repeat="room in layoutRoomList[layout.item_id] track by $index" ng-show="forwardLayoutShow[layout.item_id]==1">
+                                                <td>　</td>
                                             </tr>
                                           </table>
                                       </td>

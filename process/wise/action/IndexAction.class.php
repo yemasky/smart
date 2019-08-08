@@ -69,7 +69,7 @@ class IndexAction extends \BaseAction {
             if (method_exists($this, $method))
                 return $this->$method($objRequest, $objResponse);
         }
-        if($objRequest->_ != '') {
+        if ($objRequest->_ != '') {
             $objResponse->setTplName("wise/index/nologin");
             return false;
         }
@@ -92,9 +92,38 @@ class IndexAction extends \BaseAction {
         if (empty($loginEmployeeModel->getEmployeeInfo()->getEmployeeId())) {
             return $objResponse->errorResponse('000002');
         }
+        //
+        //根据切换来变换default_channel_father_id
+        $arrayEmployeeChannel      = $loginEmployeeModel->getEmployeeChannel();
+        $default                   = current($arrayEmployeeChannel);
+        $default_channel           = $arrayEmployeeChannel[$default['default_id']];
+        $default_channel_father_id = $default_channel['channel_id'];
+        $channel_id                = $default_channel['default_id'];
+
+        $channelSettingList = $loginEmployeeModel->getChannelSettingList();
+        //根据default_channel_father_id 来取得营业日
+        $business_day = getDay();//默认营业日 自动营业日
+        if (isset($channelSettingList[$default_channel_father_id])) {
+            //设置默认的channel_id
+            $thisChannelSeting = $loginEmployeeModel->getChannelSetting($default_channel_father_id);
+            if ($thisChannelSeting->getisBusinessDay() == 1) {//手动营业日
+                $business_day = ChannelServiceImpl::instance()->getBusinessDay($default_channel_father_id);
+                if (empty($business_day)) {
+                    $business_day                      = getDay();
+                    $arrayBussinessDay['business_day'] = $business_day;
+                    $arrayBussinessDay['company_id']   = $loginEmployeeModel->getEmployeeInfo()->getCompanyId();
+                    $arrayBussinessDay['channel_id']   = $channel_id;
+                    $arrayBussinessDay['add_datetime'] = getDateTime();
+                    ChannelServiceImpl::instance()->saveBusinessDay($arrayBussinessDay);
+                }
+            }
+        }
+        LoginServiceImpl::setBusinessDay($business_day);
+        //
         $arrayEmployee                   = $loginEmployeeModel->getPrototype();
         $arrayEmployee['employeeInfo']   = $loginEmployeeModel->getEmployeeInfo()->getPrototype();
         $arrayEmployee['module_channel'] = 'Booking';
+        $arrayEmployee['business_day']   = $business_day;
         //用户菜单
         return $objResponse->successResponse('000001', array('loginEmployee' => $arrayEmployee));
     }

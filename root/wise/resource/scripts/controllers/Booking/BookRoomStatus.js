@@ -221,6 +221,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                         }
                    }
                 }
+                var layoutRoomNum = {};
+                if($scope.layoutRoom != '') {
+                    for(var room_id in $scope.layoutRoom) {
+                        var item_category_id = $scope.layoutRoom[room_id].item_category_id;
+                        if(angular.isUndefined(layoutRoomNum[item_category_id])) layoutRoomNum[item_category_id] = 0
+                        layoutRoomNum[item_category_id]++;
+                    }
+                }
+                $scope.layoutRoomNum = layoutRoomNum;
                 $scope.bookRoomStatus = bookRoomStatus;
                 $scope.billAccount = billAccount;
                 $scope.layoutRoomList = layoutRoomList;//房型的房间列表
@@ -848,7 +857,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         });
 	}
     $scope.passBusinessDay = function() {
-        if($scope.getDay() == $scope.business_day) {
+        if($scope.getDay() == $scope.getBusinessDay()) {
             $alert({title: 'Error', content: '已是最大营业日时间！', templateUrl: '/modal-warning.html', show: true});
             return;
         }
@@ -865,6 +874,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     return;//错误返回
                 } else {
                     $scope.successAlert.startProgressBar();
+                    $scope.business_day = result.data.item.business_day;
+                    $rootScope.business_day = result.data.item.business_day;
                 }
             });
         }
@@ -914,10 +925,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	$scope.roomForwardList = '';$scope.param.eta_date = $scope.getDay('yyyy-MM-dd');
     $scope.roomForcasting = function(getRoomForward) {
 		if($scope.roomForwardList == '' || getRoomForward == true) {
-            $scope.setForwardCalendar('2019-05-01', '2019-07-30');
 			$scope.loading.start();
 			$httpService.header('method', 'roomForcasting');
-            $scope.param.eta_date = $filter("date")($scope.param.eta_date, 'yyyy-MM-dd');
+            //$scope.param.eta_date = $filter("date")($scope.param.eta_date, 'yyyy-MM-dd');
 			$httpService.post('/app.do?'+param, $scope, function(result) {
 				$scope.loading.percent()
 				$httpService.deleteHeader('method');
@@ -925,19 +935,24 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					var message = $scope.getErrorByCode(result.data.code);
 					//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
 					return;//错误返回
-				} else {
+				} else {console.log($scope.param.eta_date);
+                    $scope.setForwardCalendar($scope.param.eta_date, '');
 					$scope.roomForwardList = result.data.item.roomForwardList;
 				}
 			});
 		}
-		console.log('Room Forcasting');
 	}
     $scope.forwardCalendar = {};$scope.forwardColspan = 4;
     $scope.setForwardCalendar = function(in_date, out_date) {//设置日期
         var check_in = new Date(in_date.replace(/-/g, '/'));
         var check_in_time = check_in.getTime(); 
-        var check_out = new Date(out_date.replace(/-/g, '/'));
-        var check_out_time = check_out.getTime();
+        if(out_date == '') {
+            var check_out_time = check_in_time + 86400000 * 31;  
+        } else {
+            var check_out = new Date(out_date.replace(/-/g, '/'));
+            var check_out_time = check_out.getTime();  
+        }
+        
         var forwardCalendar = {}, forwardColspan = 4;
         for(var i = check_in_time; i < check_out_time; i += 86400000) {
             var thisDate = new Date(i);var year = thisDate.getFullYear();
@@ -956,7 +971,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         }
         $scope.forwardCalendar = forwardCalendar;$scope.forwardColspan = forwardColspan;
     };
-    $scope.setForwardCalendar('2019-05-01', '2019-07-30');
+    //$scope.setForwardCalendar('2019-05-01', '2019-07-30');
+    $scope.forwardLayoutShow = {};
+    $scope.setForwardLayoutShow = function(item_category_id, show) {
+        if(angular.isUndefined($scope.forwardLayoutShow[item_category_id])) {$scope.forwardLayoutShow[item_category_id] = 0;}
+        $scope.forwardLayoutShow[item_category_id] = show;
+    }
     //end//////////////////////////////////////////远期房态///////////////////
 	$httpService.deleteHeader('refresh');
 });
