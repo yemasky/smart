@@ -830,10 +830,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	};
 	////night auditor////////////////////////////////////////////
 	$scope.nightAuditorList = '';
-	$scope.nightAuditor = function() {
+    $scope.param.night_date = $scope.getDay('yyyy-MM-dd');
+	$scope.nightAuditor = function(Get, object) {
 		$httpService.header('method', 'nightAuditor');
 		$scope.loading.start();
-		$httpService.post('/app.do?'+param, $scope, function(result) {
+		$httpService.post('/app.do?'+param+'&get='+Get, $scope, function(result) {
             $scope.loading.percent();
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
@@ -841,9 +842,32 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
                 return;//错误返回
             } else {
-				$scope.nightAuditorList = result.data.item.nightAuditorList;
+				if(Get == -1) {$scope.nightAuditorList = result.data.item.nightAuditorList;}
+                else {object.confirm = 1;}
 			}
         });
+	}
+    $scope.passBusinessDay = function() {
+        if($scope.getDay() == $scope.business_day) {
+            $alert({title: 'Error', content: '已是最大营业日时间！', templateUrl: '/modal-warning.html', show: true});
+            return;
+        }
+		$scope.confirm({'content':'您确定要过营业日吗？','callback':pass});
+        function pass() {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.header('method', 'passBusinessDay');
+            $httpService.post('/app.do?'+param, $scope, function(result) {
+                $scope.beginLoading =! $scope.beginLoading;
+                $httpService.deleteHeader('method');
+                if (result.data.success == '0') {
+                    var message = $scope.getErrorByCode(result.data.code);
+                    //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                    return;//错误返回
+                } else {
+                    $scope.successAlert.startProgressBar();
+                }
+            });
+        }
 	}
 	////end night auditor///////////////////////////////////////////
     $scope.searchBooking = function(condition) {

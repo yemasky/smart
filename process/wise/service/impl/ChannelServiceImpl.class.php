@@ -495,15 +495,18 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 
         return ChannelDao::instance()->updateChannelBorrowing($whereCriteria, $arrayUpdateData, $update_type);
     }
-	//
+	//BusinessDay
+    public function saveBusinessDay($arrayData, $insert_type = 'INSERT') {
+        return ChannelDao::instance()->saveBusinessDay($arrayData, $insert_type);
+    }
+
 	public function getBusinessDay($channel_id) {
 		$whereCriteria = new \WhereCriteria();
 		$whereCriteria->EQ('channel_id', $channel_id)->ORDER('business_day_id')->LIMIT(0, 1);
 		$arrayBusinessDay = ChannelDao::instance()->getBusinessDay($whereCriteria, 'business_day');
 		if(empty($arrayBusinessDay)) {
-			return getToDay();
+			return null;
 		}
-
 		return $arrayBusinessDay[0]['business_day'];
 	}
 

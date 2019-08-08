@@ -227,9 +227,10 @@ class ChannelSettingAction extends \BaseAction {
             $Channel_receivableEntity->setAddDatetime(getDateTime());
 
             $receivable_id = ChannelServiceImpl::instance()->saveChannelReceivable($Channel_receivableEntity);
+            $cr_id = encode($receivable_id);
         }
         $successService = new \SuccessService();
-        $successService->setData(['receivable_id' => $receivable_id]);
+        $successService->setData(['receivable_id' => $receivable_id,'cr_id'=>$cr_id]);
         return $objResponse->successServiceResponse($successService);
     }
 }

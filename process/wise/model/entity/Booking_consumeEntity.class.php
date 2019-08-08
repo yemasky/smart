@@ -19,6 +19,7 @@ class Booking_consumeEntity extends \Entity {
 	protected $channel_consume_id;
 	protected $booking_type;
 	protected $channel_id;
+	protected $receivable_id;
 	protected $member_id = 0;
 	protected $market_father_id = 0;
 	protected $market_id = 0;
@@ -191,6 +192,20 @@ class Booking_consumeEntity extends \Entity {
 	public function setChannelId($channel_id) {
 		$this->channel_id = $channel_id;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getReceivableId() {
+        return $this->receivable_id;
+    }
+
+    /**
+     * @param mixed $receivable_id
+     */
+    public function setReceivableId($receivable_id) {
+        $this->receivable_id = $receivable_id;
+    }
 
 	/**
 	 * @return int

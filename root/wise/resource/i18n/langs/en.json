@@ -21,7 +21,7 @@
 		"date":"Date",
 		"manager":"Manager",
 		"edit":"Edit",
-		"config":"Config",
+		"config":"Config",,"confirm":"Confirm",
 		"PayingTheBill":"Paying the Bill","backout":"Backout","give_back":"Give back"
 	}
 },

@@ -51,12 +51,9 @@ angular.module("app",['ngMessages','ngAnimate','ngCookies','ngResource','ngRoute
 ]);
 var app = angular.module("app").config(["$controllerProvider","$compileProvider","$filterProvider","$provide", "$ocLazyLoadProvider",
 	function($controllerProvider, $compileProvider, $filterProvider, $provide) {
-		app.controller = $controllerProvider.register, 
-		app.directive  = $compileProvider.directive, 
-		app.filter     = $filterProvider.register, 
-		app.factory    = $provide.factory, 
-		app.service    = $provide.service, 
-		app.constant   = $provide.constant,
+		app.controller = $controllerProvider.register, app.directive  = $compileProvider.directive, 
+		app.filter     = $filterProvider.register,     app.factory    = $provide.factory, 
+		app.service    = $provide.service,             app.constant   = $provide.constant,
 		app.value      = $provide.value
 }]).config(["$translateProvider", function($translateProvider) {
     $translateProvider.useStaticFilesLoader({
@@ -127,18 +124,10 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 	}
     return factory;
 }).service("$httpService", function($httpFactory){
-    this.post = function($url, $scope, callBack) {
-        return $httpFactory.post($url, $scope, callBack);
-    }
-	this.get = function($url, $scope, callBack) {
-        return $httpFactory.get($url, $scope, callBack);
-    }
-	this.header = function($key, $value) {
-        return $httpFactory.header($key, $value);
-    }
-	this.deleteHeader = function($key) {
-        return $httpFactory.deleteHeader($key);
-    }
+    this.post = function($url, $scope, callBack) {return $httpFactory.post($url, $scope, callBack);}
+	this.get = function($url, $scope, callBack) {return $httpFactory.get($url, $scope, callBack);}
+	this.header = function($key, $value) {return $httpFactory.header($key, $value);}
+	this.deleteHeader = function($key) {return $httpFactory.deleteHeader($key);}
 }).directive("triggerLoading", function(){
 	return {
 		restrict:'A',
@@ -516,6 +505,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
             return $scope.hashEmployeeModule[module_id];
         }
         $rootScope.defaultChannel = {};
+        $scope.business_day = '';
 		$scope.setCommonSetting = function(common) {//$common == null?
 			if(angular.isDefined(common) && common != '') {
 				if(typeof(common.employeeMenu) != 'undefined') {
@@ -540,7 +530,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				if(typeof(common._self_module) != 'undefined') {
 					$rootScope._self_module = common._self_module;
 				}
-				
+                $scope.business_day = common.business_day;
 				if(angular.isDefined(common.__module_id)) $scope.setActionNavName(common.__module_id);
 			}
 		};

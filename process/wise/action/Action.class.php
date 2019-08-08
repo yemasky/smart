@@ -25,7 +25,7 @@ class Action {
         //
         $channel_id = $objRequest->id;
         $channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : null;
-        if(!empty($channel_id)) $objRequest->channel_id = $channel_id;
+        if (!empty($channel_id)) $objRequest->channel_id = $channel_id;
 
         $objResponse->__nav_name = '';
         $objLoginEmployee        = LoginServiceImpl::instance()->checkLoginEmployee();
@@ -51,16 +51,24 @@ class Action {
             $default_channel                        = $arrayEmployeeChannel[$default['default_id']];
             $default_channel_father_id              = $default_channel['channel_id'];
             $objResponse->default_channel_father_id = $default_channel_father_id;
-            if(empty($channel_id)) $objRequest->channel_id = $default_channel['default_id'];
+            if (empty($channel_id)) $objRequest->channel_id = $channel_id = $default_channel['default_id'];
 
-            $channelSettingList                     = $objLoginEmployee->getChannelSettingList();
+            $channelSettingList = $objLoginEmployee->getChannelSettingList();
             //根据default_channel_father_id 来取得营业日
-            $business_day = getDay();//默认营业日
+            $business_day = getDay();//默认营业日 自动营业日
             if (isset($channelSettingList[$default_channel_father_id])) {
                 //设置默认的channel_id
                 $thisChannelSeting = $objLoginEmployee->getChannelSetting($default_channel_father_id);
-                if ($thisChannelSeting->getisBusinessDay() == 1) {
+                if ($thisChannelSeting->getisBusinessDay() == 1) {//手动营业日
                     $business_day = ChannelServiceImpl::instance()->getBusinessDay($default_channel_father_id);
+                    if (empty($business_day)) {
+                        $business_day                      = getDay();
+                        $arrayBussinessDay['business_day'] = $business_day;
+                        $arrayBussinessDay['company_id']   = $objEmployee->getCompanyId();
+                        $arrayBussinessDay['channel_id']   = $channel_id;
+                        $arrayBussinessDay['add_datetime'] = getDateTime();
+                        ChannelServiceImpl::instance()->saveBusinessDay($arrayBussinessDay);
+                    }
                 }
             }
             LoginServiceImpl::setBusinessDay($business_day);
@@ -102,9 +110,9 @@ class Action {
         $objRequest->setModule($module);
 
         //common setting
-        $objResponse->__module_id  = $module_id;
-        $objResponse->__module_name  = $module_name;
-        $objResponse->home_channel = \Encrypt::instance()->encode('home', getDay());
+        $objResponse->__module_id   = $module_id;
+        $objResponse->__module_name = $module_name;
+        $objResponse->home_channel  = \Encrypt::instance()->encode('home', getDay());
         //$objResponse->index_url       = 'app.do';
         //$objResponse->check_login_url = \BaseUrlUtil::getHtmlUrl(['method' => 'checkLogin']);
         $objResponse->setTplValue("__Meta", \BaseCommon::getMeta('index', '管理后台', '管理后台', '管理后台'));

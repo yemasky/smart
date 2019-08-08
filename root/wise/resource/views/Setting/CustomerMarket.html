@@ -66,7 +66,7 @@
              <div class="list-group no-border no-radius">
                 <!----- ------>
                  <div class="panel panel-default no-border">
-                    <div class="panel-heading">协议客源  <a class="pull-right fa fa-plus" ng-click="addReceivable(0)"> </a></div>
+                    <div class="panel-heading">协议客源  <a class="pull-right fa fa-plus" ng-click="addReceivable(0,-1)"> </a></div>
                     <table st-pipe="callServer" st-table="displayed" class="table table-striped">
                         <thead>
                         <tr>
@@ -84,13 +84,13 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr ng-repeat="row in displayed">
+                        <tr ng-repeat="(i,row) in displayed">
                             <td st-ratio="40">{{row.receivable_name}}</td>
                             <td st-ratio="10">{{row.receivable_type}}</td>
                             <td st-ratio="15">{{row.credit}}</td>
                             <td st-ratio="15">{{row.credit_used}}</td>
                             <td st-ratio="15">{{row.valid_date}}</td>
-                            <td st-ratio="5"><a class="pull-right" ng-click="addReceivable(row)"><i class="fa fa-edit"></i></a></td>
+                            <td st-ratio="5"><a class="pull-right" ng-click="addReceivable(row, i)"><i class="fa fa-edit"></i></a></td>
                         </tr>
                         </tbody>
                         <tfoot>
@@ -176,15 +176,15 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
 		$scope.param = param;
 		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
 			$scope.loading.hide();
-			//$scope.dataList = result.data.item;
+			$scope.dataList = result.data.item;
 			asideCustomerMarket.hide();
 		});
 	}
     //
-    var asideReceivable = '';
-	$scope.addReceivable = function(_this) {
-		$scope.param = {}; $scope.param["valid"] = "1";
-		if(_this != 0) $scope.param = _this;
+    var asideReceivable = '',editReceivable = 0;
+	$scope.addReceivable = function(_this, i) {
+		$scope.param = {}; $scope.param["valid"] = "1"; editReceivable = i;
+		if(_this != 0) $scope.param = angular.copy(_this);
 		$scope.action = '添加/编辑';
 		asideReceivable = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketReceivableAddEdit.tpl.html'});
 		asideReceivable.$promise.then(function() {
@@ -214,6 +214,14 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
             $httpService.deleteHeader('method');
 			$scope.loading.hide();
 			asideReceivable.hide();
+            if(editReceivable >= 0) {
+                $scope.displayed[editReceivable] = $scope.param;
+            } else {
+                var length = $scope.displayed.length;
+                $scope.displayed[length] = $scope.param;
+                $scope.displayed[length].receivable_id = result.data.item.receivable_id;
+                $scope.displayed[length].cr_id = result.data.item.cr_id;
+            }
 		});
 	}
     /////////
@@ -235,15 +243,15 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
 	$httpService.deleteHeader('refresh');
 });
 app.directive('stRatio',function(){
-        return {
-          link:function(scope, element, attr){
-            var ratio=+(attr.stRatio);
-            
-            element.css('width',ratio+'%');
-            
-          }
-        };
-    });
+    return {
+      link:function(scope, element, attr){
+        var ratio=+(attr.stRatio);
+
+        element.css('width',ratio+'%');
+
+      }
+    };
+});
 
 </script>
 
