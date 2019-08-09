@@ -11,10 +11,8 @@ margin-left:-15px;
 position:absolute;
 }
 .enable_select{}
-.unable_select{
-    border-color:#FFFFFF;background-color: #FFFFFF !important;cursor:pointer !important;
-}
-.unable_select_edit{
-    border-color:#fdfdfe;background-color: #fdfdfe !important;cursor:pointer !important;
-}
+.unable_select{border-color:#FFFFFF;background-color: #FFFFFF !important;cursor:pointer !important;}
+.unable_select_edit{border-color:#fdfdfe;background-color: #fdfdfe !important;cursor:pointer !important;}
 .book_input {padding:1px 0px 1px 1px !important;}
+.book_status{position: relative; margin-left: 31px; min-width: 92px; border-radius:5px; filter: alpha(Opacity=70);-moz-opacity: 0.7;opacity: 0.7;}
+.w-xs{min-width: 92px;max-width: 92px;}

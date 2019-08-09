@@ -649,12 +649,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.loading.start = function() {
             $scope.loading.show();$scope.startLoading(10);
         };
-        $scope.loading.percent = function() {
-            $scope.startLoading(99);
-        };
+        $scope.loading.percent = function() {$scope.startLoading(99);};
 		$scope.confirm = function(param) {//content, confirmCallback, param
-			var content = angular.isDefined(param.content)?param.content : '';
-			var confirmCallback = angular.isDefined(param.callback)?param.callback : null;
+			var content = angular.isDefined(param.content)?param.content : '';var confirmCallback = angular.isDefined(param.callback)?param.callback : null;
 			var callbackParam = angular.isDefined(param.param)?param.param : null;
 			$alert({scope : $scope, title: 'Notice', templateUrl: '/resource/views/Common/modalConfirm.html', content: content, placement: 'top', type: 'success', show: true, controller : function($scope) {$scope.callback = function() {if(confirmCallback){
 				if(callbackParam != null) {confirmCallback(callbackParam);}else{confirmCallback();}};}}});

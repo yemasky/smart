@@ -32,7 +32,7 @@
                     <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
                         <a>夜审</a>
                     </li>
-                    <li ng-class="{active:activeTab==4}" ng-click="activeTab=4">
+                    <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;roomForcasting(false);">
                         <a>远期房态</a>
                     </li>
                  </ul>
@@ -275,7 +275,7 @@
 							  <div class="form-inline form-group">
                                 <label class="control-label m-b"><i class="fa fa-clock-o"></i> 月份</label>
                                 <div class="input-group">
-                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.eta_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="1" data-min-view="1" data-autoclose="true" data-min-date="{{getDay('MM/01/yyyy')}}" data-autoclose="1" name="eta_date" bs-datepicker value="">
+                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.eta_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-min-view="0" data-autoclose="true" data-min-date="{{getDay('MM/dd/yyyy')}}" data-autoclose="1" name="eta_date" bs-datepicker value="">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" type="submit"> Go!</button>
                                     </span>
@@ -287,15 +287,15 @@
                                   <thead>
                                     <tr class="bg-light">
                                       <th class="w" style="padding:1px;"></th>
-                                      <th class="w" style="padding:1px;"></th>
+                                      <th style="padding:1px;"></th>
                                       <th class="w-xs col-sm-1 b-r" ng-repeat="(thisDate, date) in forwardCalendar" style="padding:1px;"><div class="w-xs"></div></th>
                                       <th style="padding:1px;"></th>
                                     </tr>
                                     <tr class="bs-sidebar">
                                       <th class="w"><div class="w-xs">房型\日期</div></th>
-                                      <th class="w">房间号</th>
+                                      <th class="no-padding panel"></th>
                                       <th class="w-xs col-sm-1 b-r" ng-repeat="(thisDate, date) in forwardCalendar">
-                                        {{date.day}}<span class="text-xs text-muted m-l-xs"><small>{{date.week}}</small></span>
+                                        {{date.day}}<span class="text-xs m-l-xs" ng-class="date.week=='六'||date.week=='日'?'text-warning':'text-muted'"><small>{{date.week}}</small></span>
                                       </th>
                                       <th></th>
                                     </tr>
@@ -303,23 +303,35 @@
                                   <!--房型列表-->
                                   <tbody>
                                     <tr><th colspan="{{forwardColspan}}"></th></tr>
+                                    <tr><th>全部房型 <code class="small">{{channelRoomNum}} <small>可定/已订 出租率</small></code></th><th class="no-padding panel"></th>
+                                        <td ng-repeat="(thisDate, date) in forwardCalendar">
+                                            {{channelAllRoomReservation[thisDate].room_num}}<small>/{{channelAllRoomReservation[thisDate].book_num}}  {{channelAllRoomReservation[thisDate].percentage}}%</small>
+                                        </td>
+                                    <th></th></tr>
                                     <tr ng-repeat="(layout_id, layout) in layoutList"><!--酒店房型列表 循环 i-->
-                                      <td ng-init="forwardLayoutShow[layout.item_id]=0">{{layout.item_name}} <code class="small" ng-if="layoutRoomNum[layout_id]>0">{{layoutRoomNum[layout_id]}}</code> <i class="ti-angle-double-down small pull-right cursor" ng-show="forwardLayoutShow[layout.item_id]==0" ng-click="setForwardLayoutShow(layout.item_id, 1)"></i> <i class="ti-angle-up small pull-right cursor" ng-show="forwardLayoutShow[layout.item_id]==1" ng-click="setForwardLayoutShow(layout.item_id, 0)"></i>  </td>
-                                      <td class="no-padding panel">
+                                      <td class="no-padding panel" ng-init="forwardLayoutShow[layout.item_id]=0">
+                                          <div style="padding: 10px 5px 7px 10px;">{{layout.item_name}} <code class="small" ng-if="layoutRoomNum[layout_id]>0">{{layoutRoomNum[layout_id]}}</code> <i class="ti-angle-double-down small pull-right cursor" ng-show="forwardLayoutShow[layout.item_id]==0" ng-click="setForwardLayoutShow(layout.item_id, 1)"></i> <i class="ti-angle-up small pull-right cursor" ng-show="forwardLayoutShow[layout.item_id]==1" ng-click="setForwardLayoutShow(layout.item_id, 0)"></i>
+                                          </div>
                                           <table class="table no-margin"><!--酒店房型的房间列表 循环 i-->
-                                            <tr><td>　</td></tr>
                                             <tr ng-repeat="room in layoutRoomList[layout.item_id] track by $index" ng-show="forwardLayoutShow[layout.item_id]==1">
                                                 <td>{{room.item_name}}</td>
                                             </tr>
                                           </table>
                                       </td>
+                                      <td class="no-padding panel"></td>
                                       <td class="w-xs col-sm-1 b-r cursor no-padding panel" ng-repeat="(thisDate, date) in forwardCalendar" ng-click="selectThisLayout($event)">
                                         <table class="table no-margin">
                                             <tr>
-                                                <td class="p-xs">{{layoutRoomNum[layout_id]}}</td>
+                                                <td class="p-xs">
+                                                    {{channelRoomReservation[layout_id][thisDate].room_num}}
+                                                    <small>/{{channelRoomReservation[layout_id][thisDate].book_num}}</small>
+                                                </td>
                                             </tr>
                                             <tr ng-repeat="room in layoutRoomList[layout.item_id] track by $index" ng-show="forwardLayoutShow[layout.item_id]==1">
-                                                <td>　</td>
+                                                <td class="w-xs ">
+                                                    <div class="book_status bg-info" ng-if="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==1" ng-style="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].style">{{channelRoomReservation[layout_id][thisDate]['room'][room.item_id].book_info.book_day}}</div>
+                                                    <div ng-if="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==0">&nbsp;</div>
+                                                </td>
                                             </tr>
                                           </table>
                                       </td>
