@@ -303,7 +303,7 @@
                                   <!--房型列表-->
                                   <tbody>
                                     <tr><th colspan="{{forwardColspan}}"></th></tr>
-                                    <tr><th>全部房型 <code class="small font-thin">{{channelRoomNum}} <small>可订/已订 出租率</small></code></th><th class="no-padding panel"></th>
+                                    <tr><th>全部房型 <code class="small font-thin">{{channelRoomNum}} <small>可订/已订 订房率</small></code></th><th class="no-padding panel"></th>
                                         <td ng-repeat="(thisDate, date) in forwardCalendar">
                                             {{channelAllRoomReservation[thisDate].room_num}}<small>/{{channelAllRoomReservation[thisDate].book_num}}  {{channelAllRoomReservation[thisDate].percentage}}%</small>
                                         </td>
@@ -329,8 +329,8 @@
                                             </tr>
                                             <tr ng-repeat="room in layoutRoomList[layout.item_id] track by $index" ng-show="forwardLayoutShow[layout.item_id]==1">
                                                 <td class="w-xs w-xs-min" ng-class="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==1?'room_is_book':''" ng-init="thisBookRoom=channelRoomReservation[layout_id][thisDate]['room'][room.item_id]">
-                                                    <div class="book_status btn btn-sm btn-default btn-rounded" ng-repeat="(booking_detail_id,bookRoom) in thisBookRoom.book_info" ng-if="thisBookRoom.is_book==1" ng-style="bookRoom.style" ng-class="bookRoom.booking_detail_status==1?'':''" data-title="订单：{{bookRoom.booking_number}}<br>预抵：{{bookRoom.check_in}}　　<br>预离：{{bookRoom.check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip"><span ng-if="bookRoom.booking_detail_status=='1'">住<i class="small ti-arrow-circle-down"></i></span>
-                                                    <span ng-if="bookRoom.booking_detail_status=='0'">预抵<i class="small ti-arrow-circle-down"></i></span></div>
+                                                    <div class="book_status btn btn-sm btn-default btn-rounded" ng-repeat="(booking_detail_id,bookRoom) in thisBookRoom.book_info" ng-if="thisBookRoom.is_book==1" ng-style="bookRoom.style" ng-class="bookRoom.booking_detail_status==1?'':''" data-title="订单：{{bookRoom.booking_number}}<br>预抵：{{bookRoom.check_in}}　　<br>预离：{{bookRoom.check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip"><span ng-if="bookRoom.booking_detail_status=='1'">住<i class="small ti-shift-right-alt"></i></span>
+                                                    <span ng-if="bookRoom.booking_detail_status=='0'">预抵<i class="small ti-shift-right-alt"></i></span></div>
                                                     <div ng-if="thisBookRoom.is_book==0">&nbsp;</div>
                                                 </td>
                                             </tr>

@@ -872,7 +872,7 @@ class HotelOrderAction extends \BaseAction {
 
         //查找已住房间[远期房态]
         $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('valid','1')->LE('check_in', $out_date)->GE('check_out', $in_date);
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('valid','1')->LE('check_in', $out_date)->GE('check_out', $in_date)->GE('booking_detail_status', '0');
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $field = 'booking_detail_id,booking_number,channel_id,item_category_id,item_id,check_in,check_out,booking_detail_status';
         $arrayResult['roomForwardList'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria, $field);

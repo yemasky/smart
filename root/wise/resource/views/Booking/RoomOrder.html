@@ -65,9 +65,9 @@
                       <th class="w">客源市场价格 
                           <label class="ui-checks small"><input type="checkbox" value="1" ng-model="param.set_prices" ng-init="param.set_prices=''"><i></i>自定房价</label>
                       </th>
-                      <th class="w-xs bg-light" ng-bind-html="bookRoom_quantity">数量</th>
-                      <th class="w-xs col-sm-1 b-r bg-light" ng-repeat="(thisDate, date) in bookingCalendar">
-                      	{{date.day}}<span class="text-xs text-muted m-l-xs"><small>{{date.week}}</small></span>
+                      <th class="w-xs" ng-bind-html="bookRoom_quantity">数量</th>
+                      <th class="w-xs col-sm-1 b-r" ng-repeat="(thisDate, date) in bookingCalendar" ng-class="date.week=='六'||date.week=='日'?'text-warning':''">
+                      	{{date.day}}<span class="text-xs m-l-xs"><small>{{date.week}}</small></span>
                       </th>
                       <th></th>
                       <!--<td class="no-padding">
