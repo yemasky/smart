@@ -303,7 +303,7 @@
                                   <!--房型列表-->
                                   <tbody>
                                     <tr><th colspan="{{forwardColspan}}"></th></tr>
-                                    <tr><th>全部房型 <code class="small">{{channelRoomNum}} <small>可定/已订 出租率</small></code></th><th class="no-padding panel"></th>
+                                    <tr><th>全部房型 <code class="small font-thin">{{channelRoomNum}} <small>可订/已订 出租率</small></code></th><th class="no-padding panel"></th>
                                         <td ng-repeat="(thisDate, date) in forwardCalendar">
                                             {{channelAllRoomReservation[thisDate].room_num}}<small>/{{channelAllRoomReservation[thisDate].book_num}}  {{channelAllRoomReservation[thisDate].percentage}}%</small>
                                         </td>

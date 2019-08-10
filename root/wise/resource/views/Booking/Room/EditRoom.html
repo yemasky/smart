@@ -76,7 +76,7 @@
                             </tr>
                             <tr class="bs-sidebar">
                               <th class="w-xs"><div class="w-xs">日期</div></th>
-                              <td class="w-xs col-sm-1 b-r" ng-repeat="(i, consumeRoom) in consumeRoomPrice">{{consumeRoom.business_day}}<span class="badge badge-xs" ng-if="channelRoomReservation[consumeRoom.business_day].room_num<=0">满</span></td>
+                              <th class="w-xs col-sm-1 font-thin" ng-repeat="(i, consumeRoom) in consumeRoomPrice">{{consumeRoom.business_day}}<span class="badge badge-xs" ng-if="channelRoomReservation[consumeRoom.business_day].room_num<=0">满</span></th>
                               <th></th>
                             </tr>
                           </thead>
@@ -84,7 +84,7 @@
                           <tbody>
                             <tr><!--酒店房型列表 循环 i-->
                               <td>价格</td>
-                                <td class="w-xs col-sm-1 b-r cursor panel book_input" ng-repeat="(i, consumeRoom) in consumeRoomPrice"><input type="text" ng-model="param.price[consumeRoom.business_day]" class="form-control w-xs" ng-class="param.set_prices?'enable_select':'unable_select_edit'" size="8" value="{{consumeRoom.consume_price}}"></td>
+                                <td class="w-xs col-sm-1 cursor book_input" ng-repeat="(i, consumeRoom) in consumeRoomPrice"><input type="text" ng-model="param.price[consumeRoom.business_day]" class="form-control" ng-class="param.set_prices?'enable_select':'unable_select_edit'" size="7" value="{{consumeRoom.consume_price}}"></td>
                               <td></td>
                             </tr>
                           </tbody>
