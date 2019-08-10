@@ -534,8 +534,10 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				if(angular.isDefined(common.__module_id)) $scope.setActionNavName(common.__module_id);
 			}
 		};
-        $scope.getBusinessDay = function() {
-            return $rootScope.business_day;
+        $scope.getBusinessDay = function(format) {
+            if(angular.isUndefined(format)) format = "yyyy-MM-dd";
+            var businessDate = new Date($rootScope.business_day).getTime();
+            return $filter("date")(businessDate, format);
         };
 		$rootScope.employeeChannel = {};
         $scope.setThisChannel = function(channel) {

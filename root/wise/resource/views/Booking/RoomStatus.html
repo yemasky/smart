@@ -275,7 +275,7 @@
 							  <div class="form-inline form-group">
                                 <label class="control-label m-b"><i class="fa fa-clock-o"></i> 月份</label>
                                 <div class="input-group">
-                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.eta_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-min-view="0" data-autoclose="true" data-min-date="{{getDay('MM/dd/yyyy')}}" data-autoclose="1" name="eta_date" bs-datepicker value="">
+                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.eta_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-min-view="0" data-autoclose="true" data-min-date="{{getBusinessDay('MM/dd/yyyy')}}" data-autoclose="1" name="eta_date" bs-datepicker value="{{business_day}}">
                                     <span class="input-group-btn">
                                         <button class="btn btn-default" type="submit"> Go!</button>
                                     </span>

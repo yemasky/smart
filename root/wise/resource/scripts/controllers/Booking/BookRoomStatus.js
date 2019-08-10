@@ -925,7 +925,6 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	$scope.roomForwardList = '';$scope.param.eta_date = $scope.getDay('yyyy-MM-dd');
     $scope.roomForcasting = function(getRoomForward) {
 		if($scope.roomForwardList === '' || getRoomForward == true) {
-            console.log($scope.roomForwardList);console.log(getRoomForward);
 			$scope.loading.start();
 			$httpService.header('method', 'roomForcasting');
             //$scope.param.eta_date = $filter("date")($scope.param.eta_date, 'yyyy-MM-dd');
