@@ -874,8 +874,27 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel', 'Hotel')->EQ('valid','1')->LE('check_in', $out_date)->GE('check_out', $in_date);
         if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
-        $field = 'channel_id,item_category_id,item_id,check_in,check_out,booking_detail_status';
+        $field = 'booking_detail_id,booking_number,channel_id,item_category_id,item_id,check_in,check_out,booking_detail_status';
         $arrayResult['roomForwardList'] = BookingHotelServiceImpl::instance()->checkBooking($whereCriteria, $field);
+        $arrayBookingNumber = [];
+        if(!empty($arrayResult['roomForwardList'])) {
+            foreach ($arrayResult['roomForwardList'] as $k => $arrayData) {
+                $arrayBookingNumber[$arrayData['booking_number']] = $arrayData['booking_number'];
+            }
+        }
+        $arrayResult['liveInForwardList'] = [];
+        $arrayResult['bookForwardList'] = [];
+        if(!empty($arrayBookingNumber)) {
+            //查找住客
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid','1')->ArrayIN('booking_number', $arrayBookingNumber)
+                ->setHashKey('booking_detail_id')->setMultiple(true);
+            $arrayResult['liveInForwardList'] = BookingHotelServiceImpl::instance()->getGuestLiveIn($whereCriteria, 'booking_detail_id,member_name,item_id');
+            //查找订单
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid','1')->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number');
+            $arrayResult['bookForwardList'] = BookingHotelServiceImpl::instance()->getBooking($whereCriteria, 'member_name,booking_number');
+        }
 
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
@@ -901,6 +920,11 @@ class HotelOrderAction extends \BaseAction {
             $whereCriteria->EQ($condition_key, $search_value);
         }
         $arrayResult['bookingSearchList'] = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
+        if(!empty($arrayResult['bookingSearchList'])) {
+            foreach ($arrayResult['bookingSearchList'] as $i => $arrayData) {
+                $arrayResult['bookingSearchList'][$i]['detail_id'] = encode($arrayData['booking_detail_id']);
+            }
+        }
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 

@@ -938,6 +938,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 				} else {
                     $scope.setForwardCalendar($scope.param.eta_date, '');
 					$scope.roomForwardList = result.data.item.roomForwardList;
+                    $scope.liveInForwardList = result.data.item.liveInForwardList;
+                    $scope.bookForwardList = result.data.item.bookForwardList;                    
                     $scope.getForwardRoomStatus(result.data.item.roomForwardList);
 				}
 			});
@@ -991,9 +993,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             var check_out_time = new Date(bookingRoom.check_out.replace(/-/g, '/')).getTime();
             var book_day = (check_out_time - check_in_time)/86400000;
             var item_category_id = bookingRoom.item_category_id;
-            var book_room_id = bookingRoom.item_id;
+            var book_room_id = bookingRoom.item_id,booking_detail_id = bookingRoom.booking_detail_id;
             var categoryRoom = layoutRoomNum[item_category_id];//全部该房型下房间数
-            for(var i = check_in_time; i < check_out_time; i += 86400000) {
+            for(var i = check_in_time; i <= check_out_time; i += 86400000) {
                 var thisDate = new Date(i);var year = thisDate.getFullYear();
                 var month = thisDate.getMonth() - 0 + 1; if(month < 10) month = '0'+month;
                 var day = thisDate.getDate() - 0; if(day < 10) day = '0'+day;
@@ -1005,9 +1007,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     bookingCategory[item_category_id][date_key]['book_num'] = 0;
                     bookingCategory[item_category_id][date_key]['book_room'] = {};
                 }
-                bookingCategory[item_category_id][date_key]['book_num']++;
-                bookingCategory[item_category_id][date_key]['book_room'][book_room_id] = bookingRoom;
-                bookingCategory[item_category_id][date_key]['book_room'][book_room_id]['book_day'] = book_day;
+                if(bookingRoom.check_out != date_key) bookingCategory[item_category_id][date_key]['book_num']++;
+                if(angular.isUndefined(bookingCategory[item_category_id][date_key]['book_room'][book_room_id])) {
+                    bookingCategory[item_category_id][date_key]['book_room'][book_room_id] = {};
+                }
+                bookingCategory[item_category_id][date_key]['book_room'][book_room_id][booking_detail_id] = bookingRoom;
+                bookingCategory[item_category_id][date_key]['book_room'][book_room_id][booking_detail_id]['book_day'] = book_day;
             }
         }
         //计算日期可订房数量
@@ -1049,12 +1054,24 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 channelAllRoomReservation[date_key]['percentage'] = $scope.arithmetic(channelAllRoomReservation[date_key].book_num,'/',channelRoomNum,4) * 100;
                 //计算入住房间
                 for(var room_id in bookingCategory[item_category_id][date_key].book_room) {
-                    if(angular.isUndefined(bookRoomDefined[item_category_id][room_id])) {
-                        bookRoomDefined[item_category_id][room_id] = '';
-                        var book_info = bookingCategory[item_category_id][date_key].book_room[room_id]
-                        channelRoomReservation[item_category_id][date_key]['room'][room_id].is_book = 1;
-                        channelRoomReservation[item_category_id][date_key]['room'][room_id].book_info = book_info;
-                        channelRoomReservation[item_category_id][date_key]['room'][room_id].style = {"width":92*book_info.book_day+"px"};
+                    if(room_id <= 0) continue;//小于0 未排房
+                    var book_room = bookingCategory[item_category_id][date_key].book_room[room_id],first_room = 1;
+                    for(var booking_detail_id in book_room) {
+                        if(angular.isUndefined(bookRoomDefined[item_category_id][booking_detail_id])) {
+                            bookRoomDefined[item_category_id][booking_detail_id] = '';
+                            var book_info = book_room[booking_detail_id];
+                            channelRoomReservation[item_category_id][date_key]['room'][room_id].is_book = 1;
+                            channelRoomReservation[item_category_id][date_key]['room'][room_id].book_info[booking_detail_id] = book_info;
+                            var book_day = book_info.book_day,margin_left = "31px",passPx = 0.5;
+                            if(first_room == 0) margin_left = '';
+                            if(book_info.check_in != date_key) {
+                                //if(book_info.check_out == date_key) passPx = 0;
+                                book_day = (new Date(book_info.check_out).getTime() - new Date(date_key).getTime())/86400000 + passPx;
+                                margin_left = "-15px";
+                            }
+                            channelRoomReservation[item_category_id][date_key]['room'][room_id].book_info[booking_detail_id].style = {"width":92*book_day+"px","margin-left":margin_left};
+                            first_room = 0;
+                        }
                     }
                 }
             }

@@ -509,7 +509,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $check_out_source = trim($objRequest->getInput('check_out_source'));
         $arrayCancelsDay  = [];
         $arrayAddDay      = [];
-        if ($check_in != $check_in_source || $check_out != $check_out_source) {
+        if ($check_in != $check_in_source || $check_out != $check_out_source) {//更改了原始的预抵预离时间
             $in_date         = strtotime($check_in);
             $in_date_source  = strtotime($check_in_source);
             $out_date        = strtotime($check_out);

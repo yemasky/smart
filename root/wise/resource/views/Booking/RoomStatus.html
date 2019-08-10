@@ -328,9 +328,10 @@
                                                 </td>
                                             </tr>
                                             <tr ng-repeat="room in layoutRoomList[layout.item_id] track by $index" ng-show="forwardLayoutShow[layout.item_id]==1">
-                                                <td class="w-xs ">
-                                                    <div class="book_status bg-info" ng-if="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==1" ng-style="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].style">{{channelRoomReservation[layout_id][thisDate]['room'][room.item_id].book_info.book_day}}</div>
-                                                    <div ng-if="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==0">&nbsp;</div>
+                                                <td class="w-xs w-xs-min" ng-class="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==1?'room_is_book':''" ng-init="thisBookRoom=channelRoomReservation[layout_id][thisDate]['room'][room.item_id]">
+                                                    <div class="book_status btn btn-sm btn-default btn-rounded" ng-repeat="(booking_detail_id,bookRoom) in thisBookRoom.book_info" ng-if="thisBookRoom.is_book==1" ng-style="bookRoom.style" ng-class="bookRoom.booking_detail_status==1?'':''" data-title="订单：{{bookRoom.booking_number}}<br>预抵：{{bookRoom.check_in}}　　<br>预离：{{bookRoom.check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip"><span ng-if="bookRoom.booking_detail_status=='1'">住<i class="small ti-arrow-circle-down"></i></span>
+                                                    <span ng-if="bookRoom.booking_detail_status=='0'">预抵<i class="small ti-arrow-circle-down"></i></span></div>
+                                                    <div ng-if="thisBookRoom.is_book==0">&nbsp;</div>
                                                 </td>
                                             </tr>
                                           </table>
