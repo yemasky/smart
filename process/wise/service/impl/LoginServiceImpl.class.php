@@ -48,7 +48,7 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
         $username = $objRequest->email;
 
         $whereCriteria           = new \WhereCriteria();
-        $field                   = 'employee_id,company_id,channel_father_id,channel_id,employee_name,photo,`password`,password_salt';
+        $field                   = 'employee_id,company_id,employee_name,photo,`password`,password_salt';
         $arrayEmployeeList       = array();
         if (strpos($username, '@') !== false) {
             $whereCriteria->EQ('email', $username);
@@ -74,8 +74,6 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
                 $Employee        = new Employee();
                 $Employee->setEmployeeId($arrayEmployeeList[$i]['employee_id']);
                 $Employee->setCompanyId($arrayEmployeeList[$i]['company_id']);
-                $Employee->setChannelFatherId($arrayEmployeeList[$i]['channel_father_id']);
-                $Employee->setChannelId($arrayEmployeeList[$i]['channel_id']);
                 $Employee->setEmployeeName($arrayEmployeeList[$i]['employee_name']);
                 $Employee->setPhoto($arrayEmployeeList[$i]['photo']);
                 self::$objEmployee = $Employee;
