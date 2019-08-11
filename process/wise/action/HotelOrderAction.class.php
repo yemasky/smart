@@ -103,7 +103,6 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('channel', 'Hotel')
             ->EQ('valid', '1')->GE('booking_status', '0')->LE('check_in', $in_date)->setHashKey('booking_number');
-        if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $arrayBookList      = BookingHotelServiceImpl::instance()->getBooking($whereCriteria);
         $arrayBookingNumber = array_keys($arrayBookList);
         //加密
@@ -119,7 +118,6 @@ class HotelOrderAction extends \BaseAction {
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')
             ->EQ('valid', '1')->GE('booking_detail_status', '0')->ArrayIN('booking_number', $arrayBookingNumber)
             ->setHashKey('booking_detail_id')->ORDER('check_in');
-        if ($channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
         if (!empty($bookingDetailRoom)) {
             foreach ($bookingDetailRoom as $detail_id => $v) {

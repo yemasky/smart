@@ -99,7 +99,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.roomLiveIn        = {};$scope.check_outRoom = {};
             if($scope.roomList != '') {
                 //按当日计算预抵预离 //过期忽略
-                var thisDay = $scope.getDay();
+                var thisDay = $scope.getBusinessDay();//BusinessDay
                 var check_inRoom = {},check_outRoom = {}, live_inRoom = {},roomDetailList = {};
                 var bookAta = 0,dueOut = 0;
                 if($scope.bookingDetailRoom != '') {
@@ -839,8 +839,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	};
 	////night auditor////////////////////////////////////////////
 	$scope.nightAuditorList = '';
-    $scope.param.night_date = $scope.getDay('yyyy-MM-dd');
+    $scope.param.night_date = '';
 	$scope.nightAuditor = function(Get, object) {
+        if(angular.isUndefined($scope.param.night_date) || $scope.param.night_date == null || $scope.param.night_date == '') {
+           $scope.param.night_date = $scope.getBusinessDay();
+        }
+        if(Get == -2) {if($scope.nightAuditorList !== '') return;Get = -1;}
 		$httpService.header('method', 'nightAuditor');
 		$scope.loading.start();
 		$httpService.post('/app.do?'+param+'&get='+Get, $scope, function(result) {

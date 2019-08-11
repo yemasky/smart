@@ -31,9 +31,9 @@ exit;
 echo percent(0.000225455);
 
 
-function percent($num, $xf = 3) {
+function percent($num, $xf = 3, $symbol = '%') {
 	$xf = $xf + 2;
-	return sprintf("%.".$xf."f", 0.000225455) * 100 . '%';
+	return sprintf("%.".$xf."f", 0.000225455) * 100 . $symbol;
 }
 exit();
 

@@ -24,12 +24,12 @@
               <div class="p b-b tab-container ">
                 <ul class="nav nav-tabs" ui-nav ng-init="activeTab=1">
                     <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
-                        <a>{{_self_module.module_name}}</a>
+                        <a>客房房态</a>
                     </li>
                     <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
                         <a>预抵<span class="badge bg-info badge-xs m-l-xs" ng-bind-html="bookAta">0</span></a>
                     </li>
-                    <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
+                    <li ng-class="{active:activeTab==3}" ng-click="activeTab=3;nightAuditor(-2,'');">
                         <a>夜审</a>
                     </li>
                     <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;roomForcasting(false);">
@@ -98,7 +98,7 @@
 									</tr>
 								  </thead>
 								  <tbody><!-- bookingDetail -->
-									<tr ng-repeat="(i, detail) in bookingDetailRoom" ng-if="detail.booking_detail_status==0&&detail.check_in==getDay()">
+									<tr ng-repeat="(i, detail) in bookingDetailRoom" ng-if="detail.booking_detail_status==0&&detail.check_in==getBusinessDay()">
 								      <td>{{detail.booking_number}}</td>
 									  <td class="text-nowrap">{{detail.market_name}}</td>
 									  <td><span>{{detail.item_category_name}}</span></td>
@@ -228,7 +228,7 @@
                           <div class="form-inline form-group">
                             <label class="control-label m-b"><i class="fa fa-clock-o"></i> 营业日</label>
                             <div class="input-group">
-                                <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.night_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-autoclose="true" data-max-date="{{getDay('MM/dd/yyyy')}}" data-autoclose="1" name="night_date" bs-datepicker value="{{getDay('yyyy-MM-dd')}}">
+                                <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.night_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-autoclose="true" data-max-date="{{getBusinessDay('MM/dd/yyyy')}}" data-autoclose="1" name="night_date" bs-datepicker value="{{getDay('yyyy-MM-dd')}}">
                                 <span class="input-group-btn">
                                     <button class="btn btn-default" type="submit"> Go!</button>
                                     <button class="btn btn-default" type="button" ng-click="passBusinessDay()"><i class="ti-calendar"></i> 夜审完毕 过营业日</button>
@@ -303,7 +303,7 @@
                                   <!--房型列表-->
                                   <tbody>
                                     <tr><th colspan="{{forwardColspan}}"></th></tr>
-                                    <tr><th>全部房型 <code class="small font-thin">{{channelRoomNum}} <small>可订/已订 订房率</small></code></th><th class="no-padding panel"></th>
+                                    <tr><th>全部房型 <code class="small font-thin">{{channelRoomNum}} <small>可订/已订 入住率</small></code></th><th class="no-padding panel"></th>
                                         <td ng-repeat="(thisDate, date) in forwardCalendar">
                                             {{channelAllRoomReservation[thisDate].room_num}}<small>/{{channelAllRoomReservation[thisDate].book_num}}  {{channelAllRoomReservation[thisDate].percentage}}%</small>
                                         </td>
@@ -329,8 +329,8 @@
                                             </tr>
                                             <tr ng-repeat="room in layoutRoomList[layout.item_id] track by $index" ng-show="forwardLayoutShow[layout.item_id]==1">
                                                 <td class="w-xs w-xs-min" ng-class="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==1?'room_is_book':''" ng-init="thisBookRoom=channelRoomReservation[layout_id][thisDate]['room'][room.item_id]">
-                                                    <div class="book_status btn btn-sm btn-default btn-rounded" ng-repeat="(booking_detail_id,bookRoom) in thisBookRoom.book_info" ng-if="thisBookRoom.is_book==1" ng-style="bookRoom.style" ng-class="bookRoom.booking_detail_status==1?'':''" data-title="订单：{{bookRoom.booking_number}}<br>预抵：{{bookRoom.check_in}}　　<br>预离：{{bookRoom.check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip"><span ng-if="bookRoom.booking_detail_status=='1'">住<i class="small ti-shift-right-alt"></i></span>
-                                                    <span ng-if="bookRoom.booking_detail_status=='0'">预抵<i class="small ti-shift-right-alt"></i></span></div>
+                                                    <div class="book_status btn btn-sm btn-default btn-rounded" ng-repeat="(booking_detail_id,bookRoom) in thisBookRoom.book_info" ng-if="thisBookRoom.is_book==1" ng-style="bookRoom.style" ng-class="bookRoom.booking_detail_status==1?'':''" data-title="订单：{{bookRoom.booking_number}}<br>预抵：{{bookRoom.check_in}}　　<br>预离：{{bookRoom.check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip"><span ng-if="bookRoom.booking_detail_status=='1'">住 <i class="small fa fa-caret-right"></i></span>
+                                                    <span ng-if="bookRoom.booking_detail_status=='0'">预抵 <i class="small fa fa-caret-right"></i></span></div>
                                                     <div ng-if="thisBookRoom.is_book==0">&nbsp;</div>
                                                 </td>
                                             </tr>

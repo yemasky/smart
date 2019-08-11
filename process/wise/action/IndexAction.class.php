@@ -50,8 +50,7 @@ class IndexAction extends \BaseAction {
      * 首页显示
      */
     protected function doDefault(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        //赋值
-        //设置类别
+        //
     }
 
     /**

@@ -425,8 +425,8 @@ if(!defined("INC_FUNC_COMMON")) {
 		return $order_number;
 	}
 
-	function percent($num, $xf = 3) {
-		return sprintf("%." . $xf . "f", $num * 100) . '%';
+	function percent($num, $xf = 3, $symbol = '%') {
+		return sprintf("%." . $xf . "f", $num * 100) . $symbol;
 	}
 
 	//10进制转换成36进制
