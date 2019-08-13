@@ -926,8 +926,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         });
     }
     //begin//远期房态/////////////////////////////////////////////////////////
-	$scope.roomForwardList = '';$scope.param.eta_date = $scope.getDay('yyyy-MM-dd');
+	$scope.roomForwardList = '';$scope.param.eta_date = '';
     $scope.roomForcasting = function(getRoomForward) {
+        if(angular.isUndefined($scope.param.eta_date) || $scope.param.eta_date == null || $scope.param.eta_date == '') {
+           $scope.param.eta_date = $scope.getBusinessDay();
+        }
 		if($scope.roomForwardList === '' || getRoomForward == true) {
 			$scope.loading.start();
 			$httpService.header('method', 'roomForcasting');
