@@ -268,7 +268,7 @@
 							</div>
 						</div>
                     </div>
-                    <div ng-show="activeTab==4">
+                    <div ng-show="activeTab==4"><!-- 远期房态 -->
                         <div class="form-group m-h-n clearfix">
 							<div class="p-md">
                               <form name="roomForcastingForm" class="form-validation" id="roomForcastingForm" ng-submit="roomForcasting(true)">
@@ -313,7 +313,7 @@
                                           <div style="padding: 10px 5px 7px 10px;">{{layout.item_name}} <code class="small" ng-if="layoutRoomNum[layout_id]>0">{{layoutRoomNum[layout_id]}}</code> <i class="ti-angle-double-down small pull-right cursor" ng-show="forwardLayoutShow[layout.item_id]==0" ng-click="setForwardLayoutShow(layout.item_id, 1)"></i> <i class="ti-angle-up small pull-right cursor" ng-show="forwardLayoutShow[layout.item_id]==1" ng-click="setForwardLayoutShow(layout.item_id, 0)"></i>
                                           </div>
                                           <table class="table no-margin"><!--酒店房型的房间列表 循环 i-->
-                                            <tr ng-repeat="room in layoutRoomList[layout.item_id] track by $index" ng-show="forwardLayoutShow[layout.item_id]==1">
+                                            <tr ng-repeat="room in layoutRoomList[layout.item_id]" ng-show="forwardLayoutShow[layout.item_id]==1">
                                                 <td>{{room.item_name}}</td>
                                             </tr>
                                           </table>
@@ -327,11 +327,10 @@
                                                     <small>/{{channelRoomReservation[layout_id][thisDate].book_num}}</small>
                                                 </td>
                                             </tr>
-                                            <tr ng-repeat="room in layoutRoomList[layout.item_id] track by $index" ng-show="forwardLayoutShow[layout.item_id]==1">
-                                                <td class="w-xs w-xs-min" ng-class="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==1?'room_is_book':''" ng-init="thisBookRoom=channelRoomReservation[layout_id][thisDate]['room'][room.item_id]">
-                                                    <div class="book_status btn btn-sm btn-default btn-rounded" ng-repeat="(booking_detail_id,bookRoom) in thisBookRoom.book_info" ng-if="thisBookRoom.is_book==1" ng-style="bookRoom.style" ng-class="bookRoom.booking_detail_status==1?'':''" data-title="订单：{{bookRoom.booking_number}}<br>预抵：{{bookRoom.check_in}}　　<br>预离：{{bookRoom.check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip"><span ng-if="bookRoom.booking_detail_status=='1'">住 <i class="small fa fa-caret-right"></i></span>
-                                                    <span ng-if="bookRoom.booking_detail_status=='0'">预抵 <i class="small fa fa-caret-right"></i></span></div>
-                                                    <div ng-if="thisBookRoom.is_book==0">&nbsp;</div>
+                                            <tr ng-repeat="room in layoutRoomList[layout.item_id]" ng-show="forwardLayoutShow[layout.item_id]==1">
+                                                <td class="w-xs w-xs-min" ng-class="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==1?'room_is_book':''">
+                                                    <div ng-if="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==1"><div class="book_status btn btn-sm btn-default btn-rounded" ng-repeat="(booking_detail_id,bookRoom) in channelRoomReservation[layout_id][thisDate]['room'][room.item_id].book_info" ng-style="bookRoom.style" ng-class="bookRoom.booking_detail_status==1?'':''" data-title="订单：{{bookRoom.booking_number}}<br>预抵：{{bookRoom.check_in}}　　<br>预离：{{bookRoom.check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip"><span ng-if="bookRoom.booking_detail_status=='1'&&bookRoom.check_out!=business_day">住 <i class="small fa fa-caret-right"></i></span><span ng-if="bookRoom.booking_detail_status=='1'&&bookRoom.check_out==business_day">预离 <i class="small fa fa-caret-right"></i></span><span ng-if="bookRoom.booking_detail_status=='0'">预抵 <i class="small fa fa-caret-right"></i></span></div></div>
+                                                    <div ng-if="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==0">&nbsp;</div>
                                                 </td>
                                             </tr>
                                           </table>

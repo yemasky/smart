@@ -957,7 +957,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         var check_in = new Date(in_date.replace(/-/g, '/'));
         var check_in_time = check_in.getTime(); 
         if(out_date == '') {
-            var check_out_time = check_in_time + 86400000 * 31;  
+            var check_out_time = check_in_time + 86400000 * 38;  
         } else {
             var check_out = new Date(out_date.replace(/-/g, '/'));
             var check_out_time = check_out.getTime();  
@@ -1066,17 +1066,23 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     for(var booking_detail_id in book_room) {
                         if(angular.isUndefined(bookRoomDefined[item_category_id][booking_detail_id])) {
                             bookRoomDefined[item_category_id][booking_detail_id] = '';
-                            var book_info = book_room[booking_detail_id];
+                            var book_info = book_room[booking_detail_id], book_key  = 1;
+                            if(book_info.check_out == date_key) {
+                                book_key = 0;
+                            }
                             channelRoomReservation[item_category_id][date_key]['room'][room_id].is_book = 1;
-                            channelRoomReservation[item_category_id][date_key]['room'][room_id].book_info[booking_detail_id] = book_info;
+                            channelRoomReservation[item_category_id][date_key]['room'][room_id].book_info[book_key] = book_info;
                             var book_day = book_info.book_day,margin_left = "31px",passPx = 0.5;
                             if(first_room == 0) margin_left = '';
+                            if(book_key == 0 && angular.isDefined(channelRoomReservation[item_category_id][date_key]['room'][room_id].book_info[1])) {
+                                channelRoomReservation[item_category_id][date_key]['room'][room_id].book_info[1].style["margin-left"] = 0;
+                            }
                             if(book_info.check_in != date_key) {
                                 //if(book_info.check_out == date_key) passPx = 0;
                                 book_day = (new Date(book_info.check_out).getTime() - new Date(date_key).getTime())/86400000 + passPx;
                                 margin_left = "-15px";
                             }
-                            channelRoomReservation[item_category_id][date_key]['room'][room_id].book_info[booking_detail_id].style = {"width":92*book_day+"px","margin-left":margin_left};
+                            channelRoomReservation[item_category_id][date_key]['room'][room_id].book_info[book_key].style = {"width":92*book_day+"px","margin-left":margin_left};
                             first_room = 0;
                         }
                     }
