@@ -20,18 +20,18 @@
 //========================
 //Follow button
 //========================
-
+window.addEventListener('touchstart', function(){}, { passive: false })
 $(function() {
 
 
 	// SOME VARIABLES
-	var button = '.dribbble-follow-button',
+	/*var button = '.dribbble-follow-button',
 		label = $(button).text(),
 		username = $('a'+button).attr('href').toLowerCase().replace('http://dribbble.com/', ''),
-		disableCount = $(button).attr('class');
+		disableCount = $(button).attr('class');*/
 
 	// DISPLAYED WHEN THE API IS NOT RESPONDING
-	$(button).wrap('<div class="dribbble-follow-button" />').removeClass().addClass('label').html('<i></i> '+label);
+	//$(button).wrap('<div class="dribbble-follow-button" />').removeClass().addClass('label').html('<i></i> '+label);
 
 	// REQUESTS USER'S DATA FROM DRIBBBLE'S API AND APPENDS IT
 	/*$.getJSON('http://api.dribbble.com/players/'+username+'?callback=?', function(data) {
