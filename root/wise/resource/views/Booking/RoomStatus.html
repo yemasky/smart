@@ -47,7 +47,7 @@
                                         <div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, room) in floor">
                                           <!--<span class="pull-left w-thumb-xs m-r b-b-2x"><i class="ui-icon ti-user {{bookRoomStatus[room.item_id].className}}"></i></span>-->
                                           <div class="clear p-xs">
-                                            <span class="font-bold block"><!--layout name-->{{layoutList[layoutRoom[room.item_id].item_category_id].item_name}}<span class="pull-right small fas fa-coins" ng-class="room.roomAccount>0?'text-success-dk':room.roomAccount<0?'text-danger-dk':''" ng-if="room.roomAccount!=0"> {{room.roomAccount}}</span></span>
+                                            <span class="font-bold block"><!--layout name-->{{layoutList[layoutRoom[room.item_id].item_category_id].item_name}}<span class="pull-right small fas fa-coins" ng-class="room.roomAccount>=0?'text-success-dk':room.roomAccount<0?'text-danger-dk':''" ng-if="room.status=='live_in'"> {{room.roomAccount}}</span></span>
                                             <div>{{room.item_name}}
                                                 <label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
                                             </div>
@@ -268,7 +268,8 @@
 							</div>
 						</div>
                     </div>
-                    <div ng-show="activeTab==4"><!-- 远期房态 -->
+                    <div ng-show="activeTab==4">
+                        <!-- 远期房态 -->
                         <div class="form-group m-h-n clearfix">
 							<div class="p-md">
                               <form name="roomForcastingForm" class="form-validation" id="roomForcastingForm" ng-submit="roomForcasting(true)">
@@ -303,7 +304,7 @@
                                   <!--房型列表-->
                                   <tbody>
                                     <tr><th colspan="{{forwardColspan}}"></th></tr>
-                                    <tr><th>全部房型 <code class="small font-thin">{{channelRoomNum}} <small>可订/已订 入住率</small></code></th><th class="no-padding panel"></th>
+                                    <tr><th>全部房型 <code class="small font-thin">{{channelRoomNum}} <small>可订/<small>已订 入住率</small></small></code></th><th class="no-padding panel"></th>
                                         <td ng-repeat="(thisDate, date) in forwardCalendar">
                                             {{channelAllRoomReservation[thisDate].room_num}}<small>/{{channelAllRoomReservation[thisDate].book_num}}  {{channelAllRoomReservation[thisDate].percentage}}%</small>
                                         </td>
@@ -473,7 +474,7 @@
       <a style="display:inline;" ng-click="editRoomStatus('repair_ok')"><i class="fas fa-user-check small"></i> 修好</a></li>
   <li class="divider"></li>
   <li>
-      <a style="display:inline;" ng-click="editRoomStatus('room_card')"><i class="fas fa-id-card-alt"></i> 房卡</a>
+      <a style="display:inline;" ng-click="editRoomStatus('room_card')"><i class="ti-credit-card"></i> 房卡</a>
       <a style="display:inline;" ng-click="editRoomStatus('empty_room')"><i class="fas fa-circle-notch"></i> 空房</a></li>
   </li>
 </ul>

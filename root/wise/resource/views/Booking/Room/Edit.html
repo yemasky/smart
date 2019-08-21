@@ -57,28 +57,34 @@
 							</tr>
 						  </thead>
 						  <tbody><!-- 单个订单 roomDetail -->
-							<tr ng-repeat="(edit_i, rDetail) in roomDetail">
+							<tr ng-repeat="(detail_id, rDetail) in roomDetail">
 								<td colspan="9" class="no-padding panel">
 								  <table class="table no-margin">
 									  <tr>
 										  <td class="col-xs-1 small">
-                                              <a class="fas fa-user-plus" ng-click="addGuestLiveIn('AddLiveIn', rDetail)" title="添加住客"></a>
+                                              <a class="fas fa-user-plus" ng-click="addGuestLiveIn('AddLiveIn', rDetail)" title="添加住客" ng-if="rDetail.booking_detail_status>=0"></a>
 											  <code class="small" ng-if="rDetail.booking_detail_status==0">预抵</code>
 											  <a class="btn btn-xs btn-default" ng-if="rDetail.booking_detail_status==1"> 已入住</a>
+                                              <a class="btn btn-xs btn-default" ng-if="rDetail.booking_detail_status==2"> noshow入住</a>
+                                              <a class="btn btn-xs btn-default" ng-if="rDetail.booking_detail_status==-1"> 已退房</a>
+                                              <a class="btn btn-xs btn-default" ng-if="rDetail.booking_detail_status==-2"> 已取消</a>
+                                              <a class="btn btn-xs btn-default" ng-if="rDetail.booking_detail_status==-3"> noshow取消</a>
+                                              <a class="btn btn-xs btn-default" ng-if="rDetail.booking_detail_status==-4"> 挂账退房</a>
+                                              <a class="btn btn-xs btn-default" ng-if="rDetail.booking_detail_status==-5"> 走结退房</a>
 										  </td>
 										  <td class="col-xs-1" toggle-class="fa fa-edit" class-target="a">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
-											<a class="fa pull-right" ng-click="showEditBookRoomAside(rDetail, 'Room')"></a></td>
+											<a class="fa pull-right" ng-click="showEditBookRoomAside(rDetail, 'Room')" ng-if="rDetail.booking_detail_status>=0"></a></td>
 										  <td class="col-xs-2">{{rDetail.item_category_name}}
-											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'category')"></a></td>
+											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'category')" ng-if="rDetail.booking_detail_status>=0"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a" class="text-nowrap">{{rDetail.market_name}}
-											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'market')"></a></td>
+											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'market')" ng-if="rDetail.booking_detail_status>=0"></a></td>
 										  <td class="col-xs-2" toggle-class="fa fa-edit" class-target="a">{{rDetail.price_system_name}}
-											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'system')"></a></td>
+											<a class="pull-right" ng-click="showEditBookRoomAside(rDetail, 'system')" ng-if="rDetail.booking_detail_status>=0"></a></td>
 										  <td class="col-xs-1" show-bookroom-price="close" ng-Model="consumeList[rDetail.booking_number][rDetail.booking_detail_id]">{{bookConsumePrice[rDetail.booking_number][rDetail.booking_detail_id]}}<a class="pull-right"></a></td>
 										  <td class="col-xs-1">{{rDetail.check_in}}</td>
 										  <td class="col-xs-1">{{rDetail.check_out}}</td>
 										  <td>
-											  <button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')"><i class="glyphicon glyphicon-edit text-info"></i></button>
+											  <button class="btn btn-xs btn-default" ng-click="showEditBookRoomAside(rDetail, 'market')" ng-if="rDetail.booking_detail_status>=0"><i class="glyphicon glyphicon-edit text-info"></i></button>
 											  <a class="btn btn-xs btn-default" ng-click="addGuestLiveIn('LiveInOne', rDetail)" ng-if="rDetail.booking_detail_status==0"><i class="fas fa-procedures"></i> 入住</a>
 										  </td>
 									  </tr>
@@ -87,7 +93,7 @@
                                               <table class="table no-margin">
                                                   <tr ng-repeat="(live_in_id, LiveIn) in guestLiveInList[rDetail.booking_number][rDetail.booking_detail_id]">
                                                       <td class="col-xs-1"></td>
-                                                      <td  class="col-xs-1" toggle-class="fa fa-edit" class-target="a"><i class="fa fa-user" ng-click="addGuestLiveIn('EditLiveIn', LiveIn)"></i> <a class="" ng-click="addGuestLiveIn('EditLiveIn', LiveIn)"></a></td>
+                                                      <td  class="col-xs-1" toggle-class="fa fa-edit" class-target="a"><i class="fa fa-user"></i> <a class="" ng-click="addGuestLiveIn('EditLiveIn', LiveIn)" ng-if="rDetail.booking_detail_status>=0"></a></td>
                                                       <td class="col-xs-1">{{LiveIn.member_name}}</td>
                                                       <td class="col-xs-1">{{LiveIn.member_sex==1?'男':'女'}}</td>
                                                       <td class="col-xs-1">{{LiveIn.member_mobile}}</td>
@@ -100,7 +106,7 @@
                                                           {{LiveIn.member_idcard_type=='other_permit'?'其它':''}}
                                                       </td>
                                                       <td class="col-xs-1">{{LiveIn.member_idcard_number}}</td>
-                                                      <td><a class="btn btn-xs btn-default"><i class="ti-credit-card"></i> 做门卡</a></td>
+                                                      <td><a class="btn btn-xs btn-default" ng-click="makeRoomCard(rDetail, 'LiveIn')" ng-if="rDetail.booking_detail_status>=0"><i class="ti-credit-card"></i> 做房卡</a></td>
                                                       <td colspan="2"></td>
                                                   </tr>
                                                 </table>
@@ -119,6 +125,7 @@
                 <div ng-show="activeRoomBookEditTab==3">
                     <script type="text/ng-template" id="/app/checkOutMenu.html">
                         <ul class="dropdown-menu">
+                          <li><a href ng-click="bookingClose(bookDetail, 'part')"><i class="fa fa-list-ol"></i> 部分结账</a></li>
                           <li><a href ng-click="bookingClose(bookDetail, 'refund')"><i class="fas fa-tasks"></i> 结账退房</a></li>
                           <li><a href ng-click="bookingClose(bookDetail, 'hanging')"><i class="fas fa-tasks"></i> 挂账退房</a></li>
                           <li><a href ng-click="bookingClose(bookDetail, 'escape')"><i class="fas fa-grimace"></i> 走结退房</a></li>
@@ -160,6 +167,7 @@
                                 <table class="table table-bordered table-striped bg-white text-nowrap">
                                   <thead>
                                     <tr>
+                                      <th class="w-xxs">打印</th>
                                       <th class="w">房号</th>
                                       <th class="w">项目</th>
                                       <!--<th class="w">数量</th>-->
@@ -173,20 +181,27 @@
                                         <td colspan="6" class="no-padding panel">
                                             <table class="table no-margin">
                                                 <tr ng-repeat="(i, consume) in consumes">
-                                                    <td class="w">{{consume.item_name}}</td>
-                                                    <td class="w">{{consume.consume_title}}</td>
+                                                    <td class="w-xxs b-r">
+                                                        <label class="checkbox-inline ui-checks"><input type="checkbox"><i></i></label>
+                                                    </td>
+                                                    <td class="w b-r">{{consume.item_name==''?'未排房':consume.item_name}}</td>
+                                                    <td class="w b-r">{{consume.consume_title}}</td>
                                                     <!--<td class="w">{{consume.item_amount}}</td>-->
-                                                    <td class="w">{{consume.consume_price_total}}</td>
+                                                    <td class="w b-r">{{consume.consume_price_total}}</td>
                                                     <td class="w">{{consume.business_day}}</td>
                                                     <td class="col-xs-1">
-                                                        <span class="btn-group">
-                                                            <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.edit" >编辑</span></button>
-                                                            <button class="btn btn-xs btn-default" ng-click="editConsume(consume)"><span translate="common.hint.backout" >撤销</span></button>
+                                                        <span class="btn-group" ng-if="roomDetail[consume.booking_detail_id].booking_detail_status>=0">
+                                                            <button class="btn btn-xs btn-default" ng-click="editConsume(consume)" ng-if="consume.valid=='1'"><span translate="common.hint.edit">编辑</span></button>
+                                                            <button class="btn btn-xs btn-default" ng-click="revokesOperations(consume, 'consume')" ng-if="consume.valid=='1'"><span translate="common.hint.backout" >撤销</span></button>
+                                                            <button class="btn btn-xs btn-default" ng-if="consume.valid=='0'"><span>已撤销</span></button>
                                                         </span>
                                                     </td>
                                                 </tr>
                                             </table>
                                         </td>
+                                    </tr>
+                                    <tr>
+                                      <td colspan="6">开始打印 <a class="ti-printer"></a></td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -208,17 +223,18 @@
                                   </thead>
                                   <tbody>
                                     <tr ng-repeat="(i, account) in accountDetail">
-                                      <td>{{account.item_name}}</td>
+                                      <td>{{account.item_name==''?'未排房':account.item_name}}</td>
                                       <td>{{account.payment_name}}</td>
                                       <td>{{account.accounts_type=='receipts'?'收款':account.accounts_type=='refund'?'退款':''}}</td>
                                       <td>{{account.money}}</td>
                                       <td>{{account.business_day}}</td>
                                       <td>{{account.add_datetime}}</td>
                                       <td>
-                                          <span class="btn-group">
-                                          <button class="btn btn-xs btn-default" ng-click="editAccounts(account)"><span translate="common.hint.edit" >编辑</span></button>
-                                          <button class="btn btn-xs btn-default" ng-click="editAccounts(account)"><span translate="common.hint.backout" >撤销</span></button>
-                                          </span>
+                                        <span class="btn-group" ng-if="roomDetail[account.booking_detail_id].booking_detail_status>=0">
+                                          <button class="btn btn-xs btn-default" ng-click="editAccounts(account)" ng-if="account.valid=='1'"><span translate="common.hint.edit" >编辑</span></button>
+                                          <button class="btn btn-xs btn-default" ng-click="revokesOperations(account, 'account')" ng-if="account.valid=='1'"><span translate="common.hint.backout" >撤销</span></button>
+                                        </span>
+                                        <button class="btn btn-xs btn-default" ng-if="account.valid=='0'"><span>已撤销</span></button>
                                       </td>
                                     </tr>
                                     <tr>
@@ -261,8 +277,9 @@
                                                     <td class="w">{{borrow.borrowing_return_num}}</td>
                                                     <td class="col-xs-1">
                                                         <span class="btn-group">
-                                                            <button class="btn btn-xs btn-default" ng-click="editBorrowing(borrow)"><span translate="common.hint.edit" >编辑</span></button>
-                                                            <button class="btn btn-xs btn-default" ng-click="editBorrowing(borrow)"><span translate="common.hint.give_back" >归还</span></button>
+                                                            <button class="btn btn-xs btn-default" ng-click="editBorrowing(borrow)" ng-if="borrow.borrowing_return=='0'"><span translate="common.hint.edit" >编辑</span></button>
+                                                            <button class="btn btn-xs btn-default" ng-click="revokesOperations(borrow, 'borrow')" ng-if="borrow.borrowing_return=='0'"><span translate="common.hint.give_back" >归还</span></button>
+                                                            <button class="btn btn-xs btn-default" ng-if="borrow.borrowing_return=='1'"><span>已归还</span></button>
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -271,9 +288,9 @@
                                     </tr>
                                     <tr>
                                       <th class="text-nowrap">合计</th>
-                                      <td>收款</td>
                                       <td></td>
-                                      <td>退款</td>
+                                      <td></td>
+                                      <td></td>
                                       <td></td>
                                       <td></td>
                                       <td></td>
@@ -290,19 +307,19 @@
 						<table class="table bg-white">
 						  <thead>
 							<tr>
-							  <th>时间</th>
-							  <th>标题</th>
+							  <th class="w">标题</th>
 							  <th>内容</th>
-							  <th>操作人</th>
+							  <th class="w">操作人</th>
+							  <th class="w">时间</th>
 							  <th></th>
 							</tr>
 						  </thead>
 						  <tbody>
 							<tr ng-repeat="(i, Operation) in bookingOperationList">
-							  <td class="text-nowrap">{{Operation.add_datetime}}</td>
 							  <td>{{Operation.operation_title}}</td>
 							  <td>{{Operation.operation_content}}</td>
 							  <td>{{Operation.employee_name}}</td>
+							  <td class="text-nowrap">{{Operation.add_datetime}}</td>
 							  <td>{{Operation.request}}</td>
 							</tr>
 						  </tbody>

@@ -143,16 +143,16 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 $scope.roomLiveIn = roomLiveIn;
                 $scope.roomDetailList = roomDetailList;
                 //消费、账务计算
-                var bookConsume = {}, bookAccount = {}, bookBalance = {}, bookConsumePrice = {};
+                var bookConsume = {}, bookAccount = {}, bookBalance = {}, bookConsumePrice = {},bookAccountPrice = {};
                 if($scope.consumeList != '') {//消费
                     for(var booking_number in $scope.consumeList) {
-                        bookConsume[booking_number] = 0; bookAccount[booking_number] = 0; bookConsumePrice[booking_number] = {};
+                        bookConsume[booking_number] = 0; bookAccount[booking_number] = 0; bookConsumePrice[booking_number] = {};bookAccountPrice[booking_number] = {};
                         for(var detail_id in $scope.consumeList[booking_number]) {
-                            bookConsumePrice[booking_number][detail_id] = 0;
+                            bookConsumePrice[booking_number][detail_id] = 0;bookAccountPrice[booking_number][detail_id] = 0;
                             for(var i in $scope.consumeList[booking_number][detail_id]) {
                                 var consume = $scope.consumeList[booking_number][detail_id][i];
-                                bookConsume[booking_number] = $scope.arithmetic(consume.consume_price_total, '+', bookConsume[booking_number]);
-                                bookConsumePrice[booking_number][detail_id] = $scope.arithmetic(consume.consume_price_total, '+',bookConsumePrice[booking_number][detail_id]);
+                                bookConsume[booking_number] = $scope.arithmetic(consume.consume_price_total, '+', bookConsume[booking_number]);//按booking_number
+                                bookConsumePrice[booking_number][detail_id] = $scope.arithmetic(consume.consume_price_total, '+',bookConsumePrice[booking_number][detail_id]);//按detail_id
                             }
                         }
                     }				
@@ -162,13 +162,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     for(var booking_number in $scope.accountsList) {
                         for(var i in $scope.accountsList[booking_number]) {
                             var account = $scope.accountsList[booking_number][i];
-                            var symbol = '+';
+                            var symbol = '+';var detail_id = account.booking_detail_id;
                             if(account.accounts_type == 'refund') symbol = '-';
                             if(account.accounts_type == 'hanging') continue;//挂账不算金钱
-                            bookAccount[booking_number] = $scope.arithmetic(bookAccount[booking_number], symbol, account.money);
+                            bookAccount[booking_number] = $scope.arithmetic(bookAccount[booking_number], symbol, account.money);//按按booking_number
+                            bookAccountPrice[booking_number][detail_id] = $scope.arithmetic(bookAccountPrice[booking_number][detail_id], symbol, account.money);//按detail_id
                         }
                     }				
                 }
+                $scope.bookAccountPrice = bookAccountPrice;//按detail_id
                 //房间状态
                 var bookRoomStatus = {};
                 for(var building in $scope.roomList) {
@@ -184,8 +186,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                                 if(angular.isDefined(bookConsume[live_inRoom[room.item_id].booking_number])) {
                                     var booking_number = live_inRoom[room.item_id].booking_number;
                                     var account = $scope.arithmetic(bookAccount[booking_number], '-', bookConsume[booking_number], 2);
-                                    billAccount[booking_number] = account;
-                                    room.roomAccount = account;
+                                    billAccount[booking_number] = account;//单个账单（订单）的结余
+                                    room.roomAccount = account;//
                                 }
                             }
                             bookRoomStatus[room.item_id] = room;
@@ -542,8 +544,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         return true;
     }
     ////读取身份证/////////////////////////////////////////////////
-    $scope.readGuestIdCard = function() {
-        
+    $scope.readGuestIdCard = function(rDetail) {
+        console.log(rDetail);
+    };
+    ////制作房卡/////////////////////////////////////////////////
+    $scope.makeRoomCard = function(rDetail,type) {
+        console.log(rDetail);
     };
     ////设置room的各种状态/////////////////////////////////////////////////////////////////
     $scope.statusRoom = {};
@@ -740,6 +746,49 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			});
 		});
 	};
+    $scope.revokesOperations = function(revokesParam, type) {//撤销消费
+        var message = '';$scope.param = {};
+        if(type == 'consume') {
+            message = '您确定要撤销消费记录？';
+            $scope.param.c_id = revokesParam.c_id;
+            $scope.param.consume_title = revokesParam.consume_title;
+        }
+        if(type == 'account') {
+            message = '您确定要撤销消费记录？';
+            $scope.param.ba_id = revokesParam.ba_id;
+            $scope.param.payment_name = revokesParam.payment_name;
+            $scope.param.accounts_type = revokesParam.accounts_type;
+        }
+        if(type == 'borrow') {
+            message = '您确定要操作归还物品并交还押金吗？';
+            $scope.param.bb_id = revokesParam.bb_id;
+            $scope.param.borrowing_name = revokesParam.borrowing_name;
+            $scope.param.borrowing_num = revokesParam.borrowing_num;
+        }
+        $scope.param.revokes = type;
+        $scope.param.item_name = revokesParam.item_name;
+        $scope.param.business_day = revokesParam.business_day;
+        $scope.param.booking_number = revokesParam.booking_number;
+        $scope.confirm({'content':message,'callback': close});
+        function close(consume) {
+            $scope.beginLoading =! $scope.beginLoading;
+            $httpService.header('method', 'revokesOperations');
+            $httpService.post('/app.do?'+param, $scope, function(result) {
+                $scope.beginLoading =! $scope.beginLoading;
+                $httpService.deleteHeader('method');
+                if (result.data.success == '0') {
+                    var message = $scope.getErrorByCode(result.data.code);
+                    //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                    return;//错误返回
+                } else {
+                    $scope.successAlert.startProgressBar();
+                    if(type == 'borrow') {revokesParam.borrowing_return = 1;
+                    } else {revokesParam.valid = '0';}
+                    $scope.param = {};
+                }
+            });
+        }
+	};
 	////消费、借物//////////////////////////////////////////////////
 	$scope.bookingConsume = function(consume) {
         var title = '消费';
@@ -798,12 +847,18 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     }
 	////结账退房////////////////////////////////////////////////////////////
 	$scope.bookingClose = function(bookDetail, closeType) {
-		var payMoney = $scope.billAccount[bookDetail.booking_number];
-		if(payMoney < 0) payMoney = -payMoney;
-		$scope.payMoney = payMoney;$scope.param.money = payMoney;$scope.param['closeType'] = closeType;// = accounts_type
-        if(closeType == 'refund' || closeType == 'hanging') {
+		var payMoney = angular.copy($scope.billAccount[bookDetail.booking_number]), money = payMoney;
+		if(payMoney < 0) {money = -payMoney;$scope.param.accounts_type = 'receipts';}
+        if(payMoney > 0) {$scope.param.accounts_type = 'refund';}
+        if(closeType == 'part') {
+            if($scope.param.partPrice < 0) {$scope.param.accounts_type = 'receipts';}
+            if($scope.param.partPrice > 0) {$scope.param.accounts_type = 'refund';}
+        }
+		$scope.payMoney = payMoney;$scope.param.money = money;$scope.param['closeType'] = closeType;// = accounts_type
+        if(closeType == 'refund' || closeType == 'hanging' || closeType == 'part') {
             var title = '退房';$scope.closeThisBooking = close;
             if(closeType == 'hanging') {title = '挂账退房';};
+            if(closeType == 'part') {title = '部分结账';};
             var asideBookingClose = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/bookClose.html',show: false});
             asideBookingClose.$promise.then(function() {
                 asideBookingClose.show();
@@ -819,6 +874,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $httpService.header('method', 'bookingClose');
             $scope.param['booking_number'] = bookDetail.booking_number;
             $scope.param['book_id'] = bookDetail.book_id;
+            $scope.param.member_id = bookDetail.member_id;
             if(angular.isDefined($scope.payment_id)) {
                 $scope.param['payment_name'] = $scope.payment_name;
         	    $scope.param['payment_id'] = $scope.payment_id;
@@ -837,6 +893,25 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             });
         }
 	};
+    //计算部分结账
+    $scope.setCloseRoomAccounts = function(rDetail) {
+        var close_room = $scope.param.close_room;
+        var booking_number = rDetail.booking_number;
+        //消费
+        var bookConsumePrice = $scope.bookConsumePrice[booking_number];
+        //入账
+        var bookAccountPrice = $scope.bookAccountPrice[booking_number];
+        var partPrice = 0,partPayMoney = 0;
+        if(close_room != '') {
+            for(var detail_id in close_room) {
+                if(close_room[detail_id]) partPrice += $scope.arithmetic(bookAccountPrice[detail_id], '-', bookConsumePrice[detail_id]);
+            }
+            if(partPrice < 0) {partPayMoney = -partPrice;}else{partPayMoney = partPrice};
+        }
+        $scope.param.partPrice = partPrice;
+        $scope.param.partPayMoney = partPayMoney;
+        
+    }
 	////night auditor////////////////////////////////////////////
 	$scope.nightAuditorList = '';
     $scope.param.night_date = '';

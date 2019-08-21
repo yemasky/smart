@@ -10,7 +10,7 @@ namespace wise;
 
 class BookingEntity extends \Entity {
 	protected $booking_id = null;
-	protected $booking_number = 0;
+	protected $booking_number = '0';
 	protected $booking_number_ext = '';
 	protected $company_id;
 	protected $channel = 'Hotel';
@@ -59,14 +59,14 @@ class BookingEntity extends \Entity {
     /**
      * @return int
      */
-    public function getBookingNumber(): int {
+    public function getBookingNumber(): string {
         return $this->booking_number;
     }
 
     /**
      * @param int $booking_number
      */
-    public function setBookingNumber(int $booking_number) {
+    public function setBookingNumber(string $booking_number) {
         $this->booking_number = $booking_number;
     }
 
