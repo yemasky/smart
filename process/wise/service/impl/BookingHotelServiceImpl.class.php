@@ -784,6 +784,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 //
                 $balancing = false;
                 //部分结账 是否平账
+                $newTotalAccounts = 0;
                 if ($accounts_type == 'receipts') $newTotalAccounts = bcadd($totalAccounts, $money, 2) - 0;
                 if ($accounts_type == 'refund') $newTotalAccounts = bcsub($totalAccounts, $money, 2) - 0;
                 if (($totalConsume - $newTotalAccounts) == 0) $balancing = true;

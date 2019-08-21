@@ -106,7 +106,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     var thisDayTimestamp = Date.parse(new Date(thisDay)); 
                     for(var detail_id in $scope.bookingDetailRoom) {
                         var detail = $scope.bookingDetailRoom[detail_id];
-                        live_inRoom[detail.item_id] = detail;
+                        if(detail.booking_detail_status>=0) live_inRoom[detail.item_id] = detail;
                         if(detail.check_in == thisDay && detail.booking_detail_status == '0') {
                             check_inRoom[detail.item_id] = detail; 
                             bookAta++;//预抵人数
@@ -131,6 +131,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 if($scope.guestLiveInList != '') {
                     for(var number in $scope.guestLiveInList) {
                         for(var booking_detail_id in $scope.guestLiveInList[number]) {
+							if(roomDetailList[number][booking_detail_id].booking_detail_status<0) continue;
                             var roomi = 0;
                             for(var i in $scope.guestLiveInList[number][booking_detail_id]) {
                                 var LiveIn = $scope.guestLiveInList[number][booking_detail_id][i];
@@ -910,7 +911,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         }
         $scope.param.partPrice = partPrice;
         $scope.param.partPayMoney = partPayMoney;
-        
+		if($scope.param.partPrice < 0) {$scope.param.accounts_type = 'receipts';}
+        if($scope.param.partPrice > 0) {$scope.param.accounts_type = 'refund';}
     }
 	////night auditor////////////////////////////////////////////
 	$scope.nightAuditorList = '';
