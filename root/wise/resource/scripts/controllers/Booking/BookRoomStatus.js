@@ -478,7 +478,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     $scope.param.live_in_edit_id = ObjectLiveIn.l_in_id;
 				} else if(liveInGuest == 'AddLiveIn') {
 					$scope.param.booking_detail_id = ObjectLiveIn.booking_detail_id;
-                    $('#live_in_booking_detail_id').val(ObjectLiveIn.booking_detail_id);
+                    //$('#live_in_booking_detail_id').val(ObjectLiveIn.booking_detail_id);
 					$scope.roomDetailEdit = ObjectLiveIn;
 				}
             }
