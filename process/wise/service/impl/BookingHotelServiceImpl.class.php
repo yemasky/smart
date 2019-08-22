@@ -736,9 +736,21 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $whereCriteria->ArrayIN('booking_detail_id', $arrayPartDetailId);
             }
             $arrayLiveInRoom = $this->getBookingDetailList($whereCriteria, 'item_id');
-            if (empty($arrayLiveInRoom)) {
-                $objSuccess->setSuccess(false);
-                $objSuccess->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
+            if (empty($arrayLiveInRoom)) {//无booking_detail_status>=0的订单
+                //设置订单完成
+                $updateData                   = [];
+                $updateData['booking_status'] = '-1';//[-1结束 已完成] 设置booking
+                if ($closeType == 'cancel') $updateData['booking_status'] = '-2';//[-2结束 取消订单] 设置booking
+                if ($closeType == 'hanging') $updateData['booking_status'] = '-4';//[-4 挂账退房订单]
+                if ($closeType == 'escape') $updateData['booking_status'] = '-5';//[-5 走结退房订单]
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number);
+                if ($closeType != 'part') {//部分结账 不更新总订单
+                    $this->updateBooking($whereCriteria, $updateData);
+                }
+                //
+                //$objSuccess->setSuccess(false);
+                //$objSuccess->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
                 return $objSuccess;
             }
             $arrayLiveInRoomId = array_keys($arrayLiveInRoom);
@@ -772,8 +784,8 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             }
             CommonServiceImpl::instance()->startTransaction();
             //有入账和退款
-            //账务是否平
-            if ($totalConsume != $totalAccounts && $closeType != 'escape') {//$totalConsume == 0 || $totalAccounts == 0 || 走结无需平账
+            //账务是否平//$totalConsume == 0 || $totalAccounts == 0 || escape走结无需平账
+            if ($totalConsume != $totalAccounts && $closeType != 'escape') {
                 $accounts_type = $objRequest->accounts_type;//receipts 收款 refund 退款
                 $detail_id     = decode($objRequest->getInput('detail_id'));
                 $item_id       = $objRequest->getInput('item_id');
@@ -812,16 +824,21 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 }
             }
             //取消订单
-            if ($closeType != 'cancel') {
+            if ($closeType != 'cancel') {//设置脏房
                 //结账退房//更新数据  close 不等于取消(cancel)
                 $whereCriteria = new \WhereCriteria();
-                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->ArrayIN('item_id', $arrayLiveInRoomId);
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->ArrayIN('item_id', $arrayLiveInRoomId)
+                    ->EQ('status', 'live_in');
                 $updateData['booking_number'] = '';//取消关联ID
                 $updateData['clean']          = 'dirty';//设置脏房
                 $updateData['status']         = '0';//取消入住状态
                 ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $updateData);
             }
-            //如果//设置预订完成
+            //取消订单 设置订单（入账、消费）无效
+            if ($closeType == 'cancel') {
+
+            }
+            //如果//设置订单完成
             $updateData                   = [];
             $updateData['booking_status'] = '-1';//[-1结束 已完成] 设置booking
             if ($closeType == 'cancel') $updateData['booking_status'] = '-2';//[-2结束 取消订单] 设置booking

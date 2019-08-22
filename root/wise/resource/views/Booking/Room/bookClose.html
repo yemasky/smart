@@ -15,7 +15,7 @@
               <div class="table-responsive">
                 <div class="list-group no-radius">
                     <a class="list-group-item col-sm-2 p-xs m-r-xs">选择房号</a>
-                    <div class="list-group-item col-sm-2 p-xs m-r-xs" ng-repeat="(edit_i, rDetail) in roomDetail">
+                    <div class="list-group-item col-sm-2 p-xs m-r-xs" ng-repeat="(edit_i, rDetail) in roomDetail" ng-if="rDetail.booking_detail_status>=0">
                       <span class="pull-left w-thumb-xs m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
                       <div class="clear">
                         <span class="font-bold block">{{rDetail.item_name==''?'未排房':rDetail.item_name}}
@@ -77,7 +77,7 @@
             </div>
             <select class="form-control" name="item_id" ng-model="param.item_id">
                 <option value="">选择房号</option>
-                <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}" ng-repeat="(detail_id, rDetail) in roomDetail" ng-selected="rDetail.item_id==param.item_id" ng-click="selectRoomItem($event)">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
+                <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}" ng-repeat="(detail_id, rDetail) in roomDetail" ng-selected="rDetail.item_id==param.item_id" ng-click="selectRoomItem($event)" ng-if="rDetail.booking_detail_status>=0">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
             </select>
             <div class="form-group p-v-xs">
                 <div class="input-group w-sm">

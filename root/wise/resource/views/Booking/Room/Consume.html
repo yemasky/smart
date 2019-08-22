@@ -40,7 +40,7 @@
             </div>
             <select class="form-control" name="item_id" ng-model="param.item_id">
                 <option value="">选择房号</option>
-                <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}" ng-repeat="(detail_id, rDetail) in roomDetail" ng-selected="rDetail.item_id==param.item_id" ng-click="selectRoomItem($event)">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
+                <option value="{{rDetail.item_id}}" detail_id="{{rDetail.detail_id}}" booking_detail_id="{{rDetail.booking_detail_id}}" ng-repeat="(detail_id, rDetail) in roomDetail" ng-selected="rDetail.item_id==param.item_id" ng-click="selectRoomItem($event)" ng-if="rDetail.booking_detail_status>=0">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
             </select>
             <div class="form-group p-v-xs">
                 <div class="input-group w-sm">
