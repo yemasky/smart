@@ -164,7 +164,7 @@
                     <div class="tab-container">
                         <div ng-show="activeBookAccountsEditTab==1">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped bg-white text-nowrap">
+                                <table class="table table-bordered table-striped bg-white text-nowrap" id="print">
                                   <thead>
                                     <tr>
                                       <th class="w-xxs">打印</th>
@@ -201,7 +201,7 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                      <td colspan="6">开始打印 <a class="ti-printer"></a></td>
+                                      <td colspan="6"><a class="ti-printer" id="print-preview" ng-click="printBill('print-preview')"> 开始打印</a></td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -337,6 +337,36 @@
       </form>
     </div>
   </div>
+</div>
+<div id="print_content">
+    <div class="container-fluid">
+        <div class="widget-box">
+            <div class="widget-content nopadding">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td>打印时间</td>
+                            <td class="print_date"></td>
+                            <td>订单号</td>
+                            <td>2019081346195049</td>
+                        </tr>
+                                                        <tr>
+                            <td>客人姓名</td>
+                            <td>hung siu ming</td>
+                            <td>入住房间</td>
+                            <td>102客房[102]</td>
+                        </tr>
+                                                        <tr>
+                            <td>入住时间</td>
+                            <td>2019-08-17 14:00:00</td>
+                            <td>退房时间</td>
+                            <td>2019-08-20 12:00:00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 <script language="javascript">
 app.controller('EditBookRoomController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
@@ -633,5 +663,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             $scope.channelRoomReservation = channelRoomReservation;
         });
     }
-});    
+    
+});  
+    
 </script>

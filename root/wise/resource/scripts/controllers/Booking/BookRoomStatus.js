@@ -47,7 +47,9 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     $scope.param = {};
     $ocLazyLoad.load([$scope._resource + "styles/booking.css"]);
     $ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.css",
-                  $scope._resource + "vendor/modules/angular-ui-select/select.min.js"]);
+                      $scope._resource + "vendor/modules/angular-ui-select/select.min.js",
+                      $scope._resource + "vendor/print/css/print-preview.css",
+                      $scope._resource + "vendor/print/jquery.print-preview.js"]);
     //初始化数据
     //选择入住房
     var selectLayoutRoom = {},arrayRoom = {},liveLayoutRoom = {},billAccount={};
@@ -297,6 +299,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 $scope.param["check_in"] = _thisDay;$scope.param["check_out"] = _nextDay;
                 $('.check_in').val(_thisDay);$('.check_out').val(_nextDay);
                 $scope.param["in_time"] = _thisDay+'T14:00:00.000Z';$scope.param["out_time"] = _thisDay+'T12:00:00.000Z';
+                //
             });
         });	
     }
@@ -368,6 +371,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             asideEditRoomBook.$promise.then(function() {
                 asideEditRoomBook.show();
                 $(document).ready(function(){
+                    $('a.print-preview').printPreview('print_content');
                 });
             });
         }
@@ -1181,7 +1185,19 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.channelAllRoomReservation = channelAllRoomReservation;
     }
     
-    
     //end//////////////////////////////////////////远期房态///////////////////
+        //打印
+    
+    //打印('.print-preview').click(function(e) {
+    var previewPrint = {};
+    $scope.printBill = function(id) {
+        if(angular.isUndefined(previewPrint[id])) {
+            $('#'+id).printPreview('print_content');
+        }
+        //$.printPreview.loadPrintPreview();
+    };
+    
+    
+    
 	$httpService.deleteHeader('refresh');
 });
