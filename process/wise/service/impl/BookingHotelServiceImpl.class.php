@@ -790,7 +790,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $detail_id     = decode($objRequest->getInput('detail_id'));
                 $item_id       = $objRequest->getInput('item_id');
                 $money         = $objRequest->money;
-                $payment_id = $objRequest->payment_id;//现在要选择支付方式
+                $payment_id    = $objRequest->payment_id;//现在要选择支付方式
                 if ($closeType == 'part') $money = $objRequest->partPayMoney;
                 $accounts_id = 0;
                 //
@@ -833,10 +833,30 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $updateData['clean']          = 'dirty';//设置脏房
                 $updateData['status']         = '0';//取消入住状态
                 ChannelServiceImpl::instance()->updateChannelItem($whereCriteria, $updateData);
-            }
-            //取消订单 设置订单（入账、消费）无效
-            if ($closeType == 'cancel') {
-
+            } elseif ($closeType == 'cancel') {//取消订单 设置订单（入账、消费）无效
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number);
+                //
+                $updateData                   = [];
+                $updateData['valid']          = '0';
+                $updateData['consume_status'] = '-2';
+                $this->updateBookingConsume($whereCriteria, $updateData);
+                //
+                $updateData                   = [];
+                $updateData['valid']          = '0';
+                $updateData['accounts_status'] = '-2';
+                $this->updateBookingAccounts($whereCriteria, $updateData);
+            } elseif ($closeType == 'escape') {//走结订单 计入亏损
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('booking_number', $booking_number);
+                //
+                $updateData                   = [];
+                $updateData['consume_status'] = '-5';
+                $this->updateBookingConsume($whereCriteria, $updateData);
+                //
+                $updateData                   = [];
+                $updateData['accounts_status'] = '-5';
+                $this->updateBookingAccounts($whereCriteria, $updateData);
             }
             //如果//设置订单完成
             $updateData                   = [];

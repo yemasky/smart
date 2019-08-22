@@ -363,7 +363,7 @@ class HotelOrderAction extends \BaseAction {
             $objSuccess = BookingHotelServiceImpl::instance()->saveBooking($objSuccess->getData());
             if ($objSuccess->isSuccess()) {
                 $this->Booking_operationEntity->setOperationTitle('预订成功');
-                $this->Booking_operationEntity->setOperationContent('预订成功');
+                $this->Booking_operationEntity->setOperationContent('预订客房成功');
                 $arrayData      = $objSuccess->getData();
                 $booking_number = $arrayData['booking_number'];
                 $this->Booking_operationEntity->setBookingNumber($booking_number);

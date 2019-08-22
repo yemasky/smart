@@ -1114,7 +1114,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 if(angular.isUndefined(channelRoomReservation[item_category_id][date_key])) {
                     channelRoomReservation[item_category_id][date_key] = {};
                     channelRoomReservation[item_category_id][date_key]['room_num'] = room_num;//date_key当天可定全部房量
-                    channelRoomReservation[item_category_id][date_key]['book_num'] = 0;
+                    channelRoomReservation[item_category_id][date_key]['book_num'] = 0;//已定
+                    channelRoomReservation[item_category_id][date_key]['eta_num']  = 0;//预抵
                     //计算房间
                     channelRoomReservation[item_category_id][date_key]['room'] = {};
                     for(var room_id in layoutRoomList[item_category_id]) {
@@ -1127,14 +1128,15 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                 if(angular.isUndefined(channelAllRoomReservation[date_key])) {
                     channelAllRoomReservation[date_key] = {};
                     channelAllRoomReservation[date_key]['room_num'] = channelRoomNum;
-                    channelAllRoomReservation[date_key]['book_num'] = 0;
-                    channelAllRoomReservation[date_key]['percentage'] = 0;
+                    channelAllRoomReservation[date_key]['book_num'] = 0;//已定
+                    channelAllRoomReservation[date_key]['eta_num']  = 0;//预抵
+                    channelAllRoomReservation[date_key]['percentage'] = 0;//百分比
                 }
                 if(angular.isUndefined(bookingCategory[item_category_id])) continue;//如果没有这个预定这跳过
                 if(angular.isUndefined(bookingCategory[item_category_id][date_key])) continue;//如果没有这个预定这跳过
                 var book_num = angular.copy(bookingCategory[item_category_id][date_key].book_num);//已定房量
                 var _room_num = angular.copy(channelRoomReservation[item_category_id][date_key]['room_num']);
-                var room_num_reservation = _room_num - book_num;//总房量-已定房量
+                var room_num_reservation = _room_num - book_num;//总房量-已定房量 = 可定房量（剩余房量）
                 channelRoomReservation[item_category_id][date_key]['room_num'] = room_num_reservation;
                 channelRoomReservation[item_category_id][date_key]['book_num'] = book_num;
                 //var all_book_num = angular.copy(bookingCategory[item_category_id][date_key].book_num);//已定房量
@@ -1151,6 +1153,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                             var book_info = book_room[booking_detail_id], book_key  = 1;
                             if(book_info.check_out == date_key) {
                                 book_key = 0;
+                            }
+                            if(book_info.check_in == date_key) {//预抵
+                               channelAllRoomReservation[date_key].eta_num++;
+                               channelRoomReservation[item_category_id][date_key]['eta_num']++;
                             }
                             channelRoomReservation[item_category_id][date_key]['room'][room_id].is_book = 1;
                             channelRoomReservation[item_category_id][date_key]['room'][room_id].book_info[book_key] = book_info;

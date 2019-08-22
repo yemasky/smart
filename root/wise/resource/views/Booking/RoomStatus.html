@@ -304,9 +304,8 @@
                                   <!--房型列表-->
                                   <tbody>
                                     <tr><th colspan="{{forwardColspan}}"></th></tr>
-                                    <tr><th>全部房型 <code class="small font-thin">{{channelRoomNum}} <small>可订/<small>已订 入住率</small></small></code></th><th class="no-padding panel"></th>
-                                        <td ng-repeat="(thisDate, date) in forwardCalendar">
-                                            {{channelAllRoomReservation[thisDate].room_num}}<small>/{{channelAllRoomReservation[thisDate].book_num}}  {{channelAllRoomReservation[thisDate].percentage}}%</small>
+                                    <tr><th>全部房型 <code class="small font-thin">{{channelRoomNum}} <small>可订/<small>已订/预抵 入住率</small></small></code></th><th class="no-padding panel"></th>
+                                        <td ng-repeat="(thisDate, date) in forwardCalendar" class="book_td_count"><div class="book_status_count">{{channelAllRoomReservation[thisDate].room_num}}<small>/{{channelAllRoomReservation[thisDate].book_num}}/{{channelAllRoomReservation[thisDate].eta_num}} {{channelAllRoomReservation[thisDate].percentage}}%</small></div>
                                         </td>
                                     <th></th></tr>
                                     <tr ng-repeat="(layout_id, layout) in layoutList"><!--酒店房型列表 循环 i-->
@@ -323,9 +322,7 @@
                                       <td class="w-xs col-sm-1 b-r cursor no-padding panel" ng-repeat="(thisDate, date) in forwardCalendar" ng-click="selectThisLayout($event)">
                                         <table class="table no-margin">
                                             <tr>
-                                                <td class="p-xs">
-                                                    {{channelRoomReservation[layout_id][thisDate].room_num}}
-                                                    <small>/{{channelRoomReservation[layout_id][thisDate].book_num}}</small>
+                                                <td class="book_td_count"><div class="book_status_count">{{channelRoomReservation[layout_id][thisDate].room_num}}<small>/{{channelRoomReservation[layout_id][thisDate].book_num}}/{{channelRoomReservation[layout_id][thisDate].eta_num}}</small></div>
                                                 </td>
                                             </tr>
                                             <tr ng-repeat="room in layoutRoomList[layout.item_id]" ng-show="forwardLayoutShow[layout.item_id]==1">
