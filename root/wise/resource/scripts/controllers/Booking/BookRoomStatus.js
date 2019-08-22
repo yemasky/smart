@@ -446,7 +446,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	};
     ////添加入住客人////////////////////////////////////////////////////////////////////////////////////////////
     var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
-    $scope.addGuestLiveIn = function(liveInGuest, ObjectLiveIn) {
+    $scope.addGuestLiveIn = function(liveInGuest, OLiveIn) {
+        var ObjectLiveIn = angular.copy(OLiveIn);
 		if(liveInGuest == 'AddBookRoom') {
 			$scope.bookInfo = $scope.bookDetail;$scope.bookRoom = '';
 			var title = '添加客房 订单号: '+$scope.bookDetail.booking_number;
@@ -477,8 +478,8 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 					$scope.param.booking_detail_id = ObjectLiveIn.booking_detail_id;
                     $scope.param.live_in_edit_id = ObjectLiveIn.l_in_id;
 				} else if(liveInGuest == 'AddLiveIn') {
+                    $('#live_in_booking_detail_id').val(ObjectLiveIn.booking_detail_id);
 					$scope.param.booking_detail_id = ObjectLiveIn.booking_detail_id;
-                    //$('#live_in_booking_detail_id').val(ObjectLiveIn.booking_detail_id);
 					$scope.roomDetailEdit = ObjectLiveIn;
 				}
             }
@@ -533,7 +534,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param.item_name = rDetail.item_name;//$('#live_in_item_id').find('option:selected').text();
         $scope.param.item_id = angular.copy(rDetail.item_id);
         $scope.param.detail_id = angular.copy(rDetail.detail_id);//$('#live_in_item_id').find('option:selected').attr('detail_id');
-        $scope.param.booking_detail_id = angular.copy(rDetail.booking_detail_id);
+        //$scope.param.booking_detail_id = angular.copy(rDetail.booking_detail_id);
         //$('#live_in_item_id').find('option:selected').attr('booking_detail_id');
         return true;
     };
@@ -734,12 +735,12 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     ////消费编辑///////////////////////////////////
     //$scope.asideConsume = '';
     $scope.editConsume = function(consume) {
-        $scope.thisConsume = consume;
+        $scope.thisConsume = angular.copy(consume);
         var title = '编辑消费';
-        $scope.param = consume;
-        $scope.param.item_id = consume.item_id+'';
-        $scope.consume_title = consume.consume_title;
-        $scope.param.money = consume.consume_price_total;
+        $scope.param = angular.copy(consume);
+        $scope.param.item_id = angular.copy(consume.item_id)+'';
+        $scope.consume_title = angular.copy(consume.consume_title);
+        $scope.param.money = angular.copy(consume.consume_price_total);
         $scope.asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Consume.html',show: false});
         $scope.asideConsume.$promise.then(function() {
 			$scope.asideConsume.show();
@@ -903,9 +904,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         //入账
         var bookAccountPrice = $scope.bookAccountPrice[booking_number];
         var partPrice = 0,partPayMoney = 0;
+        $scope.param.item_id = '';
         if(close_room != '') {
             for(var detail_id in close_room) {
-                if(close_room[detail_id]) partPrice += $scope.arithmetic(bookAccountPrice[detail_id], '-', bookConsumePrice[detail_id]);
+                if(close_room[detail_id]) {
+                    partPrice += $scope.arithmetic(bookAccountPrice[detail_id], '-', bookConsumePrice[detail_id]);
+                    $scope.param.item_id = angular.copy(rDetail.item_id);
+                }
             }
             if(partPrice < 0) {partPayMoney = -partPrice;}else{partPayMoney = partPrice};
         }

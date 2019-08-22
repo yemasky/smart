@@ -16,13 +16,13 @@
                             <td>
                                 <input name="item_name" ng-model="param.item_name" id="live_in_item_name" value="" type="hidden">
                                 <input ng-model="param.live_in_edit_id" name="live_in_edit_id" id="live_in_edit_id" value="" type="hidden">
-                                <!--<select class="form-control" id="live_in_booking_detail_id" name="booking_detail_id" ng-model="param.booking_detail_id" ng-change="setLiveInItemName()">
+                                <select class="form-control" id="live_in_booking_detail_id" name="booking_detail_id" ng-model="param.booking_detail_id" ng-change="setLiveInItemName()">
                                     <option value="">选择房号</option>
                                     <option value="{{rDetail.booking_detail_id}}" detail_id="{{rDetail.detail_id}}" item_id="{{rDetail.item_id}}" ng-repeat="(detail_id, rDetail) in roomDetail" ng-selected="rDetail.booking_detail_id==param.booking_detail_id" ng-if="rDetail.booking_detail_status>=0">{{rDetail.item_name==''?'未排房':rDetail.item_name}}</option>
-                                </select>-->
-                                <select class="form-control" id="live_in_booking_detail_id" name="booking_detail_id" ng-model="param.booking_detail_id" ng-change="setLiveInItemName()" ng-options="rDetail.booking_detail_id as rDetail.item_name==''?'未排房':rDetail.item_name for (detail_id, rDetail) in roomDetail">
-                                    <option value="">选择房号</option>
                                 </select>
+                                <!--<select class="form-control" id="live_in_booking_detail_id" name="booking_detail_id" ng-model="param.booking_detail_id" ng-change="setLiveInItemName()" ng-options="rDetail.booking_detail_id as rDetail.item_name==''?'未排房':rDetail.item_name for (detail_id, rDetail) in roomDetail">
+                                    <option value="">选择房号</option>
+                                </select>-->
                             </td>
                         </tr>
                         <tr>

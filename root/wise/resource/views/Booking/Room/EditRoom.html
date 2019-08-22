@@ -38,9 +38,12 @@
                                   <span class="pull-left w-thumb-xs m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
                                   <div class="clear">
                                     <span class="font-bold block">{{room.item_name}}
-                                        <label class="checkbox-inline ui-checks pull-right">
+                                        <label class="checkbox-inline ui-checks pull-right" ng-if="room.status=='0'||room.item_id==roomDetailEdit.item_id">
                                             <input type="radio" ng-click="setEditItemRoomName(room.item_name)" ng-checked="roomDetailEdit.item_id==room.item_id" name="item_room" ng-model="param.item_room" value="{{room.item_id}}">
                                             <i></i>
+                                        </label>
+                                        <label class="checkbox-inline ui-checks pull-right" ng-if="room.status=='live_in'&&room.item_id!=roomDetailEdit.item_id">
+                                            <code>在住</code>
                                         </label>
                                     </span>
                                     <span data-title="{{room.describe}}" data-placement="bottom" bs-tooltip>{{room.describe | limitTo:3}}..</span>
