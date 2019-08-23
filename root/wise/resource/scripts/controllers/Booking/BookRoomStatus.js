@@ -371,7 +371,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             asideEditRoomBook.$promise.then(function() {
                 asideEditRoomBook.show();
                 $(document).ready(function(){
-                    $('a.print-preview').printPreview('print_content');
+                    $('a.print-consume').printPreview('print_content');
                 });
             });
         }
@@ -1192,12 +1192,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     var previewPrint = {};
     $scope.printBill = function(id) {
         if(angular.isUndefined(previewPrint[id])) {
-            $('#'+id).printPreview('print_content');
+            //$('#'+id).printPreview('print_content');
         }
         //$.printPreview.loadPrintPreview();
     };
-    
-    
     
 	$httpService.deleteHeader('refresh');
 });

@@ -107,7 +107,7 @@
             			  </button>-->
                           <table class="table no-margin">
                             <tr ng-repeat="layout_system in marketSystemLayout[market_id][channel_id][layout.item_id] track by $index" ng-show="$index==0 || layoutShow[layout.item_id]==1">
-                                <td style="padding:1px 0px 2px 1px;">
+                                <td class="book_input_td">
                                     <div class="w-xs">
                                       <ui-select ng-model="booking_room[channel_id][layout.item_id][layout_system.price_system_id]" ng-change="select_room($select.selected, channel_id,layout.item_id,layout_system.price_system_id)" theme="bootstrap">
                                           <ui-select-match placeholder="0　">{{$select.selected.value}}</ui-select-match>
@@ -123,7 +123,7 @@
                       <td class="w-xs col-sm-1 b-r cursor no-padding panel" ng-repeat="(thisDate, date) in bookingCalendar" ng-click="selectThisLayout($event)">
                         <table class="table no-margin">
                             <tr ng-repeat="layout_system in marketSystemLayout[market_id][channel_id][layout.item_id] track by $index" ng-show="$index==0||layoutShow[layout.item_id]==1">
-                                <td style="padding:1px 0px 1px 1px;">
+                                <td class="book_input_td">
                       	            <small class="label badge-xs up" style="margin-top:-1px; margin-left:-1px;" ng-class="channelRoomReservation[channel_id][layout.item_id][thisDate].room_num>0?'bg-info':''">{{channelRoomReservation[channel_id][layout.item_id][thisDate].room_num}}</small>
                                     <!--<span ng-model="booking_price[channel_id][layout.item_id][layout_system.price_system_id]" ng-if="param.set_prices==''">{{marketChannelLayoutPrice[market_id][channel_id][layout.item_id][layout_system.price_system_id][thisDate]}}</span>-->
                                     <!--booking_room[channel_id][layout.item_id][layout_system.price_system_id]-->

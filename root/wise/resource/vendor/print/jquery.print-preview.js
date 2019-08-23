@@ -36,7 +36,7 @@
             print_modal = $('<div id="print-modal"></div>');
             print_controls = $('<div id="print-modal-controls">' + 
                                     '<a href="#" class="print" title="Print page">Print page</a>' +
-                                    //'<a href="#" class="export" title="export page">export page</a>' +
+                                    '<a href="#" class="edit" title="编辑打印内容">编辑打印内容</a>' +
                                     '<a href="#" class="close" title="Close print preview">Close</a>').hide();
             var print_frame = $('<iframe id="print-modal-content" scrolling="no" border="0" frameborder="0" name="print-frame" width="100%"  />');
 
@@ -58,7 +58,7 @@
             print_frame_ref.write('<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">' +
                 '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">' + 
                 '<head><title>' + ' ' + '</title>'+
-				'<style type="text/css">table{width:100%;margin:0px auto;font-family:"Microsoft YaHei UI", "Microsoft YaHei UI Light", "Courier New", Courier,"Helvetica Neue",Helvetica,Arial,sans-serif;color:#333333;text-align:center;border-collapse:collapse;}table td{border:1px solid #333;/*width:100px;*/height:30px;font-size: 12px;}table th{border:1px solid #333;font-size: 14px;}.lodger{width:100px;word-wrap:break-word;word-break:break-all;}.ticket{width:500px;}</style>'+
+				'<style type="text/css">table{width:100%;margin:0px auto;font-family:"Microsoft YaHei UI", "Microsoft YaHei UI Light", "Courier New", Courier,"Helvetica Neue",Helvetica,Arial,sans-serif;color:#333333;text-align:center;border-collapse:collapse;}table td{border:1px solid #333;/*width:100px;*/height:30px;font-size: 12px;}table th{border:1px solid #333;font-size: 14px;height:30px;}.lodger{width:100px;word-wrap:break-word;word-break:break-all;}.ticket{width:500px;}input{border: 1px solid #ccc;border-top: none;border-left: none; border-right: none; width: 130px;height: 25px;vertical-align: middle;}</style>'+
 				'</head><body></body>' +
                 '</html>');
             print_frame_ref.close();
@@ -131,8 +131,28 @@
             $('a', print_controls).bind('click', function(e) {
                 e.preventDefault();		
 				//window.print(); 
-                if ($(this).hasClass('print')) {print_frame[0].contentWindow.print();}
-                else if($(this).hasClass('export')) {/*print_frame[0].contentDocument.execCommand("SaveAs");*/}
+                if ($(this).hasClass('print')) {
+                    $($iframe_body).find('.contents').each(function(){
+                        var _this = $(this);
+                        if(_this.has('input').length>0) {
+                            var html = $.trim(_this.find('input').val());
+                            _this.html(html);
+                        }
+                    });
+                    print_frame[0].contentWindow.print();
+                }
+                else if($(this).hasClass('edit')) {
+                    $($iframe_body).find('.contents').each(function(){
+                        var _this = $(this);
+                        if(_this.has('input').length>0) {
+                            var html = $.trim(_this.find('input').val());
+                            _this.html(html);
+                        } else {
+                            var html = $.trim(_this.html());
+                            _this.html('<input type="text" value="'+html+'">');
+                        }
+                    });
+                }
                 else { $.printPreview.distroyPrintPreview(); }
             });
     	},

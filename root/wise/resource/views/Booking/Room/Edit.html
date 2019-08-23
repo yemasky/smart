@@ -164,10 +164,10 @@
                     <div class="tab-container">
                         <div ng-show="activeBookAccountsEditTab==1">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped bg-white text-nowrap" id="print">
+                                <table class="table table-bordered table-striped bg-white text-nowrap">
                                   <thead>
                                     <tr>
-                                      <th class="w-xxs">打印</th>
+                                      <th class="w-xs">打印</th>
                                       <th class="w">房号</th>
                                       <th class="w">项目</th>
                                       <!--<th class="w">数量</th>-->
@@ -181,13 +181,13 @@
                                         <td colspan="6" class="no-padding panel">
                                             <table class="table no-margin">
                                                 <tr ng-repeat="(i, consume) in consumes">
-                                                    <td class="w-xxs b-r">
-                                                        <label class="checkbox-inline ui-checks"><input type="checkbox"><i></i></label>
+                                                    <td class="w-xs">
+                                                        <label class="checkbox-inline ui-checks"><input type="checkbox" ng-checked="set_consume_print==1"><i></i></label>
                                                     </td>
-                                                    <td class="w b-r">{{consume.item_name==''?'未排房':consume.item_name}}</td>
-                                                    <td class="w b-r">{{consume.consume_title}}</td>
+                                                    <td class="w">{{consume.item_name==''?'未排房':consume.item_name}}</td>
+                                                    <td class="w">{{consume.consume_title}}</td>
                                                     <!--<td class="w">{{consume.item_amount}}</td>-->
-                                                    <td class="w b-r">{{consume.consume_price_total}}</td>
+                                                    <td class="w">{{consume.consume_price_total}}</td>
                                                     <td class="w">{{consume.business_day}}</td>
                                                     <td class="col-xs-1">
                                                         <span class="btn-group" ng-if="roomDetail[consume.booking_detail_id].booking_detail_status>=0">
@@ -201,7 +201,11 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                      <td colspan="6"><a class="ti-printer" id="print-preview" ng-click="printBill('print-preview')"> 开始打印</a></td>
+                                      <th class="w-xs">合计</th>
+                                      <td></td><td></td><td></td><td></td><td></td>
+                                    </tr>
+                                    <tr>
+                                      <td colspan="6"><label class="ui-checks m-r"><input type="checkbox" value="1" ng-model="set_consume_print" ng-init="set_consume_print=''"><i></i>全选</label> <a class="ti-printer print-consume" ng-click="printBill('print-consume')">A4打印账单</a></td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -209,27 +213,31 @@
                         </div>
                         <div ng-show="activeBookAccountsEditTab==2">
                             <div class="table-responsive">
-                                <table class="table table-bordered table-striped bg-white text-nowrap">
+                                <table class="table table-bordered bg-white text-nowrap">
                                   <thead>
                                     <tr>
-                                      <th>房号</th>
-                                      <th>支付方式</th>
-                                      <th>项目</th>
-                                      <th>金额</th>
-                                      <th>营业日</th>
-                                      <th>时间</th>  
-                                      <th>管理</th>
+                                      <th class="w-xs">打印</th>
+                                      <th class="w-sm">房号</th>
+                                      <th class="w">支付方式</th>
+                                      <th class="w-xxs">项目</th>
+                                      <th class="w-xs">金额</th>
+                                      <th class="w-xs">营业日</th>
+                                      <th class="w-xs">时间</th>  
+                                      <th class="col-xs-1">管理</th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     <tr ng-repeat="(i, account) in accountDetail">
+                                      <td class="w-xs">
+                                        <label class="checkbox-inline ui-checks"><input type="checkbox" ng-checked="set_account_print==1"><i></i></label>
+                                      </td>
                                       <td>{{account.item_name==''?'未排房':account.item_name}}</td>
                                       <td>{{account.payment_name}}</td>
-                                      <td>{{account.accounts_type=='receipts'?'收款':account.accounts_type=='refund'?'退款':''}}</td>
+                                      <td>{{account.accounts_type=='receipts'?'收款':account.accounts_type=='refund'?'退款':'挂账'}}</td>
                                       <td>{{account.money}}</td>
                                       <td>{{account.business_day}}</td>
                                       <td>{{account.add_datetime}}</td>
-                                      <td>
+                                      <td class="col-xs-1">
                                         <span class="btn-group" ng-if="roomDetail[account.booking_detail_id].booking_detail_status>=0">
                                           <button class="btn btn-xs btn-default" ng-click="editAccounts(account)" ng-if="account.valid=='1'"><span translate="common.hint.edit" >编辑</span></button>
                                           <button class="btn btn-xs btn-default" ng-click="revokesOperations(account, 'account')" ng-if="account.valid=='1'"><span translate="common.hint.backout" >撤销</span></button>
@@ -239,13 +247,17 @@
                                     </tr>
                                     <tr>
                                       <th class="text-nowrap">合计</th>
-                                      <td>收款</td>
-                                      <td></td>
-                                      <td>退款</td>
                                       <td></td>
                                       <td></td>
                                       <td></td>
-                                    </tr>  
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                      <td></td>
+                                    </tr>
+                                    <tr>
+                                      <td colspan="8"><label class="ui-checks m-r"><input type="checkbox" value="1" ng-model="set_account_print" ng-init="set_account_print=''"><i></i>全选</label> <a class="ti-printer print-consume" ng-click="printBill('print-consume')">A4打印账单</a></td>
+                                    </tr>
                                   </tbody>
                                 </table>
                             </div>
@@ -255,26 +267,30 @@
                                 <table class="table table-bordered table-striped bg-white text-nowrap">
                                   <thead>
                                     <tr>
+                                      <th class="w-xs">打印</th>
                                       <th class="w">房号</th>
                                       <th class="w">物品</th>
-                                      <th class="w">数量</th>
-                                      <th class="w">押金</th>
+                                      <th class="w-xxs">数量</th>
+                                      <th class="w-xs">押金</th>
                                       <th class="w">时间</th>
-                                      <th class="w">已还</th>  
+                                      <th class="w-xxs">已还</th>  
                                       <th class="col-xs-1">管理</th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     <tr ng-repeat="(detail_id, borrowing) in bookBorrowing">
-                                        <td colspan="7" class="no-padding panel">
+                                        <td colspan="8" class="no-padding panel">
                                             <table class="table no-margin">
                                                 <tr ng-repeat="(borrow_id, borrow) in borrowing">
+                                                    <td class="w-xs">
+                                                        <label class="checkbox-inline ui-checks"><input type="checkbox"><i></i></label>
+                                                    </td>
                                                     <td class="w">{{borrow.item_name}}</td>
                                                     <td class="w">{{borrow.borrowing_name}}</td>
-                                                    <td class="w">{{borrow.borrowing_num}}</td>
-                                                    <td class="w">{{borrow.cash_pledge}}</td>
+                                                    <td class="w-xxs">{{borrow.borrowing_num}}</td>
+                                                    <td class="w-xs">{{borrow.cash_pledge}}</td>
                                                     <td class="w">{{borrow.add_datetime}}</td>
-                                                    <td class="w">{{borrow.borrowing_return_num}}</td>
+                                                    <td class="w-xxs">{{borrow.borrowing_return_num}}</td>
                                                     <td class="col-xs-1">
                                                         <span class="btn-group">
                                                             <button class="btn btn-xs btn-default" ng-click="editBorrowing(borrow)" ng-if="borrow.borrowing_return=='0'"><span translate="common.hint.edit" >编辑</span></button>
@@ -289,12 +305,17 @@
                                     <tr>
                                       <th class="text-nowrap">合计</th>
                                       <td></td>
+                                      <td></td>  
                                       <td></td>
                                       <td></td>
                                       <td></td>
                                       <td></td>
                                       <td></td>
-                                    </tr>  
+                                    </tr>
+                                    <tr>
+                                      <td class="w-xs"></td>
+                                      <td colspan="7"> <a class="ti-printer print-borrowing" ng-click="printBill('print-borrowing')">A4打印借物</a></td>
+                                    </tr>
                                   </tbody>
                                 </table>
                             </div>
@@ -340,30 +361,95 @@
 </div>
 <div id="print_content">
     <div class="container-fluid">
+        {{defaultHotel}}
+        <hr>
         <div class="widget-box">
             <div class="widget-content nopadding">
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
-                            <td>打印时间</td>
-                            <td class="print_date"></td>
+                            <td style="width: 100px;">打印时间</td>
+                            <td class="print_date">{{getDay('yyyy-MM-dd hh:mm:ss')}}</td>
                             <td>订单号</td>
-                            <td>2019081346195049</td>
+                            <td>{{bookDetail.booking_number}}</td>
                         </tr>
                                                         <tr>
                             <td>客人姓名</td>
-                            <td>hung siu ming</td>
+                            <td class="contents">{{bookDetail.member_name}}</td>
                             <td>入住房间</td>
-                            <td>102客房[102]</td>
+                            <td class="contents">102客房[102]</td>
                         </tr>
                                                         <tr>
                             <td>入住时间</td>
-                            <td>2019-08-17 14:00:00</td>
+                            <td class="contents">{{bookDetail.check_in}}</td>
                             <td>退房时间</td>
-                            <td>2019-08-20 12:00:00</td>
+                            <td class="contents">{{bookDetail.check_out}}</td>
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        </div>
+        <br>消费项目
+        <div class="widget-box">
+            <div class="widget-content nopadding">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 100px;">房号</th>
+                      <th>项目</th>
+                      <!--<th class="w">数量</th>-->
+                      <th>金额</th>
+                      <th>时间</th>
+                    </tr>
+                  </thead>
+                  <tbody ng-repeat="(detail_id, consumes) in consumeDetail">
+                    <tr ng-repeat="(i, consume) in consumes">
+                        <td class="contents">{{consume.item_name==''?'未排房':consume.item_name}}</td>
+                        <td class="contents">{{consume.consume_title}}</td>
+                        <!--<td class="w">{{consume.item_amount}}</td>-->
+                        <td class="contents">{{consume.consume_price_total}}</td>
+                        <td class="contents">{{consume.add_datetime}}</td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <th>合计</th>
+                      <td></td><td></td><td></td>
+                    </tr>
+                  </tbody>
+                </table>    
+            </div>
+        </div>
+        <br>账务明细
+        <div class="widget-box">
+            <div class="widget-content nopadding">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 100px;">房号</th>
+                      <!--<th>支付方式</th>-->
+                      <th>项目</th>
+                      <th>金额</th>
+                      <th>时间</th>  
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr ng-repeat="(i, account) in accountDetail">
+                      <td class="contents">{{account.item_name==''?'未排房':account.item_name}}</td>
+                      <!--<td class="contents">{{account.payment_name}}</td>-->
+                      <td class="contents">{{account.accounts_type=='receipts'?'收款':account.accounts_type=='refund'?'退款':'挂账'}}</td>
+                      <td class="contents">{{account.money}}</td>
+                      <td class="contents">{{account.add_datetime}}</td>
+                    </tr>
+                    <tr>
+                      <th>合计</th>
+                      <!--<td></td>-->
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>    
             </div>
         </div>
     </div>
