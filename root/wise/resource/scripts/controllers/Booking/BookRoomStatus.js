@@ -366,12 +366,17 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.bookDetail = $scope.bookList[booking_number];//订单详情
             $scope.consumeDetail = $scope.consumeList[booking_number];//消费详情
             $scope.accountDetail = $scope.accountsList[booking_number];//付款详情
-            $scope.bookBorrowing = $scope.bookBorrowingList[booking_number];
+            $scope.bookBorrowing = $scope.bookBorrowingList[booking_number];//借物详情
+            //打印('.print-preview').click(function(e) {
+            $scope.consumePrint = angular.copy($scope.consumeDetail);
+            $scope.accountPrint = angular.copy($scope.accountDetail);
+            $scope.borrowingPrint = angular.copy($scope.bookBorrowing);;
+            $scope.isConsumePrint = true;$scope.isAccountPrint = true;$scope.isBorrowingPrint = true;
             var asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
             asideEditRoomBook.$promise.then(function() {
                 asideEditRoomBook.show();
                 $(document).ready(function(){
-                    $('a.print-consume').printPreview('print_content');
+                    $('a.print-contents').printPreview('print_content');
                 });
             });
         }
@@ -1186,15 +1191,59 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     }
     
     //end//////////////////////////////////////////远期房态///////////////////
-        //打印
-    
-    //打印('.print-preview').click(function(e) {
-    var previewPrint = {};
-    $scope.printBill = function(id) {
-        if(angular.isUndefined(previewPrint[id])) {
-            //$('#'+id).printPreview('print_content');
+    //打印
+    $scope.checkConsume = {},$scope.checkAccount = {},$scope.checkBorrowing = {};$scope.set_consume_print = '';$scope.set_account_print = '';
+    $scope.setPrintBill = function(print, object, key, $event) {
+        var consumePrint = {},checkConsume = $scope.checkConsume,accountPrint = {},checkAccount = $scope.checkAccount;
+        var borrowingPrint = {},checkBorrowing = $scope.checkBorrowing;
+        if(print == 'all_consume') {
+            $scope.checkConsume = {};$scope.set_consume_print = $event.target.checked ? 1 : '';
         }
-        //$.printPreview.loadPrintPreview();
+        if(print == 'all_account') {
+            $scope.checkAccount = {};$scope.set_account_print = $event.target.checked ? 1 : '';
+        }
+        if($scope.set_consume_print == 1) consumePrint = angular.copy($scope.consumeDetail);
+        if($scope.set_account_print == 1) accountPrint = angular.copy($scope.accountDetail);
+        for(var booking_detail_id in checkConsume) {
+            for(var i in checkConsume[booking_detail_id]) {
+                if(checkConsume[booking_detail_id][i]) {
+                    if(angular.isUndefined(consumePrint[booking_detail_id])) consumePrint[booking_detail_id] = {};
+                    consumePrint[booking_detail_id][i] = angular.copy($scope.consumeDetail[booking_detail_id][i]);
+                }
+            }
+        }
+        for(var i in checkAccount) {
+            if(checkAccount[i]) {accountPrint[i] = angular.copy($scope.accountDetail[i]);}
+        }
+        var isBorrowing = false;
+        for(var booking_detail_id in checkBorrowing) {
+            for(var borrow_id in checkBorrowing[booking_detail_id]) {
+                if(checkBorrowing[booking_detail_id][borrow_id]) {
+                    if(angular.isUndefined(borrowingPrint[booking_detail_id])) borrowingPrint[booking_detail_id] = {};
+                    borrowingPrint[booking_detail_id][borrow_id] = angular.copy($scope.bookBorrowing[booking_detail_id][borrow_id]);
+                    isBorrowing = true;
+                }
+            }
+        }
+        if(isBorrowing == false) borrowingPrint = angular.copy($scope.bookBorrowing);
+        $scope.consumePrint = consumePrint;$scope.accountPrint = accountPrint;$scope.borrowingPrint = borrowingPrint;
+    }
+    //打印('.print-preview').click(function(e) {
+    $scope.printBill = function(print) {
+        var consumePrint = $scope.consumePrint,accountPrint = $scope.accountPrint, borrowingPrint = $scope.borrowingPrint;
+        var isConsumePrint = false, isAccountPrint = false, isBorrowingPrint = false;
+        for(var i in consumePrint) {isConsumePrint = true;break;}
+        for(var i in accountPrint) {isAccountPrint = true;break;}
+        if(isConsumePrint == false && isAccountPrint == false) {
+            $scope.consumePrint = angular.copy($scope.consumeDetail);isConsumePrint = true;
+            $scope.accountPrint = angular.copy($scope.accountDetail);isAccountPrint = true;
+        }
+        if(print == 'borrowing') {
+            isBorrowingPrint = true;isConsumePrint = false; isAccountPrint = false;
+        } else {
+            isBorrowingPrint = false;
+        }
+        $scope.isConsumePrint = isConsumePrint;$scope.isAccountPrint = isAccountPrint; $scope.isBorrowingPrint = isBorrowingPrint;
     };
     
 	$httpService.deleteHeader('refresh');

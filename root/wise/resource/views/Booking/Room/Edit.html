@@ -182,7 +182,10 @@
                                             <table class="table no-margin">
                                                 <tr ng-repeat="(i, consume) in consumes">
                                                     <td class="w-xs">
-                                                        <label class="checkbox-inline ui-checks"><input type="checkbox" ng-checked="set_consume_print==1"><i></i></label>
+                                                        <label class="checkbox-inline ui-checks">
+                                                            <input type="checkbox" ng-model="checkConsume[detail_id][i]" ng-checked="set_consume_print==1" ng-click="setPrintBill('consume', consume, i, $event)">
+                                                            <i></i>
+                                                        </label>
                                                     </td>
                                                     <td class="w">{{consume.item_name==''?'未排房':consume.item_name}}</td>
                                                     <td class="w">{{consume.consume_title}}</td>
@@ -205,7 +208,7 @@
                                       <td></td><td></td><td></td><td></td><td></td>
                                     </tr>
                                     <tr>
-                                      <td colspan="6"><label class="ui-checks m-r"><input type="checkbox" value="1" ng-model="set_consume_print" ng-init="set_consume_print=''"><i></i>全选</label> <a class="ti-printer print-consume" ng-click="printBill('print-consume')">A4打印账单</a></td>
+                                      <td colspan="6"><label class="ui-checks m-r"><input type="checkbox" value="1" ng-model="set_consume_print" ng-init="set_consume_print=''" ng-click="setPrintBill('all_consume', '', '', $event)"><i></i>全选</label> <a class="ti-printer print-contents" ng-click="printBill('consume')">A4打印账单</a></td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -229,7 +232,10 @@
                                   <tbody>
                                     <tr ng-repeat="(i, account) in accountDetail">
                                       <td class="w-xs">
-                                        <label class="checkbox-inline ui-checks"><input type="checkbox" ng-checked="set_account_print==1"><i></i></label>
+                                        <label class="checkbox-inline ui-checks">
+                                            <input type="checkbox" ng-checked="set_account_print==1" ng-model="checkAccount[i]" ng-click="setPrintBill('account', account, i, $event)">
+                                            <i></i>
+                                        </label>
                                       </td>
                                       <td>{{account.item_name==''?'未排房':account.item_name}}</td>
                                       <td>{{account.payment_name}}</td>
@@ -256,7 +262,7 @@
                                       <td></td>
                                     </tr>
                                     <tr>
-                                      <td colspan="8"><label class="ui-checks m-r"><input type="checkbox" value="1" ng-model="set_account_print" ng-init="set_account_print=''"><i></i>全选</label> <a class="ti-printer print-consume" ng-click="printBill('print-consume')">A4打印账单</a></td>
+                                      <td colspan="8"><label class="ui-checks m-r"><input type="checkbox" value="1" ng-model="set_account_print" ng-init="set_account_print=''" ng-click="setPrintBill('all_account', '', '', $event)"><i></i>全选</label> <a class="ti-printer print-contents" ng-click="printBill('account')">A4打印账单</a></td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -283,7 +289,7 @@
                                             <table class="table no-margin">
                                                 <tr ng-repeat="(borrow_id, borrow) in borrowing">
                                                     <td class="w-xs">
-                                                        <label class="checkbox-inline ui-checks"><input type="checkbox"><i></i></label>
+                                                        <label class="checkbox-inline ui-checks"><input type="checkbox" ng-model="checkBorrowing[detail_id][borrow_id]" ng-click="setPrintBill('borrowing', borrow, borrow_id, $event)"><i></i></label>
                                                     </td>
                                                     <td class="w">{{borrow.item_name}}</td>
                                                     <td class="w">{{borrow.borrowing_name}}</td>
@@ -314,7 +320,7 @@
                                     </tr>
                                     <tr>
                                       <td class="w-xs"></td>
-                                      <td colspan="7"> <a class="ti-printer print-borrowing" ng-click="printBill('print-borrowing')">A4打印借物</a></td>
+                                      <td colspan="7"> <a class="ti-printer print-contents" ng-click="printBill('borrowing')">A4打印借物</a></td>
                                     </tr>
                                   </tbody>
                                 </table>
@@ -368,9 +374,9 @@
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
-                            <td style="width: 100px;">打印时间</td>
+                            <td style="width: 135px;">打印时间</td>
                             <td class="print_date">{{getDay('yyyy-MM-dd hh:mm:ss')}}</td>
-                            <td>订单号</td>
+                            <td style="width: 135px;">订单号</td>
                             <td>{{bookDetail.booking_number}}</td>
                         </tr>
                                                         <tr>
@@ -389,20 +395,20 @@
                 </table>
             </div>
         </div>
-        <br>消费项目
-        <div class="widget-box">
+        <div class="widget-box" ng-if="isConsumePrint==true">
+            <br>消费项目
             <div class="widget-content nopadding">
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th style="width: 100px;">房号</th>
-                      <th>项目</th>
+                      <th style="width: 135px;">房号</th>
+                      <th style="width: 135px;">项目</th>
                       <!--<th class="w">数量</th>-->
-                      <th>金额</th>
+                      <th style="width: 135px;">金额</th>
                       <th>时间</th>
                     </tr>
                   </thead>
-                  <tbody ng-repeat="(detail_id, consumes) in consumeDetail">
+                  <tbody ng-repeat="(detail_id, consumes) in consumePrint">
                     <tr ng-repeat="(i, consume) in consumes">
                         <td class="contents">{{consume.item_name==''?'未排房':consume.item_name}}</td>
                         <td class="contents">{{consume.consume_title}}</td>
@@ -420,21 +426,21 @@
                 </table>    
             </div>
         </div>
-        <br>账务明细
-        <div class="widget-box">
+        <div class="widget-box" ng-if="isAccountPrint==true">
+            <br>账务明细
             <div class="widget-content nopadding">
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th style="width: 100px;">房号</th>
+                      <th style="width: 135px;">房号</th>
                       <!--<th>支付方式</th>-->
-                      <th>项目</th>
-                      <th>金额</th>
+                      <th style="width: 135px;">项目</th>
+                      <th style="width: 135px;">金额</th>
                       <th>时间</th>  
                     </tr>
                   </thead>
                   <tbody>
-                    <tr ng-repeat="(i, account) in accountDetail">
+                    <tr ng-repeat="(i, account) in accountPrint">
                       <td class="contents">{{account.item_name==''?'未排房':account.item_name}}</td>
                       <!--<td class="contents">{{account.payment_name}}</td>-->
                       <td class="contents">{{account.accounts_type=='receipts'?'收款':account.accounts_type=='refund'?'退款':'挂账'}}</td>
@@ -444,6 +450,38 @@
                     <tr>
                       <th>合计</th>
                       <!--<td></td>-->
+                      <td></td>
+                      <td></td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>    
+            </div>
+        </div>
+        <div class="widget-box" ng-if="isBorrowingPrint==true">
+            <br>借物
+            <div class="widget-content nopadding">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 135px;">房号</th>
+                      <th style="width: 160px;">物品</th>
+                      <th style="width: 135px;">数量</th>
+                      <th style="width: 135px;">押金</th>
+                      <th>时间</th> 
+                    </tr>
+                  </thead>
+                  <tbody ng-repeat="(detail_id, borrowings) in borrowingPrint">
+                    <tr ng-repeat="(borrow_id, borrowing) in borrowings">
+                      <td class="contents">{{borrowing.item_name==''?'未排房':borrowing.item_name}}</td>
+                      <td class="contents">{{borrowing.borrowing_name}}</td>
+                      <td class="contents">{{borrowing.borrowing_num}}</td>
+                      <td class="contents">{{borrowing.cash_pledge}}</td>
+                      <td class="contents">{{borrowing.add_datetime}}</td>
+                    </tr>
+                    <tr>
+                      <th>合计</th>
+                      <td></td>
                       <td></td>
                       <td></td>
                       <td></td>
