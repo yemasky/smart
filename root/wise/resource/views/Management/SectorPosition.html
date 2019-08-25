@@ -2,40 +2,55 @@
 <div class="p-md" ng-controller="SectorPositionController">
 
     <form name="SectorPositionForm" class="form-inline" role="form">
-        <ul class="nav nav-tabs" ui-nav>
-            <li class="active">
-                <a href>部门管理</a>
-            </li>
-            <li><a href="#!/app/Setting/{{position.view}}/{{position.url}}">职位管理</a></li>
-            <button class="btn btn-addon btn-default pull-right m-l" ng-click="addSectorPosition(0)"><i class="fa fa-plus"></i>新建价格类型</button>
-            <button type="button" class="btn btn-default pull-right" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择酒店">
-              Action <span class="caret"></span>
-            </button>
-        </ul>
-        <div class="p b-a no-b-t bg-white m-b table-responsive">
-            <table class="table table-bordered table-striped bg-white">
-                <thead>
-                    <tr>
-                        <th class="w">企业</th>
-                        <th class="w">一级部门</th>
-                        <th class="w-md">二级部门</th>
-                        <th class="col-sm-3"></th>
-                        <th class="col-sm-3"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="(i, system) in dataList">
-                        <td class="text-nowrap">{{system.price_system_name}}</td>
-                        <td><span ng-repeat="(j, market_id) in system.market_ids"><i class="fa fa-check-circle"> </i> {{marketChildrenHash[market_id].market_name}} </span></td>
-                        <th class="col-sm-3"></th>
-                        <td><a ng-click="addSectorPosition(system)" class="pull-right ng-scope"><i class="fa fa-edit"></i></a></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="tab-container">
+            <ul class="nav nav-tabs" ui-nav>
+                <li class="active">
+                    <a>部门职位</a>
+                </li>
+                <button class="btn btn-addon btn-default pull-right m-l" ng-click="addSectorPosition(0)"><i class="fa fa-plus"></i>新建部门/职位</button>
+                <button type="button" class="btn btn-default pull-right" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择酒店">
+                  Action <span class="caret"></span>
+                </button>
+            </ul>
+            <div class="tab-content text-nowrap">
+                <div>
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped bg-white">
+                            <thead>
+                                <tr>
+                                    <th class="w">一级部门</th>
+                                    <th class="w">二级部门</th>
+                                    <th class="w">职位</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody class="no-b-t">
+                                <tr ng-repeat="(father_id, sector) in sectorList">
+                                    <td class="w">{{sector.sector_name}} <a ng-click="addSectorPosition(system)" class="pull-right ng-scope"><i class="fa fa-edit"></i></a></td>
+                                    <td colspan="2" class="no-padding panel">
+                                        <table class="table no-margin">
+                                            <tr ng-repeat="(sector_id, children) in sector.children">
+                                                <td class="w b-r">{{children.sector_name}} <a ng-click="addSectorPosition(system)" class="pull-right ng-scope"><i class="fa fa-edit"></i></a></td>
+                                                <td class="no-padding panel">
+                                                    <table class="table no-margin">
+                                                        <tr ng-repeat="(position_id, position) in positionList[sector_id].children">
+                                                            <td class="b-b">{{position.sector_name}} <a ng-click="addSectorPosition(system)" class="pull-right ng-scope"><i class="fa fa-edit"></i></a></td>
+                                                        </tr>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 </div>
-<script language="javascript" src="/resource/vendor/modules/angular-smart-table/smart-table.min.js"></script>
 <script language="javascript">
     app.controller('SectorPositionController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
         //获取数据
@@ -51,7 +66,35 @@
             common = result.data.common;
             $scope.setCommonSetting(common);
             $scope.setThisChannel('Hotel');
-            $scope.roomPriceListUrl = result.data.item.roomPriceListUrl;
+            $scope.channelSectorList = result.data.item.channelSectorList;
+            sortChannelSector(result.data.item.channelSectorList);
+            function sortChannelSector(channelSectorList) {
+                var sectorList = {}, positionList = {};
+                if(channelSectorList != '') {
+                    for(var sector_id in channelSectorList) {
+                        var listData = channelSectorList[sector_id];
+                        var father_id = listData.sector_father_id;
+                        if(listData.sector_type == 'sector') {
+                            if(angular.isUndefined(sectorList[father_id])) {
+                                sectorList[father_id] = channelSectorList[father_id];//father
+                                sectorList[father_id]['children'] = {};
+                            }
+                        }
+                        if(father_id!=sector_id) {//children
+                            if(listData.sector_type == 'sector') { 
+                                sectorList[father_id]['children'][sector_id] = listData;
+                            } else {
+                                if(angular.isUndefined(positionList[father_id])) {
+                                    positionList[father_id] = {};//father
+                                    positionList[father_id]['children'] = {};
+                                } 
+                                positionList[father_id]['children'][sector_id] = listData;
+                            }
+                        }                        
+                    }
+                    $scope.sectorList = sectorList;$scope.positionList = positionList;
+                }
+            }
         });
 
         //
@@ -63,7 +106,7 @@
             }
 
             $scope.action = '添加/编辑';
-            asideSectorPosition = $aside({scope: $scope,title: $scope._self_module.module_name,placement: 'top',animation: 'am-fade-and-slide-top',backdrop: "static",container: 'body',templateUrl: '/resource/views/Setting/SectorPositionAddEdit.tpl.html'});
+            asideSectorPosition = $aside({scope: $scope,title: $scope._self_module.module_name,placement: 'top',animation: 'am-fade-and-slide-top',backdrop: "static",container: 'body',templateUrl: '/resource/views/Management/SectorPositionAddEdit.tpl.html'});
             asideSectorPosition.$promise.then(function() {
                 asideSectorPosition.show();
                 $(document).ready(function() {

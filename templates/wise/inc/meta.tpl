@@ -336,6 +336,15 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
         },
 		controller: function($rootScope, $scope, $ocLazyLoad, $httpService) {
 		}
+    }).state('app.Marketing', {
+        url: "/Marketing/:view/:channel", //url: "/role/edit?id",
+        templateUrl: function($routeParams, $rootScope, $scope) {
+			var view = $routeParams.view;//有view访问静态文件
+			if(view != '') return 'resource/views/Marketing/'+$routeParams.view+'.html?<%$__VERSION%>';
+            return randomUrl($routeParams.channel); 
+        },
+		controller: function($rootScope, $scope, $ocLazyLoad, $httpService) {
+		}
     }).state('app.Channel', {
         url: "/Channel/:channel", //url: "/role/edit?id",
         templateUrl: function($routeParams) {

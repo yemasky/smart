@@ -26,7 +26,7 @@ class ChannelSettingAction extends \BaseAction {
             case "market":
                 $this->doMarket($objRequest, $objResponse);
                 break;
-            case "MarketCommission":
+            case "MarketCommission"://市場佣金
                 $this->doMarketCommission($objRequest, $objResponse);
                 break;
             default:

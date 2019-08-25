@@ -77,13 +77,18 @@
                             <th st-ratio="15" st-sort="valid_date">有效期</th>
                             <th st-ratio="5"></th>
                         </tr>
-                        <tr>
-                            <td colspan="6">
-                                <input st-search="" class="input-sm form-control w" name="receivable_name" id="receivable_name" type="text" ng-model="receivable_name" >
-                            </td>
-                        </tr>
                         </thead>
                         <tbody>
+                        <tr>
+                            <td colspan="6">
+                                <div class="input-group m-b col-xs-3">
+                                  <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">搜索</button>
+                                  </span>
+                                  <input st-search="" class="form-control w" name="receivable_name" id="receivable_name" type="text" ng-model="receivable_name" >
+                                </div>
+                            </td>
+                        </tr>
                         <tr ng-repeat="(i,row) in displayed">
                             <td st-ratio="40">{{row.receivable_name}}</td>
                             <td st-ratio="10">{{row.receivable_type}}</td>

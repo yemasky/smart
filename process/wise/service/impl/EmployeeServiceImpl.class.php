@@ -18,6 +18,64 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService  {
         return self::$objService;
     }
 
+    //employee
+    public function getEmployee(\WhereCriteria $whereCriteria, $field = null) {
+        return EmployeeDao::instance()->getEmployee($whereCriteria, $field);
+    }
+
+    public function saveEmployee($arrayData, $insert_type = 'INSERT') {
+        return EmployeeDao::instance()->saveEmployee($arrayData, $insert_type);
+    }
+
+    public function updateEmployee(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return EmployeeDao::instance()->updateEmployee($whereCriteria, $arrayUpdateData);
+    }
+
+    public function getEmployeeReceivablePage(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $tableState = $objRequest->tableState;
+        if(empty($tableState)) $tableState = array();
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id = $objRequest->channel_id;
+        $tableStateModel = new TableStateModel($tableState);
+        $objPagination = $tableStateModel->getPagination();
+        $objSearch = $tableStateModel->getSearch();
+        $objSort = $tableStateModel->getSort();
+
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
+        if(!empty($searchValue = $objSearch->getPredicateObject())) {
+            //$whereCriteria->MATCH('employee_name', $searchValue['$']);
+            $whereCriteria->LIKE('employee_name', '%'.$searchValue['$'].'%');
+        }
+        $employeeSectorCount = EmployeeDao::instance()->getEmployeeSectorCount($whereCriteria, 'employee_id');
+        $objPagination->setTotalItemCount($employeeSectorCount);
+        $number = $objPagination->getNumber();
+        $numberOfPages = ceil($employeeSectorCount/$number);
+        $objPagination->setNumberOfPages($numberOfPages);
+        if(!empty($predicate = $objSort->getPredicate())) {
+            $reverse = $objSort->isReverse() ? 'DESC' : 'ASC';
+            $whereCriteria->ORDER($predicate, $reverse);
+        }
+        $start = $objPagination->getStart();
+        $whereCriteria->LIMIT($start, $number);
+
+        $arrayEmployeeId = EmployeeDao::instance()->getEmployeeSector($whereCriteria, 'employee_id');
+        $arrayData = [];
+        if(!empty($arrayEmployeeId)) {
+            $arrayEmployeeId = array_column($arrayEmployeeId, 'employee_id');
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->ArrayIN('employee_id', $arrayEmployeeId);
+            $arrayData = EmployeeDao::instance()->getEmployee($whereCriteria,'employee_id,employee_name,sex,birthday,photo,mobile,email,weixin');
+        }
+        if(!empty($arrayData)) {
+            foreach ($arrayData as $i => $data) {
+                $arrayData[$i]['e_id'] = encode($data['employee_id']);
+            }
+        }
+        $tableStateModel->setItemData($arrayData);
+        return ['numberOfPages'=>$numberOfPages, 'data'=>$arrayData];
+    }
+    //employee_sector
     public function getEmployeeSector($company_id, $employee_id = '') {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id);
@@ -80,5 +138,32 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService  {
 
         return $arrayEmployeeChannel;
     }
+
+    //employee_personnel_file
+    public function getEmployeePersonnelFile(\WhereCriteria $whereCriteria, $field = null) {
+        return EmployeeDao::instance()->getEmployeePersonnelFile($whereCriteria, $field);
+    }
+
+    public function saveEmployeePersonnelFile($arrayData, $insert_type = 'INSERT') {
+        return EmployeeDao::instance()->saveEmployeePersonnelFile($arrayData, $insert_type);
+    }
+
+    public function updateEmployeePersonnelFile(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return EmployeeDao::instance()->updateEmployeePersonnelFile($whereCriteria, $arrayUpdateData);
+    }
+
+    //company_channel_sector position 职位，sector 部门
+    public function getChannelSector(\WhereCriteria $whereCriteria, $field = null) {
+        return EmployeeDao::instance()->getChannelSector($whereCriteria, $field);
+    }
+
+    public function saveChannelSector($arrayData, $insert_type = 'INSERT') {
+        return EmployeeDao::instance()->saveChannelSector($arrayData, $insert_type);
+    }
+
+    public function updateChannelSector(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return EmployeeDao::instance()->updateChannelSector($whereCriteria, $arrayUpdateData);
+    }
+
 
 }
