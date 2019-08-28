@@ -561,7 +561,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				k++;*/
 			};
 			for(var i in employeeChannel) {
-				if(employeeChannel[i].channel == channel) {
+				if(employeeChannel[i].channel == channel || channel == 'ALL') {//ALL 全部企业
 					thisChannel[k] = {};
 					thisChannel[k]['id'] = employeeChannel[i].id;
 					thisChannel[k]['channel_id'] = employeeChannel[i].channel_id;

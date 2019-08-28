@@ -58,15 +58,8 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService  {
         }
         $start = $objPagination->getStart();
         $whereCriteria->LIMIT($start, $number);
-
-        $arrayEmployeeId = EmployeeDao::instance()->getEmployeeSector($whereCriteria, 'employee_id');
-        $arrayData = [];
-        if(!empty($arrayEmployeeId)) {
-            $arrayEmployeeId = array_column($arrayEmployeeId, 'employee_id');
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->ArrayIN('employee_id', $arrayEmployeeId);
-            $arrayData = EmployeeDao::instance()->getEmployee($whereCriteria,'employee_id,employee_name,sex,birthday,photo,mobile,email,weixin');
-        }
+        $fileid = 'employee_id,employee_name,sex,birthday,photo,mobile,email,weixin';
+        $arrayData = EmployeeDao::instance()->getEmployeeSector($whereCriteria, $fileid);
         if(!empty($arrayData)) {
             foreach ($arrayData as $i => $data) {
                 $arrayData[$i]['e_id'] = encode($data['employee_id']);
@@ -137,19 +130,6 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService  {
         }
 
         return $arrayEmployeeChannel;
-    }
-
-    //employee_personnel_file
-    public function getEmployeePersonnelFile(\WhereCriteria $whereCriteria, $field = null) {
-        return EmployeeDao::instance()->getEmployeePersonnelFile($whereCriteria, $field);
-    }
-
-    public function saveEmployeePersonnelFile($arrayData, $insert_type = 'INSERT') {
-        return EmployeeDao::instance()->saveEmployeePersonnelFile($arrayData, $insert_type);
-    }
-
-    public function updateEmployeePersonnelFile(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return EmployeeDao::instance()->updateEmployeePersonnelFile($whereCriteria, $arrayUpdateData);
     }
 
     //company_channel_sector position 职位，sector 部门

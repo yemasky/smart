@@ -8,7 +8,7 @@
                     <a>部门职位</a>
                 </li>
                 <button class="btn btn-addon btn-default pull-right m-l" ng-click="addSectorPosition(0)"><i class="fa fa-plus"></i>新建部门/职位</button>
-                <button type="button" class="btn btn-default pull-right" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择酒店">
+                <button type="button" class="btn btn-default pull-right" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择企业">
                   Action <span class="caret"></span>
                 </button>
             </ul>
@@ -95,6 +95,7 @@
                     $scope.sectorList = sectorList;$scope.positionList = positionList;
                 }
             }
+			$scope.setThisChannel('ALL');
         });
 
         //

@@ -1,4 +1,10 @@
 <div class="p-md" ng-controller="EmployeeController">
+	<div>
+		<button class="btn btn-addon btn-default pull-right m-l" ng-click="addSectorPosition(0)"><i class="fa fa-plus"></i>新建部门/职位</button>
+		<button type="button" class="btn btn-default pull-right" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择企业">
+		  Action <span class="caret"></span>
+		</button>	
+	</div>
 	<div class="box b-a bg-white m-b">
     	<div class="col-md-8">
       		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addEmployee(0)"> </a></div>
@@ -80,6 +86,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		}
 		common = result.data.common;
 		$scope.setCommonSetting(common);
+		$scope.setThisChannel('ALL');
 	});
 	//
 	var asideEmployee = '';

@@ -1,5 +1,5 @@
 /*
-SQLyog Ultimate v12.08 (64 bit)
+SQLyog Ultimate v11.24 (32 bit)
 MySQL - 10.1.37-MariaDB : Database - wise
 *********************************************************************
 */
@@ -859,6 +859,7 @@ CREATE TABLE `employee` (
   `password` varchar(50) NOT NULL COMMENT 'password',
   `password_salt` varchar(50) NOT NULL COMMENT 'password_salt',
   `weixin` varchar(200) DEFAULT NULL COMMENT '微信号',
+  `wx_unionid` varchar(128) NOT NULL DEFAULT '' COMMENT '微信扫码登陆',
   `dimission` enum('0','1') NOT NULL DEFAULT '0' COMMENT '是否离职',
   `valid` enum('1','0') NOT NULL DEFAULT '1' COMMENT '是否禁用 0禁用',
   `add_datetime` date NOT NULL COMMENT '添加日期',
@@ -866,58 +867,54 @@ CREATE TABLE `employee` (
   PRIMARY KEY (`employee_id`),
   UNIQUE KEY `hotel_mobile` (`company_id`,`mobile`),
   UNIQUE KEY `hotel_email` (`company_id`,`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Data for the table `employee` */
 
-insert  into `employee`(`employee_id`,`company_id`,`employee_name`,`sex`,`birthday`,`photo`,`mobile`,`email`,`password`,`password_salt`,`weixin`,`dimission`,`valid`,`add_datetime`,`is_system`) values (1,1,'有个员工','0','2018-01-06','',18500353881,'kefu@yelove.cn','75cc0db8ac6117d158272682cadd90e0','5483116858d36bd6d1f6c',NULL,'0','1','2018-01-06','0');
-
-/*Table structure for table `employee_personnel_file` */
-
-DROP TABLE IF EXISTS `employee_personnel_file`;
-
-CREATE TABLE `employee_personnel_file` (
-  `employee_id` int(11) NOT NULL COMMENT '员工ID',
-  `company_id` int(11) NOT NULL,
-  `channel_id` int(11) NOT NULL,
-  `id_card` varchar(50) DEFAULT NULL COMMENT '身份证',
-  `address` varchar(255) DEFAULT NULL COMMENT '家庭地址',
-  `present_address` varchar(255) DEFAULT NULL COMMENT '现住址',
-  `positive_id_card` varchar(255) DEFAULT NULL COMMENT '身份证正面',
-  `back_id_card` varchar(255) DEFAULT NULL COMMENT '身份证背面',
-  `entry_date` date DEFAULT NULL COMMENT '入职时间',
-  `probation_date` date DEFAULT NULL COMMENT '试用期结束时间',
-  `employee_number` varchar(255) DEFAULT NULL COMMENT '员工工号',
-  `photo_labor` text COMMENT '劳动合同照片',
-  `emergency_contact` varchar(50) DEFAULT NULL COMMENT '紧急联系人',
-  `emergency_relation` varchar(50) DEFAULT NULL COMMENT '紧急联系人关系',
-  `emergency_mobile` varchar(50) DEFAULT NULL COMMENT '紧急联系人电话',
-  PRIMARY KEY (`employee_id`,`company_id`,`channel_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Data for the table `employee_personnel_file` */
-
-insert  into `employee_personnel_file`(`employee_id`,`company_id`,`channel_id`,`id_card`,`address`,`present_address`,`positive_id_card`,`back_id_card`,`entry_date`,`probation_date`,`employee_number`,`photo_labor`,`emergency_contact`,`emergency_relation`,`emergency_mobile`) values (1,1,1,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+insert  into `employee`(`employee_id`,`company_id`,`employee_name`,`sex`,`birthday`,`photo`,`mobile`,`email`,`password`,`password_salt`,`weixin`,`wx_unionid`,`dimission`,`valid`,`add_datetime`,`is_system`) values (1,1,'有个员工','0','2018-01-06','',18500353881,'kefu@yelove.cn','75cc0db8ac6117d158272682cadd90e0','5483116858d36bd6d1f6c',NULL,'','0','1','2018-01-06','0'),(2,1,'员工2','0',NULL,'',0,'','','',NULL,'','0','1','0000-00-00','0');
 
 /*Table structure for table `employee_sector` */
 
 DROP TABLE IF EXISTS `employee_sector`;
 
 CREATE TABLE `employee_sector` (
-  `employee_id` int(11) NOT NULL COMMENT '职工ID',
-  `employee_name` varchar(128) NOT NULL,
-  `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `channel_father_id` int(11) NOT NULL COMMENT '隶属于ID',
+  `company_id` int(11) NOT NULL,
   `channel_id` int(11) NOT NULL,
-  `sector_father_id` int(11) NOT NULL COMMENT '部门ID',
-  `sector_id` int(11) NOT NULL COMMENT '职位ID',
-  `is_default` enum('0','1') DEFAULT '1' COMMENT '默认值',
-  PRIMARY KEY (`employee_id`,`company_id`,`channel_father_id`,`channel_id`,`sector_father_id`,`sector_id`)
+  `channel_father_id` int(11) NOT NULL,
+  `sector_father_id` int(11) NOT NULL,
+  `sector_id` int(11) NOT NULL,
+  `is_default` enum('0','1') NOT NULL DEFAULT '0' COMMENT '默认值',
+  `employee_id` int(11) NOT NULL COMMENT '员工ID',
+  `employee_name` varchar(128) NOT NULL COMMENT '员工姓名',
+  `email` varchar(255) DEFAULT NULL,
+  `weixin` varchar(64) DEFAULT NULL,
+  `birthday` date NOT NULL COMMENT '生日',
+  `photo` varchar(255) DEFAULT NULL COMMENT '头像',
+  `id_card` varchar(50) DEFAULT NULL COMMENT '身份证',
+  `address` varchar(255) DEFAULT NULL COMMENT '家庭地址',
+  `sex` enum('0','1') NOT NULL COMMENT '男女',
+  `mobile` bigint(11) NOT NULL,
+  `present_address` varchar(255) DEFAULT NULL COMMENT '现住址',
+  `positive_id_card` varchar(255) DEFAULT NULL COMMENT '身份证正面',
+  `back_id_card` varchar(255) DEFAULT NULL COMMENT '身份证背面',
+  `full_time` enum('0','1') NOT NULL DEFAULT '1' COMMENT '全职兼职',
+  `entry_date` date DEFAULT NULL COMMENT '入职时间',
+  `probation_date` date DEFAULT NULL COMMENT '试用期结束时间',
+  `photo_labor` text COMMENT '劳动合同照片',
+  `employee_number` varchar(255) DEFAULT NULL COMMENT '员工工号',
+  `emergency_contact` varchar(50) DEFAULT NULL COMMENT '紧急联系人',
+  `emergency_relation` varchar(50) DEFAULT NULL COMMENT '紧急联系人关系',
+  `emergency_mobile` varchar(50) DEFAULT NULL COMMENT '紧急联系人电话',
+  `dimission` enum('0','1') NOT NULL DEFAULT '1' COMMENT '是否离职',
+  `dimission_date` date DEFAULT NULL COMMENT '离职时间',
+  `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '0禁用',
+  `add_datetime` datetime NOT NULL COMMENT '添加时间',
+  PRIMARY KEY (`employee_id`,`company_id`,`channel_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `employee_sector` */
 
-insert  into `employee_sector`(`employee_id`,`employee_name`,`company_id`,`channel_father_id`,`channel_id`,`sector_father_id`,`sector_id`,`is_default`) values (1,'有个员工',1,1,1,1,3,'1'),(1,'有个员工',1,1,5,1,3,'0');
+insert  into `employee_sector`(`company_id`,`channel_id`,`channel_father_id`,`sector_father_id`,`sector_id`,`is_default`,`employee_id`,`employee_name`,`email`,`weixin`,`birthday`,`photo`,`id_card`,`address`,`sex`,`mobile`,`present_address`,`positive_id_card`,`back_id_card`,`full_time`,`entry_date`,`probation_date`,`photo_labor`,`employee_number`,`emergency_contact`,`emergency_relation`,`emergency_mobile`,`dimission`,`dimission_date`,`valid`,`add_datetime`) values (1,1,1,0,0,'1',1,'有个员工','kefu@yelove.cn',NULL,'0000-00-00',NULL,NULL,NULL,'0',18500353881,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1','0000-00-00 00:00:00'),(1,1,1,0,0,'1',2,'员工2',NULL,NULL,'0000-00-00',NULL,NULL,NULL,'0',0,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1','0000-00-00 00:00:00');
 
 /*Table structure for table `module` */
 

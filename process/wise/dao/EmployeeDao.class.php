@@ -50,18 +50,6 @@ class EmployeeDao extends CommonDao {
     public function updateEmployeeSector(\WhereCriteria $whereCriteria, $arrayUpdateData) {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('employee_sector')->update($whereCriteria, $arrayUpdateData);
     }
-    //employee_personnel_file
-    public function getEmployeePersonnelFile(\WhereCriteria $whereCriteria, $field = null) {
-        return $this->setDsnRead($this->getDsnRead())->setTable('employee_personnel_file')->getList($whereCriteria, $field);
-    }
-
-    public function saveEmployeePersonnelFile($arrayData, $insert_type = 'INSERT') {
-        return $this->setDsnWrite($this->getDsnWrite())->setTable('employee_personnel_file')->insert($arrayData, $insert_type);
-    }
-
-    public function updateEmployeePersonnelFile(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnWrite($this->getDsnWrite())->setTable('employee_personnel_file')->update($whereCriteria, $arrayUpdateData);
-    }
 
     //company_channel_sector position 职位，sector 部门
     public function getChannelSector(\WhereCriteria $whereCriteria, $field = null) {

@@ -11,14 +11,17 @@
         <div class="tab-container ng-scope ng-valid ng-dirty">
             <ul class="nav nav-tabs" ng-init="activeTab=1">
                 <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
-                    <a ng-bind-html="action"></a>
+                    <a>职位信息</a>
+                </li>
+				<li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
+                    <a>个人信息</a>
                 </li>
             </ul>
             <div class="tab-content">
                 <div ng-show="activeTab==1">
                     <div class="form-group m-h-n clearfix">
                       <div class="col-sm-2 w-sm">
-                      	<label>类型</label>
+                      	<label>部门</label>
                         <button id="select_customer_market" type="button" class="btn btn-default w-sm text-left" name="payment_father_id" ng-model="param.payment_father_id" data-html="0" data-toggle="true"  
                         	bs-options="i.value_id as i.value for i in keyData" bs-select ng-change="selectCustomerMarket()">
                       		Action <span class="caret"></span>
@@ -26,7 +29,7 @@
                       </div>
                     </div>
                     <div class="form-group">
-                        <label>支付名称</label>
+                        <label>职位</label>
                         <input class="form-control w" name="item_number" value="" ng-model="param.payment_name" required>
                     </div>
                     <div class="form-group">
@@ -39,6 +42,9 @@
                     </div>
                     <div class="form-group"></div>
                 </div>
+				<div ng-show="activeTab==2">
+				
+				</div>
             </div>
         </div>
       </div>
