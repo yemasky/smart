@@ -858,6 +858,7 @@ CREATE TABLE `employee` (
   `email` varchar(200) NOT NULL COMMENT 'Email',
   `password` varchar(50) NOT NULL COMMENT 'password',
   `password_salt` varchar(50) NOT NULL COMMENT 'password_salt',
+  `id_card` varchar(64) NOT NULL COMMENT '身份证',
   `weixin` varchar(200) DEFAULT NULL COMMENT '微信号',
   `wx_unionid` varchar(128) NOT NULL DEFAULT '' COMMENT '微信扫码登陆',
   `dimission` enum('0','1') NOT NULL DEFAULT '0' COMMENT '是否离职',
@@ -871,7 +872,7 @@ CREATE TABLE `employee` (
 
 /*Data for the table `employee` */
 
-insert  into `employee`(`employee_id`,`company_id`,`employee_name`,`sex`,`birthday`,`photo`,`mobile`,`email`,`password`,`password_salt`,`weixin`,`wx_unionid`,`dimission`,`valid`,`add_datetime`,`is_system`) values (1,1,'有个员工','0','2018-01-06','',18500353881,'kefu@yelove.cn','75cc0db8ac6117d158272682cadd90e0','5483116858d36bd6d1f6c',NULL,'','0','1','2018-01-06','0'),(2,1,'员工2','0',NULL,'',0,'','','',NULL,'','0','1','0000-00-00','0');
+insert  into `employee`(`employee_id`,`company_id`,`employee_name`,`sex`,`birthday`,`photo`,`mobile`,`email`,`password`,`password_salt`,`id_card`,`weixin`,`wx_unionid`,`dimission`,`valid`,`add_datetime`,`is_system`) values (1,1,'有个员工','0','2018-01-06','',18500353881,'kefu@yelove.cn','75cc0db8ac6117d158272682cadd90e0','5483116858d36bd6d1f6c','',NULL,'','0','1','2018-01-06','0'),(2,1,'员工2','0',NULL,'',0,'','','','',NULL,'','0','1','0000-00-00','0');
 
 /*Table structure for table `employee_sector` */
 

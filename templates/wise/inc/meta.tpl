@@ -209,7 +209,8 @@ app.filter('propsFilter', function() {
 });
 angular.module("app").constant("MODULE_CONFIG", [
     {name: "ui.select",module: !0,files: ["<%$__RESOURCE%>vendor/modules/angular-ui-select/select.min.js", "<%$__RESOURCE%>vendor/modules/angular-ui-select/select.min.css"]}, 
-    {name: "easyPieChart",module: !1,files: ["<%$__RESOURCE%>vendor/jquery/easypiechart/jquery.easy-pie-chart.js"]}
+    {name: "easyPieChart",module: !1,files: ["<%$__RESOURCE%>vendor/jquery/easypiechart/jquery.easy-pie-chart.js"]},
+	{name: "angularBootstrapNavTree",module: !0,files: ["<%$__RESOURCE%>vendor/modules/angular-bootstrap-nav-tree/abn_tree_directive.js", "<%$__RESOURCE%>vendor/modules/angular-bootstrap-nav-tree/abn_tree.css"]}
 ]).config(["$ocLazyLoadProvider", "MODULE_CONFIG", function($ocLazyLoadProvider, MODULE_CONFIG) {
     $ocLazyLoadProvider.config({
         debug: !1,
@@ -217,17 +218,23 @@ angular.module("app").constant("MODULE_CONFIG", [
         modules: MODULE_CONFIG
     })
 }]);
-angular.module("app").directive("uiNav", ["$timeout", function() {
+angular.module("app").directive("lazyLoad", ["MODULE_CONFIG", "$ocLazyLoad", "$compile", function(a, b, c) {
     return {
-        restrict: "AC",
-        link: function(a, b) {
-            b.find("a").bind("click", function() {
-                var b = angular.element(this).parent();
-                b.parent().find("li").removeClass("active"), b.toggleClass("active"), b.find("ul") && (a.app.asideCollapse = !1)
-            })
+        restrict: "A",
+        compile: function(d) {
+            var e, f = d.contents().remove();
+            return function(d, g, h) {
+                angular.forEach(a, function(a) {
+                    a.name == h.lazyLoad && (e = a.module ? a.name : a.files)
+                }), b.load(e).then(function() {
+                    c(f)(d, function(a) {
+                        g.append(a)
+                    })
+                })
+            }
         }
     }
-}]),
+}]);
 angular.module("app").directive("uiFullscreen", ["$ocLazyLoad", "$document", function(a, b) {
     return {
         restrict: "AC",
@@ -420,6 +427,10 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         $scope.__RESOURCE = __RESOURCE;
 		$scope._resource = '<%$__RESOURCE%>';
 		//
+		$scope.setUiNav = function($event) {
+			var b = angular.element($event.target).parent();
+			b.parent().find("li").removeClass("active"), b.toggleClass("active"), b.find("ul") && ($scope.app.asideCollapse = !1)
+		}		//
         $scope.switchChannel = function(channel_id) {
             console.log($scope.employeeChannel[channel_id]);
         }
@@ -716,6 +727,17 @@ app.directive('pageSelect', function() {
         }
       }
 });
+angular.module("app").directive("uiNav", ["$timeout", function() {
+    return {
+        restrict: "AC",
+        link: function($scope, $element) {
+            $element.find("a").bind("click", function() {
+                var b = angular.element(this).parent();
+                b.parent().find("li").removeClass("active"), b.toggleClass("active"), b.find("ul") && ($scope.app.asideCollapse = !1)
+            })
+        }
+    }
+}]);
 </script>
 <script language="javascript" src="<%$__RESOURCE%>vendor/libs/moment.min.js?<%$__VERSION%>"></script>
 <script language="javascript" src="<%$__RESOURCE%>vendor/libs/daterangepicker.js?<%$__VERSION%>"></script>

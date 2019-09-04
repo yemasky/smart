@@ -1,14 +1,14 @@
 <div class="p-md" ng-controller="EmployeeController">
-	<div>
-		<button class="btn btn-addon btn-default pull-right m-l" ng-click="addSectorPosition(0)"><i class="fa fa-plus"></i>新建部门/职位</button>
+	<ul class="nav nav-tabs no-b-b">
+		<li class="active"><a ng-bind-html="_self_module.module_name">所有员工</a></li>
+		<button class="btn btn-addon btn-default pull-right m-l" ng-click="addEmployee(0)"><i class="fa fa-plus"></i>新建员工</button>
 		<button type="button" class="btn btn-default pull-right" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择企业">
 		  Action <span class="caret"></span>
-		</button>	
-	</div>
+		</button>
+	</ul>
 	<div class="box b-a bg-white m-b">
     	<div class="col-md-8">
-      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addEmployee(0)"> </a></div>
-            <div class="p-md">
+            <div class="p-md no-br-t">
             <div class="table-responsive">
             <table st-pipe="callEmployeeServer" st-table="displayed" class="table table-bordered table-striped bg-white">
                 <thead>
@@ -61,20 +61,38 @@
      	</div>
      	<div class="col-md-4 b-l no-border-sm">
      		<div class="panel-heading b-b b-light"> 部门职位</div>
-            <div class="list-group no-border no-radius">
-                <div class="list-group-item">
-                  <span class="pull-right">293,200</span>
-                  <i class="fa fa-fw fa-circle text-info"></i>
-                  Vatican City
+            <div class="">
+                <div class="">
+					<div>
+					  <span ng-if="doing_async">...loading...</span>
+					  <div lazy-load="angularBootstrapNavTree">
+						<abn-tree 
+						  tree-data         = "my_data" 
+						  tree-control      = "my_tree" 
+						  on-select         = "my_tree_handler(branch)" 
+						  expand-level      = "3" 
+						  initial-selection = "Granny Smith"
+						  icon-leaf         = "fa fa-file-o"
+						  icon-expand       = "fa fa-angle-right"
+						  icon-collapse     = "fa fa-angle-down"
+						  >
+						</abn-tree>
+					 </div>
+				  </div>
                 </div>
              </div>
      	</div>
      </div>
+{{output}}
+
 </div>
 <script language="javascript">
-app.controller('EmployeeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
+app.controller('EmployeeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
+	$ocLazyLoad.load([$scope._resource + "vendor/modules/angular-bootstrap-nav-tree/abn_tree_directive.js",
+					  $scope._resource + "vendor/modules/angular-bootstrap-nav-tree/abn_tree.css"]);
+	//
 	//获取数据
-	var _channel = $scope.$stateParams.channel, common = '';
+	var _channel = $scope.$stateParams.channel, common = '', sectorList = {}, sectorPositionList = [];
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
@@ -87,6 +105,68 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		common = result.data.common;
 		$scope.setCommonSetting(common);
 		$scope.setThisChannel('ALL');
+		$scope.channelSectorList = result.data.item.channelSectorList;//部门职位
+		sortChannelSector(result.data.item.channelSectorList);
+		function sortChannelSector(channelSectorList) {
+			var positionList = {}; sectorI = 0,sectorJ = 0, sectorPosition = {}, sectorPositionChildren = {};
+			if(channelSectorList != '') {
+				for(var sector_id in channelSectorList) {
+					var listData = channelSectorList[sector_id];
+					var father_id = listData.sector_father_id;
+					if(listData.sector_type == 'sector') {//1级部门//father
+						if(angular.isUndefined(sectorList[father_id])) {
+							sectorList[father_id] = '';//father
+							//
+							sectorPosition[father_id] = {};
+							sectorPosition[father_id]['father_id'] = sectorI;
+							sectorPosition[father_id]['children_id'] = 0;
+							sectorPositionList[sectorI] = {};
+							sectorPositionList[sectorI].label = channelSectorList[father_id].sector_name;
+							sectorPositionList[sectorI].data = channelSectorList[father_id];
+							sectorPositionList[sectorI].children = [];
+							sectorI++;
+						}
+					}
+					if(father_id!=sector_id) {//children
+						if(listData.sector_type == 'sector') {//2级部门
+							//
+							var sectorIfather_id=sectorPosition[father_id].father_id,children_id = sectorPosition[father_id].children_id;
+							sectorPositionList[sectorIfather_id].children[children_id] = {};
+							sectorPositionList[sectorIfather_id].children[children_id].label = listData.sector_name;
+							sectorPositionList[sectorIfather_id].children[children_id].data = listData;
+							sectorPositionList[sectorIfather_id].children[children_id].children = [];
+							sectorPositionChildren[sector_id] = {};//二级部门职位
+							sectorPositionChildren[sector_id]['father_id'] = children_id;
+							sectorPositionChildren[sector_id]['children_id'] = 0;
+							//2级部门children_id++
+							sectorPosition[father_id].children_id++;
+						} else {//职位, 职位的father_id是部门ID
+							//
+							/*if(angular.isDefined(sectorPosition[father_id])) {//存在第一级部门的职位
+								var sectorIfather_id=sectorPosition[father_id].father_id,children_id = sectorPosition[father_id].children_id;
+								sectorPositionList[sectorIfather_id].children[children_id] = {};
+								sectorPositionList[sectorIfather_id].children[children_id].label = listData.sector_name;
+								sectorPositionList[sectorIfather_id].children[children_id].data = listData;
+								sectorPositionList[sectorIfather_id].children[children_id].children = [];
+								sectorPosition[father_id].children_id++;
+							}*/
+							if(angular.isDefined(sectorPositionChildren[father_id])) {//存在第二级部门的职位
+								var sector_father_id = channelSectorList[father_id].sector_father_id;//第一级的sector_id
+								var sectorIfather_id = sectorPosition[sector_father_id].father_id,children_id = sectorPositionChildren[father_id].father_id;
+								//
+								var positionChildren_id = sectorPositionChildren[father_id].children_id;
+								//
+								sectorPositionList[sectorIfather_id].children[children_id].children[positionChildren_id] = {};
+								sectorPositionList[sectorIfather_id].children[children_id].children[positionChildren_id].label = listData.sector_name;
+								sectorPositionList[sectorIfather_id].children[children_id].children[positionChildren_id].data = listData;
+								sectorPositionList[sectorIfather_id].children[children_id].children[positionChildren_id].children = [];
+								sectorPositionChildren[father_id].children_id++;
+							}
+						}
+					}                        
+				}
+			}
+		}
 	});
 	//
 	var asideEmployee = '';
@@ -133,8 +213,20 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
             tableState.pagination.numberOfPages = result.data.item.employeeList.numberOfPages;
         });
     };
-	$httpService.deleteHeader('refresh');
+	///////////////////////
+	var tree;
+	$scope.my_tree_handler = function(branch) {
+		var _ref;
+		$scope.output = "You selected: " + branch.label;
+		if ((_ref = branch.data) != null) {
+			return $scope.output += '(' + angular.toJson(branch.data) + ')';
+		}
+	};
+	$scope.my_data = sectorPositionList;
+	$scope.my_tree = tree = {};
 	
+	//
+	$httpService.deleteHeader('refresh');
 });
 
 </script>
