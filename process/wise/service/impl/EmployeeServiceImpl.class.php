@@ -6,7 +6,7 @@
  */
 
 namespace wise;
-class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService  {
+class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
     private static $objService = null;
 
     public static function instance() {
@@ -33,41 +33,59 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService  {
 
     public function getEmployeeReceivablePage(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $tableState = $objRequest->tableState;
-        if(empty($tableState)) $tableState = array();
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id = $objRequest->channel_id;
+        if (empty($tableState)) $tableState = array();
+        $company_id      = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id      = $objRequest->channel_id;
         $tableStateModel = new TableStateModel($tableState);
-        $objPagination = $tableStateModel->getPagination();
-        $objSearch = $tableStateModel->getSearch();
-        $objSort = $tableStateModel->getSort();
-
+        $objPagination   = $tableStateModel->getPagination();
+        $objSearch       = $tableStateModel->getSearch();
+        $objSort         = $tableStateModel->getSort();
+        //
+        $sector_id        = $objRequest->sector_id;
+        $sector_father_id = $objRequest->sector_father_id;
+        $sector_type      = $objRequest->sector_type;
+        $sectorChildren   = $objRequest->sectorChildren;
+        //
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
-        if(!empty($searchValue = $objSearch->getPredicateObject())) {
+        if (!empty($searchValue = $objSearch->getPredicateObject())) {
             //$whereCriteria->MATCH('employee_name', $searchValue['$']);
-            $whereCriteria->LIKE('employee_name', '%'.$searchValue['$'].'%');
+            $whereCriteria->LIKE('employee_name', '%' . $searchValue['$'] . '%');
+        }
+        if (!empty($sector_id)) {
+            if ($sector_type == 'position') $whereCriteria->EQ('sector_id', $sector_id);
+            if ($sector_type == 'sector') {
+                if ($sector_father_id != $sector_id) {
+                    $whereCriteria->EQ('sector_father_id', $sector_id);
+                } else {
+                    if (!empty($sectorChildren)) {
+                        $whereCriteria->ArrayIN('sector_father_id', json_decode(stripslashes($sectorChildren), true));
+                    }
+                }
+            }
         }
         $employeeSectorCount = EmployeeDao::instance()->getEmployeeSectorCount($whereCriteria, 'employee_id');
         $objPagination->setTotalItemCount($employeeSectorCount);
-        $number = $objPagination->getNumber();
-        $numberOfPages = ceil($employeeSectorCount/$number);
+        $number        = $objPagination->getNumber();
+        $numberOfPages = ceil($employeeSectorCount / $number);
         $objPagination->setNumberOfPages($numberOfPages);
-        if(!empty($predicate = $objSort->getPredicate())) {
+        if (!empty($predicate = $objSort->getPredicate())) {
             $reverse = $objSort->isReverse() ? 'DESC' : 'ASC';
             $whereCriteria->ORDER($predicate, $reverse);
         }
         $start = $objPagination->getStart();
         $whereCriteria->LIMIT($start, $number);
-        $fileid = 'employee_id,employee_name,sex,birthday,photo,mobile,email,weixin';
+        $fileid    = 'employee_id,employee_name,sex,birthday,photo,mobile,email,weixin';
         $arrayData = EmployeeDao::instance()->getEmployeeSector($whereCriteria, $fileid);
-        if(!empty($arrayData)) {
+        if (!empty($arrayData)) {
             foreach ($arrayData as $i => $data) {
                 $arrayData[$i]['e_id'] = encode($data['employee_id']);
             }
         }
         $tableStateModel->setItemData($arrayData);
-        return ['numberOfPages'=>$numberOfPages, 'data'=>$arrayData];
+        return ['numberOfPages' => $numberOfPages, 'data' => $arrayData];
     }
+
     //employee_sector
     public function getEmployeeSector($company_id, $employee_id = '') {
         $whereCriteria = new \WhereCriteria();

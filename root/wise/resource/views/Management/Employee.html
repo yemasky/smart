@@ -60,27 +60,23 @@
         
      	</div>
      	<div class="col-md-4 b-l no-border-sm">
-     		<div class="panel-heading b-b b-light"> 部门职位</div>
-            <div class="">
-                <div class="">
-					<div>
-					  <span ng-if="doing_async">...loading...</span>
-					  <div lazy-load="angularBootstrapNavTree">
-						<abn-tree 
-						  tree-data         = "my_data" 
-						  tree-control      = "my_tree" 
-						  on-select         = "my_tree_handler(branch)" 
-						  expand-level      = "3" 
-						  initial-selection = "Granny Smith"
-						  icon-leaf         = "fa fa-file-o"
-						  icon-expand       = "fa fa-angle-right"
-						  icon-collapse     = "fa fa-angle-down"
-						  >
-						</abn-tree>
-					 </div>
-				  </div>
-                </div>
-             </div>
+     		<div class="panel-heading b-b b-light"><a ng-click="my_tree_handler('')">全部部门</a></div>
+            <div>
+			  <span ng-if="doing_async">...loading...</span>
+			  <div lazy-load="angularBootstrapNavTree">
+				<abn-tree 
+				  tree-data         = "my_data" 
+				  tree-control      = "my_tree" 
+				  on-select         = "my_tree_handler(branch)" 
+				  expand-level      = "3" 
+				  initial-selection = "Granny Smith"
+				  icon-leaf         = "fa fa-file-o"
+				  icon-expand       = "fa fa-angle-right"
+				  icon-collapse     = "fa fa-angle-down"
+				  >
+				</abn-tree>
+			 </div>
+            </div>
      	</div>
      </div>
 {{output}}
@@ -88,9 +84,6 @@
 </div>
 <script language="javascript">
 app.controller('EmployeeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
-	$ocLazyLoad.load([$scope._resource + "vendor/modules/angular-bootstrap-nav-tree/abn_tree_directive.js",
-					  $scope._resource + "vendor/modules/angular-bootstrap-nav-tree/abn_tree.css"]);
-	//
 	//获取数据
 	var _channel = $scope.$stateParams.channel, common = '', sectorList = {}, sectorPositionList = [];
 	var _view = $scope.$stateParams.view;
@@ -115,7 +108,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 					var father_id = listData.sector_father_id;
 					if(listData.sector_type == 'sector') {//1级部门//father
 						if(angular.isUndefined(sectorList[father_id])) {
-							sectorList[father_id] = '';//father
+							sectorList[father_id] = [];//father
 							//
 							sectorPosition[father_id] = {};
 							sectorPosition[father_id]['father_id'] = sectorI;
@@ -129,6 +122,8 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 					}
 					if(father_id!=sector_id) {//children
 						if(listData.sector_type == 'sector') {//2级部门
+							var sector_length = sectorList[father_id].length;
+							sectorList[father_id][sector_length] = sector_id;
 							//
 							var sectorIfather_id=sectorPosition[father_id].father_id,children_id = sectorPosition[father_id].children_id;
 							sectorPositionList[sectorIfather_id].children[children_id] = {};
@@ -142,14 +137,14 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 							sectorPosition[father_id].children_id++;
 						} else {//职位, 职位的father_id是部门ID
 							//
-							/*if(angular.isDefined(sectorPosition[father_id])) {//存在第一级部门的职位
+							if(angular.isDefined(sectorPosition[father_id])) {//存在第一级部门的职位
 								var sectorIfather_id=sectorPosition[father_id].father_id,children_id = sectorPosition[father_id].children_id;
 								sectorPositionList[sectorIfather_id].children[children_id] = {};
 								sectorPositionList[sectorIfather_id].children[children_id].label = listData.sector_name;
 								sectorPositionList[sectorIfather_id].children[children_id].data = listData;
 								sectorPositionList[sectorIfather_id].children[children_id].children = [];
 								sectorPosition[father_id].children_id++;
-							}*/
+							}
 							if(angular.isDefined(sectorPositionChildren[father_id])) {//存在第二级部门的职位
 								var sector_father_id = channelSectorList[father_id].sector_father_id;//第一级的sector_id
 								var sectorIfather_id = sectorPosition[sector_father_id].father_id,children_id = sectorPositionChildren[father_id].father_id;
@@ -200,13 +195,15 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 	}
     
     /////////
-    $scope.employeeList = [];
-    $scope.callEmployeeServer = function callEmployeeServer(tableState) {
+    $scope.employeeList = []; var thisSectorParam = '';
+    $scope.callEmployeeServer = function callEmployeeServer(tableState, sectorParam) {
         $scope.param = {};        
         $scope.param.tableState = tableState;
         $scope.loading.start();
+		if(!angular.isString(sectorParam)) sectorParam = '';
+		if(thisSectorParam != '') sectorParam = thisSectorParam;
         $httpService.header('method', 'EmployeePagination');
-        $httpService.post('/app.do?'+param, $scope, function(result){
+        $httpService.post('/app.do?'+param+'&'+sectorParam, $scope, function(result){
             $scope.loading.percent();
             $httpService.deleteHeader('method');
             $scope.employeeList = result.data.item.employeeList.data;
@@ -216,11 +213,18 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 	///////////////////////
 	var tree;
 	$scope.my_tree_handler = function(branch) {
-		var _ref;
-		$scope.output = "You selected: " + branch.label;
-		if ((_ref = branch.data) != null) {
-			return $scope.output += '(' + angular.toJson(branch.data) + ')';
+		var _ref, sectorChildren = '';thisSectorParam = '';
+		$scope.output = branch.label;
+		if (angular.isDefined(branch.data) && (_ref = branch.data) != null) {
+			var sector_id = branch.data.sector_id;
+			var sector_father_id = branch.data.sector_father_id;
+			var sector_type = branch.data.sector_type;
+			if(sector_type == 'sector' && sector_id == sector_father_id) {
+			   sectorChildren = angular.toJson(sectorList[sector_father_id]);
+			}
+			thisSectorParam = 'sector_id='+sector_id+'&sector_father_id='+sector_father_id+'&sector_type='+sector_type+'&sectorChildren='+sectorChildren;
 		}
+		$scope.callEmployeeServer($scope.param.tableState, thisSectorParam);
 	};
 	$scope.my_data = sectorPositionList;
 	$scope.my_tree = tree = {};

@@ -810,14 +810,14 @@ CREATE TABLE `company_channel_sector` (
   `channel_id` int(11) NOT NULL COMMENT '隶属于',
   `sector_father_id` int(11) NOT NULL COMMENT '父ID',
   `sector_name` varchar(100) NOT NULL COMMENT '名称',
-  `sector_order` tinyint(3) NOT NULL DEFAULT '0' COMMENT '排序',
+  `sector_order` bigint(13) NOT NULL DEFAULT '0' COMMENT '排序',
   `sector_type` enum('sector','position') DEFAULT NULL COMMENT 'position 职位，sector 部门',
   PRIMARY KEY (`sector_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 
 /*Data for the table `company_channel_sector` */
 
-insert  into `company_channel_sector`(`sector_id`,`company_id`,`channel_id`,`sector_father_id`,`sector_name`,`sector_order`,`sector_type`) values (1,1,1,1,'有个部门',0,'sector'),(2,1,1,1,'有个2级部门',0,'sector'),(3,1,1,2,'有个职位',0,'position'),(4,1,1,4,'部门二',0,'sector'),(5,1,1,4,'部门二2级部门',0,'sector'),(6,1,1,1,'2个二级部门',0,'sector'),(7,1,1,2,'有个职位2',0,'position');
+insert  into `company_channel_sector`(`sector_id`,`company_id`,`channel_id`,`sector_father_id`,`sector_name`,`sector_order`,`sector_type`) values (1,1,1,1,'部门A',1000000000,'sector'),(2,1,1,1,'部门A 2级部门1',1002000000,'sector'),(3,1,1,2,'部门A 2级部门1职位1',1002003000,'position'),(4,1,1,4,'部门B',4000000000,'sector'),(5,1,1,4,'部门B 2级部门1',4000005000,'sector'),(6,1,1,1,'部门A 2级部门2',1006000000,'sector'),(7,1,1,2,'部门A 2级部门1职位2',1002007000,'position'),(8,1,1,1,'部门A 职位A',1000000008,'position');
 
 /*Table structure for table `customer_market` */
 
@@ -882,8 +882,8 @@ CREATE TABLE `employee_sector` (
   `company_id` int(11) NOT NULL,
   `channel_id` int(11) NOT NULL,
   `channel_father_id` int(11) NOT NULL,
-  `sector_father_id` int(11) NOT NULL,
-  `sector_id` int(11) NOT NULL,
+  `sector_father_id` int(11) NOT NULL COMMENT '部门ID',
+  `sector_id` int(11) NOT NULL COMMENT '职位ID',
   `is_default` enum('0','1') NOT NULL DEFAULT '0' COMMENT '默认值',
   `employee_id` int(11) NOT NULL COMMENT '员工ID',
   `employee_name` varchar(128) NOT NULL COMMENT '员工姓名',
@@ -915,7 +915,7 @@ CREATE TABLE `employee_sector` (
 
 /*Data for the table `employee_sector` */
 
-insert  into `employee_sector`(`company_id`,`channel_id`,`channel_father_id`,`sector_father_id`,`sector_id`,`is_default`,`employee_id`,`employee_name`,`email`,`weixin`,`birthday`,`photo`,`id_card`,`address`,`sex`,`mobile`,`present_address`,`positive_id_card`,`back_id_card`,`full_time`,`entry_date`,`probation_date`,`photo_labor`,`employee_number`,`emergency_contact`,`emergency_relation`,`emergency_mobile`,`dimission`,`dimission_date`,`valid`,`add_datetime`) values (1,1,1,0,0,'1',1,'有个员工','kefu@yelove.cn',NULL,'0000-00-00',NULL,NULL,NULL,'0',18500353881,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1','0000-00-00 00:00:00'),(1,1,1,0,0,'1',2,'员工2',NULL,NULL,'0000-00-00',NULL,NULL,NULL,'0',0,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1','0000-00-00 00:00:00');
+insert  into `employee_sector`(`company_id`,`channel_id`,`channel_father_id`,`sector_father_id`,`sector_id`,`is_default`,`employee_id`,`employee_name`,`email`,`weixin`,`birthday`,`photo`,`id_card`,`address`,`sex`,`mobile`,`present_address`,`positive_id_card`,`back_id_card`,`full_time`,`entry_date`,`probation_date`,`photo_labor`,`employee_number`,`emergency_contact`,`emergency_relation`,`emergency_mobile`,`dimission`,`dimission_date`,`valid`,`add_datetime`) values (1,1,1,1,8,'1',1,'有个员工','kefu@yelove.cn',NULL,'0000-00-00',NULL,NULL,NULL,'0',18500353881,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1','0000-00-00 00:00:00'),(1,1,1,2,3,'1',2,'员工2',NULL,NULL,'0000-00-00',NULL,NULL,NULL,'0',0,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'1',NULL,'1','0000-00-00 00:00:00');
 
 /*Table structure for table `module` */
 
