@@ -22,10 +22,7 @@
                     <div class="form-group m-h-n clearfix">
                       <div class="col-sm-2 w-sm">
                       	<label>部门</label>
-                        <button id="select_customer_market" type="button" class="btn btn-default w-sm text-left" name="payment_father_id" ng-model="param.payment_father_id" data-html="0" data-toggle="true"  
-                        	bs-options="i.value_id as i.value for i in keyData" bs-select ng-change="selectCustomerMarket()">
-                      		Action <span class="caret"></span>
-                    	</button>
+                        <div class="form-group" ng-init="ThisNavMenuList=sectorList" ng-include="'/app/commonNavMenu.html'"></div>
                       </div>
                     </div>
                     <div class="form-group">

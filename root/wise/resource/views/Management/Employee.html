@@ -85,7 +85,7 @@
 <script language="javascript">
 app.controller('EmployeeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
 	//获取数据
-	var _channel = $scope.$stateParams.channel, common = '', sectorList = {}, sectorPositionList = [];
+	var _channel = $scope.$stateParams.channel, common = '', sectorList = {}, sectorChildrenList = {}, positionList = {}, sectorPositionList = [];
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
@@ -108,7 +108,10 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 					var father_id = listData.sector_father_id;
 					if(listData.sector_type == 'sector') {//1级部门//father
 						if(angular.isUndefined(sectorList[father_id])) {
-							sectorList[father_id] = [];//father
+							sectorChildrenList[father_id] = [];//father
+							sectorList[father_id] = channelSectorList[father_id];//father
+							sectorList[father_id].label = channelSectorList[father_id].sector_name;
+                            sectorList[father_id]['children'] = {};
 							//
 							sectorPosition[father_id] = {};
 							sectorPosition[father_id]['father_id'] = sectorI;
@@ -122,8 +125,10 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 					}
 					if(father_id!=sector_id) {//children
 						if(listData.sector_type == 'sector') {//2级部门
-							var sector_length = sectorList[father_id].length;
-							sectorList[father_id][sector_length] = sector_id;
+							var sector_length = sectorChildrenList[father_id].length;
+							sectorChildrenList[father_id][sector_length] = sector_id;
+							sectorList[father_id]['children'][sector_id] = listData;
+							sectorList[father_id]['children'][sector_id].label = listData.sector_name;
 							//
 							var sectorIfather_id=sectorPosition[father_id].father_id,children_id = sectorPosition[father_id].children_id;
 							sectorPositionList[sectorIfather_id].children[children_id] = {};
@@ -136,8 +141,14 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 							//2级部门children_id++
 							sectorPosition[father_id].children_id++;
 						} else {//职位, 职位的father_id是部门ID
+							if(angular.isUndefined(positionList[father_id])) {
+								positionList[father_id] = {};//father
+								positionList[father_id]['children'] = {};
+							} 
+							positionList[father_id]['children'][sector_id] = listData;
 							//
 							if(angular.isDefined(sectorPosition[father_id])) {//存在第一级部门的职位
+								//
 								var sectorIfather_id=sectorPosition[father_id].father_id,children_id = sectorPosition[father_id].children_id;
 								sectorPositionList[sectorIfather_id].children[children_id] = {};
 								sectorPositionList[sectorIfather_id].children[children_id].label = listData.sector_name;
@@ -161,15 +172,16 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 					}                        
 				}
 			}
+			$scope.sectorList = sectorList;$scope.positionList = positionList;
 		}
 	});
 	//
-	var asideEmployee = '';
+	var asideEmployee = '';$scope.this_nav_menu_name = '选择部门';
 	$scope.addEmployee = function(_this) {
 		$scope.param = {}; $scope.param["valid"] = "1";
 		if(_this != 0) $scope.param = _this;
 		$scope.action = '添加/编辑';
-		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Management/EmployeeAddEdit.tpl.html'});
+		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/EmployeeAddEdit.tpl.html'});
 		asideEmployee.$promise.then(function() {
 			asideEmployee.show();
 			$(document).ready(function(){
@@ -220,7 +232,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 			var sector_father_id = branch.data.sector_father_id;
 			var sector_type = branch.data.sector_type;
 			if(sector_type == 'sector' && sector_id == sector_father_id) {
-			   sectorChildren = angular.toJson(sectorList[sector_father_id]);
+			   sectorChildren = angular.toJson(sectorChildrenList[sector_father_id]);
 			}
 			thisSectorParam = 'sector_id='+sector_id+'&sector_father_id='+sector_father_id+'&sector_type='+sector_type+'&sectorChildren='+sectorChildren;
 		}

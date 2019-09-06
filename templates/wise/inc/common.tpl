@@ -186,3 +186,33 @@
   </ul>
 </nav>
 </script><!-- pagination.custom.html -->
+<script type="text/ng-template" id="/app/commonNavMenu.html">
+<aside class="app-aside bg-white lt">
+<nav>
+  <ul class="nav">
+    <li>
+        <a class="btn btn-default customer_btn" style="padding:6px !important;" id="commonNavMenu" ng-mouseover="showCommonNavMenu($event)">
+            <span class="pull-right text-muted">
+              <i class="fa fa-caret-down"></i>
+            </span>
+            <i class="icon fa fa-users text-lt"></i>
+            <span>{{this_nav_menu_name}}</span>
+         </a>
+         <ul class="nav nav-sub bg b">
+            <li ng-repeat="(i, father) in ThisNavMenuList">
+              <a class="">
+                <span class="pull-right text-muted" ng-if="father.children!=''">
+                  <i class="fa fa-caret-down"></i>
+                </span>
+                <span class="font-normal">{{father.label}}</span>
+              </a>
+              <ul class="nav nav-sub bg b" ng-if="father.children!=''">
+                <li ng-repeat="(j, children) in father.children"><a ng-click="selectCommonNavMenu(children, true)">{{children.label}}</a></li>
+              </ul>
+            </li>
+         </ul>
+    </li>
+  </ul>
+</nav>
+</aside>
+</script><!-- /app/customerMarket.html -->
