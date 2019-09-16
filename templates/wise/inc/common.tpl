@@ -200,14 +200,14 @@
          </a>
          <ul class="nav nav-sub bg b">
             <li ng-repeat="(i, father) in ThisNavMenuList">
-              <a class="">
+              <a ng-click="selectCommonNavMenu(father, 'father')">
                 <span class="pull-right text-muted" ng-if="father.children!=''">
                   <i class="fa fa-caret-down"></i>
                 </span>
                 <span class="font-normal">{{father.label}}</span>
               </a>
               <ul class="nav nav-sub bg b" ng-if="father.children!=''">
-                <li ng-repeat="(j, children) in father.children"><a ng-click="selectCommonNavMenu(children, true)">{{children.label}}</a></li>
+                <li ng-repeat="(j, children) in father.children"><a ng-click="selectCommonNavMenu(children, 'children')">{{children.label}}</a></li>
               </ul>
             </li>
          </ul>

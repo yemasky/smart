@@ -240,7 +240,21 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 	};
 	$scope.my_data = sectorPositionList;
 	$scope.my_tree = tree = {};
-	
+	//
+	$scope.showCommonNavMenu = function() {
+		$('#commonNavMenu').next().show();
+	}
+	$scope.selectCommonNavMenu = function(_this, tree) {
+		$scope.param.sector_id = _this.sector_id;
+		$scope.param.sector_father_id = _this.sector_father_id;
+		$scope.this_nav_menu_name = _this.sector_name;
+		if(tree == 'father') {
+			
+		} else {
+			
+		}
+		$('#commonNavMenu').next().hide();
+	}
 	//
 	$httpService.deleteHeader('refresh');
 });
