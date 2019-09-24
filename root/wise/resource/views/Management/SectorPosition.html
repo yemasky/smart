@@ -1,5 +1,4 @@
-<span ng-include="'/resource/views/Common/nav.tpl.html'"></span>
-<div class="p-md" ng-controller="SectorPositionController">
+<div class="p-md" ng-controller="EmployeeSectorPositionController">
     <form name="SectorPositionForm" class="form-inline" role="form">
         <div class="tab-container">
             <ul class="nav nav-tabs">
@@ -14,6 +13,10 @@
             <div class="tab-content text-nowrap">
                 <div>
                     <div class="table-responsive">
+					<div class="col-md-3 col-sm-6">
+						
+					</div>
+						
                         <table class="table table-bordered table-striped bg-white">
                             <thead>
                                 <tr>
@@ -24,6 +27,37 @@
                                 </tr>
                             </thead>
                             <tbody class="no-b-t">
+								<tr>
+									<td colspan="2" class="no-padding panel">
+										<div>
+										  <span ng-if="doing_async">...loading...</span>
+										  <div lazy-load="angularBootstrapNavTree">
+											<abn-tree 
+											  tree-data         = "my_data" 
+											  tree-control      = "my_tree" 
+											  on-select         = "my_tree_handler(branch)" 
+											  expand-level      = "3" 
+											  initial-selection = "Granny Smith"
+											  icon-leaf         = "fa fa-file-o"
+											  icon-expand       = "fa fa-angle-right"
+											  icon-collapse     = "fa fa-angle-down"
+											  >
+											</abn-tree>
+										 </div>
+										</div>
+									</td>
+									<td colspan="2" >
+										<div class="m-v-sm btn-groups">
+										  <button ng-click="my_tree.expand_branch()" class="btn btn-default btn-sm">展开</button>
+										  <button ng-click="my_tree.collapse_branch()" class="btn btn-default btn-sm">收起</button>
+										  <button ng-click="my_tree.expand_all()" class="btn btn-default btn-sm">全部展开</button>
+										  <button ng-click="my_tree.collapse_all()" class="btn btn-default btn-sm">收起全部</button>
+										</div>
+										<div class="line b-b m-v-md"></div>
+										<button ng-click="try_adding_a_branch('sector')" class="btn btn-sm"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加部门</button>
+										<button ng-click="try_adding_a_branch('position')" class="btn btn-sm"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加职位</button>
+									</td>
+								</tr>
                                 <tr ng-repeat="(father_id, sector) in sectorList">
                                     <td class="w">{{sector.sector_name}} <a ng-click="addSectorPosition(system)" class="pull-right ng-scope"><i class="fa fa-edit"></i></a></td>
                                     <td colspan="2" class="no-padding panel">
@@ -46,100 +80,10 @@
                         </table>
                     </div>
                 </div>
+
             </div>
         </div>
     </form>
 </div>
-<script language="javascript">
-    app.controller('SectorPositionController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
-        //获取数据
-        var _channel = $scope.$stateParams.channel; var _view = $scope.$stateParams.view, common = '';
-        var param = 'channel=' + _channel + '&view=' + _view;
-        $scope.loading.show();
-        $httpService.post('/app.do?' + param, $scope, function(result) {
-            $scope.loading.hide();
-            if (result.data.success == '0') {
-                var message = $scope.getErrorByCode(result.data.code);
-                $alert({ title: 'Error',content: message,templateUrl: '/modal-warning.html',show: true});
-            }
-            common = result.data.common;
-            $scope.setCommonSetting(common);
-            $scope.setThisChannel('Hotel');
-            $scope.channelSectorList = result.data.item.channelSectorList;
-            sortChannelSector(result.data.item.channelSectorList);
-            function sortChannelSector(channelSectorList) {
-                var sectorList = {}, positionList = {};
-                if(channelSectorList != '') {
-                    for(var sector_id in channelSectorList) {
-                        var listData = channelSectorList[sector_id];
-                        var father_id = listData.sector_father_id;
-                        if(listData.sector_type == 'sector') {
-                            if(angular.isUndefined(sectorList[father_id])) {
-                                sectorList[father_id] = channelSectorList[father_id];//father
-                                sectorList[father_id]['children'] = {};
-                            }
-                        }
-                        if(father_id!=sector_id) {//children
-                            if(listData.sector_type == 'sector') { 
-                                sectorList[father_id]['children'][sector_id] = listData;
-                            } else {
-                                if(angular.isUndefined(positionList[father_id])) {
-                                    positionList[father_id] = {};//father
-                                    positionList[father_id]['children'] = {};
-                                } 
-                                positionList[father_id]['children'][sector_id] = listData;
-                            }
-                        }                        
-                    }
-                    $scope.sectorList = sectorList;$scope.positionList = positionList;
-                }
-            }
-			$scope.setThisChannel('ALL');
-        });
+<script language="javascript" src="/resource/scripts/controllers/Management/SectorPosition.js"></script>
 
-        //
-        var asideSectorPosition = '';
-        $scope.addSectorPosition = function(_this) {
-            $scope.param = {};$scope.param["_valid"] = "1";$scope.param["_price_system_type"] = "direct";
-            if (_this != 0) {
-                $scope.param = _this;
-            }
-
-            $scope.action = '添加/编辑';
-            asideSectorPosition = $aside({scope: $scope,title: $scope._self_module.module_name,placement: 'top',animation: 'am-fade-and-slide-top',backdrop: "static",container: 'body',templateUrl: '/resource/views/Management/SectorPositionAddEdit.tpl.html'});
-            asideSectorPosition.$promise.then(function() {
-                asideSectorPosition.show();
-                $(document).ready(function() {
-
-                });
-            })
-        };
-
-        $scope.saveData = function() {
-            var param = this.param;
-            if (param._price_system_type == 'formula') {
-                if(param.price_system_father_id == '0' || param.price_system_father_id == 0) {
-					$alert({title: 'Notice', content: '公式价格放盘必须选择继承父价格！', templateUrl: '/modal-warning.html', show: true});
-                	return;
-				}
-            } else {
-				param.price_system_father_id = 0;
-			}
-            $scope.loading.show();
-            var formParam = $.serializeFormat('#thisForm');
-            formParam['cancellation_policy'] = param['policy'];
-            formParam['price_system_father_id'] = '0';
-            if (angular.isDefined(param['price_system_father_id']) && param['price_system_father_id'] > 0) formParam['price_system_father_id'] = param['price_system_father_id'];
-            formParam['price_system_id'] = param['price_system_id'];
-            $scope.param = formParam;
-            $httpService.post('/app.do?channel=' + common.saveAddEditUrl, $scope, function(result) {
-                $scope.loading.hide();
-                if (result.data.success == '0') return;
-                solutionData(result.data.item);
-                asideSectorPosition.hide();
-            });
-        }
-        
-        $httpService.deleteHeader('refresh');
-    });
-</script>

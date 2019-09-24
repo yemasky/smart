@@ -8,10 +8,8 @@
 namespace wise;
 
 class EmployeeAction extends \BaseAction {
-    protected $objSuccess;
     protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
-        $this->objSuccess = new \SuccessService();
     }
 
     protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -54,8 +52,9 @@ class EmployeeAction extends \BaseAction {
                 $arrayChannelSector[$key]['s_id'] = encode($arrayData['sector_id']);
             }
         }
-        $this->objSuccess->setData(['channelSectorList'=>$arrayChannelSector]);
-        return $objResponse->successServiceResponse($this->objSuccess);
+        $successService = new \SuccessService();
+        $successService->setData(['channelSectorList'=>$arrayChannelSector]);
+        return $objResponse->successServiceResponse($successService);
     }
 
     protected function doEmployee(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -73,8 +72,11 @@ class EmployeeAction extends \BaseAction {
                 $arrayChannelSector[$key]['s_id'] = encode($arrayData['sector_id']);
             }
         }
-        $this->objSuccess->setData(['channelSectorList'=>$arrayChannelSector]);
-        return $objResponse->successServiceResponse($this->objSuccess);
+        $imagesUploadUrl    = ModuleServiceImpl::instance()->getEncodeModuleId('Upload', 'images');
+        $imagesManagerUrl   = ModuleServiceImpl::instance()->getEncodeModuleId('Upload', 'manager');
+        $successService = new \SuccessService();
+        $successService->setData(['channelSectorList'=>$arrayChannelSector,'imagesUploadUrl'=>$imagesUploadUrl,'imagesManagerUrl'=>$imagesManagerUrl]);
+        return $objResponse->successServiceResponse($successService);
     }
 
     protected function doMethodEmployeePagination(\HttpRequest $objRequest, \HttpResponse $objResponse) {

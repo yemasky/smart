@@ -11,30 +11,64 @@
         <div class="tab-container ng-scope ng-valid ng-dirty">
             <ul class="nav nav-tabs" ng-init="activeTab=1">
                 <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
-                    <a>职位信息</a>
+                    <a>个人信息</a>
                 </li>
 				<li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
-                    <a>个人信息</a>
+                    <a>职位信息</a>
                 </li>
             </ul>
             <div class="tab-content">
                 <div ng-show="activeTab==1">
-                    <div class="form-inline">
-                      <div class="form-group p-v-xs">
-                      	<label>部门</label>
-                        <div class="form-group" ng-init="ThisNavMenuList=sectorList" ng-include="'/app/commonNavMenu.html'"></div>
-                      </div>
-					  <div class="form-group p-v-xs">
-                        <label>职位</label>
-                        <button type="button" class="btn btn-default w-sm text-left clearfix m-b" ng-model="param.price_system_id" data-html="1" data-toggle="true" bs-options="priceSystem.price_system_id as priceSystem.price_system_name for priceSystem in marketPriceSystem[market_id]" bs-select placeholder="选择客房价格类型" ng-change="selectPriceSystem(param.price_system_id)">
-                  Action <span class="caret"></span>
-                            </button>
+					<div class="form-group m-h-n clearfix">
+						<div class="col-sm-3">
+						<label for="employee_name">姓名</label>
+						<input class="form-control w" name="employee_name" value="" ng-model="param.employee_name" required>
+						</div>
+						<div class="col-sm-3">
+						<label for="sex">性别</label>
+						<select class="form-control w-sm" name="sex" id="rules" ng-model="param.sex" required>
+							<option value="1">男</option>
+							<option value="0">女</option>
+						</select>
+						</div>
+					</div>
+					<div class="form-group m-h-n clearfix">
+						<div class="col-sm-3">
+							<label for="mobile">手机</label>
+							<input class="form-control w" name="mobile" value="" ng-model="param.mobile" required>
+						</div>
+						<div class="col-sm-3">
+							<label for="id_card">身份证</label>
+							<input class="form-control w" name="id_card" value="" ng-model="param.id_card" required>
+						</div>
+					</div>
+					<div class="form-group">
+                      <label>员工头像</label>
+                      <div class="w-xl w-auto-xs">
+                        <div class="box bg-white">
+                          <div class="box-col w-auto-xs v-m">
+                            <img id="main_images" ng-src="{{param.image_src}}" width="120" height="120" class="b p-xs">
+                            <input id="image_src" name="image_src" type="hidden" ng-model="param.image_src" value="{{param.image_src}}">
+                          </div>
+                          <div class="box-col p">
+                            <button class="btn btn-addon btn-default set_image_src" type="button" isMain="1"><i class="fa fa-upload"></i> 上传图片</button>
+                            [最大:2M/600x600px]
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label>支付英文名称</label>
-                        <input class="form-control w" name="item_number" value="" ng-model="param.payment_en_name" required>
+                    <div class="form-group m-h-n clearfix">
+                      <div class="col-sm-3">
+                      	<label>部门</label>
+                        <div class="form-inline"><div class="form-group" ng-init="ThisNavMenuList=sectorList" ng-include="'/app/commonNavMenu.html'"></div></div>
+                      </div>
+					  <div class="col-sm-3">
+                        <label>职位</label>
+						<div class="form-group">
+                        <button type="button" class="btn btn-default w-sm text-left clearfix" ng-model="param.position_id" data-html="1" data-toggle="true" bs-options="position.sector_id as position.sector_name for position in thisPosition" bs-select placeholder="选择客职位" ng-change="selectPosition(param.position_id)">
+                  Action <span class="caret"></span>
+                            </button></div>
+                      </div>
                     </div>
                     <div class="form-group">
                         <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
