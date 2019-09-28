@@ -5,7 +5,6 @@
                 <li class="active">
                     <a>部门职位</a>
                 </li>
-                <button class="btn btn-addon btn-default pull-right m-l" ng-click="addSectorPosition(0)"><i class="fa fa-plus"></i>新建部门/职位</button>
                 <button type="button" class="btn btn-default pull-right" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择企业">
                   Action <span class="caret"></span>
                 </button>
@@ -28,14 +27,14 @@
                             </thead>
                             <tbody class="no-b-t">
 								<tr>
-									<td colspan="2" class="no-padding panel">
+									<td colspan="3" class="no-padding panel">
 										<div>
 										  <span ng-if="doing_async">...loading...</span>
 										  <div lazy-load="angularBootstrapNavTree">
 											<abn-tree 
 											  tree-data         = "my_data" 
 											  tree-control      = "my_tree" 
-											  on-select         = "my_tree_handler(branch)" 
+											  on-select         = "SectorPosition(branch)" 
 											  expand-level      = "3" 
 											  initial-selection = "Granny Smith"
 											  icon-leaf         = "fa fa-file-o"
@@ -46,36 +45,20 @@
 										 </div>
 										</div>
 									</td>
-									<td colspan="2" >
+									<td>
 										<div class="m-v-sm btn-groups">
 										  <button ng-click="my_tree.expand_branch()" class="btn btn-default btn-sm">展开</button>
 										  <button ng-click="my_tree.collapse_branch()" class="btn btn-default btn-sm">收起</button>
 										  <button ng-click="my_tree.expand_all()" class="btn btn-default btn-sm">全部展开</button>
-										  <button ng-click="my_tree.collapse_all()" class="btn btn-default btn-sm">收起全部</button>
+										  <button ng-click="my_tree.collapse_all()" class="btn btn-default btn-sm">全部收起</button>
 										</div>
 										<div class="line b-b m-v-md"></div>
-										<button ng-click="try_adding_a_branch('sector')" class="btn btn-sm"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加部门</button>
-										<button ng-click="try_adding_a_branch('position')" class="btn btn-sm"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加职位</button>
+										<button ng-click="SectorPositionEdit('sector')" class="btn btn-sm"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加部门</button>
+										<button ng-click="SectorPositionEdit('position')" class="btn btn-sm"><i class="fa fa-fw m-r-xs fa-plus"></i> 添加职位</button>
+										<button ng-click="SectorPositionEdit('edit')" class="btn btn-sm"><i class="fa fa-fw m-r-xs fa-edit"></i> 修改</button>
+										<button ng-click="SectorPositionDelete('delete')" class="btn btn-sm"><i class="fa fa-fw m-r-xs fa-trash"></i> 删除</button>
 									</td>
 								</tr>
-                                <tr ng-repeat="(father_id, sector) in sectorList">
-                                    <td class="w">{{sector.sector_name}} <a ng-click="addSectorPosition(system)" class="pull-right ng-scope"><i class="fa fa-edit"></i></a></td>
-                                    <td colspan="2" class="no-padding panel">
-                                        <table class="table no-margin">
-                                            <tr ng-repeat="(sector_id, children) in sector.children">
-                                                <td class="w b-r">{{children.sector_name}} <a ng-click="addSectorPosition(system)" class="pull-right ng-scope"><i class="fa fa-edit"></i></a></td>
-                                                <td class="no-padding panel">
-                                                    <table class="table no-margin">
-                                                        <tr ng-repeat="(position_id, position) in positionList[sector_id].children">
-                                                            <td class="b-b">{{position.sector_name}} <a ng-click="addSectorPosition(system)" class="pull-right ng-scope"><i class="fa fa-edit"></i></a></td>
-                                                        </tr>
-                                                    </table>
-                                                </td>
-                                            </tr>
-                                        </table>
-                                    </td>
-                                    <td></td>
-                                </tr>
                             </tbody>
                         </table>
                     </div>

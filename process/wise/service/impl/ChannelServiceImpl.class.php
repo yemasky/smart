@@ -49,6 +49,34 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 		return null;
 	}
 
+	public function getEmployeeChannel($arrayChannelId, $channel = '') {
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->ArrayIN('channel_id', $arrayChannelId);
+        $arrayChannelList = ChannelDao::instance()->getChannel($whereCriteria);
+        if(!empty($arrayChannelList)) {
+            if(empty($channel)) {
+                foreach($arrayChannelList as $channel_id => $value) {
+                    $arrayChannelList[$channel_id]['company_id'] = 0;
+                    $arrayChannelList[$channel_id]['id']         = encode($arrayChannelList[$channel_id]['channel_id'], getDay());
+                }
+
+                return $arrayChannelList;
+            } else {
+                $arrayChannel = [];
+                foreach($arrayChannelList as $channel_id => $value) {
+                    if($value['channel'] == $channel) {
+                        $arrayChannel[$channel_id]               = $value;
+                        $arrayChannel[$channel_id]['company_id'] = 0;
+                        $arrayChannel[$channel_id]['id']         = encode($arrayChannelList[$channel_id]['channel_id'], getDay());
+                    }
+                }
+
+                return $arrayChannel;
+            }
+        }
+
+        return null;
+    }
 	//* return channel_id *//
 	public function saveChannel($arrayData, $insert_type = 'INSERT') {
 		$cacheChannelId = CacheConfig::getCacheId('channel', $arrayData['company_id']);

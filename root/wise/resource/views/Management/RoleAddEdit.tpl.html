@@ -1,0 +1,59 @@
+<div class="aside box-shadow h-10x" tabindex="-1" role="dialog">
+  <div class="aside-dialog">
+    <div class="aside-content">
+      <div class="aside-header" ng-show="title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4 class="aside-title" ng-bind-html="title"></h4>
+      </div>
+      <form name="thisForm" class="form-validation" id="thisForm" ng-submit="saveData()">
+      <input type="hidden" name="item_type" value="item">
+      <div class="aside-body h-8x scrollable">
+        <div class="tab-container ng-scope ng-valid ng-dirty">
+            <ul class="nav nav-tabs" ng-init="activeTab=1">
+                <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
+                    <a>个人信息</a>
+                </li>
+				<li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
+                    <a>职位信息</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div ng-show="activeTab==1">
+					<div class="form-group m-h-n clearfix">
+						<div class="col-sm-3">
+						<label for="employee_name">权限名称</label>
+						<input class="form-control w" name="role_name" value="" ng-model="param.role_name" required>
+						</div>
+						<div class="col-sm-3">
+						<label for="sex">标签</label>
+							<div class="w">
+								<ui-select ng-model="param.select_tag" ng-keyup="select_tag($select.search)" theme="bootstrap">
+									<ui-select-match placeholder="　填写">{{$select.selected.value}}</ui-select-match>
+									<ui-select-choices repeat="tag in tagList | filter: $select.search">
+										<div ng-bind-html="tag.value | highlight: $select.search"></div>
+									</ui-select-choices>
+								</ui-select>
+							</div>
+						</div>
+					</div>
+                    <div class="form-group">
+                        <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
+                        <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
+                    </div>
+                    <div class="form-group"></div>
+                </div>
+				<div ng-show="activeTab==2">
+				
+				</div>
+            </div>
+        </div>
+      </div>
+      <div class="aside-footer panel-footer">
+      	<input type="hidden" name="item_id" value="" ng-model="param.item_id" >
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+        <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

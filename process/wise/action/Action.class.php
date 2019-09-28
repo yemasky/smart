@@ -46,11 +46,13 @@ class Action {
             $objResponse->noLogin = '0';
             $objEmployee          = $objLoginEmployee->getEmployeeInfo();
             //根据切换来变换default_channel_father_id
+            $default_channel_id = $objEmployee->getDefaultChannelId();
             $arrayEmployeeChannel                   = $objLoginEmployee->getEmployeeChannel();
-            $default                                = current($arrayEmployeeChannel);
+            $default                                = $arrayEmployeeChannel[$default_channel_id];
             $default_channel                        = $arrayEmployeeChannel[$default['default_id']];
             $default_channel_father_id              = $default_channel['channel_id'];
             $objResponse->default_channel_father_id = $default_channel_father_id;
+            //默认值 channel_id
             if (empty($channel_id)) $objRequest->channel_id = $channel_id = $default_channel['default_id'];
 
             $channelSettingList = $objLoginEmployee->getChannelSettingList();
@@ -76,7 +78,7 @@ class Action {
             $_self_module              = array();
             if (is_numeric($module_id) && $module_id > 0) {
                 ////判断权限
-                $arrayEmployeeRoleModule = RoleServiceImpl::instance()->getEmployeeRoleModuleCache($objEmployee->getCompanyId(), $objEmployee->getEmployeeId());
+                $arrayEmployeeRoleModule = RoleServiceImpl::instance()->getEmployeeRoleModuleCache($objEmployee->getCompanyId(), $objEmployee->getEmployeeId(), $channel_id);
                 if (isset($arrayEmployeeRoleModule[$module_id])) {//有权限
                     $arrayEmployeeModule = ModuleServiceImpl::instance()->getAllModuleCache();
                     if (isset($arrayEmployeeModule[$module_id])) {

@@ -1,0 +1,135 @@
+<div class="p-md" ng-controller="RoleController">
+	<ul class="nav nav-tabs no-b-b">
+		<li class="active"><a ng-bind-html="_self_module.module_name">所有员工</a></li>
+		<button class="btn btn-addon btn-default pull-right m-l" ng-click="addRole(0)"><i class="fa fa-plus"></i>新建权限</button>
+		<button type="button" class="btn btn-default pull-right" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择企业">
+		  Action <span class="caret"></span>
+		</button>
+	</ul>
+	<div class="box b-a bg-white m-b">
+    	<div class="col-md-8">
+            <div class="no-br-t">
+            <div class="table-responsive">
+            	<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped">
+				  <thead>
+				  <tr>
+					<th st-sort="birthDate">企业</th>
+					<th st-sort="tag">标签</th>  
+					<th st-sort="role_name">名称</th>
+					<th st-sort="notes">备注</th>
+					<th st-sort="valid">有效</th>
+					<th>编辑</th>
+				  </tr>
+				  <tr>
+					<th></th>
+					<th colspan="3"><input st-search="" class="form-control" placeholder="搜索..." type="text"/></th><th></th>
+				  </tr>
+				  </thead>
+				  <tbody>
+				  <tr ng-repeat="row in roleList">
+					<td>{{thisChannel[row.channel_id].channel_name}}</td>
+					<td>{{row.tag}}</td>  
+					<td>{{row.role_name}}</td>
+					<td>{{row.notes}}</td>
+					<td><i ng-if="row.valid==0" class="fa fa-ban text-warning"></i></td>
+					<th><a class="fa fa-edit" ng-click="addRole(row)"></a></th>
+				  </tr>
+				  </tbody>
+				</table>
+            </div>
+            </div>
+        
+     	</div>
+     	<div class="col-md-4 b-l no-border-sm">
+     		<div class="panel-heading b-b b-light"></div>
+            <div>
+            </div>
+     	</div>
+     </div>
+{{output}}
+
+</div>
+<script language="javascript">
+app.controller('RoleController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
+	$ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.js",
+                      $scope._resource + "vendor/modules/angular-ui-select/select.min.css",$scope._resource + "styles/booking.css"]);
+	//获取数据
+	var _channel = $scope.$stateParams.channel, common = '';$scope.param = {}; 
+	var _view = $scope.$stateParams.view;
+	var param = 'channel='+_channel+'&view='+_view;
+	$scope.loading.show();$scope.param = {};
+	$httpService.post('/app.do?'+param, $scope, function(result){
+		$scope.loading.hide();
+		if(result.data.success == '0') {
+			var message = $scope.getErrorByCode(result.data.code);
+			$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+		}
+		common = result.data.common;
+		$scope.setCommonSetting(common);
+		$scope.setThisChannel('ALL');
+		$(document).ready(function(){
+			$scope.param["channel_id"] = $rootScope.defaultChannel["channel_id"];
+			$scope.param["channel_father_id"] = $rootScope.defaultChannel["channel_father_id"];
+		});
+		var roleList = result.data.item.roleList;//权限
+		$scope.roleList = roleList;
+		if(roleList != '') {
+			var tags = {},tagList = [];
+			for(var i in roleList) {
+				tags[roleList[i].tag] = roleList[i].tag;
+			}
+			tagList[0] = {};
+			tagList[0].value = ' ';
+			var k = 1;
+			for(var i in tags) {
+				tagList[k] = {};tagList[k].value = i;k++;
+			}
+			$scope.tagList = tagList;
+		}
+	});
+	//Role////////////////////////////////////////////////////////////////////////////
+	var asideRole = '';
+	$scope.addRole = function(_this) {
+		$scope.param["valid"] = "1";
+		$scope.action = '添加/编辑';
+		asideRole = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/RoleAddEdit.tpl.html'});
+		if(_this != 0) {
+			$scope.param = _this;$scope.param.select_tag = _this.tag;
+			$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+				asideRole.$promise.then(function() {
+					asideRole.show();
+					$(document).ready(function(){
+					});
+				});
+			});
+		} else {
+			asideRole.$promise.then(function() {
+				asideRole.show();
+				$(document).ready(function(){
+				});
+			});
+		}
+	};
+	$scope.saveData = function() {
+		var param = this.param;
+		if(param == null || param == '' || !angular.isDefined(param.payment_father_id)) {
+			$alert({title: 'Notice', content: '类型必须选择！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		}
+		$scope.loading.show();
+		$scope.param = param;
+		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+			$scope.loading.hide();
+			$scope.dataList = result.data.item;
+			asideEmployee.hide();
+			
+		});
+	}
+    $scope.select_tag = function($select) {
+		$scope.tagList[0].value = $select;
+	}
+	//
+	$httpService.deleteHeader('refresh');
+});
+</script>
+

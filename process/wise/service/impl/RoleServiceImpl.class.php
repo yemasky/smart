@@ -18,7 +18,7 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
 		return self::$objService;
 	}
 
-	public function getEmployeeRoleModuleCache($company_id, $employee_id) {
+	public function getEmployeeRoleModuleCache($company_id, $employee_id, $channel_id) {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('employee_id', $employee_id);
 		$cacheRoleEmployeeId       = CacheConfig::getCacheId('role_employee', $company_id, $employee_id);
@@ -30,14 +30,21 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
             $whereCriteria->setHashKey('module_id');
 			$cacheRoleEmployeeModuleId = CacheConfig::getCacheId('employee_module', $company_id, $employee_id);
 			$arrayEmployeeRoleModule   = RoleDao::instance()->DBCache($cacheRoleEmployeeModuleId)->getRoleMudule($whereCriteria);
-            $whereCriteria = new \WhereCriteria();
+            //公司权限
+			$whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id);
             $whereCriteria->setHashKey('module_id');
 			$cacheCompanyModuleId      = CacheConfig::getCacheId('module_company', $company_id, $employee_id);
 			$arrayModuleCompany        = ModuleDao::instance()->DBCache($cacheCompanyModuleId)->getModuleCompany($whereCriteria, 'module_id');
-			if(!empty($arrayEmployeeRoleModule) && !empty($arrayModuleCompany)) {
+			//企业权限
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('channel_id', $channel_id);
+            $whereCriteria->setHashKey('module_id');
+            $cacheChannelModuleId      = CacheConfig::getCacheId('module_channel', $channel_id, $employee_id);
+            $arrayModuleChannel        = ModuleDao::instance()->DBCache($cacheChannelModuleId)->getModuleChannel($whereCriteria, 'module_id');
+			if(!empty($arrayEmployeeRoleModule) && !empty($arrayModuleChannel)) {
 				foreach ($arrayEmployeeRoleModule as $module_id => $arrayEmployeeModule) {
-				    if(isset($arrayModuleCompany[$module_id])) {
+				    if(isset($arrayModuleChannel[$module_id])) {
                         $arrayEmployeeModuleId[$module_id] = $module_id;
                     }
                 }
@@ -47,5 +54,18 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
 		}//array_flip($arrayEmployeeModule);//array_fill_keys($arrayEmployeeModule, '');
 		return $arrayEmployeeModuleId;
 	}
+
+    //Role
+    public function getRole(\WhereCriteria $whereCriteria, $field = null) {
+        return RoleDao::instance()->getRole($whereCriteria, $field);
+    }
+
+    public function saveRole($arrayData, $insert_type = 'INSERT') {
+        return RoleDao::instance()->saveRole($arrayData, $insert_type);
+    }
+
+    public function updateRole(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return RoleDao::instance()->updateRole($whereCriteria, $arrayUpdateData);
+    }
 
 }

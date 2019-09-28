@@ -48,4 +48,17 @@ class RoleDao extends CommonDao {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('role_module')->update($whereCriteria, $arrayUpdateData);
     }
     //--------RoleMudule//-----------//
+
+    //Role
+    public function getRole(\WhereCriteria $whereCriteria, $field = null) {
+        return $this->setDsnRead($this->getDsnRead())->setTable('role')->getList($whereCriteria, $field);
+    }
+
+    public function saveRole($arrayData, $insert_type = 'INSERT') {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('role')->insert($arrayData, $insert_type);
+    }
+
+    public function updateRole(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('role')->update($whereCriteria, $arrayUpdateData);
+    }
 }

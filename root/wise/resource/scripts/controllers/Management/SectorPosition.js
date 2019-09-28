@@ -6,7 +6,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 	var _channel = $scope.$stateParams.channel, common = '', sectorList = {}, sectorChildrenList = {}, positionList = {}, sectorPositionList = [],imagesUploadUrl = '',imagesManagerUrl = '';
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
-	$scope.loading.show();
+	$scope.loading.show();$scope.param = {};
 	$httpService.post('/app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
@@ -95,7 +95,11 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 			$scope.sectorList = sectorList;$scope.positionList = positionList;
 		}
 	});
-	//
+	//组织架构树
+	var my_data = [];my_data[0] = {};my_data[0].data = {'label':'部门职位'};
+	my_data[0].label = '部门职位';my_data[0].children = sectorPositionList;
+	$scope.my_data = my_data;
+	//Employee////////////////////////////////////////////////////////////////////////////
 	var asideEmployee = '';$scope.this_nav_menu_name = '选择部门';
 	$scope.addEmployee = function(_this) {
 		$scope.param = {}; $scope.param["valid"] = "1";
@@ -162,7 +166,6 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		}
 		$scope.callEmployeeServer($scope.param.tableState, thisSectorParam);
 	};
-	$scope.my_data = sectorPositionList;
 	$scope.my_tree = tree = {};
 	//
 	$scope.showCommonNavMenu = function() {
@@ -213,6 +216,88 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 				});
 			});
 		});
+	}
+	//SectorPosition/////////////////////////////////////////////////////////////////////////////
+	$scope.SectorPosition = function(branch) {
+		console.log(branch);
+	}
+	var asideSectorPosition = '';
+	$scope.SectorPositionEditType = '';
+	$scope.SectorPositionEdit = function(branch_type) {
+		var title = '', branch = tree.get_selected_branch();console.log(branch);
+		$scope.SectorPositionEditType = 'Add';
+		if(branch_type == 'sector') {title = '部门';
+		} else if(branch_type == 'position') {title = '职位';
+		} else if(branch_type == 'edit') {
+			$scope.SectorPositionEditType = 'edit';
+			$scope.param.sector_name = branch.label;
+		}
+		$scope.param["valid"] = "1";
+		//if(branch != null) $scope.param = branch;
+		$scope.action = '添加/编辑'+title;
+		asideSectorPosition = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/SectorPositionAddEdit.tpl.html'});
+		asideSectorPosition.$promise.then(function() {
+			asideSectorPosition.show();
+			$(document).ready(function(){
+				
+			});
+		})
+	}
+	$scope.saveSectorPositionData = function() {
+		asideSectorPosition.hide();
+		var message = '您确定要添加/修改吗？';
+		$scope.confirm({'content':message,'callback': close});
+		var branch = tree.get_selected_branch();
+		function close() {
+			console.log(branch);
+			var sector_name = angular.copy($scope.param.sector_name);
+			if($scope.SectorPositionEditType == 'edit') {
+				branch.label = sector_name;
+				branch.data.sector_name = sector_name;
+				branch.data.label = sector_name;
+			} else {
+				return tree.add_branch(branch, {
+				  label: sector_name,
+				  data: {
+					something: 42,
+					"else": 43
+				  }
+				});
+			}
+		}
+	};
+	$scope.SectorPositionDelete = function() {
+		var branch = tree.get_selected_branch();
+		var parent = tree.get_parent_branch(branch);
+		var children = tree.get_children(branch);
+		//children 有不能删
+		if(children.length>0) {
+			$alert({title: 'Error', content: '有子目录，删除失败！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		}
+		var message = '您确定要删除吗？';
+		$scope.confirm({'content':message,'callback': deleteData});
+		function deleteData() {
+			var uid = branch.uid;
+			if(parent != null && angular.isDefined(parent)) {
+				var newCildren = [], k = 0;
+				for(var i in parent.children) {
+					var children = parent.children[i];
+					if(children.uid == uid) continue;
+					newCildren[k] = children; k++;
+				}
+				parent.children = newCildren;
+			} else {//parent is undefined
+				var newData = [], k = 0;
+				var my_data = $scope.my_data;
+				for(var i in my_data) {
+					var my = my_data[i];
+					if(my.uid == uid) continue;
+					newData[k] = my; k++;
+				}
+				//$scope.my_data = newData;
+			}
+		}
 	}
 	//
 	$httpService.deleteHeader('refresh');

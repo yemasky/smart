@@ -94,6 +94,7 @@ class LoginEmployeeModel extends \Entity {
 class Employee extends \Entity {
     protected $employee_id = 0;
     protected $company_id = 0;
+    protected $default_channel_id = 0;
     protected $employee_name = '';
     protected $photo = '';
 
@@ -123,6 +124,20 @@ class Employee extends \Entity {
      */
     public function setCompanyId($company_id) {
         $this->company_id = $company_id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDefaultChannelId(): int {
+        return $this->default_channel_id;
+    }
+
+    /**
+     * @param int $default_channel_id
+     */
+    public function setDefaultChannelId(int $default_channel_id) {
+        $this->default_channel_id = $default_channel_id;
     }
 
     /**

@@ -117,9 +117,19 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
         return null;
     }
 
+    public function getEmployeeChannelSector($employee_id, $channel_id = '', $field = '') {
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('employee_id', $employee_id);
+        if(!empty($channel_id)) $whereCriteria->EQ('channel_id', $channel_id);
+        if(empty($field)) $field = 'channel_father_id, channel_id, sector_id, sector_father_id, is_default';
+
+        return EmployeeDao::instance()->getEmployeeSector($whereCriteria, $field);
+    }
+
     public function getEmployeeChannel($company_id, $employee_id) {
+        //取得用户的全部channel 按company统计
         $arrayEmployeeChannel = null;
-        $arrayEmployeeSector  = $this->getEmployeeSector($company_id, $employee_id);
+        $arrayEmployeeSector  = $this->getEmployeeChannelSector($employee_id);
         if (!empty($arrayEmployeeSector)) {
             $defaultMember  = $arrayEmployeeSector[0]['channel_father_id'];
             $arrayChannelId = array_flip(array_column($arrayEmployeeSector, 'channel_father_id'));
@@ -129,7 +139,7 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
                 if (isset($arrayChannelId[$channel_id]) || isset($arrayChannelId[$channel['channel_father_id']])) {
                     $arrayEmployeeChannel[$channel_id]['default_id'] = $defaultMember;
                     if ($defaultMember == $channel_id) {
-                        $arrayEmployeeChannel[$channel_id]['default'] = 1;
+                        $arrayEmployeeChannel[$channel_id]['default'] = 1;//默认只有1个
                     } else {
                         $arrayEmployeeChannel[$channel_id]['default'] = 0;
                     }

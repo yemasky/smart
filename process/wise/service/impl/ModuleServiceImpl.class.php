@@ -32,7 +32,27 @@ class ModuleServiceImpl extends \BaseServiceImpl implements ModuleService {
 
         return $arrayModule;
     }
-
+    //ChannelModule
+    public function getChannelModule($arrayModuleId, $company_id, $channel_id, $isUpdate = false) {
+        if(empty($arrayModuleId)) return array();
+        if(empty($field)) $field = 'module_id,module_channel,module_name,module_father_id,module_view,is_recommend,submenu_father_id,ico';
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->ArrayIN('module_id', $arrayModuleId)
+            ->ORDER('module_father_id', 'ASC')->ORDER('module_order', 'ASC')->ORDER('action_order', 'ASC')
+            ->ORDER('module_id', 'ASC');
+        $cacheModuleId = CacheConfig::getCacheId('employee_module_menu', $company_id, '_channel_' . $channel_id);
+        if ($isUpdate) {
+            $arrayChannelModule = ModuleDao::instance()->DBCache($cacheModuleId, -1)->getModule($whereCriteria, $field);
+        } else {
+            $arrayChannelModule = ModuleDao::instance()->DBCache($cacheModuleId)->getModule($whereCriteria, $field);
+        }
+        if (!empty($arrayChannelModule)) {
+            foreach ($arrayChannelModule as $k => $v) {
+                $arrayChannelModule[$k]['url'] = \Encrypt::instance()->encode($v['module_id'], getDay());
+            }
+        }
+        return $arrayChannelModule;
+    }
     ////获取用户菜单
     public function getModuleInModuleId($arrayModuleId, $company_id, $employee_id, $isUpdate = false, $field = '') {
         if(empty($arrayModuleId)) return array();
@@ -91,4 +111,20 @@ class ModuleServiceImpl extends \BaseServiceImpl implements ModuleService {
         return ModuleDao::instance()->saveModule($arrayUpdate);
     }
 
+    //ModuleChannel
+    public function getModuleChannel(\WhereCriteria $whereCriteria, $field = '') {
+        return ModuleDao::instance()->getModuleChannel($whereCriteria, $field);
+    }
+
+    public function saveModuleChannel($arrayData, $insert_type = 'INSERT') {
+        return ModuleDao::instance()->saveModuleChannel($arrayData, $insert_type);
+    }
+
+    public function updateModuleChannel(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return ModuleDao::instance()->updateModuleChannel($whereCriteria, $arrayUpdateData);
+    }
+
+    public function deleteModuleChannel(\WhereCriteria $whereCriteria) {
+        return ModuleDao::instance()->deleteModuleChannel($whereCriteria);
+    }
 }

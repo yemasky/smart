@@ -48,4 +48,33 @@ class ModuleDao extends CommonDao {
         return $this->setDsnRead($this->getDsnRead())->setTable('module_company')->getList($whereCriteria, $field);//DBCache($cacheId)->
     }
 
+    public function saveModuleCompany($arrayData, $insert_type = 'INSERT') {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('module_company')->insert($arrayData, $insert_type);
+    }
+
+    public function updateModuleCompany(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('module_company')->update($whereCriteria, $arrayUpdateData);
+    }
+
+    public function deleteModuleCompany(\WhereCriteria $whereCriteria) {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('module_company')->delete($whereCriteria);
+    }
+    //ModuleChannel
+    public function getModuleChannel(\WhereCriteria $whereCriteria, $field = '') {
+        if($field == '') $field = '*';
+        return $this->setDsnRead($this->getDsnRead())->setTable('module_channel')->getList($whereCriteria, $field);//DBCache($cacheId)->
+    }
+
+    public function saveModuleChannel($arrayData, $insert_type = 'INSERT') {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('module_channel')->insert($arrayData, $insert_type);
+    }
+
+    public function updateModuleChannel(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('module_channel')->update($whereCriteria, $arrayUpdateData);
+    }
+
+    public function deleteModuleChannel(\WhereCriteria $whereCriteria) {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('module_channel')->delete($whereCriteria);
+    }
+
 }

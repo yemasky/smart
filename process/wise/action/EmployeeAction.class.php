@@ -20,6 +20,9 @@ class EmployeeAction extends \BaseAction {
             case "Employee":
                 $this->doEmployee($objRequest, $objResponse);
                 break;
+            case "Role":
+                $this->doRole($objRequest, $objResponse);
+                break;
             default:
                 $this->doDefault($objRequest, $objResponse);
                 break;
@@ -37,8 +40,8 @@ class EmployeeAction extends \BaseAction {
     protected function doDefault(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         //赋值
         //设置类别
-
-        return $objResponse->successServiceResponse($this->objSuccess);
+        $successService = new \SuccessService();
+        return $objResponse->successServiceResponse($successService);
     }
 
     protected function doSectorPosition(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -84,5 +87,38 @@ class EmployeeAction extends \BaseAction {
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 
+    protected function doRole(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $company_id              = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id              = $objRequest->channel_id;
+        $method = $objRequest->method;
+        if (!empty($method)) {
+            return $this->doMethod($objRequest, $objResponse);
+        }
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
+        $arrayRole = RoleServiceImpl::instance()->getRole($whereCriteria);
+        if(!empty($arrayRole)) {
+            foreach ($arrayRole as $key => $arrayData) {
+                $arrayRole[$key]['r_id'] = encode($arrayData['role_id']);
+            }
+        }
+        //取出本企业的权限module_channel
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('channel_id', $channel_id)->setHashKey('module_id');
+        $arrayModuleChannel = ModuleServiceImpl::instance()->getModuleChannel($whereCriteria);
+        //
+        $arrayChannelModule = [];
+        if(!empty($arrayModuleChannel)) {
+            $arrayModuleId = array_keys($arrayModuleChannel);
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->ArrayIN('module_id', $arrayModuleId);
+            $arrayChannelModule = ModuleServiceImpl::instance()->getChannelModule($arrayModuleId, $company_id, $channel_id);
+        }
+
+
+        $successService = new \SuccessService();
+        $successService->setData(['roleList'=>$arrayRole,'moduleChannelList'=>$arrayModuleChannel, 'channelModuleList'=>$arrayChannelModule]);
+        return $objResponse->successServiceResponse($successService);
+    }
 
 }
