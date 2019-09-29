@@ -281,7 +281,7 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
 		if(angular.isDefined($httpProvider.defaults.headers.common.ajaxRequest))
 			delete $httpProvider.defaults.headers.common['ajaxRequest'];
 		return '<%$__WEB%>app.do?channel=' + channel+'&_='+Math.random();
-	};
+	};//console.log($routeParams);
 	$urlRouterProvider.otherwise("/app/home"),
 	$stateProvider.state("app", {
 		"abstract": !0,
@@ -303,37 +303,24 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
         controller: function ($scope) {
 			//console.log($scope);
         }
-    }).state("app.logout", {
-        url: "/logout",
-        templateUrl: function ($routeParams) {
-            return "/login.html";
-        },
-        controller: function ($httpService, $location) {
-            $httpService.post('<%$__WEB%>app.do?action=logout', '', function(response){
-                $location.path('/login');
-            });
-        }
     }).state('app.Booking', {
         url: "/booking/:view/:channel", //url: "/role/edit?id",
-        templateUrl: function($routeParams, $rootScope, $scope) {
+        templateUrl: function($routeParams, $rootScope, $scope, $ocLazyLoad) {
 			return 'resource/views/Booking/'+$routeParams.view+'.html?<%$__VERSION%>';
         },
-		controller: function($rootScope, $scope, $ocLazyLoad, $httpService) {
-		}
-		/*,resolve: {
-            deps: ["$ocLazyLoad", function($ocLazyLoad) {
-                //return $ocLazyLoad.load(['resource/scripts/controllers/Booking/Room.js']);
+		controller: function($rootScope, $scope, $ocLazyLoad, $httpService, $routeParams) {},
+		resolve: {
+            deps: ["$ocLazyLoad","$stateParams",function($ocLazyLoad, $stateParams) {
+                return $ocLazyLoad.load(["resource/scripts/controllers/Booking/"+$stateParams.view+".js?<%$__VERSION%>"]);
             }]
-        }
-        data: {pageTitle: '编辑角色'},*/
+        },
+        data: {pageTitle: '预订'}
     }).state('app.Management', {
         url: "/Management/:view/:channel", //url: "/role/edit?id",
         templateUrl: function($routeParams) {
             return 'resource/views/Management/'+$routeParams.view+'.html?<%$__VERSION%>';
         },
-		controller: function() {
-			
-		}
+		controller: function() {}
     }).state('app.Setting', {
         url: "/Setting/:view/:channel", //url: "/role/edit?id",
         templateUrl: function($routeParams, $rootScope, $scope) {
@@ -368,11 +355,22 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
 		}
     }),
 	$stateProvider.state("login", {
-        url: "/login",templateUrl: "/login.html",
+        url: "/login",
+		templateUrl: "/login.html",
         resolve: {
             deps: ["$ocLazyLoad", function($ocLazyLoad) {
                 return $ocLazyLoad.load(["<%$__RESOURCE%>vendor/libs/md5.min.js"]);
             }]
+        }
+    }).state("app.logout", {
+        url: "/logout",
+        templateUrl: function ($routeParams) {
+            return "/login.html";
+        },
+        controller: function ($httpService, $location) {
+            $httpService.post('<%$__WEB%>app.do?action=logout', '', function(response){
+                $location.path('/login');
+            });
         }
     })
 }]);
@@ -436,6 +434,11 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
         }
 		$rootScope.employeeMenu = {};$scope.hashEmployeeModule = {};
 		$scope.setMenu = function($menus, $module_channel) {
+			var resultList = $scope.resolvingModuleData($menus, $module_channel);
+			$scope.menus = resultList.menus;$scope.channels = resultList.channels;
+            $scope.hashEmployeeModule = resultList.hashEmployeeModule;
+		};
+		$scope.resolvingModuleData = function($menus, $module_channel) {
 			if($menus == '') $menus = $rootScope.employeeMenu;
 			var channels = {}, channel_i = 0, menus = {}, hashEmployeeModule = {};
 			if($menus != null && $menus != '') {
@@ -474,9 +477,8 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					}
 				}
 			}
-			$scope.menus = menus;$scope.channels = channels;
-            $scope.hashEmployeeModule = hashEmployeeModule;
-		};
+			return {'menus':menus,'hashEmployeeModule':hashEmployeeModule,'channels':channels};
+		}
 		$scope.checkMenuData = function($common) {
 			if($common == null || $common == '') return;
 			if(typeof($common.employeeMenu) != 'undefined' && $common.employeeMenu != null && $common.employeeMenu != '') 

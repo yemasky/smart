@@ -86,6 +86,8 @@ app.controller('RoleController', function($rootScope, $scope, $httpService, $loc
 			}
 			$scope.tagList = tagList;
 		}
+		$scope.moduleMenuList = $scope.resolvingModuleData(result.data.item.channelModuleList, '');
+		console.log($scope.moduleMenuList);
 	});
 	//Role////////////////////////////////////////////////////////////////////////////
 	var asideRole = '';

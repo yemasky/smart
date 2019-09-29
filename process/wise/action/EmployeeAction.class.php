@@ -117,7 +117,7 @@ class EmployeeAction extends \BaseAction {
 
 
         $successService = new \SuccessService();
-        $successService->setData(['roleList'=>$arrayRole,'moduleChannelList'=>$arrayModuleChannel, 'channelModuleList'=>$arrayChannelModule]);
+        $successService->setData(['roleList'=>$arrayRole,'channelModuleList'=>$arrayChannelModule]);
         return $objResponse->successServiceResponse($successService);
     }
 
