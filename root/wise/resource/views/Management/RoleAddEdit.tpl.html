@@ -45,8 +45,8 @@
 							<h4><label class="checkbox-inline ui-checks"><input type="checkbox" name="module[channels.module_id]" value="{{channels.module_id}}"><i></i>{{channels.module_name}}</label></h4>
 							<div class="row list-icon">
 								<div class="col-md-3 col-sm-4" ng-repeat="menus in moduleMenuList.menus" ng-if="channels.module_channel==menus.module_channel">
-									<div><label class="checkbox-inline ui-checks"><input type="checkbox" name="module[menus.module_id]" value="{{menus.module_id}}"><i></i>{{menus.module_name}}</label></div>
-									<div class="col-md-6 col-sm-6" ng-repeat="children in menus.children"><span class="fa fa-angle-right fa-fw text-muted"></span>	<label class="checkbox-inline ui-checks"><input type="checkbox" name="module[children.module_id]" value="{{children.module_id}}"><i></i>{{children.module_name}}</label>
+									<div><span class="ti-angle-right fa-fw text-muted small-xs"></span>	<label class="checkbox-inline ui-checks"><input type="checkbox" name="module[menus.module_id]" value="{{menus.module_id}}"><i></i>{{menus.module_name}}</label></div>
+									<div class="col-md-6 col-sm-6" ng-repeat="children in menus.children"><span class="ti-angle-double-right fa-fw text-muted small-xs"></span>	<label class="checkbox-inline ui-checks"><input type="checkbox" name="module[children.module_id]" value="{{children.module_id}}"><i></i>{{children.module_name}}</label>
 									</div>
 								
 								</div>
