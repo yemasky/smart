@@ -68,4 +68,18 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
         return RoleDao::instance()->updateRole($whereCriteria, $arrayUpdateData);
     }
 
+    //RoleModule
+    public function batchInsertRoleModule($arrayData, $insert_type = 'INSERT') {
+        return RoleDao::instance()->batchInsertRoleModule($arrayData, $insert_type);
+    }
+
+    public function getRoleModule(\WhereCriteria $whereCriteria, $field = null) {
+        return RoleDao::instance()->getRoleModule($whereCriteria, $field);
+    }
+
+    public function deleteRoleModule(\WhereCriteria $whereCriteria) {
+        return RoleDao::instance()->deleteRoleModule($whereCriteria);
+    }
+
+
 }

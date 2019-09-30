@@ -45,7 +45,6 @@ app.directive("showBookroomPrice", function($document){
 });
 app.controller('RoomStatusController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
     $scope.param = {};
-    $ocLazyLoad.load([$scope._resource + "styles/booking.css"]);
     $ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.js",
                       $scope._resource + "vendor/print/css/print-preview.css",

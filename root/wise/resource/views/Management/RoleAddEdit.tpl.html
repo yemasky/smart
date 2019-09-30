@@ -13,9 +13,9 @@
                 <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
                     <a>个人信息</a>
                 </li>
-				<li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
+				<!--<li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
                     <a>职位信息</a>
-                </li>
+                </li>-->
             </ul>
             <div class="tab-content">
                 <div ng-show="activeTab==1">
@@ -40,15 +40,17 @@
                         <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
                         <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
                     </div>
-                    <div class="form-group">
-						<div ng-repeat="channels in moduleMenuList.channels">
-							<h4><label class="checkbox-inline ui-checks"><input type="checkbox" name="module[channels.module_id]" value="{{channels.module_id}}"><i></i>{{channels.module_name}}</label></h4>
-							<div class="row list-icon">
-								<div class="col-md-3 col-sm-4" ng-repeat="menus in moduleMenuList.menus" ng-if="channels.module_channel==menus.module_channel">
-									<div><span class="ti-angle-right fa-fw text-muted small-xs"></span>	<label class="checkbox-inline ui-checks"><input type="checkbox" name="module[menus.module_id]" value="{{menus.module_id}}"><i></i>{{menus.module_name}}</label></div>
-									<div class="col-md-6 col-sm-6" ng-repeat="children in menus.children"><span class="ti-angle-double-right fa-fw text-muted small-xs"></span>	<label class="checkbox-inline ui-checks"><input type="checkbox" name="module[children.module_id]" value="{{children.module_id}}"><i></i>{{children.module_name}}</label>
+                    <div class="form-group clearfix">
+						<h4>选择权限</h4>
+						<div class="col-md-3 col-sm-4" ng-repeat="channels in moduleMenuList.channels">
+							<h4><label class="checkbox-inline ui-checks"><input type="checkbox" name="module[channels.module_id]" value="{{channels.url}}" ng-model="param.module[channels.url]"><i></i>{{channels.module_name}}</label></h4>
+							<div class="row">
+								<div ng-repeat="menus in moduleMenuList.menus" ng-if="channels.module_channel==menus.module_channel">
+									<div class="clearfix"><label class="checkbox-inline ui-checks"><input type="checkbox" name="module[menus.module_id]" value="{{menus.url}}" ng-model="param.module[menus.url]"><i></i>{{menus.module_name}}</label></div>
+									<div class="clearfix">
+									<div class="col-md-6 col-sm-6" ng-repeat="children in menus.children"><span class="ti-angle-right fa-fw text-muted small-xs"></span> <label class="checkbox-inline ui-checks"><input type="checkbox" name="module[children.module_id]" value="{{children.url}}" ng-model="param.module[children.url]"><i></i>{{children.module_name}}</label>
 									</div>
-								
+									</div>
 								</div>
 							</div>
 						</div>
@@ -62,7 +64,7 @@
         </div>
       </div>
       <div class="aside-footer panel-footer">
-      	<input type="hidden" name="item_id" value="" ng-model="param.item_id" >
+      	<input type="hidden" name="r_id" value="" ng-model="param.r_id" >
         <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
         <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
       </div>

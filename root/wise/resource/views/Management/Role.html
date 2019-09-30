@@ -54,6 +54,7 @@ app.controller('RoleController', function($rootScope, $scope, $httpService, $loc
 	$ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.js",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.css",$scope._resource + "styles/booking.css"]);
 	//获取数据
+	var channelModuleList = {};
 	var _channel = $scope.$stateParams.channel, common = '';$scope.param = {}; 
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
@@ -86,8 +87,8 @@ app.controller('RoleController', function($rootScope, $scope, $httpService, $loc
 			}
 			$scope.tagList = tagList;
 		}
-		$scope.moduleMenuList = $scope.resolvingModuleData(result.data.item.channelModuleList, '');
-		console.log($scope.moduleMenuList);
+		channelModuleList = result.data.item.channelModuleList;
+		$scope.moduleMenuList = $scope.resolvingModuleData(channelModuleList, '');
 	});
 	//Role////////////////////////////////////////////////////////////////////////////
 	var asideRole = '';
@@ -96,9 +97,23 @@ app.controller('RoleController', function($rootScope, $scope, $httpService, $loc
 		$scope.action = '添加/编辑';
 		asideRole = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/RoleAddEdit.tpl.html'});
 		if(_this != 0) {
-			$scope.param = _this;$scope.param.select_tag = _this.tag;
-			$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+			$httpService.header('method', 'getRole');
+			$httpService.post('/app.do?'+param+'&r_id='+_this.r_id, $scope, function(result){
+				$scope.loading.percent();$httpService.deleteHeader('method');
+				if(result.data.success == '0') {return;}
+				var roleModuleList = result.data.item.roleModuleList;
 				asideRole.$promise.then(function() {
+					$scope.param = _this;
+					$scope.param.select_tag = {'value':_this.tag};
+					if(channelModuleList != '') {
+						var roleModule = {};
+						for(var i in channelModuleList) {
+							if(angular.isDefined(roleModuleList[channelModuleList[i].module_id])) {
+								roleModule[channelModuleList[i].url] = true;
+							}
+						}
+						$scope.param.module = roleModule;
+					}
 					asideRole.show();
 					$(document).ready(function(){
 					});
@@ -113,17 +128,27 @@ app.controller('RoleController', function($rootScope, $scope, $httpService, $loc
 		}
 	};
 	$scope.saveData = function() {
-		var param = this.param;
-		if(param == null || param == '' || !angular.isDefined(param.payment_father_id)) {
-			$alert({title: 'Notice', content: '类型必须选择！', templateUrl: '/modal-warning.html', show: true});
+		var thisParam = this.param;
+		if(thisParam == null || thisParam == '' || !angular.isDefined(thisParam.role_name)) {
+			$alert({title: 'Notice', content: '权限名称必须填写！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
 		$scope.loading.show();
-		$scope.param = param;
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
-			$scope.loading.hide();
+		$scope.param = thisParam;
+		$httpService.header('method', 'saveRole');
+		$httpService.post('/app.do?'+param, $scope, function(result){
+			$scope.loading.percent();$httpService.deleteHeader('method');
+			if(result.data.success == '0') {
+				var message = $scope.getErrorByCode(result.data.code);
+				//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+				return;
+			}
 			$scope.dataList = result.data.item;
-			asideEmployee.hide();
+			asideRole.$promise.then(function() {
+				asideRole.hide();
+				$(document).ready(function(){
+				});
+			});
 			
 		});
 	}

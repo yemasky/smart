@@ -35,20 +35,6 @@ class RoleDao extends CommonDao {
     }
     //--------RoleEmployee//-----------//
 
-    //--------RoleMudule//-----------//
-    public function getRoleMudule(\WhereCriteria $whereCriteria, $field = 'module_id') {
-        return $this->setDsnRead($this->getDsnRead())->setTable('role_module')->getList($whereCriteria, $field);
-    }
-
-    public function saveRoleMudule($arrayData, $insert_type = 'INSERT') {
-        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_module')->insert($arrayData, $insert_type);
-    }
-
-    public function updateRoleMudule(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_module')->update($whereCriteria, $arrayUpdateData);
-    }
-    //--------RoleMudule//-----------//
-
     //Role
     public function getRole(\WhereCriteria $whereCriteria, $field = null) {
         return $this->setDsnRead($this->getDsnRead())->setTable('role')->getList($whereCriteria, $field);
@@ -60,5 +46,26 @@ class RoleDao extends CommonDao {
 
     public function updateRole(\WhereCriteria $whereCriteria, $arrayUpdateData) {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('role')->update($whereCriteria, $arrayUpdateData);
+    }
+    //
+    //RoleModule
+    public function getRoleModule(\WhereCriteria $whereCriteria, $field = null) {
+        return $this->setDsnRead($this->getDsnRead())->setTable('role_module')->getList($whereCriteria, $field);
+    }
+
+    public function saveRoleModule($arrayData, $insert_type = 'INSERT') {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_module')->insert($arrayData, $insert_type);
+    }
+
+    public function batchInsertRoleModule($arrayData, $insert_type = 'INSERT') {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_module')->batchInsert($arrayData, $insert_type);
+    }
+
+    public function updateRoleModule(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_module')->update($whereCriteria, $arrayUpdateData);
+    }
+
+    public function deleteRoleModule(\WhereCriteria $whereCriteria) {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_module')->delete($whereCriteria);
     }
 }
