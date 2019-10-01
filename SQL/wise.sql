@@ -812,12 +812,14 @@ CREATE TABLE `company_channel_sector` (
   `sector_name` varchar(100) NOT NULL COMMENT '名称',
   `sector_order` bigint(13) NOT NULL DEFAULT '0' COMMENT '排序',
   `sector_type` enum('sector','position') DEFAULT NULL COMMENT 'position 职位，sector 部门',
+  `valid` enum('1','0') DEFAULT '1' COMMENT '是否有效',
+  `is_delete` varchar(64) NOT NULL DEFAULT '0' COMMENT '是否删除',
   PRIMARY KEY (`sector_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 
 /*Data for the table `company_channel_sector` */
 
-insert  into `company_channel_sector`(`sector_id`,`company_id`,`channel_id`,`sector_father_id`,`sector_name`,`sector_order`,`sector_type`) values (1,1,1,1,'部门A',1000000000,'sector'),(2,1,1,1,'部门A 2级部门1',1002000000,'sector'),(3,1,1,2,'部门A 2级部门1职位1',1002003000,'position'),(4,1,1,4,'部门B',4000000000,'sector'),(5,1,1,4,'部门B 2级部门1',4000005000,'sector'),(6,1,1,1,'部门A 2级部门2',1006000000,'sector'),(7,1,1,2,'部门A 2级部门1职位2',1002007000,'position'),(8,1,1,1,'部门A 职位A',1000000008,'position');
+insert  into `company_channel_sector`(`sector_id`,`company_id`,`channel_id`,`sector_father_id`,`sector_name`,`sector_order`,`sector_type`,`valid`,`is_delete`) values (1,1,1,1,'部门A',1000000000,'sector','1','0'),(2,1,1,1,'部门A 2级部门1',1002000000,'sector','1','0'),(3,1,1,2,'部门A 2级部门1职位1',1002003000,'position','1','0'),(4,1,1,4,'部门B',4000000000,'sector','1','0'),(5,1,1,4,'部门B 2级部门1',4000005000,'sector','1','0'),(6,1,1,1,'部门A 2级部门2',1006000000,'sector','1','0'),(7,1,1,2,'部门A 2级部门1职位2',1002007000,'position','1','0'),(8,1,1,1,'部门A 职位A',1000000008,'position','1','0'),(9,1,1,5,'66666',0,'position','1','0'),(10,1,1,4,'7777',0,'sector','1','0'),(11,1,1,4,'88888',0,'sector','1','0'),(12,1,1,11,'555444',0,'position','0','20191002042025222561');
 
 /*Table structure for table `customer_market` */
 
@@ -1007,11 +1009,11 @@ CREATE TABLE `role` (
   `is_system` enum('0','1') NOT NULL DEFAULT '0' COMMENT '是否是系统权限',
   `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '是否有效',
   PRIMARY KEY (`role_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 /*Data for the table `role` */
 
-insert  into `role`(`role_id`,`company_id`,`channel_id`,`sector_id`,`role_name`,`tag`,`notes`,`is_system`,`valid`) values (1,1,1,2,'有个权限','财务权限','','0','1');
+insert  into `role`(`role_id`,`company_id`,`channel_id`,`sector_id`,`role_name`,`tag`,`notes`,`is_system`,`valid`) values (1,1,1,2,'有个权限','财务权限','','0','1'),(2,1,1,0,'有个权限3','财务权限','','0','1');
 
 /*Table structure for table `role_employee` */
 
@@ -1041,7 +1043,7 @@ CREATE TABLE `role_module` (
 
 /*Data for the table `role_module` */
 
-insert  into `role_module`(`role_id`,`module_id`) values (1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9),(1,10),(1,11),(1,12),(1,13),(1,14),(1,15),(1,16),(1,17),(1,18),(1,19),(1,20),(1,21),(1,22),(1,23),(1,24),(1,25),(1,26),(1,27),(1,28),(1,29),(1,30),(1,31),(1,32),(1,33),(1,34),(1,35),(1,36),(1,37),(1,38),(1,39),(1,40),(1,41),(1,42),(1,43),(1,44),(1,45),(1,46),(1,47),(1,48),(1,49),(1,50),(1,51),(1,52),(1,53),(1,54),(1,55),(1,56),(1,57),(1,58),(1,59),(1,60),(1,61),(1,62),(1,63),(1,64),(1,65),(1,66),(1,67),(1,68),(1,69),(1,70),(1,71),(1,72),(1,73),(1,74),(1,75),(1,76),(1,77),(1,78),(1,79),(1,80),(1,81),(1,82),(1,83),(1,84),(1,85),(1,86),(1,87),(1,88),(1,89),(1,90),(1,91),(1,92),(1,93),(1,94),(1,95),(1,96),(1,97),(1,98),(1,99),(1,100);
+insert  into `role_module`(`role_id`,`module_id`) values (1,1),(1,2),(1,3),(1,4),(1,5),(1,6),(1,7),(1,8),(1,9),(1,10),(1,11),(1,12),(1,13),(1,14),(1,15),(1,16),(1,17),(1,18),(1,19),(1,20),(1,21),(1,22),(1,23),(1,24),(1,25),(1,26),(1,27),(1,28),(1,29),(1,30),(1,31),(1,32),(1,33),(1,34),(1,35),(1,36),(1,37),(1,38),(1,39),(1,40),(1,41),(1,42),(1,43),(1,44),(1,45),(1,46),(1,47),(1,48),(1,49),(1,50),(1,51),(1,52),(1,53),(1,54),(1,55),(1,56),(1,57),(1,58),(1,59),(1,60),(1,61),(1,62),(1,63),(1,64),(1,65),(1,66),(1,67),(1,68),(1,69),(1,70),(1,71),(1,72),(1,73),(1,74),(1,75),(1,76),(1,77),(1,78),(1,79),(1,80),(1,81),(1,82),(1,83),(1,84),(1,85),(1,86),(1,87),(1,88),(1,89),(1,90),(1,91),(1,92),(1,93),(1,94),(1,95),(1,96),(1,97),(1,98),(1,99),(1,100),(2,1),(2,2),(2,9),(2,10),(2,11),(2,12),(2,14),(2,15),(2,16),(2,18),(2,26),(2,27),(2,28),(2,37),(2,42),(2,44);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

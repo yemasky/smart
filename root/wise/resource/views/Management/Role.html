@@ -10,26 +10,24 @@
     	<div class="col-md-8">
             <div class="no-br-t">
             <div class="table-responsive">
-            	<table st-table="displayedCollection" st-safe-src="rowCollection" class="table table-striped">
+				<table st-table="tableRoleList" st-safe-src="rowCollection" class="table table-striped">
 				  <thead>
 				  <tr>
-					<th st-sort="birthDate">企业</th>
+					<th st-sort="role_name">名称</th>  
 					<th st-sort="tag">标签</th>  
-					<th st-sort="role_name">名称</th>
 					<th st-sort="notes">备注</th>
 					<th st-sort="valid">有效</th>
 					<th>编辑</th>
 				  </tr>
 				  <tr>
-					<th></th>
-					<th colspan="3"><input st-search="" class="form-control" placeholder="搜索..." type="text"/></th><th></th>
+					<th colspan="2"><input st-search="" class="form-control" placeholder="搜索 ..." type="text"/></th>
+					<th colspan="3"></th>
 				  </tr>
 				  </thead>
 				  <tbody>
-				  <tr ng-repeat="row in roleList">
-					<td>{{thisChannel[row.channel_id].channel_name}}</td>
-					<td>{{row.tag}}</td>  
+				  <tr ng-repeat="row in tableRoleList">
 					<td>{{row.role_name}}</td>
+					<td>{{row.tag}}</td>  
 					<td>{{row.notes}}</td>
 					<td><i ng-if="row.valid==0" class="fa fa-ban text-warning"></i></td>
 					<th><a class="fa fa-edit" ng-click="addRole(row)"></a></th>
@@ -73,11 +71,12 @@ app.controller('RoleController', function($rootScope, $scope, $httpService, $loc
 			$scope.param["channel_father_id"] = $rootScope.defaultChannel["channel_father_id"];
 		});
 		var roleList = result.data.item.roleList;//权限
-		$scope.roleList = roleList;
+		$scope.roleList = roleList;var tableRoleList = [];$scope.rowCollection = [];
 		if(roleList != '') {
-			var tags = {},tagList = [];
+			var tags = {},tagList = [], k = 0;;
 			for(var i in roleList) {
 				tags[roleList[i].tag] = roleList[i].tag;
+				tableRoleList[k] = roleList[i];k++;
 			}
 			tagList[0] = {};
 			tagList[0].value = ' ';
@@ -86,6 +85,8 @@ app.controller('RoleController', function($rootScope, $scope, $httpService, $loc
 				tagList[k] = {};tagList[k].value = i;k++;
 			}
 			$scope.tagList = tagList;
+			$scope.tableRoleList = tableRoleList;
+			$scope.rowCollection = tableRoleList;
 		}
 		channelModuleList = result.data.item.channelModuleList;
 		$scope.moduleMenuList = $scope.resolvingModuleData(channelModuleList, '');

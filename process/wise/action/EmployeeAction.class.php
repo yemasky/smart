@@ -45,10 +45,14 @@ class EmployeeAction extends \BaseAction {
     }
 
     protected function doSectorPosition(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $method = $objRequest->method;
+        if (!empty($method)) {
+            return $this->doMethod($objRequest, $objResponse);
+        }
         $company_id    = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         $channel_id    = $objRequest->channel_id;
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->setHashKey('sector_id');
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('is_delete', 0)->setHashKey('sector_id');
         $arrayChannelSector = EmployeeServiceImpl::instance()->getChannelSector($whereCriteria);
         if (!empty($arrayChannelSector)) {
             foreach ($arrayChannelSector as $key => $arrayData) {
@@ -57,6 +61,56 @@ class EmployeeAction extends \BaseAction {
         }
         $successService = new \SuccessService();
         $successService->setData(['channelSectorList' => $arrayChannelSector]);
+        return $objResponse->successServiceResponse($successService);
+    }
+
+    protected function doMethodSaveSectorPosition(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $successService   = new \SuccessService();
+        $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id       = $objRequest->channel_id;
+        $sector_father_id = $objRequest->sector_father_id;
+        $sector_name      = $objRequest->sector_name;
+        $sector_type      = $objRequest->sector_type;
+        $s_id             = decode($objRequest->s_id);
+        if ($sector_type == 'edit' && $s_id > 0) {//编辑
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('sector_id', $s_id);
+            EmployeeServiceImpl::instance()->updateChannelSector($whereCriteria, ['sector_name' => $sector_name]);
+            return $objResponse->successServiceResponse($successService);
+        } elseif ($sector_type == 'sector' || $sector_type == 'position') {//部门
+            $sectorData['company_id']  = $company_id;
+            $sectorData['channel_id']  = $channel_id;
+            $sectorData['sector_name'] = $sector_name;
+            $sectorData['sector_type'] = $sector_type;
+            if ($sector_father_id > 0) $sectorData['sector_father_id'] = $sector_father_id;
+            $sector_id = EmployeeServiceImpl::instance()->saveChannelSector($sectorData);
+            if (empty($sector_father_id) && $sector_type == 'sector') {
+                $whereCriteria = new \WhereCriteria();
+                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('sector_id', $sector_id);
+                EmployeeServiceImpl::instance()->updateChannelSector($whereCriteria, ['sector_father_id' => $sector_id]);
+            }
+            $successService->setData(['sector_id'=>$sector_id,'s_id'=>encode($sector_id)]);
+            return $objResponse->successServiceResponse($successService);
+        }
+
+        $successService->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
+        return $objResponse->successServiceResponse($successService);
+    }
+
+    protected function doMethodDeleteSectorPosition(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $successService   = new \SuccessService();
+        $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id       = $objRequest->channel_id;
+        $s_id             = decode($objRequest->s_id);
+        if ($s_id > 0) {//编辑
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('sector_id', $s_id);
+            $is_delete = getDateTimeId();
+            EmployeeServiceImpl::instance()->updateChannelSector($whereCriteria, ['is_delete' => $is_delete,'valid'=>'0']);
+            return $objResponse->successServiceResponse($successService);
+        }
+
+        $successService->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
         return $objResponse->successServiceResponse($successService);
     }
 
@@ -179,7 +233,7 @@ class EmployeeAction extends \BaseAction {
                     if (empty($r_id)) {//新增
                         $role_id = RoleServiceImpl::instance()->saveRole($arrayInsertRole);
                     } else {
-                        $role_id = $r_id;//修改
+                        $role_id       = $r_id;//修改
                         $whereCriteria = new \WhereCriteria();
                         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('role_id', $role_id);
                         RoleServiceImpl::instance()->updateRole($whereCriteria, $arrayInsertRole);

@@ -10,8 +10,9 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 	$httpService.post('/app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
-			var message = $scope.getErrorByCode(result.data.code);
-			$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+			return;
+			//var message = $scope.getErrorByCode(result.data.code);
+			//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
 		}
 		common = result.data.common;
 		$scope.setCommonSetting(common);
@@ -217,19 +218,37 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 			});
 		});
 	}
-	//SectorPosition/////////////////////////////////////////////////////////////////////////////
+//***********	//SectorPosition/////////////////////////////////////////////////////////////////////////////
 	$scope.SectorPosition = function(branch) {
 		console.log(branch);
 	}
 	var asideSectorPosition = '';
 	$scope.SectorPositionEditType = '';
 	$scope.SectorPositionEdit = function(branch_type) {
-		var title = '', branch = tree.get_selected_branch();console.log(branch);
+		var title = '', branch = tree.get_selected_branch();
 		$scope.SectorPositionEditType = 'Add';
-		if(branch_type == 'sector') {title = '部门';
-		} else if(branch_type == 'position') {title = '职位';
+		if(branch_type == 'sector') {
+			title = '部门';$scope.param.sector_type = 'sector';
+			if(branch.level >= 3) {
+				$alert({title: 'Error', content: '部门只能添加2级，职位下面不能添加部门！', templateUrl: '/modal-warning.html', show: true});
+				return;
+			}
+			$scope.param.sector_father_id = '';
+			if(angular.isDefined(branch.data.sector_id)) $scope.param.sector_father_id = branch.data.sector_id;
+		} else if(branch_type == 'position') {
+			title = '职位';$scope.param.sector_type = 'position';
+			if(branch.level == 1) {
+				$alert({title: 'Error', content: '不能添加顶级职位！', templateUrl: '/modal-warning.html', show: true});
+				return;
+			}
+			if(branch.data.sector_type == 'position') {
+				$alert({title: 'Error', content: '职位下面不能添加职位！', templateUrl: '/modal-warning.html', show: true});
+				return;
+			}
+			$scope.param.sector_father_id = branch.data.sector_id;
 		} else if(branch_type == 'edit') {
-			$scope.SectorPositionEditType = 'edit';
+			$scope.SectorPositionEditType = 'edit';$scope.param.sector_type = 'edit';
+			$scope.param.s_id = branch.data.s_id;
 			$scope.param.sector_name = branch.label;
 		}
 		$scope.param["valid"] = "1";
@@ -251,19 +270,25 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		function close() {
 			console.log(branch);
 			var sector_name = angular.copy($scope.param.sector_name);
-			if($scope.SectorPositionEditType == 'edit') {
-				branch.label = sector_name;
-				branch.data.sector_name = sector_name;
-				branch.data.label = sector_name;
-			} else {
-				return tree.add_branch(branch, {
-				  label: sector_name,
-				  data: {
-					something: 42,
-					"else": 43
-				  }
-				});
-			}
+			$httpService.header('method', 'saveSectorPosition');
+			$httpService.post('/app.do?'+param, $scope, function(result){
+				$scope.loading.percent();
+				$httpService.deleteHeader('method');
+				if($scope.SectorPositionEditType == 'edit') {
+					branch.label = sector_name;
+					branch.data = $scope.param;
+					branch.data.sector_name = sector_name;
+					branch.data.label = sector_name;
+				} else {
+					var data = $scope.param;
+					data.s_id = result.data.item.s_id;
+					data.sector_id = result.data.item.sector_id;
+					return tree.add_branch(branch, {
+					  label: sector_name,
+					  data: data
+					});
+				}
+			});
 		}
 	};
 	$scope.SectorPositionDelete = function() {
@@ -278,25 +303,30 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		var message = '您确定要删除吗？';
 		$scope.confirm({'content':message,'callback': deleteData});
 		function deleteData() {
-			var uid = branch.uid;
-			if(parent != null && angular.isDefined(parent)) {
-				var newCildren = [], k = 0;
-				for(var i in parent.children) {
-					var children = parent.children[i];
-					if(children.uid == uid) continue;
-					newCildren[k] = children; k++;
+			$scope.param.s_id = branch.data.s_id;
+			$httpService.header('method', 'deleteSectorPosition');
+			$httpService.post('/app.do?'+param, $scope, function(result){
+				$scope.loading.percent();
+				$httpService.deleteHeader('method');
+				var uid = branch.uid;
+				if(parent != null && angular.isDefined(parent)) {
+					var newCildren = [], k = 0;
+					for(var i in parent.children) {
+						var children = parent.children[i];
+						if(children.uid == uid) continue;
+						newCildren[k] = children; k++;
+					}
+					parent.children = newCildren;
+				} else {//parent is undefined
+					var newData = [], k = 0;
+					var my_data = $scope.my_data;
+					for(var i in my_data) {
+						var my = my_data[i];
+						if(my.uid == uid) continue;
+						newData[k] = my; k++;
+					}
 				}
-				parent.children = newCildren;
-			} else {//parent is undefined
-				var newData = [], k = 0;
-				var my_data = $scope.my_data;
-				for(var i in my_data) {
-					var my = my_data[i];
-					if(my.uid == uid) continue;
-					newData[k] = my; k++;
-				}
-				//$scope.my_data = newData;
-			}
+			});
 		}
 	}
 	//
