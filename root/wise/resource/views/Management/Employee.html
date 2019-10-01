@@ -36,7 +36,7 @@
                 </tr>
                 <tr ng-repeat="(i,row) in employeeList">
                     <td>{{row.employee_id}}</td>
-                    <td>{{row.photo}}</td>
+                    <td><img ng-src="{{row.photo}}" onError="this.src='<%$__IMGWEB%>userimg/user_h.png'" alt="{{row.employee_name}}" class="img-responsive w-thumb-md img-circle"></td>
                     <td>{{row.employee_name}}</td>
                     <td>{{row.sex==1?'男':'女'}}</td>
                     <td>{{row.birthday}}</td>

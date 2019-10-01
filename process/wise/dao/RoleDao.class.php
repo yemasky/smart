@@ -18,23 +18,6 @@ class RoleDao extends CommonDao {
 
 		return self::$objDao;
 	}
-
-    //--------RoleEmployee//-----------//
-    public function getRoleEmployee(\WhereCriteria $whereCriteria, $field = '') {
-        if(empty($field)) $field = 'role_id, employee_id';
-
-        return $this->setDsnRead($this->getDsnRead())->setTable('role_employee')->getList($whereCriteria, $field);//->DBCache($cacheId)
-    }
-
-    public function saveRoleEmployee($arrayData, $insert_type = 'INSERT') {
-        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_employee')->insert($arrayData, $insert_type);
-    }
-
-    public function updateRoleEmployee(\WhereCriteria $whereCriteria, $arrayUpdateData) {
-        return $this->setDsnWrite($this->getDsnWrite())->setTable('role_employee')->update($whereCriteria, $arrayUpdateData);
-    }
-    //--------RoleEmployee//-----------//
-
     //Role
     public function getRole(\WhereCriteria $whereCriteria, $field = null) {
         return $this->setDsnRead($this->getDsnRead())->setTable('role')->getList($whereCriteria, $field);

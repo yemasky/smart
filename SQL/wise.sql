@@ -819,7 +819,7 @@ CREATE TABLE `company_channel_sector` (
 
 /*Data for the table `company_channel_sector` */
 
-insert  into `company_channel_sector`(`sector_id`,`company_id`,`channel_id`,`sector_father_id`,`sector_name`,`sector_order`,`sector_type`,`valid`,`is_delete`) values (1,1,1,1,'部门A',1000000000,'sector','1','0'),(2,1,1,1,'部门A 2级部门1',1002000000,'sector','1','0'),(3,1,1,2,'部门A 2级部门1职位1',1002003000,'position','1','0'),(4,1,1,4,'部门B',4000000000,'sector','1','0'),(5,1,1,4,'部门B 2级部门1',4000005000,'sector','1','0'),(6,1,1,1,'部门A 2级部门2',1006000000,'sector','1','0'),(7,1,1,2,'部门A 2级部门1职位2',1002007000,'position','1','0'),(8,1,1,1,'部门A 职位A',1000000008,'position','1','0'),(9,1,1,5,'66666',0,'position','1','0'),(10,1,1,4,'7777',0,'sector','1','0'),(11,1,1,4,'88888',0,'sector','1','0'),(12,1,1,11,'555444',0,'position','0','20191002042025222561');
+insert  into `company_channel_sector`(`sector_id`,`company_id`,`channel_id`,`sector_father_id`,`sector_name`,`sector_order`,`sector_type`,`valid`,`is_delete`) values (1,1,1,1,'部门A',1000000000,'sector','1','0'),(2,1,1,1,'部门A 2级部门1',1002000000,'sector','1','0'),(3,1,1,2,'部门A 2级部门1职位1',1002003000,'position','1','0'),(4,1,1,4,'部门B',4000000000,'sector','1','0'),(5,1,1,4,'部门B 2级部门1',4000005000,'sector','1','0'),(6,1,1,1,'部门A 2级部门2',1006000000,'sector','1','0'),(7,1,1,2,'部门A 2级部门1职位2',1002007000,'position','1','0'),(8,1,1,1,'部门A 职位A',1000000008,'position','1','0'),(9,1,1,5,'部门B 2级部门1职位',0,'position','1','0'),(10,1,1,4,'7777',0,'sector','1','0'),(11,1,1,4,'88888',0,'sector','1','0'),(12,1,1,11,'555444',0,'position','0','20191002042025222561');
 
 /*Table structure for table `customer_market` */
 
@@ -911,6 +911,7 @@ CREATE TABLE `employee_sector` (
   `emergency_mobile` varchar(50) DEFAULT NULL COMMENT '紧急联系人电话',
   `dimission` enum('0','1') NOT NULL DEFAULT '0' COMMENT '是否离职',
   `dimission_date` date DEFAULT NULL COMMENT '离职时间',
+  `role_id` int(11) NOT NULL DEFAULT '0' COMMENT '权限ID',
   `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '0禁用',
   `add_datetime` datetime NOT NULL COMMENT '添加时间',
   PRIMARY KEY (`employee_id`,`company_id`,`channel_id`)
@@ -918,7 +919,7 @@ CREATE TABLE `employee_sector` (
 
 /*Data for the table `employee_sector` */
 
-insert  into `employee_sector`(`company_id`,`channel_id`,`channel_father_id`,`sector_father_id`,`sector_id`,`is_default`,`employee_id`,`employee_name`,`email`,`weixin`,`birthday`,`photo`,`id_card`,`address`,`sex`,`mobile`,`present_address`,`positive_id_card`,`back_id_card`,`full_time`,`entry_date`,`probation_date`,`photo_labor`,`employee_number`,`emergency_contact`,`emergency_relation`,`emergency_mobile`,`dimission`,`dimission_date`,`valid`,`add_datetime`) values (1,1,1,1,8,'1',1,'有个员工','kefu@yelove.cn',NULL,'0000-00-00',NULL,NULL,NULL,'0',18500353881,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,'1','0000-00-00 00:00:00'),(1,1,1,2,3,'1',2,'员工2',NULL,NULL,'0000-00-00',NULL,NULL,NULL,'0',0,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,'1','0000-00-00 00:00:00');
+insert  into `employee_sector`(`company_id`,`channel_id`,`channel_father_id`,`sector_father_id`,`sector_id`,`is_default`,`employee_id`,`employee_name`,`email`,`weixin`,`birthday`,`photo`,`id_card`,`address`,`sex`,`mobile`,`present_address`,`positive_id_card`,`back_id_card`,`full_time`,`entry_date`,`probation_date`,`photo_labor`,`employee_number`,`emergency_contact`,`emergency_relation`,`emergency_mobile`,`dimission`,`dimission_date`,`role_id`,`valid`,`add_datetime`) values (1,1,1,1,8,'1',1,'有个员工','kefu@yelove.cn',NULL,'0000-00-00',NULL,NULL,NULL,'0',18500353881,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,1,'1','0000-00-00 00:00:00'),(1,1,1,2,3,'1',2,'员工2',NULL,NULL,'0000-00-00',NULL,NULL,NULL,'0',0,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,0,'1','0000-00-00 00:00:00');
 
 /*Table structure for table `module` */
 
@@ -1014,22 +1015,6 @@ CREATE TABLE `role` (
 /*Data for the table `role` */
 
 insert  into `role`(`role_id`,`company_id`,`channel_id`,`sector_id`,`role_name`,`tag`,`notes`,`is_system`,`valid`) values (1,1,1,2,'有个权限','财务权限','','0','1'),(2,1,1,0,'有个权限3','财务权限','','0','1');
-
-/*Table structure for table `role_employee` */
-
-DROP TABLE IF EXISTS `role_employee`;
-
-CREATE TABLE `role_employee` (
-  `company_id` int(11) NOT NULL COMMENT '公司ID',
-  `role_id` int(11) NOT NULL COMMENT '角色权限',
-  `employee_id` int(11) NOT NULL COMMENT '部门ID',
-  PRIMARY KEY (`company_id`,`role_id`,`employee_id`),
-  KEY `hotel_id` (`company_id`,`employee_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*Data for the table `role_employee` */
-
-insert  into `role_employee`(`company_id`,`role_id`,`employee_id`) values (1,1,1);
 
 /*Table structure for table `role_module` */
 

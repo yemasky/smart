@@ -98,6 +98,18 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
         return EmployeeDao::instance()->getEmployeeSector($whereCriteria, $field);
     }
 
+    public function getEmployeeChannelSectorCache($company_id, $employee_id, $channel_id, $isUpdate = false) {
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('employee_id', $employee_id);
+        $cacheEmployeeSectorId = CacheConfig::getCacheId('employee_sector', $company_id, $employee_id);
+        if ($isUpdate) {
+            $arrayEmployeeSector = EmployeeDao::instance()->DBCache($cacheEmployeeSectorId, -1)->getEmployeeSector($whereCriteria);
+        } else {
+            $arrayEmployeeSector = EmployeeDao::instance()->DBCache($cacheEmployeeSectorId)->getEmployeeSector($whereCriteria);
+        }
+        return $arrayEmployeeSector;
+    }
+
     public function getEmployeeCompanySector($company_id, $employee_id) {
         $arrayEmployeeSector = $this->getEmployeeSector($company_id, $employee_id);
         if (!empty($arrayEmployeeSector)) {
@@ -120,8 +132,8 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
     public function getEmployeeChannelSector($employee_id, $channel_id = '', $field = '') {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('employee_id', $employee_id);
-        if(!empty($channel_id)) $whereCriteria->EQ('channel_id', $channel_id);
-        if(empty($field)) $field = 'channel_father_id, channel_id, sector_id, sector_father_id, is_default';
+        if (!empty($channel_id)) $whereCriteria->EQ('channel_id', $channel_id);
+        if (empty($field)) $field = 'channel_father_id, channel_id, sector_id, sector_father_id, is_default';
 
         return EmployeeDao::instance()->getEmployeeSector($whereCriteria, $field);
     }

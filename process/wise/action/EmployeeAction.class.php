@@ -131,8 +131,14 @@ class EmployeeAction extends \BaseAction {
         }
         $imagesUploadUrl  = ModuleServiceImpl::instance()->getEncodeModuleId('Upload', 'images');
         $imagesManagerUrl = ModuleServiceImpl::instance()->getEncodeModuleId('Upload', 'manager');
+        //权限
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1')->setHashKey('role_id');
+        $arrayChannelRole = RoleServiceImpl::instance()->getRole($whereCriteria, 'role_id,role_name,tag');
+        $arrayResule = ['channelSectorList' => $arrayChannelSector, 'imagesUploadUrl' => $imagesUploadUrl, 'imagesManagerUrl' => $imagesManagerUrl,
+            'channelRoleList'=>$arrayChannelRole];
         $successService   = new \SuccessService();
-        $successService->setData(['channelSectorList' => $arrayChannelSector, 'imagesUploadUrl' => $imagesUploadUrl, 'imagesManagerUrl' => $imagesManagerUrl]);
+        $successService->setData($arrayResule);
         return $objResponse->successServiceResponse($successService);
     }
 

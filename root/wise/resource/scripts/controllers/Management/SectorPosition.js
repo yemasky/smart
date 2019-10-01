@@ -100,11 +100,12 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 	var my_data = [];my_data[0] = {};my_data[0].data = {'label':'部门职位'};
 	my_data[0].label = '部门职位';my_data[0].children = sectorPositionList;
 	$scope.my_data = my_data;
-	//Employee////////////////////////////////////////////////////////////////////////////
+//**//Employee////////////////////////////////////////////////////////////////////////////
 	var asideEmployee = '';$scope.this_nav_menu_name = '选择部门';
 	$scope.addEmployee = function(_this) {
-		$scope.param = {}; $scope.param["valid"] = "1";
-		if(_this != 0) $scope.param = _this;
+		$scope.param["valid"] = "1";
+		if(_this != 0) {$scope.param = _this;
+		$('#main_images').attr('src', _this.photo);}
 		$scope.action = '添加/编辑';
 		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/EmployeeAddEdit.tpl.html'});
 		asideEmployee.$promise.then(function() {
@@ -130,8 +131,6 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 			
 		});
 	}
-    
-    /////////
     $scope.employeeList = []; var thisSectorParam = '';
     $scope.callEmployeeServer = function callEmployeeServer(tableState, sectorParam) {
         $scope.param = {};        

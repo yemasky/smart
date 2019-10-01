@@ -47,8 +47,8 @@
                       <div class="w-xl w-auto-xs">
                         <div class="box bg-white">
                           <div class="box-col w-auto-xs v-m">
-                            <img id="main_images" ng-src="{{param.image_src}}" width="120" height="120" class="b p-xs">
-                            <input id="image_src" name="image_src" type="hidden" ng-model="param.image_src" value="{{param.image_src}}">
+                            <img id="main_images" ng-src="{{param.photo}}" width="120" height="120" class="b p-xs" onerror="this.src='/data/images/userimg/user_b.png'">
+                            <input id="image_src" name="image_src" type="hidden" ng-model="param.photo" value="{{param.photo}}">
                           </div>
                           <div class="box-col p">
                             <button class="btn btn-addon btn-default set_image_src" type="button" isMain="1"><i class="fa fa-upload"></i> 上传图片</button>
@@ -69,6 +69,13 @@
                   Action <span class="caret"></span>
                             </button></div>
                       </div>
+						<div class="col-sm-3">
+							<label>权限</label>
+							<div class="form-group">
+							<button type="button" class="btn btn-default w-sm text-left clearfix" ng-model="param.position_id" data-html="1" data-toggle="true" bs-options="position.sector_id as position.sector_name for position in thisPosition" bs-select placeholder="选择客职位" ng-change="selectPosition(param.position_id)">
+					  Action <span class="caret"></span>
+								</button></div>
+						 </div>
                     </div>
                     <div class="form-group">
                         <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
