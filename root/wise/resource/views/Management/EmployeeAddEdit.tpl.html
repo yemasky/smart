@@ -5,10 +5,10 @@
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
-      <form name="thisForm" class="form-validation" id="thisForm" ng-submit="saveData()">
+      <form name="thisForm" class="form-validation" id="thisForm" ng-submit="saveData(thisForm)">
       <input type="hidden" name="item_type" value="item">
       <div class="aside-body h-8x scrollable">
-        <div class="tab-container ng-scope ng-valid ng-dirty">
+        <div class="tab-container">
             <ul class="nav nav-tabs" ng-init="activeTab=1">
                 <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
                     <a>个人信息</a>
@@ -38,8 +38,20 @@
 							<input class="form-control w" name="mobile" value="" ng-model="param.mobile" required>
 						</div>
 						<div class="col-sm-3">
+							<label for="id_card">Email</label>
+							<input type="email" class="form-control w" name="id_card" value="" ng-model="param.email" required>
+						</div>
+					</div>
+					<div class="form-group m-h-n clearfix">
+						<div class="col-sm-3">
 							<label for="id_card">身份证</label>
 							<input class="form-control w" name="id_card" value="" ng-model="param.id_card" required>
+						</div>
+						<div class="col-sm-4">
+							<label for="mobile" ng-if="newPassword==true">设置密码</label>
+							<label class="checkbox-inline ui-checks" ng-if="newPassword==false"><input type="checkbox" name="newPassword" value="1" ng-click="setNewPassword()"><i></i>重设密码</label>
+							<span ng-if="setPassword==true">
+							<input class="form-control w" name="password" value="" ng-model="param.password" ng-pattern="/^(?![A-Za-z]+$)(?![A-Z\d]+$)(?![A-Z\W]+$)(?![a-z\d]+$)(?![a-z\W]+$)(?![\d\W]+$)\S{8,20}$/" required>[包含大小写字母数字8~20位]</span>
 						</div>
 					</div>
 					<div class="form-group">
@@ -51,8 +63,7 @@
                             <input id="image_src" name="image_src" type="hidden" ng-model="param.photo" value="{{param.photo}}">
                           </div>
                           <div class="box-col p">
-                            <button class="btn btn-addon btn-default set_image_src" type="button" isMain="1"><i class="fa fa-upload"></i> 上传图片</button>
-                            [最大:2M/600x600px]
+                            <button class="btn btn-addon btn-default set_image_src" type="button" isMain="1"><i class="fa fa-upload"></i> 上传图片</button>最大:2M/600x600px
                           </div>
                         </div>
                       </div>
@@ -65,21 +76,21 @@
 					  <div class="col-sm-3">
                         <label>职位</label>
 						<div class="form-group">
-                        <button type="button" class="btn btn-default w-sm text-left clearfix" ng-model="param.position_id" data-html="1" data-toggle="true" bs-options="position.sector_id as position.sector_name for position in thisPosition" bs-select placeholder="选择客职位" ng-change="selectPosition(param.position_id)">
+                        	<button type="button" class="btn btn-default w-sm text-left clearfix" ng-model="param.position_id" data-html="1" data-toggle="true" bs-options="position.sector_id as position.sector_name for position in thisPosition" bs-select placeholder="选择职位" ng-change="selectPosition(param.position_id)">
                   Action <span class="caret"></span>
                             </button></div>
                       </div>
 						<div class="col-sm-3">
 							<label>权限</label>
 							<div class="form-group">
-							<button type="button" class="btn btn-default w-sm text-left clearfix" ng-model="param.position_id" data-html="1" data-toggle="true" bs-options="position.sector_id as position.sector_name for position in thisPosition" bs-select placeholder="选择客职位" ng-change="selectPosition(param.position_id)">
+								<button type="button" class="btn btn-default w-sm text-left clearfix" ng-model="param.role_id" data-html="1" data-toggle="true" bs-options="role.role_id as role.role_name for role in channelRoleList" bs-select placeholder="选择权限" ng-selected="role.role_id==param.role_id">
 					  Action <span class="caret"></span>
 								</button></div>
 						 </div>
                     </div>
                     <div class="form-group">
-                        <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
-                        <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
+                        <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" ng-checked="param.valid=='1'"> 有效</label>
+                        <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid" ng-checked="param.valid=='0'"> 无效</label>
                     </div>
                     <div class="form-group"></div>
                 </div>

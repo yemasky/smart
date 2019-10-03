@@ -21,6 +21,14 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		sortChannelSector(result.data.item.channelSectorList);
 		imagesUploadUrl = result.data.item.imagesUploadUrl;
 		imagesManagerUrl = result.data.item.imagesManagerUrl;
+		var roleList = result.data.item.channelRoleList;
+		var channelRoleList = [], k = 0;
+		if(roleList != '') {
+			for(var i in roleList) {
+				channelRoleList[k] = roleList[i];k++;
+			}
+		}
+		$scope.channelRoleList = channelRoleList;
 		function sortChannelSector(channelSectorList) {
 			var positionList = {}; sectorI = 0,sectorJ = 0, sectorPosition = {}, sectorPositionChildren = {};
 			if(channelSectorList != '') {
@@ -104,8 +112,21 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 	var asideEmployee = '';$scope.this_nav_menu_name = '选择部门';
 	$scope.addEmployee = function(_this) {
 		$scope.param["valid"] = "1";
-		if(_this != 0) {$scope.param = _this;
-		$('#main_images').attr('src', _this.photo);}
+		if(_this != 0) {//edit
+			$scope.newPassword = false;$scope.setPassword = false;
+			$scope.param = angular.copy(_this);
+			$('#main_images').attr('src', _this.photo);
+			var thisSector = $scope.channelSectorList[_this.sector_father_id];//部门
+			$scope.this_nav_menu_name = thisSector.sector_name;
+			$scope.selectCommonNavMenu(thisSector, '');
+			var thisPosition = $scope.channelSectorList[_this.sector_id];
+			$scope.param.position_id = angular.copy(_this.sector_id);//职位ID
+			$scope.param._s_id = angular.copy(thisPosition.s_id);//职位ID
+		} else {
+			$scope.newPassword = true;$scope.setPassword = true;
+			$scope.param.photo = '/data/images/userimg/user_b.png';
+			$('#main_images').attr('src', '/data/images/userimg/user_b.png');
+		}
 		$scope.action = '添加/编辑';
 		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/EmployeeAddEdit.tpl.html'});
 		asideEmployee.$promise.then(function() {
@@ -116,17 +137,41 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		})
 		
 	};
-	$scope.saveData = function() {
-		var param = this.param;
-		if(param == null || param == '' || !angular.isDefined(param.payment_father_id)) {
-			$alert({title: 'Notice', content: '类型必须选择！', templateUrl: '/modal-warning.html', show: true});
+	$scope.setNewPassword = function() {
+		$scope.setPassword = !$scope.setPassword;
+	}
+	$scope.saveData = function(thisForm) {
+		var thisParam = this.param;
+		if(thisParam == null || thisParam == '' || !angular.isDefined(thisParam.sector_id)) {
+			$alert({title: 'Notice', content: '部门必须选择！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
+		if(!angular.isDefined(thisParam.position_id)) {
+			$alert({title: 'Notice', content: '职位必须选择！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		}
+		var isIdCard = isIdCardNo(thisParam.id_card);
+		if(!isIdCard) {
+			$alert({title: 'Notice', content: '身份证填写不正确！', templateUrl: '/modal-warning.html', show: true});
+			return;
+		} else {
+			var sex = value.substr(16,1) % 2;if(sex == 0) {thisParam.sex = 0 } else {thisParam.sex = 1}
+		}
+		//if(isIdCard) {}
+		//if(!thisForm.$invalid) {
+			//return;
+		//}
 		$scope.loading.show();
-		$scope.param = param;
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
-			$scope.loading.hide();
+		$scope.param = thisParam;
+		$httpService.header('method', 'saveEmployee');
+		$httpService.post('/app.do?'+param, $scope, function(result){
+			$scope.loading.percent();
+            $httpService.deleteHeader('method');
+			if(result.data.success == '0') {
+				return;
+			}
 			$scope.dataList = result.data.item;
+			
 			asideEmployee.hide();
 			
 		});
@@ -142,6 +187,9 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
         $httpService.post('/app.do?'+param+'&'+sectorParam, $scope, function(result){
             $scope.loading.percent();
             $httpService.deleteHeader('method');
+			if(result.data.success == '0') {
+				return;
+			}
             $scope.employeeList = result.data.item.employeeList.data;
             tableState.pagination.numberOfPages = result.data.item.employeeList.numberOfPages;
         });
@@ -212,6 +260,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 					clickFn : function(url, title, width, height, border, align) {
 						editor.hideDialog();
 						$('#main_images').attr('src', url);
+						$scope.param.photo = url;
 					}
 				});
 			});
@@ -273,6 +322,9 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 			$httpService.post('/app.do?'+param, $scope, function(result){
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
+				if(result.data.success == '0') {
+					return;
+				}
 				if($scope.SectorPositionEditType == 'edit') {
 					branch.label = sector_name;
 					branch.data = $scope.param;
@@ -307,6 +359,9 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 			$httpService.post('/app.do?'+param, $scope, function(result){
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
+				if(result.data.success == '0') {
+					return;
+				}
 				var uid = branch.uid;
 				if(parent != null && angular.isDefined(parent)) {
 					var newCildren = [], k = 0;

@@ -871,11 +871,11 @@ CREATE TABLE `employee` (
   PRIMARY KEY (`employee_id`),
   UNIQUE KEY `hotel_mobile` (`company_id`,`mobile`),
   UNIQUE KEY `hotel_email` (`company_id`,`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 /*Data for the table `employee` */
 
-insert  into `employee`(`employee_id`,`company_id`,`employee_name`,`sex`,`birthday`,`photo`,`mobile`,`email`,`password`,`password_salt`,`id_card`,`weixin`,`wx_unionid`,`default_channel_id`,`dimission`,`valid`,`add_datetime`,`is_system`) values (1,1,'有个员工','0','2018-01-06','',18500353881,'kefu@yelove.cn','75cc0db8ac6117d158272682cadd90e0','5483116858d36bd6d1f6c','',NULL,'',1,'0','1','2018-01-06','0'),(2,1,'员工2','0',NULL,'',0,'','','','',NULL,'',1,'0','1','0000-00-00','0');
+insert  into `employee`(`employee_id`,`company_id`,`employee_name`,`sex`,`birthday`,`photo`,`mobile`,`email`,`password`,`password_salt`,`id_card`,`weixin`,`wx_unionid`,`default_channel_id`,`dimission`,`valid`,`add_datetime`,`is_system`) values (1,1,'有个员工','0','2018-01-06','/data/images/2019/0917/20190917114640_62722.jpg',18500353881,'kefu@yelove.cn','75cc0db8ac6117d158272682cadd90e0','5483116858d36bd6d1f6c','',NULL,'',1,'0','1','2018-01-06','0'),(2,1,'员工12','0',NULL,'/data/images/2019/0917/20190917114640_62722.jpg',55,'6777772@','','','677777',NULL,'',1,'0','1','0000-00-00','0'),(11,1,'员工3','1',NULL,'/data/images/userimg/user_b.png',123,'677777','5ce6616771ce489cc495c93546c7dfa9','3d91e66ccce34cef83e99c53100c1e0d','677777',NULL,'',0,'0','1','2019-10-03','0');
 
 /*Table structure for table `employee_sector` */
 
@@ -892,7 +892,7 @@ CREATE TABLE `employee_sector` (
   `employee_name` varchar(128) NOT NULL COMMENT '员工姓名',
   `email` varchar(255) DEFAULT NULL,
   `weixin` varchar(64) DEFAULT NULL,
-  `birthday` date NOT NULL COMMENT '生日',
+  `birthday` date DEFAULT NULL COMMENT '生日',
   `photo` varchar(255) DEFAULT NULL COMMENT '头像',
   `id_card` varchar(50) DEFAULT NULL COMMENT '身份证',
   `address` varchar(255) DEFAULT NULL COMMENT '家庭地址',
@@ -914,12 +914,13 @@ CREATE TABLE `employee_sector` (
   `role_id` int(11) NOT NULL DEFAULT '0' COMMENT '权限ID',
   `valid` enum('0','1') NOT NULL DEFAULT '1' COMMENT '0禁用',
   `add_datetime` datetime NOT NULL COMMENT '添加时间',
-  PRIMARY KEY (`employee_id`,`company_id`,`channel_id`)
+  PRIMARY KEY (`employee_id`,`company_id`,`channel_id`),
+  UNIQUE KEY `sector_employee` (`sector_id`,`employee_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*Data for the table `employee_sector` */
 
-insert  into `employee_sector`(`company_id`,`channel_id`,`channel_father_id`,`sector_father_id`,`sector_id`,`is_default`,`employee_id`,`employee_name`,`email`,`weixin`,`birthday`,`photo`,`id_card`,`address`,`sex`,`mobile`,`present_address`,`positive_id_card`,`back_id_card`,`full_time`,`entry_date`,`probation_date`,`photo_labor`,`employee_number`,`emergency_contact`,`emergency_relation`,`emergency_mobile`,`dimission`,`dimission_date`,`role_id`,`valid`,`add_datetime`) values (1,1,1,1,8,'1',1,'有个员工','kefu@yelove.cn',NULL,'0000-00-00',NULL,NULL,NULL,'0',18500353881,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,1,'1','0000-00-00 00:00:00'),(1,1,1,2,3,'1',2,'员工2',NULL,NULL,'0000-00-00',NULL,NULL,NULL,'0',0,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,0,'1','0000-00-00 00:00:00');
+insert  into `employee_sector`(`company_id`,`channel_id`,`channel_father_id`,`sector_father_id`,`sector_id`,`is_default`,`employee_id`,`employee_name`,`email`,`weixin`,`birthday`,`photo`,`id_card`,`address`,`sex`,`mobile`,`present_address`,`positive_id_card`,`back_id_card`,`full_time`,`entry_date`,`probation_date`,`photo_labor`,`employee_number`,`emergency_contact`,`emergency_relation`,`emergency_mobile`,`dimission`,`dimission_date`,`role_id`,`valid`,`add_datetime`) values (1,1,1,1,8,'1',1,'有个员工','kefu@yelove.cn',NULL,'0000-00-00','/data/images/2019/0917/20190917114640_62722.jpg',NULL,NULL,'0',18500353881,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,1,'1','0000-00-00 00:00:00'),(1,1,1,2,3,'1',2,'员工12','6777772@',NULL,'0000-00-00','/data/images/2019/0917/20190917114640_62722.jpg','677777',NULL,'0',55,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,0,'1','0000-00-00 00:00:00'),(1,1,1,2,7,'0',11,'员工3','677777',NULL,NULL,'/data/images/userimg/user_b.png','677777',NULL,'1',123,NULL,NULL,NULL,'1',NULL,NULL,NULL,NULL,NULL,NULL,NULL,'0',NULL,2,'1','2019-10-03 14:04:20');
 
 /*Table structure for table `module` */
 

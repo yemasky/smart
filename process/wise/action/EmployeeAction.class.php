@@ -89,7 +89,7 @@ class EmployeeAction extends \BaseAction {
                 $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('sector_id', $sector_id);
                 EmployeeServiceImpl::instance()->updateChannelSector($whereCriteria, ['sector_father_id' => $sector_id]);
             }
-            $successService->setData(['sector_id'=>$sector_id,'s_id'=>encode($sector_id)]);
+            $successService->setData(['sector_id' => $sector_id, 's_id' => encode($sector_id)]);
             return $objResponse->successServiceResponse($successService);
         }
 
@@ -98,15 +98,15 @@ class EmployeeAction extends \BaseAction {
     }
 
     protected function doMethodDeleteSectorPosition(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $successService   = new \SuccessService();
-        $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id       = $objRequest->channel_id;
-        $s_id             = decode($objRequest->s_id);
+        $successService = new \SuccessService();
+        $company_id     = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id     = $objRequest->channel_id;
+        $s_id           = decode($objRequest->s_id);
         if ($s_id > 0) {//编辑
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('sector_id', $s_id);
             $is_delete = getDateTimeId();
-            EmployeeServiceImpl::instance()->updateChannelSector($whereCriteria, ['is_delete' => $is_delete,'valid'=>'0']);
+            EmployeeServiceImpl::instance()->updateChannelSector($whereCriteria, ['is_delete' => $is_delete, 'valid' => '0']);
             return $objResponse->successServiceResponse($successService);
         }
 
@@ -135,8 +135,8 @@ class EmployeeAction extends \BaseAction {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1')->setHashKey('role_id');
         $arrayChannelRole = RoleServiceImpl::instance()->getRole($whereCriteria, 'role_id,role_name,tag');
-        $arrayResule = ['channelSectorList' => $arrayChannelSector, 'imagesUploadUrl' => $imagesUploadUrl, 'imagesManagerUrl' => $imagesManagerUrl,
-            'channelRoleList'=>$arrayChannelRole];
+        $arrayResule      = ['channelSectorList' => $arrayChannelSector, 'imagesUploadUrl' => $imagesUploadUrl, 'imagesManagerUrl' => $imagesManagerUrl,
+            'channelRoleList' => $arrayChannelRole];
         $successService   = new \SuccessService();
         $successService->setData($arrayResule);
         return $objResponse->successServiceResponse($successService);
@@ -145,6 +145,74 @@ class EmployeeAction extends \BaseAction {
     protected function doMethodEmployeePagination(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $arrayResult['employeeList'] = EmployeeServiceImpl::instance()->getEmployeeReceivablePage($objRequest, $objResponse);
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
+    }
+
+    protected function doMethodSaveEmployee(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $loginEmployeeModel = LoginServiceImpl::instance()->getLoginEmployee();
+        $company_id         = $loginEmployeeModel->getEmployeeInfo()->getCompanyId();
+        $channel_id         = $objRequest->channel_id;
+        $e_id               = decode($objRequest->e_id);
+        $sector_id          = $objRequest->position_id;
+        $_s_id              = decode($objRequest->_s_id);
+
+        //$employeeData['birthday']      = $objRequest->birthday;
+        $employeeData['email']         = $objRequest->email;
+        $employeeData['employee_name'] = $objRequest->employee_name;
+        $employeeData['id_card']       = $objRequest->id_card;
+        $employeeData['mobile']        = $objRequest->mobile;
+        $employeeData['photo']         = $objRequest->photo;
+        $employeeData['sex']           = $objRequest->sex;
+
+        $employeeSectorData['employee_name'] = $objRequest->employee_name;
+        $employeeSectorData['mobile']        = $objRequest->mobile;
+        $employeeSectorData['email']         = $objRequest->email;
+        //$employeeSectorData['birthday']         = $objRequest->birthday;
+        $employeeSectorData['photo']            = $objRequest->photo;
+        $employeeSectorData['id_card']          = $objRequest->id_card;
+        $employeeSectorData['role_id']          = $objRequest->role_id;
+        $employeeSectorData['sector_father_id'] = $objRequest->sector_id;
+        $employeeSectorData['sector_id']        = $objRequest->position_id;
+        $employeeSectorData['sex']              = $objRequest->sex;
+        $employeeSectorData['valid']            = $objRequest->valid;
+
+        $successService = new \SuccessService();
+        CommonServiceImpl::instance()->startTransaction();
+        //更新密码
+        $password = $objRequest->password;
+        if (!empty($password)) {
+            $password_salt                 = md5(getDateTimeId());
+            $password                      = md5($company_id . '`　-   `' . md5($password) . md5($password_salt));
+            $employeeData['password_salt'] = $password_salt;
+            $employeeData['password']      = $password;
+        }
+        if (!empty($e_id) && $e_id > 0 && $_s_id > 0) {//edit
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('employee_id', $e_id);
+            EmployeeServiceImpl::instance()->updateEmployee($whereCriteria, $employeeData);
+
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('employee_id', $e_id)
+                ->EQ('sector_id', $_s_id);
+            EmployeeServiceImpl::instance()->updateEmployeeSector($whereCriteria, $employeeSectorData);
+        } else {
+            $employeeData['company_id']   = $company_id;
+            $employeeData['add_datetime'] = getDateTime();
+            $employee_id                  = EmployeeServiceImpl::instance()->saveEmployee($employeeData);
+            //
+            $arrayEmployeeChannel                    = $loginEmployeeModel->getEmployeeChannel();
+            $channel_father_id                       = $arrayEmployeeChannel[$channel_id]['channel_father_id'];
+            $employeeSectorData['company_id']        = $company_id;
+            $employeeSectorData['channel_id']        = $channel_id;
+            $employeeSectorData['channel_father_id'] = $channel_father_id;
+            $employeeSectorData['employee_id']       = $employee_id;
+            $employeeSectorData['add_datetime']      = getDateTime();
+            EmployeeServiceImpl::instance()->saveEmployeeSector($employeeSectorData);
+
+            $e_id = encode($employee_id);
+            $successService->setData(['e_id' => $e_id, 'employee_id' => $employee_id]);
+        }
+        CommonServiceImpl::instance()->commit();
+        return $objResponse->successServiceResponse($successService);
     }
 
     protected function doRole(\HttpRequest $objRequest, \HttpResponse $objResponse) {

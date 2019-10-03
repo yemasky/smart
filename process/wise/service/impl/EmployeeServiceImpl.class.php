@@ -75,7 +75,7 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
         }
         $start = $objPagination->getStart();
         $whereCriteria->LIMIT($start, $number);
-        $fileid    = 'employee_id,employee_name,sex,birthday,photo,mobile,email,weixin';
+        $fileid    = 'sector_father_id,sector_id,employee_id,employee_name,sex,birthday,photo,id_card,mobile,email,weixin,role_id,valid';
         $arrayData = EmployeeDao::instance()->getEmployeeSector($whereCriteria, $fileid);
         if (!empty($arrayData)) {
             foreach ($arrayData as $i => $data) {
@@ -96,6 +96,14 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
         $whereCriteria->ORDER('is_default');
 
         return EmployeeDao::instance()->getEmployeeSector($whereCriteria, $field);
+    }
+
+    public function saveEmployeeSector($arrayData, $insert_type = 'INSERT') {
+        return EmployeeDao::instance()->saveEmployeeSector($arrayData, $insert_type);
+    }
+
+    public function updateEmployeeSector(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return EmployeeDao::instance()->updateEmployeeSector($whereCriteria, $arrayUpdateData);
     }
 
     public function getEmployeeChannelSectorCache($company_id, $employee_id, $channel_id, $isUpdate = false) {
