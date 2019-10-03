@@ -1572,7 +1572,7 @@ class DBCache {
      * 函数式使用模型辅助类的输入函数
      */
     public function setCallObj(& $objModel, $args) {
-        $this->objModel   = $objModel; // var_dump($obj);
+        $this->objModel   = $objModel; // var_dump($objModel);
         $this->input_args = $args;//print_r($args);
 
         return $this;

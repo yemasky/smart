@@ -180,8 +180,9 @@ class EmployeeAction extends \BaseAction {
         //更新密码
         $password = $objRequest->password;
         if (!empty($password)) {
-            $password_salt                 = md5(getDateTimeId());
-            $password                      = md5($company_id . '`　-   `' . md5($password) . md5($password_salt));
+            $password_salt = md5(getDateTimeId());
+            $password      = md5($company_id . '`　-   `' . md5($password) . md5($password_salt));
+            //md5($company_id . '`　-   `' . md5($password) . md5($password_salt));
             $employeeData['password_salt'] = $password_salt;
             $employeeData['password']      = $password;
         }
@@ -195,9 +196,10 @@ class EmployeeAction extends \BaseAction {
                 ->EQ('sector_id', $_s_id);
             EmployeeServiceImpl::instance()->updateEmployeeSector($whereCriteria, $employeeSectorData);
         } else {
-            $employeeData['company_id']   = $company_id;
-            $employeeData['add_datetime'] = getDateTime();
-            $employee_id                  = EmployeeServiceImpl::instance()->saveEmployee($employeeData);
+            $employeeData['company_id']         = $company_id;
+            $employeeData['default_channel_id'] = $channel_id;
+            $employeeData['add_datetime']       = getDateTime();
+            $employee_id                        = EmployeeServiceImpl::instance()->saveEmployee($employeeData);
             //
             $arrayEmployeeChannel                    = $loginEmployeeModel->getEmployeeChannel();
             $channel_father_id                       = $arrayEmployeeChannel[$channel_id]['channel_father_id'];

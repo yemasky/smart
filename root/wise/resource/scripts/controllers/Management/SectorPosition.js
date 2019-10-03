@@ -1,7 +1,8 @@
 // JavaScript Document
 
 app.controller('EmployeeSectorPositionController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
-	$ocLazyLoad.load([$scope.__RESOURCE+"editor/kindeditor/themes/default/default.css"]);
+	$ocLazyLoad.load([$scope.__RESOURCE+"editor/kindeditor/themes/default/default.css",
+					  $scope.__RESOURCE+"vendor/libs/md5.min.js"]);
 	//获取数据
 	var _channel = $scope.$stateParams.channel, common = '', sectorList = {}, sectorChildrenList = {}, positionList = {}, sectorPositionList = [],imagesUploadUrl = '',imagesManagerUrl = '';
 	var _view = $scope.$stateParams.view;
@@ -155,7 +156,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 			$alert({title: 'Notice', content: '身份证填写不正确！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		} else {
-			var sex = value.substr(16,1) % 2;if(sex == 0) {thisParam.sex = 0 } else {thisParam.sex = 1}
+			var sex = thisParam.id_card.substr(16,1) % 2;if(sex == 0) {thisParam.sex = 0 } else {thisParam.sex = 1}
 		}
 		//if(isIdCard) {}
 		//if(!thisForm.$invalid) {
@@ -163,6 +164,8 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		//}
 		$scope.loading.show();
 		$scope.param = thisParam;
+		var password = $scope.param.password;
+		$scope.param.password = md5(md5($.trim(password)));
 		$httpService.header('method', 'saveEmployee');
 		$httpService.post('/app.do?'+param, $scope, function(result){
 			$scope.loading.percent();

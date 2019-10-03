@@ -87,6 +87,32 @@ function isIdCardNo(num) {
     }
     return true;
 }
+function isDate6(sDate) {
+    if(!/^[0-9]{6}$/.test(sDate)) {
+        return false;
+    }
+    var year = sDate.substring(0, 4);
+    var month = sDate.substring(4, 6);
+    if (year < 1700 || year > 2500)return false
+    if (month < 1 || month > 12) return false
+    return true
+}
+
+function isDate8(sDate) {
+    if(!/^[0-9]{8}$/.test(sDate)) {
+        return false;
+    }
+    //var year, month, day;
+    var year = sDate.substring(0, 4);
+    var month = sDate.substring(4, 6);
+    var day = sDate.substring(6, 8);
+    var iaMonthDays = [31,28,31,30,31,30,31,31,30,31,30,31]
+    if (year < 1700 || year > 2500)return false
+    if (((year % 4 == 0) && (year % 100!= 0)) || (year % 400 == 0)) iaMonthDays[1]=29;
+    if (month < 1 || month > 12) return false
+    if (day < 1 || day >iaMonthDays[month - 1]) return false
+    return true
+}
 </script>
 <script language="javascript" src="<%$__RESOURCE%>angular.min.1.6.8.js?<%$__VERSION%>"></script>
 <script language="javascript" src="<%$__RESOURCE%>angular-lib.min.js?<%$__VERSION%>"></script>

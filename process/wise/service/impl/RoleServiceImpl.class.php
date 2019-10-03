@@ -26,7 +26,7 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
             $whereCriteria->ArrayIN('role_id', array_column($arrayEmployeeRole, 'role_id'));
             $whereCriteria->setHashKey('module_id');
             $cacheRoleEmployeeModuleId = CacheConfig::getCacheId('employee_module', $company_id, $employee_id);
-            $arrayEmployeeRoleModule   = RoleDao::instance()->DBCache($cacheRoleEmployeeModuleId)->getRoleMudule($whereCriteria);
+            $arrayEmployeeRoleModule   = RoleDao::instance()->DBCache($cacheRoleEmployeeModuleId)->getRoleModule($whereCriteria);
             //公司权限[没有用到公司权限]
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id);

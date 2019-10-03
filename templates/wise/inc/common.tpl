@@ -31,7 +31,7 @@
       <div class="form-group m-b-xs">
         <label class="hide">Email</label>
 		<!--ng-pattern="/[a-zA-Z\.\-_]@[a-zA-Z\.\-_]\.[a-z]{2,7}/"-->
-        <input type="text" id="email" name="email" placeholder="手机号码/some@email.com" ng-model="param.email" required class="form-control" ng-pattern="/(([a-zA-Z\.\-_]+)@([a-zA-Z\.\-_]+)\.[a-z]{2,7})|(1[0-9]{10})/">
+        <input type="text" id="email" name="email" placeholder="手机号码/some@email.com" ng-model="param.email" required class="form-control" ng-pattern="/(([0-9a-zA-Z\.\-_]+)@([0-9a-zA-Z\.\-_]+)\.[a-z]{2,7})|(1[0-9]{10})/">
       </div>
       <div class="form-group m-b-xs">
         <label class="hide">Password</label>
