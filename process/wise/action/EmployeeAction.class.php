@@ -155,7 +155,7 @@ class EmployeeAction extends \BaseAction {
         $sector_id          = $objRequest->position_id;
         $_s_id              = decode($objRequest->_s_id);
 
-        //$employeeData['birthday']      = $objRequest->birthday;
+        $employeeData['birthday']      = $objRequest->birthday;
         $employeeData['email']         = $objRequest->email;
         $employeeData['employee_name'] = $objRequest->employee_name;
         $employeeData['id_card']       = $objRequest->id_card;
@@ -163,10 +163,10 @@ class EmployeeAction extends \BaseAction {
         $employeeData['photo']         = $objRequest->photo;
         $employeeData['sex']           = $objRequest->sex;
 
-        $employeeSectorData['employee_name'] = $objRequest->employee_name;
-        $employeeSectorData['mobile']        = $objRequest->mobile;
-        $employeeSectorData['email']         = $objRequest->email;
-        //$employeeSectorData['birthday']         = $objRequest->birthday;
+        $employeeSectorData['employee_name']    = $objRequest->employee_name;
+        $employeeSectorData['mobile']           = $objRequest->mobile;
+        $employeeSectorData['email']            = $objRequest->email;
+        $employeeSectorData['birthday']         = $objRequest->birthday;
         $employeeSectorData['photo']            = $objRequest->photo;
         $employeeSectorData['id_card']          = $objRequest->id_card;
         $employeeSectorData['role_id']          = $objRequest->role_id;

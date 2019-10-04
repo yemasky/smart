@@ -2,7 +2,7 @@
 
 app.controller('EmployeeSectorPositionController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
 	$ocLazyLoad.load([$scope.__RESOURCE+"editor/kindeditor/themes/default/default.css",
-					  $scope.__RESOURCE+"vendor/libs/md5.min.js"]);
+					  $scope.__RESOURCE+"vendor/libs/md5.min.js",$scope.__RESOURCE+"vendor/libs/utils.js"]);
 	//获取数据
 	var _channel = $scope.$stateParams.channel, common = '', sectorList = {}, sectorChildrenList = {}, positionList = {}, sectorPositionList = [],imagesUploadUrl = '',imagesManagerUrl = '';
 	var _view = $scope.$stateParams.view;
@@ -157,6 +157,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 			return;
 		} else {
 			var sex = thisParam.id_card.substr(16,1) % 2;if(sex == 0) {thisParam.sex = 0 } else {thisParam.sex = 1}
+			thisParam.birthday = getBirthdayByIdCard(thisParam.id_card);
 		}
 		//if(isIdCard) {}
 		//if(!thisForm.$invalid) {
