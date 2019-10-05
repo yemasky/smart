@@ -1,14 +1,38 @@
-<div class="p-md" ng-controller="EmployeeController">
+<div class="p-md" ng-controller="ShiftStatementsController">
 	<div class="box b-a bg-white m-b">
     	<div class="col-md-8">
-      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addEmployee(0)"> </a></div>
+      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> </div>
             <div class="p-md">
             <div class="table-responsive">
+				<div class="m-b form-inline">
+					<form name="bookingRoomForm" class="form-inline" role="form" ng-submit="searchBooking(param)">
+					<label class="control-label m-b"><i class="fas fa-clock"></i> </label>
+					<select class="form-control" ng-model="param.condition_date">
+					  <option value="">选择日期</option>
+					  <option value="check_in">预抵日期</option>
+					  <option value="actual_check_in">入住日期</option>
+					</select>
+					<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.search_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" bs-datepicker>
+					<select class="form-control" ng-model="param.condition_key">
+					  <option value="">选择条件</option>
+					  <option value="booking_number">订单号</option>
+					  <option value="member_mobile">移动电话</option>
+					  <option value="member_email">Email</option>
+					  <option value="member_name">预订人</option>
+					</select>
+					<div class="input-group">
+						<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.search_value">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="submit">Go!</button>
+						</span>
+					</div>
+					</form>
+				</div>
             <table st-pipe="callEmployeeServer" st-table="displayed" class="table table-bordered table-striped bg-white">
                 <thead>
                 <tr>
-                    <th st-sort="employee_id">ID</th>
-                    <th>头像</th>
+                    <th st-sort="employee_id">收款类别</th>
+                    <th>金额</th>
                     <th st-sort="employee_name">名字</th>
                     <th>性別</th>
                     <th>生日</th>
@@ -66,7 +90,7 @@
      </div>
 </div>
 <script language="javascript">
-app.controller('EmployeeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
+app.controller('ShiftStatementsController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert) {
 	//获取数据
 	var _channel = $scope.$stateParams.channel, common = '';
 	var _view = $scope.$stateParams.view;
@@ -82,50 +106,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		$scope.setCommonSetting(common);
 	});
 	//
-	var asideEmployee = '';
-	$scope.addEmployee = function(_this) {
-		$scope.param = {}; $scope.param["valid"] = "1";
-		if(_this != 0) $scope.param = _this;
-		$scope.action = '添加/编辑';
-		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Management/EmployeeAddEdit.tpl.html'});
-		asideEmployee.$promise.then(function() {
-			asideEmployee.show();
-			$(document).ready(function(){
-				
-			});
-		})
-		
-	};
-	$scope.saveData = function() {
-		var param = this.param;
-		if(param == null || param == '' || !angular.isDefined(param.payment_father_id)) {
-			$alert({title: 'Notice', content: '类型必须选择！', templateUrl: '/modal-warning.html', show: true});
-			return;
-		}
-		$scope.loading.show();
-		$scope.param = param;
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
-			$scope.loading.hide();
-			$scope.dataList = result.data.item;
-			asideEmployee.hide();
-			
-		});
-	}
-    
-    /////////
-    $scope.employeeList = [];
-    $scope.callEmployeeServer = function callEmployeeServer(tableState) {
-        $scope.param = {};        
-        $scope.param.tableState = tableState;
-        $scope.loading.start();
-        $httpService.header('method', 'EmployeePagination');
-        $httpService.post('/app.do?'+param, $scope, function(result){
-            $scope.loading.percent();
-            $httpService.deleteHeader('method');
-            $scope.employeeList = result.data.item.employeeList.data;
-            tableState.pagination.numberOfPages = result.data.item.employeeList.numberOfPages;
-        });
-    };
+	
 	$httpService.deleteHeader('refresh');
 	
 });

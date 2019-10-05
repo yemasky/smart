@@ -8,16 +8,17 @@
 namespace wise;
 
 class LogStatementsAction extends \BaseAction {
-    protected $objSuccess;
     protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
-        $this->objSuccess = new \SuccessService();
     }
 
     protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         switch ($objRequest->getAction()) {
             case "ShiftStatements":
                 $this->doShiftStatements($objRequest, $objResponse);
+                break;
+            case "ManagerReports":
+                $this->doManagerReports($objRequest, $objResponse);
                 break;
             default:
                 $this->doDefault($objRequest, $objResponse);
@@ -36,13 +37,23 @@ class LogStatementsAction extends \BaseAction {
     protected function doDefault(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         //赋值
         //设置类别
-
-        return $objResponse->successServiceResponse($this->objSuccess);
+        $objSuccessService = new \SuccessService();
+        return $objResponse->successServiceResponse($objSuccessService);
     }
 
+    //交班收银报表
     protected function doShiftStatements(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objSuccessService = new \SuccessService();
+        $shiftStatementsData = LogStatementsServiceImpl::instance()->getLogStatementsAccounts($objRequest, $objResponse);
 
-        return $objResponse->successServiceResponse($this->objSuccess);
+        return $objResponse->successServiceResponse($objSuccessService);
+    }
+
+    protected function doManagerReports(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objSuccessService = new \SuccessService();
+
+
+        return $objResponse->successServiceResponse($objSuccessService);
     }
 
 
