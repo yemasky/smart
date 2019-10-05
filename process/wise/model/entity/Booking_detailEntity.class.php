@@ -14,7 +14,7 @@ class Booking_detailEntity extends \Entity {
 	protected $booking_number_ext = '';
 	protected $company_id;
 	protected $channel;
-	protected $booking_type = 'room_day';
+	protected $booking_type = 'room_day';//日租房
 	protected $channel_id;
 	protected $receivable_id = 0;
 	protected $member_id = 0;

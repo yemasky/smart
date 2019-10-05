@@ -60,7 +60,7 @@ class HomeAction extends \BaseAction {
         $arrayBookList = BookingHotelServiceImpl::instance()->getBooking($whereCriteria, 'booking_number,booking_id');
 
         //查找已住房间[远期房态]
-        $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+        $whereCriteria = new \WhereCriteria();//
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('valid', '1')->LE('check_in', $business_day)
             ->GE('check_out', $business_day)->GE('booking_detail_status', '0');
         $field              = 'actual_check_in';
@@ -85,7 +85,7 @@ class HomeAction extends \BaseAction {
         $arrayMemberId  = \member\MemberServiceImpl::instance()->getMemberLevel($whereCriteria, 'member_id');
         $arrayNewMember = [];
         if (!empty($arrayMemberId)) {
-            $whereCriteria = new \WhereCriteria();//->EQ('booking_type', 'room_day')
+            $whereCriteria = new \WhereCriteria();//
             $whereCriteria->ArrayIN('member_id', array_column($arrayMemberId, 'member_id'));
             $arrayNewMember = \member\MemberServiceImpl::instance()->getMemberList($whereCriteria, 'member_name,wx_avatar,add_datetime');
         }

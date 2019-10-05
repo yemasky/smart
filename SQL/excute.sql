@@ -1,4 +1,7 @@
 SET PASSWORD FOR root@localhost = PASSWORD('root'); 
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'mySql22582!'
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'mySql22582!';
+create user rpl_user@'%' identified WITH mysql_native_password by 'rpl_Pass123!';
 
 SHOW PROCESSLIST;
 
