@@ -22,14 +22,19 @@ class LogStatementsServiceImpl extends \BaseServiceImpl implements \BaseService 
     public function getLogStatementsAccounts(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
         $company_id       = $objLoginEmployee->getCompanyId();
-        //
-        
-        //获取channel
         $channel_id = $objRequest->channel_id;
+        $employee_id = $objLoginEmployee->getEmployeeId();
+        //
+
+        //获取channel
+
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
-
-
+        //营业日收银报表
+        $whereCriteria->EQ('employee_id', $employee_id);
+        $field = 'accounts_id,booking_number,payment_id,payment_name,money,accounts_type,accounts_status,employee_name,business_day';
+        $arrayLogStatementsAccounts = BookingHotelServiceImpl::instance()->getBookingAccounts($whereCriteria, $field);
+        return $arrayLogStatementsAccounts;
     }
 
 

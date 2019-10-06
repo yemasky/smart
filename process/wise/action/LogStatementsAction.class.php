@@ -45,7 +45,7 @@ class LogStatementsAction extends \BaseAction {
     protected function doShiftStatements(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $objSuccessService = new \SuccessService();
         $shiftStatementsData = LogStatementsServiceImpl::instance()->getLogStatementsAccounts($objRequest, $objResponse);
-
+        $objSuccessService->setData(['shiftStatementsList'=>$shiftStatementsData]);
         return $objResponse->successServiceResponse($objSuccessService);
     }
 

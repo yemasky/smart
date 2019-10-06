@@ -1227,7 +1227,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         if(isBorrowing == false) borrowingPrint = angular.copy($scope.bookBorrowing);
         $scope.consumePrint = consumePrint;$scope.accountPrint = accountPrint;$scope.borrowingPrint = borrowingPrint;
     }
-    //打印('.print-preview').click(function(e) {
+    //打印
     $scope.printBill = function(print) {
         var consumePrint = $scope.consumePrint,accountPrint = $scope.accountPrint, borrowingPrint = $scope.borrowingPrint;
         var isConsumePrint = false, isAccountPrint = false, isBorrowingPrint = false;
