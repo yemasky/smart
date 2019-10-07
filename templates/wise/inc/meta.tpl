@@ -66,7 +66,8 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
         //$http.defaults.headers.common.ajaxrequest = true;
         $http.post($url, $scope.param, {timeout : 5000}).then(function(response) {
 			if(response.data.success == 0) {
-                var message = $translate.instant("error.code."+response.data.code) + ' "' + response.data.message+'"';
+                var message = $translate.instant("error.code."+response.data.code);
+				if(response.data.message != "") message = message + ' "' + response.data.message+'"';
 				var message_ext = $('label[for="'+response.data.item[0]+'"]').text();
 				if(message_ext != null && message_ext != '') message += '［'+message_ext + '］数据错误！';
 				$modal({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
