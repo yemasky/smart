@@ -387,11 +387,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			room.item_father_id = $scope.layoutRoom[room.item_id].item_category_id;
             $scope.bookRoom = room;$scope.bookInfo = '';
             var title = '预定 : '+$scope.layoutList[$scope.layoutRoom[room.item_id].item_category_id].item_name +'-'+room.item_name;
-			asideBookRoom = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
+			asideBookRoom = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Book.html',show: false});
 			asideBookRoom.$promise.then(function() {
 				asideBookRoom.show();
 				$(document).ready(function(){
-					
 				});
             });
 			return;

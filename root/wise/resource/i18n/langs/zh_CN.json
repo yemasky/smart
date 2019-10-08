@@ -21,7 +21,8 @@
 		"date":"日期",
 		"manager":"管理",
 		"edit":"编辑",
-		"config":"配置","confirm":"确定",
+		"config":"配置",
+		"confirm":"确定",
 		"PayingTheBill":"结账","backout":"撤销","give_back":"归还"
 	}
 },

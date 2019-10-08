@@ -1,0 +1,156 @@
+<div class="p-md" ng-controller="SalesTargetController">
+	<div class="box b-a bg-white m-b">
+    	<div class="col-md-8">
+      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> </div>
+            <div class="p-md">
+            <div class="table-responsive">
+				<div class="m-b form-inline">
+					<form name="salesForm" class="form-inline" role="form" ng-submit="searchSalesTarget(param)">
+					<label class="control-label m-b"><i class="fas fa-clock"></i> 年份</label>
+					<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.sales_date" data-date-format="yyyy" data-date-type="string" data-start-view="2" data-min-view="2" data-autoclose="true" data-autoclose="1" name="sales_date" bs-datepicker value="{{getDay('yyyy')}}">
+					<div class="input-group">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="submit">Go!</button>
+						</span>
+					</div>					</form>
+				</div>
+				<table st-table="statementsData" st-safe-src="safeStatementsData" class="table table-bordered table-striped bg-white">
+				  <thead>
+				  <tr>
+					<th st-sort="payment_name">收款类别</th>
+					<th st-sort="money">金额</th>
+					<th></th>
+					<th></th>
+					<th width="50"></th>
+				  </tr>
+				  <tr>
+					<th colspan="5">
+						<div class="input-group m-b col-xs-3">
+						  <span class="input-group-btn">
+							<button class="btn btn-default" type="button">搜索</button>
+						  </span>
+						  <input type="text" st-search="" class="form-control w " name="employee_name" id="employee_name" ng-model="employee_name">
+						</div>  
+					</th>
+				  </tr>
+				  </thead>
+				  <tbody>
+				  <tr ng-repeat="row in statementsData">
+					<td>{{row.payment_name}}</td>
+					<td>{{row.money}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				  </tr>
+				  <tr><td colspan="5"><a class="ti-printer print-contents" ng-click="printStatementsData()">A4打印报表</a></td></tr>
+				  </tbody>
+				</table>
+            </div>
+            </div>
+        
+     	</div>
+     	<div class="col-md-4 b-l no-border-sm">
+     		<div class="panel-heading b-b b-light"> 部门职位</div>
+            <div class="list-group no-border no-radius">
+                <div class="list-group-item">
+                  <span class="pull-right">293,200</span>
+                  <i class="fa fa-fw fa-circle text-info"></i>
+                  Vatican City
+                </div>
+             </div>
+     	</div>
+     </div>
+</div>
+<div id="print_content" class="hide">
+    <div class="container-fluid">
+        {{defaultHotel}}
+        <hr>
+        <div class="widget-box">
+            <div class="widget-content nopadding">
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td style="width: 135px;">打印时间</td>
+                            <td class="print_date">{{getDay('yyyy-MM-dd hh:mm:ss')}}</td>
+                            <td style="width: 135px;">订单号</td>
+                            <td>{{bookDetail.booking_number}}</td>
+                        </tr>
+                                                        <tr>
+                            <td>客人姓名</td>
+                            <td class="contents">{{bookDetail.member_name}}</td>
+                            <td>入住房间</td>
+                            <td class="contents">102客房[102]</td>
+                        </tr>
+                                                        <tr>
+                            <td>入住时间</td>
+                            <td class="contents">{{bookDetail.check_in}}</td>
+                            <td>退房时间</td>
+                            <td class="contents">{{bookDetail.check_out}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="widget-box">
+            <br>消费项目
+            <div class="widget-content nopadding">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th style="width: 135px;">房号</th>
+                      <th style="width: 135px;">项目</th>
+                      <!--<th class="w">数量</th>-->
+                      <th style="width: 135px;">金额</th>
+                      <th>时间</th>
+                    </tr>
+                  </thead>
+                  <tbody ng-repeat="(detail_id, consumes) in consumePrint">
+                    <tr ng-repeat="(i, consume) in consumes">
+                        <td class="contents">{{consume.item_name==''?'未排房':consume.item_name}}</td>
+                        <td class="contents">{{consume.consume_title}}</td>
+                        <!--<td class="w">{{consume.item_amount}}</td>-->
+                        <td class="contents">{{consume.consume_price_total}}</td>
+                        <td class="contents">{{consume.add_datetime}}</td>
+                    </tr>
+                  </tbody>
+                  <tbody>
+                    <tr>
+                      <th>合计</th>
+                      <td></td><td></td><td></td>
+                    </tr>
+                  </tbody>
+                </table>    
+            </div>
+        </div>
+    </div>
+</div>
+<script language="javascript">
+app.controller('SalesTargetController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $ocLazyLoad) {
+	$scope.param = {};
+	$ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.css",
+                      $scope._resource + "vendor/modules/angular-ui-select/select.min.js",
+                      $scope._resource + "vendor/print/css/print-preview.css",
+                      $scope._resource + "vendor/print/jquery.print-preview.js"]);
+	//获取数据
+	var _channel = $scope.$stateParams.channel, common = '';
+	var _view = $scope.$stateParams.view;
+	var param = 'channel='+_channel+'&view='+_view;
+	$scope.loading.show();
+	$httpService.post('/app.do?'+param, $scope, function(result){
+		$scope.loading.hide();
+		if(result.data.success == '0') {
+			var message = $scope.getErrorByCode(result.data.code);
+			$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+		}
+		common = result.data.common;
+		$scope.setCommonSetting(common);
+		$scope.param.sales_date = $scope.getBusinessDay("yyyy");
+		
+	});
+	//
+	
+	$httpService.deleteHeader('refresh');
+	
+});
+
+</script>

@@ -69,11 +69,11 @@ class IndexAction extends \BaseAction {
                 return $this->$method($objRequest, $objResponse);
         }
         if ($objRequest->_ != '') {
-            $objResponse->setTplName("wise/index/nologin");
+            $objResponse->setTplName("wise/Index/nologin");
             return false;
         }
         //
-        $objResponse->setTplName("wise/index/default");
+        $objResponse->setTplName("wise/Index/default");
     }
 
     protected function doLogout(\HttpRequest $objRequest, \HttpResponse $objResponse) {
