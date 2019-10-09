@@ -1,9 +1,22 @@
 <div class="p-md" ng-controller="EmployeeController">
 	<div class="box b-a bg-white m-b">
     	<div class="col-md-8">
-      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addEmployee(0)"> </a></div>
+      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> </div>
             <div class="p-md">
             <div class="table-responsive">
+				<div class="m-b form-inline">
+					<form name="bookingRoomForm" class="form-inline" role="form" ng-submit="searchBooking(param)">
+					<label class="control-label m-b"><i class="fas fa-clock"></i> 营业日</label>
+					<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.night_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-autoclose="true" data-max-date="{{getBusinessDay('MM/dd/yyyy')}}" data-autoclose="1" name="night_date" bs-datepicker value="{{getDay('yyyy-MM-dd')}}">
+					<label class="control-label m-b"><i class="ti-user"></i> 收银员</label>
+					<div class="input-group">
+						<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.search_value">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="submit">Go!</button>
+						</span>
+					</div>
+					</form>
+				</div>
             <table st-pipe="callEmployeeServer" st-table="displayed" class="table table-bordered table-striped bg-white">
                 <thead>
                 <tr>
@@ -112,20 +125,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		});
 	}
     
-    /////////
-    $scope.employeeList = [];
-    $scope.callEmployeeServer = function callEmployeeServer(tableState) {
-        $scope.param = {};        
-        $scope.param.tableState = tableState;
-        $scope.loading.start();
-        $httpService.header('method', 'EmployeePagination');
-        $httpService.post('/app.do?'+param, $scope, function(result){
-            $scope.loading.percent();
-            $httpService.deleteHeader('method');
-            $scope.employeeList = result.data.item.employeeList.data;
-            tableState.pagination.numberOfPages = result.data.item.employeeList.numberOfPages;
-        });
-    };
+    /////
 	$httpService.deleteHeader('refresh');
 	
 });
