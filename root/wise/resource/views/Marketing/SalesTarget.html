@@ -1,7 +1,7 @@
 <div class="p-md" ng-controller="SalesTargetController">
 	<div class="box b-a bg-white m-b">
     	<div class="col-md-8">
-      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> </div>
+      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addSalesTarget(0)"> </a></div>
             <div class="p-md">
             <div class="table-responsive">
 				<div class="m-b form-inline">
@@ -10,34 +10,31 @@
 					<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.sales_date" data-date-format="yyyy" data-date-type="string" data-start-view="2" data-min-view="2" data-autoclose="true" data-autoclose="1" name="sales_date" bs-datepicker value="{{getDay('yyyy')}}">
 					<div class="input-group">
 						<span class="input-group-btn">
-							<button class="btn btn-default" type="submit">Go!</button>
+							<button class="btn btn-default" type="submit" ng-click="getYearSalesTarget()">Go!</button>
+							
 						</span>
-					</div>					</form>
+					</div>
+					<div class="input-group">
+						<span class="input-group-btn">	
+						<button class="btn btn-addon btn-default" ng-click="addSalesTarget(0)"><i class="fa fa-edit"></i>Add/Edit</button>
+						</span>
+					</div>
+					</form>
 				</div>
-				<table st-table="statementsData" st-safe-src="safeStatementsData" class="table table-bordered table-striped bg-white">
+				<table class="table table-bordered table-striped bg-white" id="print_content">
 				  <thead>
 				  <tr>
-					<th st-sort="payment_name">收款类别</th>
-					<th st-sort="money">金额</th>
+					<th>月份</th>
+					<th>销售目标</th>
 					<th></th>
 					<th></th>
 					<th width="50"></th>
 				  </tr>
-				  <tr>
-					<th colspan="5">
-						<div class="input-group m-b col-xs-3">
-						  <span class="input-group-btn">
-							<button class="btn btn-default" type="button">搜索</button>
-						  </span>
-						  <input type="text" st-search="" class="form-control w " name="employee_name" id="employee_name" ng-model="employee_name">
-						</div>  
-					</th>
-				  </tr>
 				  </thead>
 				  <tbody>
-				  <tr ng-repeat="row in statementsData">
-					<td>{{row.payment_name}}</td>
-					<td>{{row.money}}</td>
+				  <tr ng-repeat="(month, value) in salse_month">
+					<td>{{value.name}}</td>
+					<td>{{value.salse}}</td>
 					<td></td>
 					<td></td>
 					<td></td>
@@ -61,69 +58,6 @@
      	</div>
      </div>
 </div>
-<div id="print_content" class="hide">
-    <div class="container-fluid">
-        {{defaultHotel}}
-        <hr>
-        <div class="widget-box">
-            <div class="widget-content nopadding">
-                <table class="table table-bordered">
-                    <tbody>
-                        <tr>
-                            <td style="width: 135px;">打印时间</td>
-                            <td class="print_date">{{getDay('yyyy-MM-dd hh:mm:ss')}}</td>
-                            <td style="width: 135px;">订单号</td>
-                            <td>{{bookDetail.booking_number}}</td>
-                        </tr>
-                                                        <tr>
-                            <td>客人姓名</td>
-                            <td class="contents">{{bookDetail.member_name}}</td>
-                            <td>入住房间</td>
-                            <td class="contents">102客房[102]</td>
-                        </tr>
-                                                        <tr>
-                            <td>入住时间</td>
-                            <td class="contents">{{bookDetail.check_in}}</td>
-                            <td>退房时间</td>
-                            <td class="contents">{{bookDetail.check_out}}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="widget-box">
-            <br>消费项目
-            <div class="widget-content nopadding">
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th style="width: 135px;">房号</th>
-                      <th style="width: 135px;">项目</th>
-                      <!--<th class="w">数量</th>-->
-                      <th style="width: 135px;">金额</th>
-                      <th>时间</th>
-                    </tr>
-                  </thead>
-                  <tbody ng-repeat="(detail_id, consumes) in consumePrint">
-                    <tr ng-repeat="(i, consume) in consumes">
-                        <td class="contents">{{consume.item_name==''?'未排房':consume.item_name}}</td>
-                        <td class="contents">{{consume.consume_title}}</td>
-                        <!--<td class="w">{{consume.item_amount}}</td>-->
-                        <td class="contents">{{consume.consume_price_total}}</td>
-                        <td class="contents">{{consume.add_datetime}}</td>
-                    </tr>
-                  </tbody>
-                  <tbody>
-                    <tr>
-                      <th>合计</th>
-                      <td></td><td></td><td></td>
-                    </tr>
-                  </tbody>
-                </table>    
-            </div>
-        </div>
-    </div>
-</div>
 <script language="javascript">
 app.controller('SalesTargetController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $ocLazyLoad) {
 	$scope.param = {};
@@ -145,9 +79,78 @@ app.controller('SalesTargetController', function($rootScope, $scope, $httpServic
 		common = result.data.common;
 		$scope.setCommonSetting(common);
 		$scope.param.sales_date = $scope.getBusinessDay("yyyy");
-		
+		setSalseMonthData(result.data.item.salesTargetList);
+		$(document).ready(function(){
+			$('a.print-contents').printPreview('print_content');
+		});
 	});
 	//
+	function setSalseMonthData(salesTargetList) {
+		//月份
+		var salse_month = {};
+		for(i = 1; i<=12; i++) {
+			month = i;
+			if(i < 10) {
+				month = '0' + i;
+			}
+			month = 'month_' + month;
+			salse_month[month] = {};
+			salse_month[month].name = i+'月';
+			salse_month[month].salse = '';
+			salse_month[month].i = i;
+			$scope.param[month] = '';
+			if(salesTargetList != '' && $scope.param.sales_date == salesTargetList.sales_date) {
+				salse_month[month].salse = salesTargetList[month];
+				$scope.param[month] = salesTargetList[month];
+				
+			}
+		}
+		$scope.param.st_id = '';
+		if(salesTargetList != '') $scope.param.st_id = salesTargetList.st_id;
+		$scope.salse_month = salse_month;
+	}
+	//
+	var asideSalesTarget = '';
+	$scope.addSalesTarget = function(_this) {
+		if(_this != 0) $scope.param = _this;
+		$scope.action = '添加/编辑';
+		asideSalesTarget = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Marketing/SalesTargetEdit.tpl.html'});
+		asideSalesTarget.$promise.then(function() {
+			asideSalesTarget.show();
+			$(document).ready(function(){
+				
+			});
+		})
+		
+	};
+	$scope.saveData = function() {
+		var thisParam = this.param;
+		if(thisParam == null || thisParam == '') {
+			return;
+		}
+		$scope.loading.show();
+		$scope.param = thisParam;
+		$httpService.header('method', 'saveSalesTarget');
+		$httpService.post('/app.do?'+param, $scope, function(result){
+			$scope.loading.hide();
+			$httpService.deleteHeader('method');
+			if (result.data.success == '0') {
+				return;
+			}
+			asideSalesTarget.hide();
+		});
+	}
+	$scope.getYearSalesTarget = function() {
+		$scope.loading.show();
+		$httpService.deleteHeader('method');
+		$httpService.post('/app.do?'+param+'&sales_date='+$scope.param.sales_date, $scope, function(result){
+			$scope.loading.hide();
+			if (result.data.success == '0') {
+				return;
+			}
+			setSalseMonthData(result.data.item.salesTargetList);
+		});
+	}
 	
 	$httpService.deleteHeader('refresh');
 	

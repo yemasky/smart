@@ -37,5 +37,17 @@ class LogStatementsServiceImpl extends \BaseServiceImpl implements \BaseService 
         return $arrayLogStatementsAccounts;
     }
 
+    //市场销售预算
+    public function getSalesTarget(\WhereCriteria $whereCriteria, $field = '') {
+        return SalesTargetDao::instance()->getSalesTarget($whereCriteria, $field);
+    }
+
+    public function saveSalesTarget($arrayData, $insert_type = 'INSERT') {
+        return SalesTargetDao::instance()->saveSalesTarget($arrayData, $insert_type);
+    }
+
+    public function updateSalesTarget(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return SalesTargetDao::instance()->updateSalesTarget($whereCriteria, $arrayUpdateData);
+    }
 
 }
