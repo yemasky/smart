@@ -112,7 +112,7 @@
                                       <ui-select ng-model="booking_room[channel_id][layout.item_id][layout_system.price_system_id]" ng-change="select_room($select.selected, channel_id,layout.item_id,layout_system.price_system_id)" theme="bootstrap">
                                           <ui-select-match placeholder="0　">{{$select.selected.value}}</ui-select-match>
                                           <ui-select-choices repeat="room in maxChannelRoomReservation[channel_id][layout.item_id].select_room_num | filter: $select.search">
-                                            <div ng-bind-html="room.value | highlight: $select.search" ng-init="room.room_info.price_system_name=layout_system.price_system_name"></div>
+                                            <div ng-bind-html="room.value | highlight: $select.search" ng-init="room.room_info.price_system_name=layout_system.price_system_name;room.room_info.policy_id=layout_system.cancellation_policy;"></div>
                                           </ui-select-choices>
                                       </ui-select>
                                    </div>

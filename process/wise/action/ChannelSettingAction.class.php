@@ -114,6 +114,7 @@ class ChannelSettingAction extends \BaseAction {
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 
+    //市場佣金
     protected function doMarketCommission(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $method = $objRequest->method;
         if (!empty($method)) {
@@ -127,7 +128,17 @@ class ChannelSettingAction extends \BaseAction {
         //取出所有有效价格类型
         $arrayResult['priceSystemHash'] = ChannelServiceImpl::instance()->getLayoutPriceSystemHash($company_id, 1);
         //
-        $arrayResult['channelCommisionList'] = ChannelServiceImpl::instance()->getChannelCommisionCache($company_id);
+        $arrayResult['channelCommisionList'] = ChannelServiceImpl::instance()->getChannelCommisionHash($company_id);
+        if (!empty($arrayResult['channelCommisionList'])) {
+            foreach ($arrayResult['channelCommisionList'] as $channel_id => $v) {
+                foreach ($v as $market_id => $value) {
+                    foreach ($value as $price_system_id => $item) {
+                        $arrayResult['channelCommisionList'][$channel_id][$market_id][$price_system_id]['cc_id'] = encode($item['channel_commision_id']);
+                    }
+                }
+
+            }
+        }
         //
         $successService = new \SuccessService();
         $successService->setCode(ErrorCodeConfig::$successCode['success']);
@@ -139,24 +150,29 @@ class ChannelSettingAction extends \BaseAction {
         $this->setDisplay();
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         $channel_id = $objRequest->getInput('channel_id');
+        $cc_id      = decode($objRequest->cc_id);
         //
-        $arraySaveData['company_id']           = $company_id;
-        $arraySaveData['channel_id']           = $channel_id;
         $arraySaveData['commision_form']       = $objRequest->getInput('commision_form');
         $arraySaveData['commision_form_value'] = $objRequest->getInput('commision_form_value');
         $arraySaveData['commision_type']       = $objRequest->getInput('commision_type');
         $arraySaveData['market_id']            = $objRequest->getInput('market_id');
         $arraySaveData['price_system_id']      = $objRequest->getInput('price_system_id');
         $arraySaveData['valid']                = $objRequest->getInput('valid');
-        $arraySaveData['add_datetime']         = getDateTime();
-        ChannelServiceImpl::instance()->saveChannelCommision($arraySaveData);
+        if (empty($cc_id)) {
+            $arraySaveData['company_id']   = $company_id;
+            $arraySaveData['channel_id']   = $channel_id;
+            $arraySaveData['add_datetime'] = getDateTime();
+            ChannelServiceImpl::instance()->saveChannelCommision($arraySaveData);
+        } else {
+            ChannelServiceImpl::instance()->updateChannelCommision($arraySaveData, $company_id, $cc_id);
+        }
+
 
         $successService = new \SuccessService();
         $successService->setCode(ErrorCodeConfig::$successCode['success']);
         $successService->setData('');
         $objResponse->successServiceResponse($successService);
     }
-
 
     protected function doMarketAddEdit(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $method = $objRequest->method;
@@ -197,21 +213,21 @@ class ChannelSettingAction extends \BaseAction {
         if (empty($channel_id)) $channel_id = 0;
         $cr_id = decode($objRequest->cr_id);
         if ($cr_id > 0) {
-            $receivable_id = $cr_id;
-            $arrayUpdate['receivable_name'] = $objRequest->receivable_name;
-            $arrayUpdate['receivable_type'] = $objRequest->receivable_type;
-            $arrayUpdate['receivable_address'] = $objRequest->receivable_address;
+            $receivable_id                         = $cr_id;
+            $arrayUpdate['receivable_name']        = $objRequest->receivable_name;
+            $arrayUpdate['receivable_type']        = $objRequest->receivable_type;
+            $arrayUpdate['receivable_address']     = $objRequest->receivable_address;
             $arrayUpdate['receivable_credit_code'] = $objRequest->receivable_credit_code;
-            $arrayUpdate['market_id'] = $objRequest->market_id;
-            $arrayUpdate['contact_name'] = $objRequest->contact_name;
-            $arrayUpdate['contact_mobile'] = $objRequest->contact_mobile;
-            $arrayUpdate['contact_email'] = $objRequest->contact_email;
-            $arrayUpdate['bank'] = $objRequest->bank;
-            $arrayUpdate['bank_account'] = $objRequest->bank_account;
-            $arrayUpdate['credit'] = $objRequest->credit;
-            $arrayUpdate['valid_date'] = $objRequest->valid_date;
-            $arrayUpdate['valid'] = $objRequest->valid;
-            $whereCriteria = new \WhereCriteria();
+            $arrayUpdate['market_id']              = $objRequest->market_id;
+            $arrayUpdate['contact_name']           = $objRequest->contact_name;
+            $arrayUpdate['contact_mobile']         = $objRequest->contact_mobile;
+            $arrayUpdate['contact_email']          = $objRequest->contact_email;
+            $arrayUpdate['bank']                   = $objRequest->bank;
+            $arrayUpdate['bank_account']           = $objRequest->bank_account;
+            $arrayUpdate['credit']                 = $objRequest->credit;
+            $arrayUpdate['valid_date']             = $objRequest->valid_date;
+            $arrayUpdate['valid']                  = $objRequest->valid;
+            $whereCriteria                         = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('receivable_id', $receivable_id);
             ChannelServiceImpl::instance()->updateChannelReceivable($whereCriteria, $arrayUpdate);
         } else {
@@ -227,10 +243,10 @@ class ChannelSettingAction extends \BaseAction {
             $Channel_receivableEntity->setAddDatetime(getDateTime());
 
             $receivable_id = ChannelServiceImpl::instance()->saveChannelReceivable($Channel_receivableEntity);
-            $cr_id = encode($receivable_id);
+            $cr_id         = encode($receivable_id);
         }
         $successService = new \SuccessService();
-        $successService->setData(['receivable_id' => $receivable_id,'cr_id'=>$cr_id]);
+        $successService->setData(['receivable_id' => $receivable_id, 'cr_id' => $cr_id]);
         return $objResponse->successServiceResponse($successService);
     }
 }

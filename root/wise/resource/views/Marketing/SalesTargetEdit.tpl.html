@@ -1,0 +1,32 @@
+<div class="aside b-r col-sm-3 h-10x box-shadow no-padding" tabindex="-1" role="dialog">
+  <div class="aside-dialog aside-lg">
+    <div class="aside-content">
+      <div class="aside-header">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4 class="aside-title">填写销售目标</h4>
+      </div>
+      <form name="SalesTargetForm" class="form-validation" id="SalesTargetForm" ng-submit="saveData()">
+      <div class="aside-body no-padding">
+          <div class="clearfix">
+            <div class="panel-default">
+                <table class="table text-nowrap">
+                    <tbody>
+                        <tr ng-repeat="(month, value) in salse_month">
+                            <td>{{value.name}}</td>
+                            <td>
+                                <input type="number" name="{{month}}" id="{{month}}" value="" class="w-thumb-lg form-control" ng-model="param[month]" required>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+      </div>
+      <div class="aside-footer">
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+        <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
+      </div>
+      </form>
+    </div>
+  </div>
+ </div>

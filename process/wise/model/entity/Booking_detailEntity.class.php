@@ -17,6 +17,8 @@ class Booking_detailEntity extends \Entity {
 	protected $booking_type = 'room_day';//日租房
 	protected $channel_id;
 	protected $receivable_id = 0;
+	protected $policy_id;
+	protected $policy_name = '';
 	protected $member_id = 0;
 	protected $member_name = '';
 	protected $member_mobile = '';
@@ -164,6 +166,34 @@ class Booking_detailEntity extends \Entity {
      */
     public function setReceivableId(int $receivable_id) {
         $this->receivable_id = $receivable_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPolicyId() {
+        return $this->policy_id;
+    }
+
+    /**
+     * @param mixed $policy_id
+     */
+    public function setPolicyId($policy_id): void {
+        $this->policy_id = $policy_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPolicyName(): string {
+        return $this->policy_name;
+    }
+
+    /**
+     * @param string $policy_name
+     */
+    public function setPolicyName(string $policy_name) {
+        $this->policy_name = $policy_name;
     }
 
 	/**

@@ -1,0 +1,158 @@
+<div class="p-md" ng-controller="BookCommisionController">
+	<div class="box b-a bg-white m-b">
+    	<div class="col-md-8">
+      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addBookCommision(0)"> </a></div>
+            <div class="p-md">
+            <div class="table-responsive">
+				<div class="m-b form-inline">
+					<form name="salesForm" class="form-inline" role="form" ng-submit="searchSalesTarget(param)">
+					<label class="control-label m-b"><i class="fas fa-clock"></i> 年份</label>
+					<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.sales_date" data-date-format="yyyy-MM" data-date-type="string" data-start-view="1" data-min-view="1" data-autoclose="true" data-autoclose="1" name="sales_date" bs-datepicker value="{{getDay('yyyy-MM')}}">
+					<div class="input-group">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="submit" ng-click="getYearSalesTarget()">Go!</button>
+							
+						</span>
+					</div>
+					<div class="input-group">
+						<span class="input-group-btn">	
+						<button class="btn btn-addon btn-default" ng-click="addBookCommision(0)"><i class="fa fa-edit"></i>Add/Edit</button>
+						</span>
+					</div>
+					</form>
+				</div>
+				<table class="table table-bordered table-striped bg-white" id="print_content">
+				  <thead>
+				  <tr>
+					<th>月份</th>
+					<th>销售目标</th>
+					<th></th>
+					<th></th>
+					<th width="50"></th>
+				  </tr>
+				  </thead>
+				  <tbody>
+				  <tr ng-repeat="(month, value) in salse_month">
+					<td>{{value.name}}</td>
+					<td>{{value.salse}}</td>
+					<td></td>
+					<td></td>
+					<td></td>
+				  </tr>
+				  <tr><td colspan="5"><a class="ti-printer print-contents" ng-click="printStatementsData()">A4打印报表</a></td></tr>
+				  </tbody>
+				</table>
+            </div>
+            </div>
+        
+     	</div>
+     	<div class="col-md-4 b-l no-border-sm">
+     		<div class="panel-heading b-b b-light"> 部门目标</div>
+            <div class="list-group no-border no-radius">
+                <div class="list-group-item">
+                  <span class="pull-right">293,200</span>
+                  <i class="fa fa-fw fa-circle text-info"></i>
+                </div>
+             </div>
+     	</div>
+     </div>
+</div>
+<script language="javascript">
+app.controller('BookCommisionController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $ocLazyLoad) {
+	$scope.param = {};
+	$ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.css",
+                      $scope._resource + "vendor/modules/angular-ui-select/select.min.js",
+                      $scope._resource + "vendor/print/css/print-preview.css",
+                      $scope._resource + "vendor/print/jquery.print-preview.js"]);
+	//获取数据
+	var _channel = $scope.$stateParams.channel, common = '';
+	var _view = $scope.$stateParams.view;
+	var param = 'channel='+_channel+'&view='+_view;
+	$scope.loading.show();
+	$httpService.post('/app.do?'+param, $scope, function(result){
+		$scope.loading.hide();
+		if(result.data.success == '0') {
+			var message = $scope.getErrorByCode(result.data.code);
+			$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+		}
+		common = result.data.common;
+		$scope.setCommonSetting(common);
+		$scope.param.sales_date = $scope.getBusinessDay("yyyy-MM");
+		setSalseMonthData(result.data.item.salesTargetList);
+		$(document).ready(function(){
+			$('a.print-contents').printPreview('print_content');
+		});
+	});
+	//
+	function setSalseMonthData(salesTargetList) {
+		//月份
+		var salse_month = {};
+		for(i = 1; i<=12; i++) {
+			month = i;
+			if(i < 10) {
+				month = '0' + i;
+			}
+			month = 'month_' + month;
+			salse_month[month] = {};
+			salse_month[month].name = i+'月';
+			salse_month[month].salse = '';
+			salse_month[month].i = i;
+			$scope.param[month] = '';
+			if(salesTargetList != '' && $scope.param.sales_date == salesTargetList.sales_date) {
+				salse_month[month].salse = salesTargetList[month];
+				$scope.param[month] = salesTargetList[month];
+				
+			}
+		}
+		$scope.param.st_id = '';
+		if(salesTargetList != '') $scope.param.st_id = salesTargetList.st_id;
+		$scope.salse_month = salse_month;
+	}
+	//
+	var asideBookCommision = '';
+	$scope.addBookCommision = function(_this) {
+		if(_this != 0) $scope.param = _this;
+		$scope.action = '添加/编辑';
+		asideBookCommision = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Marketing/SalesTargetEdit.tpl.html'});
+		asideBookCommision.$promise.then(function() {
+			asideBookCommision.show();
+			$(document).ready(function(){
+				
+			});
+		})
+		
+	};
+	$scope.saveData = function() {
+		var thisParam = this.param;
+		if(thisParam == null || thisParam == '') {
+			return;
+		}
+		$scope.loading.show();
+		$scope.param = thisParam;
+		$httpService.header('method', 'saveSalesTarget');
+		$httpService.post('/app.do?'+param, $scope, function(result){
+			$scope.loading.hide();
+			$httpService.deleteHeader('method');
+			if (result.data.success == '0') {
+				return;
+			}
+			asideBookCommision.hide();
+		});
+	}
+	$scope.getYearSalesTarget = function() {
+		$scope.loading.show();
+		$httpService.deleteHeader('method');
+		$httpService.post('/app.do?'+param+'&sales_date='+$scope.param.sales_date, $scope, function(result){
+			$scope.loading.hide();
+			if (result.data.success == '0') {
+				return;
+			}
+			setSalseMonthData(result.data.item.salesTargetList);
+		});
+	}
+	
+	$httpService.deleteHeader('refresh');
+	
+});
+
+</script>

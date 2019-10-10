@@ -17,6 +17,9 @@ class MarketingAction extends \BaseAction {
             case "SalesTarget":
                 $this->doSalesTarget($objRequest, $objResponse);
                 break;
+            case "BookCommision":
+                $this->doBookCommision($objRequest, $objResponse);
+                break;
             default:
                 $this->doDefault($objRequest, $objResponse);
                 break;
@@ -96,7 +99,20 @@ class MarketingAction extends \BaseAction {
 
     }
 
+    protected function doBookCommision(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $method = $objRequest->method;
+        if (!empty($method)) {
+            return $this->doMethod($objRequest, $objResponse);
+        }
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id       = $objLoginEmployee->getCompanyId();
+        $channel_id = $objRequest->channel_id;
+        $sales_date = $objRequest->sales_date;
+        if(empty($sales_date)) $sales_date = getYear();
 
+        $objSuccessService = new \SuccessService();
+        return $objResponse->successServiceResponse($objSuccessService);
+    }
 
 
 

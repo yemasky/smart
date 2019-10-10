@@ -124,6 +124,9 @@ class ChannelDao extends CommonDao {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_commision')->insert($arrayData, $insert_type);
     }
 
+    public function updateChannelCommision(\WhereCriteria $whereCriteria, $arrayData) {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_commision')->update($whereCriteria, $arrayData);
+    }
     //channel_layout_price_system
     public function getLayoutPriceSystem(\WhereCriteria $whereCriteria, $field = null) {
         return $this->setDsnRead($this->getDsnRead())->setTable('channel_layout_price_system')->getList($whereCriteria, $field);

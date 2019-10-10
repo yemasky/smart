@@ -1,14 +1,15 @@
 <div class="p-md" ng-controller="MarketCommissionController">
 	<div class="box b-a bg-white m-b">
     	<div class="col-md-8">
-      		<div class="panel-heading b-b b-light">
-                <button type="button" class="btn btn-default" ng-model="channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择酒店"  ng-change="changeChannel(channel_id)">
-                  Action <span class="caret"></span>
-                </button>
-                <a class="pull-right fa fa-plus" ng-click="addMarketCommission(0)"> </a>
+      		<div class="panel-heading b-b b-light"><span ng-bind-html="_self_module.module_name"></span>
+                
             </div>
             <div class="p-md">
             <div class="table-responsive">
+				<button type="button" class="btn btn-default" ng-model="channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择酒店"  ng-change="changeChannel(channel_id)">
+                  Action <span class="caret"></span>
+                </button>
+                <a class="pull-right fa fa-plus" ng-click="addMarketCommission(0)"> </a>
             <table class="table table-bordered table-striped bg-white">
               <thead>
                 <tr>
@@ -36,7 +37,7 @@
                     <table class="table no-margin">
                         <tbody>
                             <tr ng-repeat="(children_id, children) in data">
-                                <td class="col-md-3 text-nowrap">{{priceSystemList[children_id].price_system_name}}</td>
+                                <td class="col-md-3 text-nowrap">{{priceSystemHash[children.price_system_id].price_system_name}}</td>
                                 <td class="col-md-3">
                                     <span ng-if="children.commision_type==1">底价收款</span>
                                     <span ng-if="children.commision_type==2">后付佣金</span>
@@ -94,6 +95,7 @@ app.controller('MarketCommissionController', function($rootScope, $scope, $httpS
 		common = result.data.common;
 		$scope.setCommonSetting(common);
         $scope.setThisChannel('Hotel');
+		$scope.priceSystemHash = result.data.item.priceSystemHash;
 		$scope.marketList = result.data.item.marketList;
         $scope.marketChildrenHash = {};
         if($scope.marketList != '') {
@@ -140,6 +142,7 @@ app.controller('MarketCommissionController', function($rootScope, $scope, $httpS
         if(angular.isUndefined($scope.param.channel_id)) {
             $scope.param.channel_id = angular.copy($scope.channel_id);
         }
+		$scope.param.cc_id = '';
 		if(_this != 0) {
             $scope.param = _this;
             $scope.market_name = $scope.marketChildrenHash[_this.market_id].market_name;

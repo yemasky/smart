@@ -94,7 +94,7 @@ class PriceSettingAction extends \BaseAction {
 		if($price_system_type === false) {
 			return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['parameter_error']);
 		}
-		$arrayResult = '';
+		$arrayResult = [];
 		if($price_system_type == 'formula') {//公式放盘
 			$arrayUpdateData['formula'] = json_encode($arrayInput['formula']);
 			$whereCriteria              = new \WhereCriteria();

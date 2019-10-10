@@ -37,6 +37,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $objEmployee                       = $objLoginEmployee->getEmployeeInfo();
         $company_id                        = $objEmployee->getCompanyId();
         $channel_id                        = $objRequest->channel_id;
+        $market_id                         = $objRequest->getInput('market_id');
         $arrayInput                        = $objRequest->getInput();
         $check_in                          = $objRequest->validInput('check_in');
         $check_out                         = $objRequest->validInput('check_out');
@@ -94,6 +95,10 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         //
         //预订数据 每个房间1个BookingDetai，每个房间每天1个BookingConsume
         if (!empty($arrayBookingData)) {
+            //取得缺少的取消政策
+            $arrayPolicy = ChannelServiceImpl::instance()->getCancellationPolicyCache($company_id);
+            //取得缺失的市场佣金
+            $arrayCommision = ChannelServiceImpl::instance()->getChannelCommisionCache($company_id, $channel_id, $market_id);
             //时间矩阵
             $arrayDateMatrix  = [];
             $startDateTime    = strtotime($check_in); //转换一下
@@ -143,6 +148,13 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                             $room_name     = $roomData['value'];//or $room_name = $roomInfo['item_name']
                             $room_quantity = 1;
                         }
+                        $policy_id   = $roomInfo['policy_id'];
+                        $policy_name = $arrayPolicy[$policy_id]['policy_name'];
+                        //计算佣金
+                        $systemCommision = [];
+                        if (isset($arrayCommision[$system_id])) {
+                            $systemCommision = $arrayCommision[$system_id];
+                        }
                         for ($i = 0; $i < $room_quantity; $i++) {//总共预定此价格体系多少间房子
                             $_item_key++;
                             if ($isBookRoom == 1) {
@@ -157,6 +169,8 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                             $DetailEntity->setItemCategoryName($roomInfo['item_category_name']);
                             $DetailEntity->setPriceSystemId($system_id);
                             $DetailEntity->setPriceSystemName($roomInfo['price_system_name']);
+                            $DetailEntity->setPolicyId($policy_id);
+                            $DetailEntity->setPolicyName($policy_name);
                             $arrayBookDetailList[] = $DetailEntity;
                             for ($j = 0; $j < $total_day; $j++) {
                                 //消费//2018-08-
@@ -171,6 +185,27 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                 $DetailConsumeEntity->setBusinessDay($arrayBusinessDay[$j]);
                                 if ($set_prices) {//手动设置价格
                                     $price = $arrayBusinessDayPrice[$arrayBusinessDay[$j]];
+                                    //计算佣金//佣金
+                                    if (!empty($systemCommision)) {
+                                        $DetailConsumeEntity->setCommisionType($systemCommision['commision_type']);//佣金类型
+                                        $DetailConsumeEntity->setCommisionForm($systemCommision['commision_form']);//佣金形式
+                                        $DetailConsumeEntity->setCommisionFormValue($systemCommision['commision_form_value']);
+                                        $commission_price = '0';//计算后的佣金
+                                        if ($systemCommision['commision_type'] == 2) {//后付佣金
+                                            if ($systemCommision['commision_form'] == 'percent' || $systemCommision['commision_form'] == 'manually')
+                                                $commission_price = sprintf("%.2f", $price * $systemCommision['commision_form_value'] / 100);//百分比佣金
+                                            if ($systemCommision['commision_form'] == 'night') $commission_price = $systemCommision['commision_form_value'];//间夜佣金
+                                        }
+                                        if ($systemCommision['commision_type'] == 1) {//底价收款($roomDiscountPrice / (100-$commission)) * $commission / 100
+                                            if ($systemCommision['commision_form'] == 'percent' || $systemCommision['commision_form'] == 'manually')
+                                                $commission_price = sprintf("%.2f", ($price / (100 - $systemCommision['commision_form_value'])) * $systemCommision['commision_form_value']);//百分比佣金
+                                            if ($systemCommision['commision_form'] == 'night') $commission_price = $systemCommision['commision_form_value'];//间夜佣金
+                                        }
+                                        $consume_profit = bcsub($price, $commission_price, 2);//利润
+                                        $DetailConsumeEntity->setConsumePrice($commission_price);//佣金;
+                                        $DetailConsumeEntity->setConsumeProfit($consume_profit);
+                                        $DetailConsumeEntity->setChannelCommisionId($systemCommision['channel_commision_id']);
+                                    }
                                     $DetailConsumeEntity->setOriginalPrice($price);
                                     $DetailConsumeEntity->setConsumePrice($price);
                                     $DetailConsumeEntity->setConsumePriceTotal($price);
@@ -247,6 +282,11 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                     foreach ($arrayFormulaSystem as $price_system_id => $formulaData) {//$formulaData->价格体系对应的公式和名称以及适用的房型
                         if (isset($arrayPriceLayout[$formulaData['system_father_id']])) {//如果存在父价格[公式放盘需要父价格，公式放盘只有公式]
                             $formulaLayout = json_decode($formulaData['formula'], true);//那么取出公式放盘公式 formula->公式
+                            //计算佣金
+                            $systemCommision = [];
+                            if (isset($arrayCommision[$price_system_id])) {
+                                $systemCommision = $arrayCommision[$price_system_id];
+                            }
                             foreach ($formulaData['item_category_id'] as $item_category_id => $item_id) {//取出对应的房型ID system_id =>[layout_id=>layout_id]
                                 //判断是否存在$arrayLayoutRooms[$item_category_id][$price_system_id] 房型所对应的价格体系ID
                                 if (!isset($arrayLayoutRooms[$item_category_id][$price_system_id])) continue;
@@ -293,12 +333,36 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                                 $room_name     = $room_quantity;
                                                 $room_quantity = 1;
                                             }
+                                            //计算佣金//佣金
+                                            if (!empty($systemCommision)) {
+                                                $DetailConsumeEntity->setCommisionType($systemCommision['commision_type']);//佣金类型
+                                                $DetailConsumeEntity->setCommisionForm($systemCommision['commision_form']);//佣金形式
+                                                $DetailConsumeEntity->setCommisionFormValue($systemCommision['commision_form_value']);
+                                                $commission_price = '0';//计算后的佣金
+                                                if ($systemCommision['commision_type'] == 2) {//后付佣金
+                                                    if ($systemCommision['commision_form'] == 'percent' || $systemCommision['commision_form'] == 'manually')
+                                                        $commission_price = sprintf("%.2f", $price * $systemCommision['commision_form_value'] / 100);//百分比佣金
+                                                    if ($systemCommision['commision_form'] == 'night') $commission_price = $systemCommision['commision_form_value'];//间夜佣金
+                                                }
+                                                if ($systemCommision['commision_type'] == 1) {//底价收款($roomDiscountPrice / (100-$commission)) * $commission / 100
+                                                    if ($systemCommision['commision_form'] == 'percent' || $systemCommision['commision_form'] == 'manually')
+                                                        $commission_price = sprintf("%.2f", ($price / (100 - $systemCommision['commision_form_value'])) * $systemCommision['commision_form_value']);//百分比佣金
+                                                    if ($systemCommision['commision_form'] == 'night') $commission_price = $systemCommision['commision_form_value'];//间夜佣金
+                                                }
+                                                $consume_profit = bcsub($price, $commission_price, 2);//利润
+                                            }
                                             for ($i = 0; $i < $room_quantity; $i++) {//订相同的房间的价格
                                                 //消费//2018-08-
                                                 $consume_key = $item_category_id . '-' . $price_system_id . '-' . $i . '-' . substr($monthDate, 0, 8) . $day;
                                                 $BookingDetailConsumeList[$consume_key]->setOriginalPrice($price);
                                                 $BookingDetailConsumeList[$consume_key]->setConsumePrice($price);
                                                 $BookingDetailConsumeList[$consume_key]->setConsumePriceTotal($price);
+                                                //设置佣金
+                                                if (!empty($systemCommision)) {
+                                                    $BookingDetailConsumeList[$consume_key]->setConsumePrice($commission_price);//佣金;
+                                                    $BookingDetailConsumeList[$consume_key]->setConsumeProfit($consume_profit);
+                                                    $BookingDetailConsumeList[$consume_key]->setChannelCommisionId($systemCommision['channel_commision_id']);
+                                                }
                                             }
                                         }
                                     }
@@ -321,6 +385,11 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                             $arraySystemPrice = $arrayPriceLayout[$arrayFormulaSystem[$system_id]['system_father_id']];
                         } else {
                             return $objSuccess->setSuccessService(false, '100001', '没有找到价格体系', []);
+                        }
+                        //计算佣金
+                        $systemCommision = [];
+                        if (isset($arrayCommision[$system_id])) {
+                            $systemCommision = $arrayCommision[$system_id];
                         }
                         foreach ($arraySystemPrice as $item_category_id => $arrayMonthPrice) {
                             //判断是否存在$arrayLayoutRooms[$item_category_id][$system_id]
@@ -346,12 +415,36 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                             $room_name     = $room_quantity;
                                             $room_quantity = 1;
                                         }
+                                        //计算佣金//佣金
+                                        if (!empty($systemCommision)) {
+                                            $DetailConsumeEntity->setCommisionType($systemCommision['commision_type']);//佣金类型
+                                            $DetailConsumeEntity->setCommisionForm($systemCommision['commision_form']);//佣金形式
+                                            $DetailConsumeEntity->setCommisionFormValue($systemCommision['commision_form_value']);
+                                            $commission_price = '0';//计算后的佣金
+                                            if ($systemCommision['commision_type'] == 2) {//后付佣金
+                                                if ($systemCommision['commision_form'] == 'percent' || $systemCommision['commision_form'] == 'manually')
+                                                    $commission_price = sprintf("%.2f", $price * $systemCommision['commision_form_value'] / 100);//百分比佣金
+                                                if ($systemCommision['commision_form'] == 'night') $commission_price = $systemCommision['commision_form_value'];//间夜佣金
+                                            }
+                                            if ($systemCommision['commision_type'] == 1) {//底价收款($roomDiscountPrice / (100-$commission)) * $commission / 100
+                                                if ($systemCommision['commision_form'] == 'percent' || $systemCommision['commision_form'] == 'manually')
+                                                    $commission_price = sprintf("%.2f", ($price / (100 - $systemCommision['commision_form_value'])) * $systemCommision['commision_form_value']);//百分比佣金
+                                                if ($systemCommision['commision_form'] == 'night') $commission_price = $systemCommision['commision_form_value'];//间夜佣金
+                                            }
+                                            $consume_profit = bcsub($price, $commission_price, 2);//利润
+                                        }
                                         for ($i = 0; $i < $room_quantity; $i++) {
                                             //2018-08-
                                             $consume_key = $item_category_id . '-' . $system_id . '-' . $i . '-' . substr($monthDate, 0, 8) . $day;
                                             $BookingDetailConsumeList[$consume_key]->setOriginalPrice($price);
                                             $BookingDetailConsumeList[$consume_key]->setConsumePrice($price);
                                             $BookingDetailConsumeList[$consume_key]->setConsumePriceTotal($price);
+                                            //设置佣金
+                                            if (!empty($systemCommision)) {
+                                                $BookingDetailConsumeList[$consume_key]->setConsumePrice($commission_price);//佣金;
+                                                $BookingDetailConsumeList[$consume_key]->setConsumeProfit($consume_profit);
+                                                $BookingDetailConsumeList[$consume_key]->setChannelCommisionId($systemCommision['channel_commision_id']);
+                                            }
                                         }
                                     }
                                 }
@@ -842,8 +935,8 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $updateData['consume_status'] = '-2';
                 $this->updateBookingConsume($whereCriteria, $updateData);
                 //
-                $updateData                   = [];
-                $updateData['valid']          = '0';
+                $updateData                    = [];
+                $updateData['valid']           = '0';
                 $updateData['accounts_status'] = '-2';
                 $this->updateBookingAccounts($whereCriteria, $updateData);
             } elseif ($closeType == 'escape') {//走结订单 计入亏损
@@ -854,7 +947,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $updateData['consume_status'] = '-5';
                 $this->updateBookingConsume($whereCriteria, $updateData);
                 //
-                $updateData                   = [];
+                $updateData                    = [];
                 $updateData['accounts_status'] = '-5';
                 $this->updateBookingAccounts($whereCriteria, $updateData);
             }

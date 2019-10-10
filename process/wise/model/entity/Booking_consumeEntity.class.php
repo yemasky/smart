@@ -34,10 +34,13 @@ class Booking_consumeEntity extends \Entity {
 	protected $price_system_id = 0;
 	protected $price_system_name = '';
 	protected $original_price = 0.00;
+	protected $consume_status;
 	protected $consume_title;
 	protected $consume_price = 0.00;
     protected $consume_price_total = 0.00;
     protected $consume_profit = 0.00;
+    protected $consume_commision;
+    protected $channel_commision_id;
     protected $commision_type;
     protected $commision_form;
     protected $commision_form_value;
@@ -457,6 +460,48 @@ class Booking_consumeEntity extends \Entity {
      */
     public function setConsumeProfit(float $consume_profit) {
         $this->consume_profit = $consume_profit;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConsumeStatus() {
+        return $this->consume_status;
+    }
+
+    /**
+     * @param mixed $consume_status
+     */
+    public function setConsumeStatus($consume_status) {
+        $this->consume_status = $consume_status;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConsumeCommision() {
+        return $this->consume_commision;
+    }
+
+    /**
+     * @param mixed $consume_commision
+     */
+    public function setConsumeCommision($consume_commision) {
+        $this->consume_commision = $consume_commision;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getChannelCommisionId() {
+        return $this->channel_commision_id;
+    }
+
+    /**
+     * @param mixed $channel_commision_id
+     */
+    public function setChannelCommisionId($channel_commision_id) {
+        $this->channel_commision_id = $channel_commision_id;
     }
 
     /**
