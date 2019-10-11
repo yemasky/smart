@@ -10,7 +10,7 @@
 		  <div class="m">
 			  <a href class="w-thumb-md pull-left m-r"><img src="/data/images/userimg/user_m.png" class="img-responsive"></a>
 			  <div class="clear m-b-sm">
-				  <div>{{bookDetail.member_name}} <code class="small">订单号 {{bookDetail.booking_number}}</code> 
+				  <div>{{bookDetail.member_name}} <span ng-if="bookDetail.receivable_id>0">{{bookDetail.receivable_name}}</span> <code class="small">订单号 {{bookDetail.booking_number}}</code> 
                       <span class="small fas fa-coins" ng-class="billAccount[bookDetail.booking_number]>0?'text-success-dk':billAccount[bookDetail.booking_number]<0?'text-danger-dk':''">{{billAccount[bookDetail.booking_number]}}</span>
                   </div>
 				  <span>{{bookDetail.member_mobile}} {{bookDetail.member_email}}</span>
@@ -561,7 +561,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         //$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
         $('#customer_ul').next().show();
     }
-    $scope.market_id = '';
+    $scope.market_id = '';$scope.receivableList = [];
     $scope.selectCustomerMarket = function(market, ajax) {
         $scope.marketSystemLayout = {};
         if(angular.isDefined(market)) {
@@ -572,9 +572,27 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
             $scope.customer_name = $scope.roomDetailEdit.market_name;
             if(market.market_father_id == '4') {//判断会员是否正确
                 $scope.customer_name = market.market_name;
-            }
+            } else if(market.market_father_id == '6') {//选择协议公司 取出协议公司数据
+				$scope.getReceivable();
+			}
         }
     };
+	$scope.getReceivable = function() {
+		if($scope.receivableList == '') {
+			$scope.loading.start();$httpService.header('method', 'getReceivable');
+			$httpService.post('/app.do?'+param, $scope, function(result){
+				$scope.loading.percent();$httpService.deleteHeader('method');
+				if(result.data.success === '0') {
+					return;
+				}
+				$scope.receivableList = result.data.item.receivableData;
+			});
+		}
+	}
+	$scope.selectReceivable = function(receivable) {
+		$scope.param.receivable_id = receivable.receivable_id;
+		$scope.param.receivable_name = receivable.receivable_name;
+	}
     ////保存编辑预订客源市场等
     $scope.saveEditRoomForm = function (roomDetailEdit) {//单个roomDetail
         $httpService.header('method', 'editBookRoom');

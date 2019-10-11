@@ -286,9 +286,14 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
             ->setChildrenKey('price_system_id')->setMultiple(false);
         $arrayCommision = ChannelDao::instance()->DBCache($cacheId)->getChannelCommision($whereCriteria, $field);
         if (!empty($channel_id) && !empty($market_id)) {
-            return $arrayCommision[$channel_id][$market_id];
+            if(isset($arrayCommision[$channel_id]) && isset($arrayCommision[$channel_id][$market_id])) {
+                return $arrayCommision[$channel_id][$market_id];
+            }
+            return [];
         } elseif (!empty($channel_id)) {
-            return $arrayCommision[$channel_id];
+            if(isset($arrayCommision[$channel_id]))
+                return $arrayCommision[$channel_id];
+            return [];
         }
         return $arrayCommision;
     }

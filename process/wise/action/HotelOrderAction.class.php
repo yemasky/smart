@@ -292,7 +292,18 @@ class HotelOrderAction extends \BaseAction {
 
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
-
+    //查询协议公司数据
+    protected function doMethodGetReceivable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
+        $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id       = $objRequest->channel_id;
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->ArrayIN('channel_id', [0, $channel_id])->EQ('valid', '1');
+        $arrayReceivable = ChannelServiceImpl::instance()->getChannelReceivable($whereCriteria, 'receivable_id,receivable_name');
+        $objSuccessService = new \SuccessService();
+        $objSuccessService->setData(['receivableData'=>$arrayReceivable]);
+        return $objResponse->successServiceResponse($objSuccessService);
+    }
     //查询订房数据
     protected function doMethodCheckOrderData(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();

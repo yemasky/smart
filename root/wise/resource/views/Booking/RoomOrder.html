@@ -15,6 +15,14 @@
                   <button class="btn btn-default check_date" type="button"><i class="fa fa-calendar text-info"> 选择日期</i></button>
                 </div>
                 <div class="form-group" ng-include="'/app/customerMarket.html'"></div>
+				<div class="form-group" ng-if="market_father_id==6">
+					<ui-select ng-model="receivableSelected" ng-change="selectReceivable($select.selected)" theme="bootstrap">
+						<ui-select-match placeholder="　选择协议客源　">{{$select.selected.receivable_name}}</ui-select-match>
+						<ui-select-choices repeat="receivable in receivableList | filter: $select.search">
+							<div ng-bind-html="receivable.receivable_name | highlight: $select.search"></div>
+						</ui-select-choices>
+					</ui-select>
+				</div>
                 <div class="form-group"><button class="btn btn-default" type="button" ng-click="checkOrderData()"><i class="fa fa-search"> </i> 查价格</button></div>
                 <!--<button type="button" class="btn btn-default" data-animation="am-flip-x" bs-dropdown aria-haspopup="true" aria-expanded="false" data-trigger=""><i class="icon fa fa-users text-lt"></i> {{market_name}} <i class="fa fa-caret-down"></i></button>
                     <ul class="dropdown-menu" role="menu" style="overflow:visible;">

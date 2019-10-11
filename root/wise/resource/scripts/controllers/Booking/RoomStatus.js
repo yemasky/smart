@@ -413,6 +413,11 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         //
         $scope.param.price = {};
         $scope.market_name = rDetail.market_name;
+		//
+		$scope.market_father_id = rDetail.market_father_id;
+		if(rDetail.market_father_id==6) {
+			$scope.receivableSelected = {'receivable_id':rDetail.receivable_id,'receivable_name':rDetail.receivable_name};
+		}
         //$scope.consumeDetail
         var consumeRoomDetail = $scope.consumeList[rDetail.booking_number][rDetail.booking_detail_id];
         var consumeRoomPrice = {}, price = {};

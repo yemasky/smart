@@ -13,7 +13,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     $scope.booking_room = {};$scope.booking_price = {}; $scope.system_price = {};
     var priceLayout = {};//房型价格
     //选择客源市场
-    $scope.market_name = '散客步入';$scope.market_id = '2';$scope.customer_name = '预订人';
+    $scope.market_name = '散客步入';$scope.market_id = 2;$scope.customer_name = '预订人';
     var _channel = angular.isDefined($scope.getChannelModule(12)) ? $scope.getChannelModule(12).url : $scope.$stateParams.channel;
     $scope.param.mobile_email = '';
     var _view = $scope.$stateParams.view;
@@ -71,6 +71,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         });
     });
     //选择客人市场
+	$scope.receivableList = [];//协议公司数据
     $scope.selectCustomerMarket = function(market, ajaxRoomForcasting) {
         $scope.marketSystemLayout = {};
         if(angular.isDefined(market)) {
@@ -79,13 +80,30 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $scope.market_father_id =  market.market_father_id;
             $('#customer_ul').next().hide();
             $scope.customer_name = '预订人';
+			$scope.param.receivable_id = '';
+		    $scope.param.receivable_name = '';
             if(market.market_father_id == '4') {//判断会员是否正确
                 $scope.customer_name = market.market_name;
-            }
+            } else if(market.market_father_id == '6') {//选择协议公司 取出协议公司数据
+				if($scope.receivableList == '') {
+					$scope.loading.start();$httpService.header('method', 'getReceivable');
+					$httpService.post('/app.do?'+param, $scope, function(result){
+						$scope.loading.percent();$httpService.deleteHeader('method');
+						if(result.data.success === '0') {
+							return;
+						}
+						$scope.receivableList = result.data.item.receivableData;
+					});
+				}
+			}
             $scope.setPriceSystemMarket();
             if(ajaxRoomForcasting == true) {$scope.checkOrderData();}//远期房态及取出客源市场价格 远期房态需要从数据库获取
         }
     };
+	$scope.selectReceivable = function(receivable) {
+		$scope.param.receivable_id = receivable.receivable_id;
+		$scope.param.receivable_name = receivable.receivable_name;
+	}
     //设置房型价格 priceLayout ： 全局变量; 
     $scope.setPriceLayout = function (resultPriceLayout) {
         if(resultPriceLayout != '') {

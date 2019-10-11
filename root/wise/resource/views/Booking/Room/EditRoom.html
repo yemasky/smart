@@ -12,7 +12,15 @@
             <div class="tab">
                 <div class="form-inline">
                     <div class="form-group p-xs">客源市场 </div> <div class="form-group" ng-include="'/app/customerMarket.html'"></div>
-                    <div class="form-group p-xs">价格类型</div>
+                    <div class="form-group" ng-if="market_father_id==6">
+						<ui-select ng-model="receivableSelected" ng-change="selectReceivable($select.selected)" ng-click="getReceivable()" theme="bootstrap">
+							<ui-select-match placeholder="　选择协议客源　">{{$select.selected.receivable_name}}</ui-select-match>
+							<ui-select-choices repeat="receivable in receivableList | filter: $select.search">
+								<div ng-bind-html="receivable.receivable_name | highlight: $select.search"></div>
+							</ui-select-choices>
+						</ui-select>
+					</div>
+					<div class="form-group p-xs">价格类型</div>
                     <div class="form-group w">
                       <ui-select ng-model="select_price_system" theme="bootstrap" ng-change="selectPriceSystem($select.selected)" >
                           <ui-select-match placeholder="{{roomDetailEdit.price_system_name}} 　">{{$select.selected.price_system_name}}</ui-select-match>

@@ -100,7 +100,10 @@
 								  <tbody><!-- bookingDetail -->
 									<tr ng-repeat="(i, detail) in bookingDetailRoom" ng-if="detail.booking_detail_status==0&&detail.check_in==getBusinessDay()">
 								      <td>{{detail.booking_number}}</td>
-									  <td class="text-nowrap">{{detail.market_name}}</td>
+									  <td class="text-nowrap">
+										  <span ng-if="detail.receivable_id==0">{{detail.market_name}}</span>
+										  <span ng-if="detail.receivable_id>0">{{detail.receivable_name}}</span>
+									  </td>
 									  <td><span>{{detail.item_category_name}}</span></td>
                                       <td><span>{{detail.price_system_name}}</span></td>
 									  <td>{{detail.item_name==''?'未排房':detail.item_name}}</td>
@@ -140,7 +143,10 @@
 								  <tbody><!-- bookingDetail -->
 									<tr ng-repeat="(item_id, detail) in check_outRoom">
 								      <td>{{detail.booking_number}}</td>
-									  <td class="text-nowrap">{{detail.market_name}}</td>
+									  <td class="text-nowrap">
+										  <span ng-if="detail.receivable_id==0">{{detail.market_name}}</span>
+										  <span ng-if="detail.receivable_id>0">{{detail.receivable_name}}</span>
+									  </td>
 									  <td><span>{{detail.item_category_name}}</span></td>
                                       <td><span>{{detail.price_system_name}}</span></td>
 									  <td>{{detail.item_name==''?'未排房':detail.item_name}}</td>
@@ -203,7 +209,10 @@
 								  <tbody><!-- bookingDetail -->
 									<tr ng-repeat="(detail_id, detail) in bookingSearchList">
 								      <td>{{detail.booking_number}}</td>
-									  <td class="text-nowrap">{{detail.market_name}}</td>
+									  <td class="text-nowrap">
+										  <span ng-if="detail.receivable_id==0">{{detail.market_name}}</span>
+										  <span ng-if="detail.receivable_id>0">{{detail.receivable_name}}</span>
+									  </td>
 									  <td><span>{{detail.item_category_name}}</span></td>
                                       <td><span>{{detail.price_system_name}}</span></td>
 									  <td>{{detail.item_name==''?'未排房':detail.item_name}}</td>

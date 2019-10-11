@@ -109,11 +109,6 @@ class ChannelSettingAction extends \BaseAction {
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 
-    protected function doMethodReceivablePagination(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $arrayResult['receivableData'] = ChannelServiceImpl::instance()->getChannelReceivablePage($objRequest, $objResponse);
-        $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
-    }
-
     //市場佣金
     protected function doMarketCommission(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $method = $objRequest->method;
@@ -205,7 +200,7 @@ class ChannelSettingAction extends \BaseAction {
 
         return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
     }
-
+    //协议公司
     protected function doMethodReceivable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $arrayLoginEmployee = LoginServiceImpl::instance()->getLoginInfo();
         $company_id         = $arrayLoginEmployee->getCompanyId();
@@ -248,5 +243,10 @@ class ChannelSettingAction extends \BaseAction {
         $successService = new \SuccessService();
         $successService->setData(['receivable_id' => $receivable_id, 'cr_id' => $cr_id]);
         return $objResponse->successServiceResponse($successService);
+    }
+    //协议公司
+    protected function doMethodReceivablePagination(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $arrayResult['receivableData'] = ChannelServiceImpl::instance()->getChannelReceivablePage($objRequest, $objResponse);
+        $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
 }
