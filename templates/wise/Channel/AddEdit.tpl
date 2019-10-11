@@ -190,6 +190,7 @@
 	//<%include file="wise/inc/jscript/baidu.map.js"%>
     app.controller('<%$__module%>Controller', function($rootScope, $scope, $httpService, $modal, $translate, $ocLazyLoad) {
 		$scope.param = arrayChannel;
+		$scope.param.channel_father_id = '<%$c_fatcher_id%>';
 		var xml_data = '';
 		$.get('<%$__WEB%>static/area/Area.xml', function(result){
 			var xml = result;

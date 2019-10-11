@@ -344,6 +344,8 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
     }).state('app.Channel', {
         url: "/Channel/:channel", //url: "/role/edit?id",
         templateUrl: function($routeParams) {
+			//var view = $routeParams.view;//有view访问静态文件
+			//if(view != '') return 'resource/views/Channel/'+$routeParams.view+'.html?<%$__VERSION%>';
             return randomUrl($routeParams.channel);
         },
 		controller: function() {

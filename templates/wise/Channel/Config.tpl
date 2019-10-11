@@ -28,7 +28,7 @@
 		$scope.arrayChannel = eval('(<%$arrayChannel%>)');
 		$scope.config = function(key) {
 			$httpService.header('method', key);
-			$scope.redirect('/app/<%$__module%>/<%$channel_config_url%>&id=<%$channel_id%>&method='+key);
+			$scope.redirect('/app/<%$__module%>/<%$channel_config_url%>&c_id=<%$channel_id%>&method='+key);
 		}
 		
 	});

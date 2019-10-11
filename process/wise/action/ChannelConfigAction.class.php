@@ -53,7 +53,7 @@ class ChannelConfigAction extends \BaseAction {
 	 */
 	protected function doDefault(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-		$channel_id = $objRequest->channel_id;
+        $channel_id = decode($objRequest->c_id, getDay());
 		if(empty($channel_id) || !is_numeric($channel_id)) {
 			return $objResponse->setResponse('error', '000008');
 		}

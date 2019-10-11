@@ -38,10 +38,10 @@
 		$scope.channel_type = eval('(<%$channel_type%>)');
 		$scope.arrayChannelList = eval('(<%$arrayChannelList%>)');
 		$scope.edit = function(id) {
-			$scope.redirect('/app/<%$__module%>/<%$add_url%>&id='+id);
+			$scope.redirect('/app/<%$__module%>/<%$add_url%>&c_id='+id);
 		};
 		$scope.config = function(id) {
-			$scope.redirect('/app/<%$__module%>/<%$config_url%>&id='+id);
+			$scope.redirect('/app/<%$__module%>/<%$config_url%>&c_id='+id);
 		};
 	});
 	//

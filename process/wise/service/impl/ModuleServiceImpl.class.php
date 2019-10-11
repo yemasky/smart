@@ -82,7 +82,7 @@ class ModuleServiceImpl extends \BaseServiceImpl implements ModuleService {
         return $arrayModuleCompany;
     }
 
-    //获取模块encodeid
+    //获取模块module_id的encode id
     public function getEncodeModuleId($module, $action) {
         if(isset(ModulesConfig::$module[$module][$action])) {
             return \Encrypt::instance()->encode(ModulesConfig::$module[$module][$action], getDay());

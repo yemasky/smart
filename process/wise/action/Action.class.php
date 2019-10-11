@@ -16,12 +16,12 @@ class Action {
 
     protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         //default setting
-        $module_id      = $objRequest->channel;
-        $module_id      = empty($module_id) ? '' : \Encrypt::instance()->decode($module_id, getDay());
-        $action         = $objRequest->action;
-        $module         = $module_id == 'home' ? 'home' : '';
-        $module_channel = 'Booking';
-        $module_name    = '首页';
+        $encode_module_id = $objRequest->channel;
+        $module_id        = empty($encode_module_id) ? '' : \Encrypt::instance()->decode($encode_module_id, getDay());
+        $action           = $objRequest->action;
+        $module           = $module_id == 'home' ? 'home' : '';
+        $module_channel   = 'Booking';
+        $module_name      = '首页';
         //
         $channel_id = $objRequest->id;
         $channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : null;
@@ -46,7 +46,7 @@ class Action {
             $objResponse->noLogin = '0';
             $objEmployee          = $objLoginEmployee->getEmployeeInfo();
             //根据切换来变换default_channel_father_id
-            $default_channel_id = $objEmployee->getDefaultChannelId();
+            $default_channel_id                     = $objEmployee->getDefaultChannelId();
             $arrayEmployeeChannel                   = $objLoginEmployee->getEmployeeChannel();
             $default                                = $arrayEmployeeChannel[$default_channel_id];
             $default_channel                        = $arrayEmployeeChannel[$default['default_id']];

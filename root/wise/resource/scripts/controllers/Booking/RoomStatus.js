@@ -329,7 +329,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
                     $scope.bookList[booking_number] = result.data.item.book[booking_number];//订单详情
                     if(angular.isUndefined($scope.consumeList[booking_number])) {$scope.consumeList[booking_number] = {};}
                     $scope.consumeList[booking_number] = angular.copy(result.data.item.consume[booking_number]);//消费详情
-                    $scope.accountsList[booking_number] = result.data.item.accounts;//付款详情
+                    $scope.accountsList[booking_number] = result.data.item.accounts[booking_number];//付款详情
                     //消费、账务计算
                     if($scope.consumeList[booking_number] != '') {//消费
                         var bookConsume = {}, bookAccount = {}, bookBalance = {}, bookConsumePrice = {};

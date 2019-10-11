@@ -884,6 +884,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $item_id       = $objRequest->getInput('item_id');
                 $money         = $objRequest->money;
                 $payment_id    = $objRequest->payment_id;//现在要选择支付方式
+                if ($closeType == 'hanging') $payment_id = -1;//挂账退房
                 if ($closeType == 'part') $money = $objRequest->partPayMoney;
                 $accounts_id = 0;
                 //
@@ -893,7 +894,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 if ($accounts_type == 'receipts') $newTotalAccounts = bcadd($totalAccounts, $money, 2) - 0;//收款
                 if ($accounts_type == 'refund') $newTotalAccounts = bcsub($totalAccounts, $money, 2) - 0;//退款
                 if (($totalConsume - $newTotalAccounts) == 0) $balancing = true;
-                if ($detail_id > 0 && $item_id > 0 && $balancing == true && !empty($payment_id) && $payment_id > 0) {
+                if ($detail_id > 0 && $item_id > 0 && $balancing == true && !empty($payment_id) && is_numeric($payment_id)) {
                     //入账
                     $detail_id              = decode($objRequest->getInput('detail_id'));
                     $businessDay            = LoginServiceImpl::getBusinessDay();
@@ -906,6 +907,11 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                     $Booking_accountsEntity->setEmployeeName($objLoginEmployee->getEmployeeName());
                     $Booking_accountsEntity->setBusinessDay($businessDay);
                     $Booking_accountsEntity->setAddDatetime(getDateTime());
+                    if ($closeType == 'hanging') {//挂账退房
+                        $Booking_accountsEntity->setPaymentName('挂账');
+                        $Booking_accountsEntity->setPaymentId(-1);
+                        $Booking_accountsEntity->setPaymentFatherId(0);
+                    }
                     $accounts_id = BookingHotelServiceImpl::instance()->saveBookingAccounts($Booking_accountsEntity);
                 }
                 if ($accounts_id > 0) {
