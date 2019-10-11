@@ -753,7 +753,7 @@ class HotelOrderAction extends \BaseAction {
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
 
     }
-
+    //消费借物
     protected function doMethodRevokesOperations(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $revokes          = $objRequest->revokes;
         $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();

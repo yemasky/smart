@@ -142,7 +142,7 @@
       <li><a href ng-click="bookingAccounts('', '')"><i class="fas fa-coins"></i> 收款</a></li>
       <li><a href ng-click="bookingAccounts('', 'refund')"><i class="fas fa-coins"></i> 退款</a></li>
       <li class="divider"></li>
-      <li><a href ng-click="bookingAccounts('', 'hanging')"><i class="fas fa-comments-dollar"></i> 挂账</a></li>
+      <li ng-if="bookDetail.receivable_id>0"><a href ng-click="bookingAccounts('', 'hanging')"><i class="fas fa-comments-dollar"></i> 挂账</a></li>
     </ul>
 </script><!-- /app/accountsMenu.html -->
 <script type="text/ng-template" id="/app/customerMarket.html">

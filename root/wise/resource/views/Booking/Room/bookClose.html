@@ -8,7 +8,7 @@
       </div>
       <div class="aside-body">
           <input name="accounts_type" size="9" type="hidden" id="accounts_type" value="" class="form-control" ng-model="param.accounts_type">
-          <div>{{bookDetail.member_name}} <code class="small">订单号 {{bookDetail.booking_number}}</code> 
+          <div>{{bookDetail.member_name}} <span ng-if="bookDetail.receivable_id>0">{{bookDetail.receivable_name}}</span> <code class="small">订单号 {{bookDetail.booking_number}}</code> 
               <span class="small fas fa-coins" ng-class="billAccount[bookDetail.booking_number]>0?'text-success-dk':billAccount[bookDetail.booking_number]<0?'text-danger-dk':''">{{billAccount[bookDetail.booking_number]}}</span>
           </div>
           <div class="form-inline clear m-t" ng-if="param.closeType=='part'">
@@ -46,7 +46,7 @@
                  </div>
               </div>
               <div class="form-group p-v-xs">
-                 <aside class="app-aside bg-white lt w-sm">
+                 <aside class="app-aside bg-white lt w-sm" ng-if="param.closeType!='hanging'">
                     <nav>
                       <ul class="nav">
                         <li>

@@ -127,7 +127,7 @@
                         <ul class="dropdown-menu">
                           <li><a href ng-click="bookingClose(bookDetail, 'part')"><i class="fa fa-list-ol"></i> 部分结账</a></li>
                           <li><a href ng-click="bookingClose(bookDetail, 'refund')"><i class="fas fa-tasks"></i> 结账退房</a></li>
-                          <li><a href ng-click="bookingClose(bookDetail, 'hanging')"><i class="fas fa-tasks"></i> 挂账退房</a></li>
+                          <li ng-if="bookDetail.receivable_id>0"><a href ng-click="bookingClose(bookDetail, 'hanging')"><i class="fas fa-tasks"></i> 挂账退房</a></li>
                           <li><a href ng-click="bookingClose(bookDetail, 'escape')"><i class="fas fa-grimace"></i> 走结退房</a></li>
                           <li class="divider"></li>
                           <li><a href ng-click="bookingClose(bookDetail, 'cancel')"><i class="fas fa-times"></i> 取消订单</a></li>

@@ -877,7 +877,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             }
             CommonServiceImpl::instance()->startTransaction();
             //有入账和退款
-            //账务是否平//$totalConsume == 0 || $totalAccounts == 0 || escape走结无需平账
+            //账务是否平//$totalConsume == 0 || $totalAccounts == 0 || escape[走结退房]无需平账
             if ($totalConsume != $totalAccounts && $closeType != 'escape') {
                 $accounts_type = $objRequest->accounts_type;//receipts 收款 refund 退款
                 $detail_id     = decode($objRequest->getInput('detail_id'));
@@ -890,8 +890,8 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $balancing = false;
                 //部分结账 是否平账
                 $newTotalAccounts = 0;
-                if ($accounts_type == 'receipts') $newTotalAccounts = bcadd($totalAccounts, $money, 2) - 0;
-                if ($accounts_type == 'refund') $newTotalAccounts = bcsub($totalAccounts, $money, 2) - 0;
+                if ($accounts_type == 'receipts') $newTotalAccounts = bcadd($totalAccounts, $money, 2) - 0;//收款
+                if ($accounts_type == 'refund') $newTotalAccounts = bcsub($totalAccounts, $money, 2) - 0;//退款
                 if (($totalConsume - $newTotalAccounts) == 0) $balancing = true;
                 if ($detail_id > 0 && $item_id > 0 && $balancing == true && !empty($payment_id) && $payment_id > 0) {
                     //入账
