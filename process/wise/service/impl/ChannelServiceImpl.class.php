@@ -629,4 +629,6 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
     public function updateChannelReceivable(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
         return ChannelDao::instance()->updateChannelReceivable($whereCriteria, $arrayUpdateData, $update_type);
     }
+
+
 }

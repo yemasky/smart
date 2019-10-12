@@ -43,7 +43,7 @@ class EmployeeAction extends \BaseAction {
         $successService = new \SuccessService();
         return $objResponse->successServiceResponse($successService);
     }
-
+    //部门职位
     protected function doSectorPosition(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $method = $objRequest->method;
         if (!empty($method)) {
@@ -52,7 +52,7 @@ class EmployeeAction extends \BaseAction {
         $company_id    = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         $channel_id    = $objRequest->channel_id;
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('is_delete', 0)->setHashKey('sector_id');
+        $whereCriteria->EQ('company_id', $company_id)->EQ('is_delete', 0)->setHashKey('sector_id');//->EQ('channel_id', $channel_id)
         $arrayChannelSector = EmployeeServiceImpl::instance()->getChannelSector($whereCriteria);
         if (!empty($arrayChannelSector)) {
             foreach ($arrayChannelSector as $key => $arrayData) {
@@ -74,19 +74,19 @@ class EmployeeAction extends \BaseAction {
         $s_id             = decode($objRequest->s_id);
         if ($sector_type == 'edit' && $s_id > 0) {//编辑
             $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('sector_id', $s_id);
+            $whereCriteria->EQ('company_id', $company_id)->EQ('sector_id', $s_id);//->EQ('channel_id', $channel_id)
             EmployeeServiceImpl::instance()->updateChannelSector($whereCriteria, ['sector_name' => $sector_name]);
             return $objResponse->successServiceResponse($successService);
         } elseif ($sector_type == 'sector' || $sector_type == 'position') {//部门
             $sectorData['company_id']  = $company_id;
-            $sectorData['channel_id']  = $channel_id;
+            //$sectorData['channel_id']  = $channel_id;
             $sectorData['sector_name'] = $sector_name;
             $sectorData['sector_type'] = $sector_type;
             if ($sector_father_id > 0) $sectorData['sector_father_id'] = $sector_father_id;
             $sector_id = EmployeeServiceImpl::instance()->saveChannelSector($sectorData);
             if (empty($sector_father_id) && $sector_type == 'sector') {
                 $whereCriteria = new \WhereCriteria();
-                $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('sector_id', $sector_id);
+                $whereCriteria->EQ('company_id', $company_id)->EQ('sector_id', $sector_id);//->EQ('channel_id', $channel_id)
                 EmployeeServiceImpl::instance()->updateChannelSector($whereCriteria, ['sector_father_id' => $sector_id]);
             }
             $successService->setData(['sector_id' => $sector_id, 's_id' => encode($sector_id)]);
@@ -104,7 +104,7 @@ class EmployeeAction extends \BaseAction {
         $s_id           = decode($objRequest->s_id);
         if ($s_id > 0) {//编辑
             $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('sector_id', $s_id);
+            $whereCriteria->EQ('company_id', $company_id)->EQ('sector_id', $s_id);//->EQ('channel_id', $channel_id)
             $is_delete = getDateTimeId();
             EmployeeServiceImpl::instance()->updateChannelSector($whereCriteria, ['is_delete' => $is_delete, 'valid' => '0']);
             return $objResponse->successServiceResponse($successService);
@@ -122,7 +122,7 @@ class EmployeeAction extends \BaseAction {
             return $this->doMethod($objRequest, $objResponse);
         }
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->setHashKey('sector_id');
+        $whereCriteria->EQ('company_id', $company_id)->setHashKey('sector_id');//->EQ('channel_id', $channel_id)
         $arrayChannelSector = EmployeeServiceImpl::instance()->getChannelSector($whereCriteria);
         if (!empty($arrayChannelSector)) {
             foreach ($arrayChannelSector as $key => $arrayData) {
@@ -133,7 +133,7 @@ class EmployeeAction extends \BaseAction {
         $imagesManagerUrl = ModuleServiceImpl::instance()->getEncodeModuleId('Upload', 'manager');
         //权限
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1')->setHashKey('role_id');
+        $whereCriteria->EQ('company_id', $company_id)->EQ('valid', '1')->setHashKey('role_id');//->EQ('channel_id', $channel_id)
         $arrayChannelRole = RoleServiceImpl::instance()->getRole($whereCriteria, 'role_id,role_name,tag');
         $arrayResule      = ['channelSectorList' => $arrayChannelSector, 'imagesUploadUrl' => $imagesUploadUrl, 'imagesManagerUrl' => $imagesManagerUrl,
             'channelRoleList' => $arrayChannelRole];

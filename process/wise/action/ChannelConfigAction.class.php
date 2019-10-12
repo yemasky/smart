@@ -6,7 +6,9 @@
  */
 
 namespace wise;
-
+/*
+//Channel 配置
+*/
 class ChannelConfigAction extends \BaseAction {
 	protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 
@@ -36,10 +38,8 @@ class ChannelConfigAction extends \BaseAction {
 		if(!empty($method)) {
 			$method = 'doMethod' . ucfirst($method);
 			$this->$method($objRequest, $objResponse);
-
 			return true;
 		}
-
 		return false;
 	}
 
@@ -89,6 +89,8 @@ class ChannelConfigAction extends \BaseAction {
 		//
 		$objResponse->channel_config_name = $channel_config;
 		$objResponse->channel_config_key  = $method;
+		//设置 nav 企业管理->配置企业->配置属性
+
 		$this->doMethod($objRequest, $objResponse);
 	}
 
@@ -107,9 +109,17 @@ class ChannelConfigAction extends \BaseAction {
 		$arrayDataList              = ChannelServiceImpl::instance()->getChannelItemHash($objRequest, $objResponse);
 		$objResponse->itemList      = json_encode($arrayDataList);
 	}
-
+    //菜式配置
 	protected function doMethodCuisine(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $company_id     = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id     = $objRequest->channel_id;
 
+        $objRequest->channel_config = 'cuisine';//菜式
+
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
+        $arrayDataList              = CuisineServiceImpl::instance()->getCuisine($whereCriteria);
+        $objResponse->itemList      = json_encode($arrayDataList);
 	}
 
 	protected function doMethodTable(\HttpRequest $objRequest, \HttpResponse $objResponse) {

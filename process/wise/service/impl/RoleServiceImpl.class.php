@@ -27,21 +27,22 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
             $whereCriteria->setHashKey('module_id');
             $cacheRoleEmployeeModuleId = CacheConfig::getCacheId('employee_module', $company_id, $employee_id);
             $arrayEmployeeRoleModule   = RoleDao::instance()->DBCache($cacheRoleEmployeeModuleId)->getRoleModule($whereCriteria);
-            //公司权限[没有用到公司权限]
+            //公司权限
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id);
             $whereCriteria->setHashKey('module_id');
             $cacheCompanyModuleId = CacheConfig::getCacheId('module_company', $company_id, $employee_id);
             $arrayModuleCompany   = ModuleDao::instance()->DBCache($cacheCompanyModuleId)->getModuleCompany($whereCriteria, 'module_id');
-            //企业权限
+            //channel权限[公司下面有很多酒店餐馆组成，现在模式是 1酒店有餐馆等；可以拓展模式是 公司下面 多酒店，每个酒店多餐馆（暂未实现）]
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('channel_id', $channel_id);
             $whereCriteria->setHashKey('module_id');
             $cacheChannelModuleId = CacheConfig::getCacheId('module_channel', $channel_id, $employee_id);
             $arrayModuleChannel   = ModuleDao::instance()->DBCache($cacheChannelModuleId)->getModuleChannel($whereCriteria, 'module_id');
-            if (!empty($arrayEmployeeRoleModule) && !empty($arrayModuleChannel)) {
+            //合并权限
+            if (!empty($arrayEmployeeRoleModule) && !empty($arrayModuleCompany)) {
                 foreach ($arrayEmployeeRoleModule as $module_id => $arrayEmployeeModule) {
-                    if (isset($arrayModuleChannel[$module_id])) {
+                    if (isset($arrayModuleCompany[$module_id])) {
                         $arrayEmployeeModuleId[$module_id] = $module_id;
                     }
                 }

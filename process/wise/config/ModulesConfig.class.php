@@ -41,7 +41,10 @@ class ModulesConfig extends \ModulesConfig {
 		 'room'=>
 			[9=>[0=>['朝街房','Front View Room'],1=>['背街房','Rear View Room'],2=>['城景房','City View Room'],3=>['园景房','Garden View Room'],
 				 4=>['海景房','Sea View Room'],5=>['湖景房','Lake View Room'],6=>['山景房','Mountain View Room'],7=>['无烟房','Non Smoking'],
-                 8=>['残疾人客房 ','Handicapped Room']]]
+                 8=>['残疾人客房 ','Handicapped Room']]],
+         'cuisine'=>
+            [12=>[['闽菜',''],['湘菜',''],['川菜',''],['粤菜',''],['苏菜',''],['徽菜',''],['鲁菜','']],
+             13=>[['变态辣',''],['很辣',''],['辣',''],['微辣',''],['不辣',''],['甜','']]]
 		];
 
 	public static $images_config = ['layout'=>'房型','room'=>'房间','cuisine'=>'菜式','table'=>'餐桌', 'delivery'=>'送餐配置','meeting'=>'会议',

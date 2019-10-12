@@ -47,7 +47,7 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
         $sectorChildren   = $objRequest->sectorChildren;
         //
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
+        $whereCriteria->EQ('company_id', $company_id);//->EQ('channel_id', $channel_id)
         if (!empty($searchValue = $objSearch->getPredicateObject())) {
             //$whereCriteria->MATCH('employee_name', $searchValue['$']);
             $whereCriteria->LIKE('employee_name', '%' . $searchValue['$'] . '%');
@@ -108,7 +108,7 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
 
     public function getEmployeeChannelSectorCache($company_id, $employee_id, $channel_id, $isUpdate = false) {
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('employee_id', $employee_id);
+        $whereCriteria->EQ('company_id', $company_id)->EQ('employee_id', $employee_id);//->EQ('channel_id', $channel_id)
         $cacheEmployeeSectorId = CacheConfig::getCacheId('employee_sector', $company_id, $employee_id);
         if ($isUpdate) {
             $arrayEmployeeSector = EmployeeDao::instance()->DBCache($cacheEmployeeSectorId, -1)->getEmployeeSector($whereCriteria);

@@ -88,7 +88,7 @@
 		$ocLazyLoad.load(["<%$__RESOURCE%>editor/kindeditor/themes/default/default.css", "<%$__RESOURCE%>editor/kindeditor/lang/zh-CN.js"]);
 		$scope.itemList =  eval('(<%$itemList%>)');
 		$scope.arrayConfig = eval('(<%$arrayConfig%>)');$scope.arrayChannel = eval('(<%$arrayChannel%>)');
-		$scope.arrayDefaultAttr = eval('(<%$arrayDefaultAttr%>)');
+		$scope.arrayDefaultAttr = eval('(<%$arrayDefaultAttr%>)');console.log($scope.arrayDefaultAttr);
 		$scope.haveSelectRoom = {};$scope.attrSelectRoom = {};$scope.haveSelectImages = {};$scope.extend_attr = {};
 		//begin commom 右边数据/////////////////////////////////////////////////////////////////////////////////////
         var arrayAttribute = eval('(<%$arrayAttribute%>)'), configArrtibute = {};
