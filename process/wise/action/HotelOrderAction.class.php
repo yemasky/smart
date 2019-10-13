@@ -15,6 +15,7 @@ class HotelOrderAction extends \BaseAction {
         $this->setDisplay();
         $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
         $company_id       = $objLoginEmployee->getCompanyId();
+        $_self_module = $objResponse->getResponse('_self_module');
         //获取channel
         $channel_id                    = $objRequest->channel_id;
         $this->Booking_operationEntity = new Booking_operationEntity();
@@ -24,8 +25,8 @@ class HotelOrderAction extends \BaseAction {
         $this->Booking_operationEntity->setEmployeeName($objLoginEmployee->getEmployeeName());
         $this->Booking_operationEntity->setCompanyId($company_id);
         $this->Booking_operationEntity->setChannelId($channel_id);
-        $this->Booking_operationEntity->setModuleId($objResponse->__module_id);
-        $this->Booking_operationEntity->setModuleName($objResponse->__module_name);
+        $this->Booking_operationEntity->setModuleId($_self_module['module_id']);
+        $this->Booking_operationEntity->setModuleName($_self_module['module_name']);
         $this->Booking_operationEntity->setMethod($objRequest->method);
         $request = json_encode($objRequest->get()) . json_encode($objRequest->getInput()) . json_encode($objRequest->getPost());
         $this->Booking_operationEntity->setRequest($request);

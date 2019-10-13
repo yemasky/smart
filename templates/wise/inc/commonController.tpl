@@ -12,7 +12,6 @@
 			}
 			$scope.setCommonSetting(common);
 		}
-		$scope.setActionNavName('<%$__module_id%>');
     });
 </script>
 <div class="p-h-md p-xs bg-white box-shadow pos-rlt"><i class="fa fa-building-o"> </i> <span class="no-margin" ng-bind-html="action_nav_name"></span> <span class="badge pull-right">{{_baseDateTime() | date:"yyyy-MM-dd"}}</span></div>

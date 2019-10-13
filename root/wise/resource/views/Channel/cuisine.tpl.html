@@ -18,30 +18,27 @@
                 <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
                     <a>图片</a>
                 </li>
-                <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;getRoomItem()">
-                    <a>房间</a>
-                </li>
             </ul>
             <div class="tab-content">
                 <div ng-show="activeTab==1">
                     <div class="form-group m-h-n clearfix">
                       <div class="col-sm-3">
-                        <label>房型中文名称</label>
+                        <label>菜式中文名称</label>
                         <input class="form-control" name="item_name" ng-model="param.item_name" required type="text">
                       </div>
                       <div class="col-sm-3">
-                        <label>房型英文名称</label>
+                        <label>菜式英文名称</label>
                         <input class="form-control" name="item_en_name" ng-model="param.item_en_name" type="text">
                       </div>
                     </div>
                     <div class="form-group m-h-n clearfix">
                       <div class="col-sm-2">
-                        <label>最多住几人</label>
-                        <input class="form-control w-xs" name="number_max" string-to-number ng-model="param.number_max" required type="number">
+                        <label>库存</label>
+                        <input class="form-control w-xs" name="cuisine_inventory" string-to-number ng-model="param.cuisine_inventory" required type="number">
                       </div>
                       <div class="col-sm-2">
-                        <label>最多住小孩</label>
-                        <input class="form-control w-xs" name="number_min" string-to-number ng-model="param.number_min" type="number">
+                        <label>售价</label>
+                        <input class="form-control w-xs" name="cuisine_price" string-to-number ng-model="param.cuisine_price" type="number">
                       </div>
                       <div class="col-sm-2">
                         <label>最多加床</label>
@@ -66,9 +63,9 @@
                     </div>
                     <div class="form-group m-h-n clearfix">
                         <div class="col-sm-6"><label>特色描述</label>
-                        <input class="form-control" name="describe" ng-model="param.describe" type="text"></div>
+                        <input class="form-control" name="cuisine_specialty" ng-model="param.cuisine_specialty" type="text"></div>
                         <div class="col-sm-6"><label>特色描述(英文)</label>
-                        <input class="form-control" name="describe_en" ng-model="param.describe_en" type="text"></div>
+                        <input class="form-control" name="cuisine_specialty_en" ng-model="param.cuisine_specialty_en" type="text"></div>
                     </div>
                     <div class="form-group">
                       <label>房型主图</label>
@@ -177,40 +174,6 @@
                       </div>
                       
                     </div>
-                </div>
-                <div ng-show="activeTab==4">
-                        <div class="list-group no-radius clear" id="selectRoom">
-                            <input id="channel_item_multipe_delete" type="hidden" value="">
-                        	<div class="list-group-item col-sm-2 m-xs" ng-repeat="(room_id, room) in haveSelectRoom">
-                            	<span class="pull-left w-thumb m-r b-b-2x"><img class="img-responsive" ng-src="/resource/images/room.png" src="/resource/images/room.png"></span>
-                             	{{room.item_name}}  
-                                <label class="checkbox-inline ui-checks pull-right">
-                                    <input type="checkbox" name="channel_item_multipe[{{room.item_id}}]" ng-click="selectRoom($event, room_id)" value="{{room.item_id}}" checked>
-                                    <i></i>
-                                </label>
-                            </div>
-                        </div>
-                    	<div class="buliding clear m-b" ng-repeat="(buliding_key, buliding) in roomList">
-                        	<div class="m-b-xs"><i class="fa fa-building text-xs"> {{buliding_key}}楼栋</i></div>
-                        	<div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
-                            	<span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
-                            	<div class="list-group no-radius">
-                                    <div class="list-group-item col-sm-2 m-xs" ng-repeat="(i, room) in floor">
-                                      <span class="pull-left w-thumb m-r b-b-2x"><img class="img-responsive" ng-src="{{_resource}}images/room.png"></span>
-                                      <div class="clear">
-                                        <span class="font-bold block">房间号:<span>{{room.item_name}}</span> 
-                                        <label class="checkbox-inline ui-checks pull-right">
-                                            <input type="checkbox" id="item_room_{{room.item_id}}" ng-model="room[room.item_id]" ng-click="selectRoom($event, room.item_id);" value="{{room.item_id}}">
-                                            <i></i>
-                                        </label>
-                                            
-                                        </span> 
-                                        {{room.describe}}
-                                      </div>
-                                    </div>
-                                </div> 
-                        	</div>
-                    	</div>
                 </div>
             </div>
         </div>

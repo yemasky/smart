@@ -555,9 +555,10 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 				}
 				if(typeof(common._self_module) != 'undefined') {
 					$rootScope._self_module = common._self_module;
+					$scope.setActionNavName(common._self_module['module_id']);
 				}
                 if(angular.isDefined(common.business_day)) $rootScope.business_day = $scope.business_day = common.business_day;
-				if(angular.isDefined(common.__module_id)) $scope.setActionNavName(common.__module_id);
+				
 			}
 		};
         $scope.getBusinessDay = function(format) {

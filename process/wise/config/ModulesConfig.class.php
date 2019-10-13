@@ -15,7 +15,7 @@ class ModulesConfig extends \ModulesConfig {
 		'Sport'=>'Sport','Shop'=>'Shop','Service'=>'Service','Tour'=>'Tour'];
     public static $channel_config = [
         'Hotel'  =>['layout'=>'房型','room'=>'房间'],
-        'Meal'   =>['cuisine'=>'菜式','table'=>'餐桌', 'delivery'=>'送餐配置'],
+        'Meal'   =>['cuisineCategory'=>'菜式类别','cuisine'=>'菜式','table'=>'餐桌', 'delivery'=>'送餐配置'],
         'Meeting'=>['meeting'=>'会议'],
         'Sport'  =>['sport'=>'娱乐'],
         'Shop'   =>['shop'=>'商品'],

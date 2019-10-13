@@ -96,9 +96,10 @@ class ModuleServiceImpl extends \BaseServiceImpl implements ModuleService {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('module', $module)->EQ('action', $action);
         $arrayModuleId = ModuleDao::instance()->getModule($whereCriteria, 'module_id');
-        if(!empty($arrayModuleId))
+        if(!empty($arrayModuleId)) {
             $arrayModuleId = array_keys($arrayModuleId);
             return \Encrypt::instance()->encode($arrayModuleId[0], getDay());
+        }
         return null;
     }
 

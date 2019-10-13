@@ -109,6 +109,18 @@ class ChannelConfigAction extends \BaseAction {
 		$arrayDataList              = ChannelServiceImpl::instance()->getChannelItemHash($objRequest, $objResponse);
 		$objResponse->itemList      = json_encode($arrayDataList);
 	}
+	//菜式类别
+    protected function doMethodCuisineCategory(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $company_id     = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id     = $objRequest->channel_id;
+
+        $objRequest->channel_config = 'cuisine';//菜式
+
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
+        $arrayDataList              = CuisineServiceImpl::instance()->getCuisine($whereCriteria);
+        $objResponse->itemList      = json_encode($arrayDataList);
+    }
     //菜式配置
 	protected function doMethodCuisine(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $company_id     = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();

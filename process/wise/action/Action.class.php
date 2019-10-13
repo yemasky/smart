@@ -112,8 +112,6 @@ class Action {
         $objRequest->setModule($module);
 
         //common setting
-        $objResponse->__module_id   = $module_id;
-        $objResponse->__module_name = $module_name;
         $objResponse->home_channel  = \Encrypt::instance()->encode('home', getDay());
         //$objResponse->index_url       = 'app.do';
         //$objResponse->check_login_url = \BaseUrlUtil::getHtmlUrl(['method' => 'checkLogin']);
