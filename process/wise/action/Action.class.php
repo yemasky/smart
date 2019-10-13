@@ -85,7 +85,6 @@ class Action {
                         $module         = $arrayEmployeeModule[$module_id]['module'];
                         $action         = !empty($arrayEmployeeModule[$module_id]['action']) ? $arrayEmployeeModule[$module_id]['action'] : $action;
                         $module_channel = $arrayEmployeeModule[$module_id]['module_channel'];
-                        $module_name    = $arrayEmployeeModule[$module_id]['module_name'];
                     } else {
                         return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['no_module']['code']);
                     }

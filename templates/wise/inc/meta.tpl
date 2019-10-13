@@ -502,8 +502,18 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		};
 		$rootScope._self_module = '';
 		$scope.setActionNavName = function(module_id) {
-			var menus = $scope.menus, nav = '', _self_module = $rootScope._self_module;
-			if(typeof(menus[module_id]) != 'undefined') {
+			var menus = $scope.hashEmployeeModule, nav = '', _self_module = $rootScope._self_module;			getChannelNav(_self_module);
+			function getChannelNav(_this_module) {console.log(nav);
+				if(typeof(menus[_this_module.module_id]) != 'undefined') {
+					var href = 'href="/#!/app/'+menus[_this_module.module_id].module_channel+'//'+menus[_this_module.module_id].url+'"';
+					nav = '<a '+href+'>' + menus[_this_module.module_id].module_name + '</a> <i class="fa fa-angle-double-right"></i> ' + nav;
+				} 
+				if(typeof(menus[_this_module.module_father_id]) > 0) {
+					getChannelNav(menus[_self_module.module_father_id]);
+				}
+			}
+			
+			/*if(typeof(menus[module_id]) != 'undefined') {
 				nav = menus[module_id].module_name;
 			} else if(_self_module != '' && _self_module.module_id == module_id) {
 				nav = _self_module.module_name;
@@ -519,11 +529,9 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 						          +'ng-click="setActionNavName('+father_id+')"';
 						nav = '<a '+href+'>' + menus[father_id].module_name + '</a> <i class="fa fa-angle-double-right"></i> ' + nav;
 						module_id = father_id;
-					} else {
-						break;
-					}
+					} 
 				}
-			}
+			}*/
             if(nav == '') nav = 'Welcome';//angular.element('#action_nav_name').html(nav);
 			$scope.action_nav_name = '' + nav;
 		};
