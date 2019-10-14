@@ -90,6 +90,8 @@ class ChannelConfigAction extends \BaseAction {
 		$objResponse->channel_config_name = $channel_config;
 		$objResponse->channel_config_key  = $method;
 		//设置 nav 企业管理->配置企业->配置属性
+        $arrayEmployeeModule = ModuleServiceImpl::instance()->getAllModuleCache();
+        $objResponse->nav  = CommonServiceImpl::instance()->getNavbar($arrayEmployeeModule, $objResponse->getResponse('_self_module'));
 
 		$this->doMethod($objRequest, $objResponse);
 	}
@@ -202,7 +204,7 @@ class ChannelConfigAction extends \BaseAction {
 
 	public function doSaveChannelItem(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-		$channel_id = $objRequest->channel_id;
+        $channel_id = decode($objRequest->c_id, getDay());
 		$arrayData  = $objRequest->getInput();
 		if(empty($arrayData)) {
 			$objResponse->errorResponse('000009');
@@ -242,7 +244,7 @@ class ChannelConfigAction extends \BaseAction {
 	//保存属性值
 	public function doSaveChannelItemExtend(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-		$channel_id = $objRequest->channel_id;
+        $channel_id = decode($objRequest->c_id, getDay());
 		$item_id    = $objRequest->item_id;
 
 		$arrayAttr       = $objRequest->arrayAttr;
@@ -326,7 +328,7 @@ class ChannelConfigAction extends \BaseAction {
 
 	protected function getAttributeValue(\HttpRequest $objRequest, \HttpResponse $objResponse) {
 		$company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-		$channel_id = $objRequest->channel_id;
+        $channel_id = decode($objRequest->c_id, getDay());
 		$item_id          = $objRequest->item_id;
 		$item_category_id = $objRequest->item_category_id;
         $whereCriteria = new \WhereCriteria();

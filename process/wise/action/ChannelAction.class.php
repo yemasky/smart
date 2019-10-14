@@ -11,6 +11,7 @@ namespace wise;
 */
 class ChannelAction extends \BaseAction {
     protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objResponse->nav = '';
     }
 
     protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -131,6 +132,9 @@ class ChannelAction extends \BaseAction {
         }
         //
         $arrayConfig = ModulesConfig::$channel_config[$arrayChannel['channel']];
+        //设置 nav 企业管理->配置企业->配置属性
+        $arrayEmployeeModule = ModuleServiceImpl::instance()->getAllModuleCache();
+        $objResponse->nav  = CommonServiceImpl::instance()->getNavbar($arrayEmployeeModule, $objResponse->getResponse('_self_module'));
 
         $objResponse->arrayChannel = json_encode($arrayChannel);
         $objResponse->arrayConfig  = json_encode($arrayConfig);

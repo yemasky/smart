@@ -147,7 +147,7 @@
 						var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
 						$httpService.header('method', 'attribute');
                         var postParam = {};postParam.param = '';
-						$httpService.post('app.do?channel=<%$channel_config_url%>&id=<%$channel_id%>&item_category_id='+item_id, postParam, function(result){
+						$httpService.post('app.do?channel=<%$channel_config_url%>&c_id=<%$channel_id%>&item_category_id='+item_id, postParam, function(result){
 							if(result.data.success == 1) {
 								if(result.data.item != '') setAttribute(result.data.item);
 							} 
@@ -172,7 +172,7 @@
 			$scope.param = setItemForm;
 			$httpService.header('method', 'save');
 			var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
-			$httpService.post('app.do?channel=<%$channel_config_url%>&id=<%$channel_id%>', $scope, function(result){
+			$httpService.post('app.do?channel=<%$channel_config_url%>&c_id=<%$channel_id%>', $scope, function(result){
 				$scope.beginLoading =! $scope.beginLoading;
 				if(result.data.success == 1) {
 					myArrtibute.hide();
@@ -189,7 +189,7 @@
 			if($scope.roomList != '') {setAttrRoom($scope.roomList);return;}
 			$httpService.header('method', 'get');
 			var loading = $alert({content: 'Loading Room Data... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
-			$httpService.post('app.do?channel=<%$room_url%>&id=<%$channel_id%>', $scope, function(result){
+			$httpService.post('app.do?channel=<%$room_url%>&c_id=<%$channel_id%>', $scope, function(result){
                 $httpService.deleteHeader('method');
 				if(result.data.success == 1) {
 					$scope.roomList =  result.data.item;

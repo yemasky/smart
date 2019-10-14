@@ -532,7 +532,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					} 
 				}
 			}*/
-            if(nav == '') nav = 'Welcome';//angular.element('#action_nav_name').html(nav);
+            //if(nav == '') nav = 'Welcome';//angular.element('#action_nav_name').html(nav);
 			$scope.action_nav_name = '' + nav;
 		};
         $scope.getChannelModule = function(module_id) {

@@ -9,6 +9,7 @@ namespace wise;
 
 class HomeAction extends \BaseAction {
     protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objResponse->nav = 'welcome';
     }
 
     protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {

@@ -22,7 +22,7 @@
                           <tr ng-repeat="(consume_id, data) in consume">
                               <td class="w text-nowrap b-r">{{dataConsumeFather[data.channel_consume_father_id].consume_title}}</td>
                               <td class="w b-r">{{data.consume_title}}</td>
-                              <td class="w b-r">{{data.consume_title_en}}</td>
+                              <td class="w b-r">{{data.consume_en_title}}</td>
                               <td class="w b-r">
                                 <i ng-if="data.valid=='1'" class="fas fa-check-circle text-success"></i>
                                 <i ng-if="data.valid=='0'" class="fa fa-ban text-warning"></i>

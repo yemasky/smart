@@ -36,6 +36,7 @@ class Booking_consumeEntity extends \Entity {
 	protected $original_price = 0.00;
 	protected $consume_status;
 	protected $consume_title;
+	protected $consume_en_title;
 	protected $consume_price = 0.00;
     protected $consume_price_total = 0.00;
     protected $consume_profit = 0.00;
@@ -418,6 +419,20 @@ class Booking_consumeEntity extends \Entity {
      */
     public function setConsumeTitle($consume_title) {
         $this->consume_title = $consume_title;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getConsumeEnTitle() {
+        return $this->consume_en_title;
+    }
+
+    /**
+     * @param mixed $consume_en_title
+     */
+    public function setConsumeEnTitle($consume_en_title) {
+        $this->consume_en_title = $consume_en_title;
     }
 
 	/**

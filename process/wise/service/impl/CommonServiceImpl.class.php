@@ -30,4 +30,14 @@ class CommonServiceImpl extends \BaseServiceImpl implements CommonService {
         CommonDao::instance()->rollback();
     }
 
+    public function getNavbar($arrayEmployeeModule, $thisModule, $nav = '') {
+        $href = 'href="/#!/app/' . $thisModule['module_channel'] . '//'.\Encrypt::instance()->encode($thisModule['module_id'], getDay()).'"';
+        //'<a ' . $href . '>' .  </a>
+        $nav = $thisModule['module_name'] . ' <i class="fa fa-angle-double-right"></i> ' . $nav;
+        if(isset($arrayEmployeeModule[$thisModule['module_father_id']]) && $thisModule['module_father_id'] > 0) {
+            $nav = $this->getNavbar($arrayEmployeeModule, $arrayEmployeeModule[$thisModule['module_father_id']], $nav);
+        }
+        return $nav;
+    }
+
 }
