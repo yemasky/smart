@@ -153,7 +153,7 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
     //get channel_item
     public function getChannelItemHash(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $company_id     = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id     = $objRequest->channel_id;
+        $channel_id = decode($objRequest->c_id, getDay());
         $channel_config = $objRequest->channel_config;
 
         $whereCriteria = new \WhereCriteria();
