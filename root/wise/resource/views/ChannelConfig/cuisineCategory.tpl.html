@@ -12,7 +12,7 @@
                 <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
                     <a>基本信息</a>
                 </li>
-                <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
+				<li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
                     <a>属性</a>
                 </li>
                 <li ng-class="{active:activeTab==3}" ng-click="activeTab=3">
@@ -23,52 +23,26 @@
                 <div ng-show="activeTab==1">
                     <div class="form-group m-h-n clearfix">
                       <div class="col-sm-3">
-                        <label>菜式中文名称</label>
-                        <input class="form-control" name="item_name" ng-model="param.item_name" required type="text">
+                        <label>菜式类别中文名称</label>
+                        <input class="form-control" name="cuisine_name" ng-model="param.cuisine_name" required type="text">
                       </div>
                       <div class="col-sm-3">
-                        <label>菜式英文名称</label>
-                        <input class="form-control" name="item_en_name" ng-model="param.item_en_name" type="text">
-                      </div>
-                    </div>
-                    <div class="form-group m-h-n clearfix">
-                      <div class="col-sm-2">
-                        <label>库存</label>
-                        <input class="form-control w-xs" name="cuisine_inventory" string-to-number ng-model="param.cuisine_inventory" required type="number">
-                      </div>
-                      <div class="col-sm-2">
-                        <label>售价</label>
-                        <input class="form-control w-xs" name="cuisine_price" string-to-number ng-model="param.cuisine_price" type="number">
-                      </div>
-                      <div class="col-sm-2">
-                        <label>最多加床</label>
-                        <input class="form-control w-xs" name="item_attr3_value" string-to-number ng-model="param.item_attr3_value" type="number">
+                        <label>菜式类别英文名称</label>
+                        <input class="form-control" name="cuisine_en_name" ng-model="param.cuisine_en_name" type="text">
                       </div>
                     </div>
                     <div class="form-group">
                         <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
                         <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
                     </div>
-                    <div class="form-group">
-                        <label>房型类型</label>
-                        <div ng-repeat="(i, defaultAttr) in arrayDefaultAttr" ng-if="i==1">
-                        <div class="checkbox" ng-repeat="(j, attr) in defaultAttr">
-                          <label class="checkbox-inline ui-checks" ng-repeat="(k, attribute) in attr">
-                            <input type="checkbox" class="attr_value_1" name="attr_value[1][{{i}}-{{j}}-{{k}}]" value="{{attribute[0]}}">
-                            <i></i>
-                            {{attribute[0]}}
-                          </label>
-                        </div>
-                        </div>
-                    </div>
                     <div class="form-group m-h-n clearfix">
                         <div class="col-sm-6"><label>特色描述</label>
                         <textarea class="form-control" name="cuisine_specialty" ng-model="param.cuisine_specialty" rows="2"></textarea></div>
                         <div class="col-sm-6"><label>特色描述(英文)</label>
-                        <textarea class="form-control" name="cuisine_specialty_en" ng-model="param.cuisine_specialty_en" rows="2"></textarea></div>
+                        <textarea class="form-control" name="cuisine_en_specialty" ng-model="param.cuisine_en_specialty" rows="2"></textarea></div>
                     </div>
                     <div class="form-group">
-                      <label>房型主图</label>
+                      <label>菜式类别主图</label>
                       <div class="w-xl w-auto-xs">
                         <div class="box bg-white">
                           <div class="box-col w-auto-xs v-m">
@@ -83,7 +57,7 @@
                       </div>
                     </div>
                 </div>
-                <div ng-show="activeTab==2">
+				<div ng-show="activeTab==2">
                 	<div class="list-group no-border-sm" ng-repeat="(father_id, childen) in configArrtibute[0]" ng-if="childen.attribute_id>1">
                       <div class="panel-heading no-border no-radius b-b b-light">{{childen.attribute_name}}</div>
                       <div class="list-group-item" ng-repeat="(j, sub) in configArrtibute[father_id]">
@@ -155,7 +129,7 @@
                     </div>
                 </div>
                 <div ng-show="activeTab==3">
-                    <label>房型图片</label>                      
+                    <label>菜式类别图片</label>                      
                     <div class="clear" id="selectImages">
                     	<div class="box-col w-auto-xs v-m col-sm-1 w-thumb-lg m-r-xs no-padding" ng-repeat="(url, title) in haveSelectImages">
                             <div><img width="128" height="128" class="b p-xs" ng-src="{{url}}" /></div>
@@ -179,7 +153,8 @@
         </div>
       </div>
       <div class="aside-footer panel-footer">
-        <input type="hidden" name="item_id" value="" ng-model="param.item_id" >
+        <input type="hidden" name="cuisine_id" value="" ng-model="param.cuisine_id" >
+		<input type="hidden" name="cuisine_is_category" value="1" ng-model="param.cuisine_is_category" >
         <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
         <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
       </div>

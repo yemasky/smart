@@ -20,7 +20,7 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
 
     //Cuisine
     public function getCuisine(\WhereCriteria $whereCriteria, $field = '') {
-        return CuisineDao::instance()->getCuisine($whereCriteria);
+        return CuisineDao::instance()->getCuisine($whereCriteria, $field);
     }
 
     public function saveCuisine($arrayData, $insert_type = 'INSERT') {
@@ -31,4 +31,16 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
         return CuisineDao::instance()->updateCuisine($whereCriteria, $arrayUpdateData);
     }
 
+    //
+    public function deleteAttributeValue(\WhereCriteria $whereCriteria) {
+        return CuisineDao::instance()->deleteAttributeValue($whereCriteria);
+    }
+
+    public function batchInsertAttrValue($arrayData, $insert_type = 'INSERT') {
+        return CuisineDao::instance()->batchInsertAttributeValue($arrayData, $insert_type);
+    }
+
+    public function getAttributeValue($whereCriteria, $field = '') {
+        return CuisineDao::instance()->getAttributeValue($whereCriteria, $field);
+    }
 }

@@ -103,7 +103,7 @@
 		$ocLazyLoad.load(["<%$__RESOURCE%>editor/kindeditor/themes/default/default.css", "<%$__RESOURCE%>editor/kindeditor/lang/zh-CN.js"]);
 		$scope.itemList =  eval('(<%$itemList%>)');
 		$scope.arrayConfig = eval('(<%$arrayConfig%>)');$scope.arrayChannel = eval('(<%$arrayChannel%>)');
-		$scope.arrayDefaultAttr = eval('(<%$arrayDefaultAttr%>)');console.log($scope.arrayDefaultAttr);
+		$scope.arrayDefaultAttr = eval('(<%$arrayDefaultAttr%>)');
 		$scope.haveSelectRoom = {};$scope.attrSelectRoom = {};$scope.haveSelectImages = {};$scope.extend_attr = {};
 		//begin commom 右边数据/////////////////////////////////////////////////////////////////////////////////////
         var arrayAttribute = eval('(<%$arrayAttribute%>)'), configArrtibute = {};
@@ -123,7 +123,7 @@
 				//$('#selectRoom').remove();
 			}; 
 			$scope.param = param;
-            myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+'-<%$channel_config_name%>', content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: '<%$__RESOURCE%>views/Channel/'+key+'.tpl.html'});
+            myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+'-<%$channel_config_name%>', content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: '<%$__RESOURCE%>views/ChannelConfig/'+key+'.tpl.html'});
             myArrtibute.$promise.then(function() {
 				myArrtibute.show();
 				$scope.setImage();
@@ -163,11 +163,11 @@
 						$httpService.header('method', 'attribute');
                         var postParam = {};postParam.param = '';
 						$httpService.post('app.do?channel=<%$channel_config_url%>&c_id=<%$channel_id%>&item_category_id='+item_id, postParam, function(result){
+							$httpService.deleteHeader('method');
 							if(result.data.success == 1) {
 								if(result.data.item != '') setAttribute(result.data.item);
 							} 
 							loading.hide();
-							$httpService.deleteHeader('method');
 						});
                         //
                         //<%/if%>
@@ -189,11 +189,11 @@
 			var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
 			$httpService.post('app.do?channel=<%$channel_config_url%>&c_id=<%$channel_id%>', $scope, function(result){
 				$scope.beginLoading =! $scope.beginLoading;
+				$httpService.deleteHeader('method');
 				if(result.data.success == 1) {
 					myArrtibute.hide();
 					$scope.itemList =  result.data.item;
 				} 
-                $httpService.deleteHeader('method');
 				loading.hide();
 			});
 		};

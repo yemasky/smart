@@ -135,7 +135,6 @@ class ChannelAction extends \BaseAction {
         //设置 nav 企业管理->配置企业->配置属性
         $arrayEmployeeModule = ModuleServiceImpl::instance()->getAllModuleCache();
         $objResponse->nav  = CommonServiceImpl::instance()->getNavbar($arrayEmployeeModule, $objResponse->getResponse('_self_module'));
-
         $objResponse->arrayChannel = json_encode($arrayChannel);
         $objResponse->arrayConfig  = json_encode($arrayConfig);
         $objResponse->channel_id   = encode($channel_id, getDay());

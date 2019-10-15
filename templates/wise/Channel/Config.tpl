@@ -28,7 +28,12 @@
 		$scope.arrayChannel = eval('(<%$arrayChannel%>)');
 		$scope.config = function(key) {
 			$httpService.header('method', key);
-			$scope.redirect('/app/<%$__module%>/<%$channel_config_url%>&c_id=<%$channel_id%>&method='+key);
+			if(key == 'room' || key == 'layout') {
+				$scope.redirect('/app/<%$__module%>/<%$channel_config_url%>&c_id=<%$channel_id%>&method='+key);
+			} else {
+				$scope.redirect('/app/ChannelConfig/'+$scope.arrayChannel.channel+'/<%$channel_config_url%>&c_id=<%$channel_id%>&method='+key);
+			}
+			$httpService.deleteHeader('method');
 		}
 		
 	});

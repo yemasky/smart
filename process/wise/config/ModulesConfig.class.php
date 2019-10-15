@@ -8,7 +8,7 @@
 namespace wise;
 
 class ModulesConfig extends \ModulesConfig {
-	public static $__VERSION = '1.2.0';
+	public static $__VERSION = '1.2.1';
 	public static $channel_type = ['Hotel'=>'酒店','Meal'=>'餐馆/Bar','Meeting'=>'商务会议',
 								   'Sport'=>'健身娱乐','Shop'=>'商城/商店','Service'=>'商务服务','Tour'=>'旅行路线'];
 	public static $channel_value = ['Hotel'=>'Hotel','Meal'=>'Meal','Meeting'=>'Meeting',
@@ -46,7 +46,7 @@ class ModulesConfig extends \ModulesConfig {
             [12=>[['闽菜',''],['湘菜',''],['川菜',''],['粤菜',''],['苏菜',''],['徽菜',''],['鲁菜','']],
              13=>[['变态辣',''],['很辣',''],['辣',''],['微辣',''],['不辣',''],['甜','']]],
          'cuisineCategory'=>
-                [15=>[['闽菜',''],['湘菜',''],['川菜',''],['粤菜',''],['苏菜',''],['徽菜',''],['鲁菜','']]]
+                [15=>[['主食',''],['点心',''],['早餐',''],['汤',''],['开胃菜',''],['小吃','']]]
 		];
 
 	public static $images_config = ['layout'=>'房型','room'=>'房间','cuisine'=>'菜式','table'=>'餐桌', 'delivery'=>'送餐配置','meeting'=>'会议',
@@ -54,7 +54,7 @@ class ModulesConfig extends \ModulesConfig {
 
 	public static $module = [
 		'Channel'=>['Add'=>16,'Config'=>18],
-		'ChannelConfig'=>['default'=>19,'room'=>20,'layout'=>24,'cuisine'=>'0','table'=>'0','delivery'=>'0'],
+		'ChannelConfig'=>['default'=>19,'room'=>20,'layout'=>24,'cuisineCategory'=>57,'cuisine'=>57,'table'=>'0','delivery'=>'0'],
 		'Upload'=>['images'=>22,'manager'=>23],
 		'ChannelSetting'=>['paymentAddEdit'=>26, 'marketAddEdit'=>28],
 		'PriceSetting'=>['RoomPriceList'=>30,'RoomPriceSystem'=>33,'RoomPriceSystemAddEdit'=>34,'RoomPriceAddEdit'=>35],

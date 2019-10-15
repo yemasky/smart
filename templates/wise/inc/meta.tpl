@@ -350,6 +350,15 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
         },
 		controller: function() {
 		}
+    }).state('app.ChannelConfig', {
+        url: "/ChannelConfig/:view/:channel", //url: "/role/edit?id",
+        templateUrl: function($routeParams) {
+			var view = $routeParams.view;//有view访问静态文件
+			//if(view != '') 
+            return 'resource/views/ChannelConfig/'+$routeParams.view+'.html?<%$__VERSION%>';
+        },
+		controller: function() {
+		}
     }).state('app.Test', {
         url: "/Test/:test", //url: "/role/edit?id",
         templateUrl: function($routeParams) {
