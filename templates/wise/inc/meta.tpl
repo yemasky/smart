@@ -302,7 +302,6 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
 			//return "<%$__WEB%>app.do?channel=<%$home_channel%>";
 		},
         controller: function ($scope) {
-			//console.log($scope);
         }
     }).state('app.Booking', {
         url: "/booking/:view/:channel", //url: "/role/edit?id",
@@ -358,7 +357,15 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
             return 'resource/views/ChannelConfig/'+$routeParams.view+'.html?<%$__VERSION%>';
         },
 		controller: function() {
-		}
+		},
+		resolve: {
+            deps: ["$ocLazyLoad","$stateParams",function($ocLazyLoad, $stateParams) {
+                return $ocLazyLoad.load([__RESOURCE+"editor/kindeditor/kindeditor-all-min.js?<%$__VERSION%>",
+										 __RESOURCE+"editor/kindeditor/themes/default/default.css",
+						  __RESOURCE + "vendor/modules/angular-ui-select/select.min.js",
+                          __RESOURCE + "vendor/modules/angular-ui-select/select.min.css",__RESOURCE + "styles/booking.css"]);
+            }]
+        }
     }).state('app.Test', {
         url: "/Test/:test", //url: "/role/edit?id",
         templateUrl: function($routeParams) {

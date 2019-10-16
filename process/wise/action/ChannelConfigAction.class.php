@@ -388,11 +388,11 @@ class ChannelConfigAction extends \BaseAction {
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayAttribute);
         }
         $cuisine_category_id = $objRequest->cuisine_category_id;
+        $cuisine_is_category = $objRequest->cuisine_is_category;
+        $cuisine_id          = $objRequest->cuisine_id;
         if ($method == 'save') {
-            $cuisine_is_category = $objRequest->cuisine_is_category;
-            $cuisine_id          = $objRequest->cuisine_id;
-            $arrayAttr           = $objRequest->getInput('attr_value');
-            $arrayItemImages     = $objRequest->getInput('item_images');
+            $arrayAttr       = $objRequest->getInput('attr_value');
+            $arrayItemImages = $objRequest->getInput('item_images');
             CommonServiceImpl::instance()->startTransaction();
             if ($cuisine_is_category) {//类别
                 $arrayCuisineCategory['cuisine_name']         = $objRequest->cuisine_name;
@@ -421,23 +421,21 @@ class ChannelConfigAction extends \BaseAction {
                 $arrayCuisine['cuisine_en_name']      = $objRequest->cuisine_en_name;
                 $arrayCuisine['cuisine_specialty']    = $objRequest->cuisine_specialty;
                 $arrayCuisine['cuisine_en_specialty'] = $objRequest->cuisine_en_specialty;
+                $arrayCuisine['cuisine_inventory']    = $objRequest->cuisine_inventory;
+                $arrayCuisine['cuisine_price']        = $objRequest->cuisine_price;
                 $arrayCuisine['image_src']            = $objRequest->image_src;
                 $arrayCuisine['valid']                = $objRequest->valid;
                 if (empty($cuisine_id)) {//新数据
                     $arrayCuisine['company_id']          = $company_id;
                     $arrayCuisine['channel_id']          = $channel_id;
-                    $arrayCuisine['cuisine_category_id'] = '0';
-                    $arrayCuisine['cuisine_is_category'] = '1';
+                    $arrayCuisine['cuisine_category_id'] = $cuisine_category_id;
+                    $arrayCuisine['cuisine_is_category'] = '0';
                     $cuisine_id                          = CuisineServiceImpl::instance()->saveCuisine($arrayCuisine);
-                    $whereCriteria                       = new \WhereCriteria();
-                    $whereCriteria->EQ('channel_id', $channel_id)->EQ('company_id', $company_id)->EQ('cuisine_id', $cuisine_id);
-                    CuisineServiceImpl::instance()->updateCuisine($whereCriteria, ['cuisine_category_id' => $cuisine_id]);
                 } else {//修改
                     $whereCriteria = new \WhereCriteria();
                     $whereCriteria->EQ('channel_id', $channel_id)->EQ('company_id', $company_id)->EQ('cuisine_id', $cuisine_id);
                     CuisineServiceImpl::instance()->updateCuisine($whereCriteria, $arrayCuisine);
                 }
-                $cuisine_category_id = $cuisine_id;
             }
             $sql_attr_type = array();
             $k             = 0;
@@ -449,7 +447,7 @@ class ChannelConfigAction extends \BaseAction {
                             $arrayInsertData[$k]['attribute_id']        = $attribute_id;
                             $arrayInsertData[$k]['company_id']          = $company_id;
                             $arrayInsertData[$k]['channel_id']          = $channel_id;
-                            $arrayInsertData[$k]['cuisine_category_id'] = $cuisine_id;
+                            $arrayInsertData[$k]['cuisine_category_id'] = $cuisine_category_id;
                             $arrayInsertData[$k]['cuisine_id']          = $cuisine_id;
                             $arrayInsertData[$k]['cuisine_images_src']  = '';
                             $arrayInsertData[$k]['attr_value']          = $v;
@@ -499,9 +497,10 @@ class ChannelConfigAction extends \BaseAction {
             CuisineServiceImpl::instance()->deleteAttributeValue($whereCriteria);
             if (!empty($arrayInsertData)) CuisineServiceImpl::instance()->batchInsertAttrValue($arrayInsertData);
             CommonServiceImpl::instance()->commit();
+            return $objResponse->successResponse(ErrorCodeConfig::$successCode, []);
         }
 
-        return $objResponse->successResponse(ErrorCodeConfig::$successCode, []);
+        return $objResponse->successResponse(ErrorCodeConfig::$errorCode['no_data_update'], []);
     }
 
     protected function getCuisineAttributeValue(\HttpRequest $objRequest, \HttpResponse $objResponse) {

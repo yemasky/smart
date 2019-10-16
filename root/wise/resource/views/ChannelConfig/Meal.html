@@ -20,6 +20,19 @@
                     </div>
                 </div>
                 <!--菜式类别结束-->
+				<!--菜式开始-->
+                <div class="list-group no-radius" ng-if="channel_config_key=='cuisine'">
+                    <div class="list-group-item col-sm-3 m-xs"  ng-repeat="(i, item) in itemList">
+                      <span class="pull-left w-xs m-r b-b-2x"><img class="img-responsive" width="90" height="90" ng-src="{{item.image_src}}"></span>
+                      <div class="clear">
+                        <span class="font-bold block">{{item.cuisine_name}}
+                            <a><i class="glyphicon glyphicon-edit pull-right" ng-click="editItem(item.cuisine_id)"></i></a>
+                        </span> 
+                        特色:{{item.cuisine_specialty}}
+                      </div>
+                    </div>
+                </div>
+                <!--菜式结束-->
 				<!--添加（房间|房型|菜式)按钮开始-->
                 <div class="w-xl w-auto-xs">
                     <div class="box bg-white m-xs">
@@ -62,11 +75,7 @@
 <script language="JavaScript">
     app.controller('MealController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
 		$scope.param = {};
-		$ocLazyLoad.load([__RESOURCE+"editor/kindeditor/kindeditor-all-min.js", 
-						  __RESOURCE+"editor/kindeditor/themes/default/default.css", 
-						  __RESOURCE+"editor/kindeditor/lang/zh-CN.js",
-						  __RESOURCE + "vendor/modules/angular-ui-select/select.min.js",
-                          __RESOURCE + "vendor/modules/angular-ui-select/select.min.css",__RESOURCE + "styles/booking.css"]);
+		$ocLazyLoad.load([__RESOURCE+"editor/kindeditor/lang/zh-CN.js"]);
 		var arrayAttribute = {};
 		//获取数据
 		var _channel = $scope.$stateParams.channel, common = '';
@@ -118,7 +127,15 @@
 			if(param == 0) {
 				param = {};param["valid"] = "1";param["image_src"] = $scope._resource+'images/a10.jpg';
 				//$('#selectRoom').remove();
-			}; 
+			} else {
+				var cuisine_id = param.cuisine_category_id, cuisine_name = '';
+				for(var i in $scope.itemCategoryList) {
+					if($scope.itemCategoryList[i].cuisine_id == cuisine_id) {
+					   cuisine_name = $scope.itemCategoryList[i].cuisine_name;
+					}
+				}
+				$scope.select_cuisineCategory = {'cuisine_id':cuisine_id,'cuisine_name':cuisine_name};
+			} 
 			$scope.param = param;
             myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: __RESOURCE+'views/ChannelConfig/'+key+'.tpl.html'});
             myArrtibute.$promise.then(function() {
@@ -128,7 +145,6 @@
 					if(typeof(param.cuisine_id) != 'undefined') $('input[name="cuisine_id"]').val(param.cuisine_id);
 				});
             })
-			
 		};
         //end commom 右边数据///////////////////////////////////////////////////////////////////////////////////
         <!--common 编辑-->
@@ -142,24 +158,26 @@
 			if(continue_find == false) return;
 			for(var i in itemList) {
 				if(typeof(itemList[i].cuisine_name) != 'undefined') {
-					if(itemList[i].cuisine_id == cuisine_id) {console.log(cuisine_id);
+					if(itemList[i].cuisine_id == cuisine_id) {
 						var param = itemList[i];
 						continue_find = false;
 						$scope.addArrtibute($scope.channel_config_key, param);
 						//查找房型attr
+						var arrt_param = '&cuisine_id='+cuisine_id
                         if($scope.channel_config_key=='cuisineCategory') {
-							$scope.attrSelectRoom = {};$scope.haveSelectRoom = {};
-							var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
-							$httpService.header('method', 'attribute');
-							var postParam = {};postParam.param = '';
-							$httpService.post('app.do?channel='+$scope.channel_config_url+'&c_id='+$scope.channel_id+'&cuisine_category_id='+cuisine_id, postParam, function(result){
-								$httpService.deleteHeader('method');
-								if(result.data.success == 1) {
-									if(result.data.item != '') setAttribute(result.data.item);
-								} 
-								loading.hide();
-							});
-                        }
+							arrt_param = '&cuisine_category_id='+cuisine_id
+						}	
+						$scope.attrSelectRoom = {};$scope.haveSelectRoom = {};
+						var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
+						$httpService.header('method', 'attribute');
+						var postParam = {};postParam.param = '';
+						$httpService.post('app.do?channel='+$scope.channel_config_url+'&c_id='+$scope.channel_id+arrt_param, postParam, function(result){
+							$httpService.deleteHeader('method');
+							if(result.data.success == 1) {
+								if(result.data.item != '') setAttribute(result.data.item);
+							} 
+							loading.hide();
+						});
                         //
 						break;
 					}
