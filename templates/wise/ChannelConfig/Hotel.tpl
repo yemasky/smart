@@ -77,6 +77,14 @@
     </div>
     <!--右边comom添加属性开始-->
     <div class="col-md-2 b-l no-border-sm">
+	  <div class="panel-heading b-b b-light" translate="common.hint.config">配置</div>
+      <div class="list-group no-border no-radius">
+        <div class="list-group-item" ng-repeat="(key, name) in arrayConfig" ng-init="i=0;">
+          <a class="pull-right ti-settings" ng-click="config(key)"></a>
+          <i class="fa fa-fw fa-circle text-info"></i>
+          {{name}} 
+        </div>
+      </div>
       <div class="panel-heading b-b b-light" translate="module.channel.arrtibute">属性</div>
       <div class="list-group no-border no-radius" ng-repeat="(i, Arrtibute) in configArrtibute" ng-if="i==0">
         <div class="list-group-item" ng-repeat="(father_id, childen) in Arrtibute">
@@ -139,6 +147,11 @@
             })
 			
 		};
+		$scope.config = function(key) {
+			$httpService.header('method', key);
+			$scope.redirect('/app/Channel/<%$this_config_url%>&c_id=<%$channel_id%>&method='+key);
+			$httpService.deleteHeader('method');
+		}
         //end commom 右边数据///////////////////////////////////////////////////////////////////////////////////
         <!--common 编辑-->
 		var continue_find = true;

@@ -22,15 +22,56 @@
                 <!--菜式类别结束-->
 				<!--菜式开始-->
                 <div class="list-group no-radius" ng-if="channel_config_key=='cuisine'">
-                    <div class="list-group-item col-sm-3 m-xs"  ng-repeat="(i, item) in itemList">
-                      <span class="pull-left w-xs m-r b-b-2x"><img class="img-responsive" width="90" height="90" ng-src="{{item.image_src}}"></span>
-                      <div class="clear">
-                        <span class="font-bold block">{{item.cuisine_name}}
-                            <a><i class="glyphicon glyphicon-edit pull-right" ng-click="editItem(item.cuisine_id)"></i></a>
-                        </span> 
-                        特色:{{item.cuisine_specialty}}
-                      </div>
-                    </div>
+                    
+					<!--菜式分页开始 -->
+					<div class="panel panel-default no-border">
+                    <table st-pipe="callServer" st-table="itemList" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th st-ratio="40" st-sort="cuisine_name">菜式名字</th>
+                            <th st-ratio="10" st-sort="cuisine_category_id">类别</th>
+                            <th st-ratio="15" st-sort="cuisine_price">售价</th>
+                            <th st-ratio="15" st-sort="cuisine_inventory">库存</th>
+                            <th st-ratio="15" st-sort="cuisine_sell_clear">沽清</th>
+                            <th st-ratio="5" st-sort="valid">有效</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td colspan="6">
+                                <div class="input-group col-xs-3">
+                                  <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">搜索菜名</button>
+                                  </span>
+                                  <input st-search="" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="6" class="no-padding">
+								<div class="list-group-item col-sm-3 m-xs p-xs" style="overflow: hidden;" ng-repeat="(i, item) in itemList">
+								  <span class="pull-left w-xs m-r b-b-2x"><img class="img-responsive" width="90" height="90" ng-src="{{item[i].image_src}}"></span>
+								  <div class="clear">
+									<span class="font-bold block">{{item[i].cuisine_name}}
+										<a><i class="glyphicon glyphicon-edit pull-right" ng-click="editItem(item[i])"></i></a>
+									</span> 
+									特色:{{item[i].cuisine_specialty}}
+								  </div>
+								</div>
+							</td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="6" class="text-center">
+                                <div st-items-by-page="10" st-pagination="" st-template="pagination.custom.html">
+                                    
+                                </div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                  </div>
                 </div>
                 <!--菜式结束-->
 				<!--添加（房间|房型|菜式)按钮开始-->
@@ -51,7 +92,15 @@
       </div>
     </div>
     <!--右边comom添加属性开始-->
-    <div class="col-md-2 b-l no-border-sm">
+	<div class="col-md-2 b-l no-border-sm">
+      <div class="panel-heading b-b b-light" translate="common.hint.config">配置</div>
+      <div class="list-group no-border no-radius">
+        <div class="list-group-item" ng-repeat="(key, name) in arrayConfig" ng-init="i=0;">
+          <a class="pull-right ti-settings" ng-click="config(key)"></a>
+          <i class="fa fa-fw fa-circle text-info"></i>
+          {{name}} 
+        </div>
+      </div>
       <div class="panel-heading b-b b-light" translate="module.channel.arrtibute">属性</div>
       <div class="list-group no-border no-radius" ng-repeat="(i, Arrtibute) in configArrtibute" ng-if="i==0">
         <div class="list-group-item" ng-repeat="(father_id, childen) in Arrtibute">
@@ -91,12 +140,14 @@
 			common = result.data.common;
 			$scope.setCommonSetting(common);
 			$scope.itemList            = result.data.item.itemList;
+			$scope.cuisineSkuAttrList  = result.data.item.cuisineSkuAttrList;
 			$scope.arrayConfig         = result.data.item.arrayConfig;
 			$scope.arrayChannel        = result.data.item.arrayChannel;
 			$scope.arrayDefaultAttr    = result.data.item.arrayDefaultAttr;
 			$scope.channel_config_key  = result.data.item.channel_config_key;
 			$scope.channel_config_name = result.data.item.channel_config_name;
 			$scope.channel_id          = result.data.item.channel_id;
+			$scope.this_config_url     = result.data.item.this_config_url;
 			$scope.channel_config_url  = result.data.item.channel_config_url;
 			$scope.imagesUploadUrl     = result.data.item.imagesUploadUrl;
 			$scope.imagesManagerUrl    = result.data.item.imagesManagerUrl;
@@ -115,7 +166,7 @@
 			}
 			$scope.configArrtibute = configArrtibute;
 			$(document).ready(function(){
-				
+				$scope.action_nav_name     = $rootScope._self_module.module_name;
 			});
 		});
 		
@@ -126,15 +177,16 @@
 			$scope.attrSelectRoom = {};$scope.haveSelectRoom = {};$scope.haveSelectImages = {};$scope.extend_attr = {};
 			if(param == 0) {
 				param = {};param["valid"] = "1";param["image_src"] = $scope._resource+'images/a10.jpg';
-				//$('#selectRoom').remove();
+				$scope.skuList = {"1":""}
 			} else {
-				var cuisine_id = param.cuisine_category_id, cuisine_name = '';
-				for(var i in $scope.itemCategoryList) {
-					if($scope.itemCategoryList[i].cuisine_id == cuisine_id) {
+				var cuisine_category_id = param.cuisine_category_id, cuisine_name = '';
+				for(var i in $scope.itemCategoryList) {//找出类别名字
+					if($scope.itemCategoryList[i].cuisine_id == cuisine_category_id) {
 					   cuisine_name = $scope.itemCategoryList[i].cuisine_name;
 					}
 				}
-				$scope.select_cuisineCategory = {'cuisine_id':cuisine_id,'cuisine_name':cuisine_name};
+				$scope.select_cuisineCategory = {'cuisine_id':cuisine_category_id,'cuisine_name':cuisine_name};
+				
 			} 
 			$scope.param = param;
             myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: __RESOURCE+'views/ChannelConfig/'+key+'.tpl.html'});
@@ -146,46 +198,52 @@
 				});
             })
 		};
+		$scope.config = function(key) {
+			$httpService.header('method', key);
+			if(key == 'room' || key == 'layout') {
+				$scope.redirect('/app/Channel/'+$scope.channel_config_url+'&c_id='+$scope.channel_id+'&method='+key);
+			} else {
+				$scope.redirect('/app/ChannelConfig/'+$scope.arrayChannel.channel+'/'+$scope.this_config_url
+							   +'&c_id='+$scope.channel_id+'&method='+key);
+			}
+			$httpService.deleteHeader('method');
+		}
         //end commom 右边数据///////////////////////////////////////////////////////////////////////////////////
         <!--common 编辑-->
 		var continue_find = true;
-		$scope.editItem = function(cuisine_id) {
-			var itemList = $scope.itemList;
-			continue_find = true;
-			getItem(itemList, cuisine_id);
+		$scope.editItem = function(cuisine) {
+			var cuisine_id = cuisine.cuisine_id;
+			$scope.addArrtibute($scope.channel_config_key, cuisine);
+			//查找房型attr
+			var arrt_param = '&cuisine_id='+cuisine_id
+			if($scope.channel_config_key=='cuisineCategory') {
+				arrt_param = '&cuisine_category_id='+cuisine_id
+			}	
+			$scope.attrSelectRoom = {};$scope.haveSelectRoom = {};
+			var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
+			$httpService.header('method', 'attribute');
+			var postParam = {};postParam.param = '';
+			$httpService.post('app.do?channel='+$scope.channel_config_url+'&c_id='+$scope.channel_id+arrt_param, postParam, function(result){
+				$httpService.deleteHeader('method');
+				if(result.data.success == 1) {
+					if(result.data.item != '') setAttribute(result.data.item);
+				} 
+				loading.hide();
+			});
+			//sku
+			var skuList = $scope.itemList[cuisine_id];
+			$scope.skuList = skuList;
 		};
-		function getItem(itemList, cuisine_id) {
-			if(continue_find == false) return;
-			for(var i in itemList) {
-				if(typeof(itemList[i].cuisine_name) != 'undefined') {
-					if(itemList[i].cuisine_id == cuisine_id) {
-						var param = itemList[i];
-						continue_find = false;
-						$scope.addArrtibute($scope.channel_config_key, param);
-						//查找房型attr
-						var arrt_param = '&cuisine_id='+cuisine_id
-                        if($scope.channel_config_key=='cuisineCategory') {
-							arrt_param = '&cuisine_category_id='+cuisine_id
-						}	
-						$scope.attrSelectRoom = {};$scope.haveSelectRoom = {};
-						var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
-						$httpService.header('method', 'attribute');
-						var postParam = {};postParam.param = '';
-						$httpService.post('app.do?channel='+$scope.channel_config_url+'&c_id='+$scope.channel_id+arrt_param, postParam, function(result){
-							$httpService.deleteHeader('method');
-							if(result.data.success == 1) {
-								if(result.data.item != '') setAttribute(result.data.item);
-							} 
-							loading.hide();
-						});
-                        //
-						break;
-					}
-				} else {
-					getItem(itemList[i], cuisine_id)
-				}
+		$scope.selectSkuAttr = function($select) {console.log($select);
+			$scope.cuisineSkuAttrList[0].cn = $select;
+		}
+		$scope.addSKUArrtibute = function() {
+			var skuList = $scope.skuList, sku = {};
+			for(var i in skuList) {
+				sku = angular.copy(skuList[i]);
 			}
-		};
+			$scope.skuList[i+1] = sku;
+		}
         <!--end common 编辑-->
         <!--common保存-->
 		$scope.saveItem = function() {
@@ -300,6 +358,21 @@
 			$scope.param.cuisine_category_id = selectCategory.cuisine_id;
 			$scope.param.cuisine_category_name = selectCategory.cuisine_name;
 		}
+		//分页取出菜式
+		/////////
+		$scope.itemList = [];
+		$scope.callServer = function callServer(tableState) {
+			$scope.param = {};        
+			$scope.param.tableState = tableState;
+			$scope.loading.start();
+			$httpService.post('/app.do?'+param+'&cuisinePagination=1', $scope, function(result){
+				$scope.loading.percent();
+				$scope.itemList = result.data.item.receivableData.data;
+				tableState.pagination.numberOfPages = result.data.item.receivableData.numberOfPages;
+			});
+		};
+
+		////////
 	});
 	//
 </script>

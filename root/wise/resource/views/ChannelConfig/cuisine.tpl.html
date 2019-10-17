@@ -6,8 +6,8 @@
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
       <form name="form-layout" class="form-validation" id="setItemForm" ng-submit="saveItem()">
-      <div class="aside-body" ng-show="content">
-        <div class="tab-container ng-scope ng-valid ng-dirty">
+      <div class="m-t" ng-show="content">
+        <div class="tab-container">
             <ul class="nav nav-tabs" ng-init="activeTab=1">
                 <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
                     <a>基本信息</a>
@@ -44,18 +44,80 @@
                         <input class="form-control" name="cuisine_en_name" ng-model="param.cuisine_en_name" type="text">
                       </div>
                     </div>
-                    <div class="form-group m-h-n clearfix">
-                      <div class="col-sm-2">
-                        <label>库存</label>
-                        <input class="form-control w-xs" name="cuisine_inventory" string-to-number ng-model="param.cuisine_inventory" required type="number">
-                      </div>
-                      <div class="col-sm-2">
-                        <label>售价</label>
-                        <input class="form-control w-xs" name="cuisine_price" string-to-number ng-model="param.cuisine_price" type="number">
-                      </div>
-                      <div class="col-sm-2">
-                      </div>
-                    </div>
+					<div class="list-group no-radius">
+						<div href class="list-group-item">菜式规格 <a class="fa fa-plus-square" ng-click="addSKUArrtibute()"> </a></div>
+						<div class="list-group-item form-inline" ng-repeat="(attr, sku) in skuList">
+							<div class="form-group">
+								<div class="input-group m-b-xs col-sm-3">
+									<span class="input-group-btn" title="售价"><span class="btn btn-default">售价</span></span>
+									<input size="6" class="form-control w-xs" name="skuList[attr]cuisine_price" string-to-number ng-model="skuList[attr].cuisine_price" type="number">
+									<span class="input-group-btn" title="库存"><span class="btn btn-default">库存</span></span>
+						  			<input size="6" class="form-control w-xs" name="skuList[attr].cuisine_inventory" string-to-number ng-model="skuList[attr].cuisine_inventory" required type="number">
+								</div>
+								<div class="input-group m-b-xs no-radius">
+									<span class="input-group-btn" title="规格"><span class="btn btn-default">规格</span>
+								  </span>
+									<ui-select ng-model="select_SkuAttr1[attr]" ng-keyup="selectSkuAttr($select.search, attr, 1)" theme="bootstrap">
+										<ui-select-match placeholder="填写/选择 ">{{$select.selected.cn}}</ui-select-match>
+										<ui-select-choices repeat="SkuAttr in cuisineSkuAttrList | filter: $select.search">
+											<div ng-bind-html="SkuAttr.cn | highlight: $select.search"></div>
+										</ui-select-choices>
+									</ui-select>
+									<span class="input-group-btn" title="规格值/单位"><span class="btn btn-default">规格值</span></span>
+									<input size="6" class="form-control w-xs" name="skuList[attr].sku_attr1_value" ng-model="skuList[attr].sku_attr1_value" type="text" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="值/单位,例:100克/1份/红色" bs-tooltip>
+								</div>
+								<div class="input-group m-b-xs no-radius">
+									<span class="input-group-btn" title="规格"><span class="btn btn-default">规格</span>
+								  </span>
+									<ui-select ng-model="select_SkuAttr1[attr]" ng-keyup="selectSkuAttr($select.search, attr, 1)" theme="bootstrap">
+										<ui-select-match placeholder="填写/选择 ">{{$select.selected.cn}}</ui-select-match>
+										<ui-select-choices repeat="SkuAttr in cuisineSkuAttrList | filter: $select.search">
+											<div ng-bind-html="SkuAttr.cn | highlight: $select.search"></div>
+										</ui-select-choices>
+									</ui-select>
+									<span class="input-group-btn" title="规格值/单位"><span class="btn btn-default">规格值</span></span>
+									<input size="6" class="form-control w-xs" name="skuList[attr].sku_attr1_value" ng-model="skuList[attr].sku_attr1_value" type="text" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="值/单位,例:100克/1份/红色" bs-tooltip>
+								</div>
+								<div class="input-group m-b-xs no-radius">
+									<span class="input-group-btn" title="规格"><span class="btn btn-default">规格</span>
+								  </span>
+									<ui-select ng-model="select_SkuAttr1[attr]" ng-keyup="selectSkuAttr($select.search, attr, 1)" theme="bootstrap">
+										<ui-select-match placeholder="填写/选择 ">{{$select.selected.cn}}</ui-select-match>
+										<ui-select-choices repeat="SkuAttr in cuisineSkuAttrList | filter: $select.search">
+											<div ng-bind-html="SkuAttr.cn | highlight: $select.search"></div>
+										</ui-select-choices>
+									</ui-select>
+									<span class="input-group-btn" title="规格值/单位"><span class="btn btn-default">规格值</span></span>
+									<input size="6" class="form-control w-xs" name="skuList[attr].sku_attr1_value" ng-model="skuList[attr].sku_attr1_value" type="text" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="值/单位,例:100克/1份/红色" bs-tooltip>
+								</div>
+								<!--<div class="input-group m-b-xs no-radius">
+									<span class="input-group-btn" title="规格"><span class="btn btn-default">规格4</span>
+								  </span>
+									<ui-select ng-model="select_SkuAttr1[attr]" ng-keyup="selectSkuAttr($select.search, attr, 1)" theme="bootstrap">
+										<ui-select-match placeholder="填写/选择 ">{{$select.selected.cn}}</ui-select-match>
+										<ui-select-choices repeat="SkuAttr in cuisineSkuAttrList | filter: $select.search">
+											<div ng-bind-html="SkuAttr.cn | highlight: $select.search"></div>
+										</ui-select-choices>
+									</ui-select>
+									<span class="input-group-btn" title="规格值/单位"><span class="btn btn-default">规格4值</span></span>
+									<input size="6" class="form-control w-xs" name="skuList[attr].sku_attr1_value" ng-model="skuList[attr].sku_attr1_value" type="text" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="值/单位,例:100克/1份/红色" bs-tooltip>
+								</div>
+								<div class="input-group m-b-xs no-radius">
+									<span class="input-group-btn" title="规格"><span class="btn btn-default">规格5</span>
+								  </span>
+									<ui-select ng-model="select_SkuAttr1[attr]" ng-keyup="selectSkuAttr($select.search, attr, 1)" theme="bootstrap">
+										<ui-select-match placeholder="填写/选择 ">{{$select.selected.cn}}</ui-select-match>
+										<ui-select-choices repeat="SkuAttr in cuisineSkuAttrList | filter: $select.search">
+											<div ng-bind-html="SkuAttr.cn | highlight: $select.search"></div>
+										</ui-select-choices>
+									</ui-select>
+									<span class="input-group-btn" title="规格值/单位"><span class="btn btn-default">规格5值</span></span>
+									<input size="6" class="form-control w-xs" name="skuList[attr].sku_attr1_value" ng-model="skuList[attr].sku_attr1_value" type="text" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="值/单位,例:100克/1份/红色" bs-tooltip>
+								</div>-->
+							</div>
+						</div>
+					</div>
+                    
                     <div class="form-group">
                         <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
                         <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>

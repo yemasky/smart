@@ -28,7 +28,7 @@
 						<label for="sex">标签</label>
 							<div class="w">
 								<ui-select ng-model="param.select_tag" ng-keyup="select_tag($select.search)" theme="bootstrap">
-									<ui-select-match placeholder="　填写">{{$select.selected.value}}</ui-select-match>
+									<ui-select-match placeholder="　填写Tag">{{$select.selected.value}}</ui-select-match>
 									<ui-select-choices repeat="tag in tagList | filter: $select.search">
 										<div ng-bind-html="tag.value | highlight: $select.search"></div>
 									</ui-select-choices>

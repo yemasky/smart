@@ -61,6 +61,9 @@ class ModulesConfig extends \ModulesConfig {
         'CancellationPolicy'=>['PolicyAddEdit'=>32]
 		];
 
+	//菜式规格
+    public static $cuisineSkuAttr = [['cn'=>'','en'=>''],['cn'=>'份量','en'=>''],['cn'=>'味型','en'=>''],['cn'=>'热量','en'=>''],
+                                     ['cn'=>'颜色','en'=>'']];
     public static $defaultMarket = [];
 
 }

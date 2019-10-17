@@ -80,6 +80,7 @@ class ChannelConfigAction extends \BaseAction {
         $objResponse->channel_id = encode($channel_id, getDay());
         //设置URL
         $action                          = empty($method) ? 'default' : $method;
+        $objResponse->this_config_url    = $objRequest->channel;
         $objResponse->channel_config_url = ModuleServiceImpl::instance()->getEncodeModuleId('ChannelConfig', $action);
         $objResponse->imagesUploadUrl    = ModuleServiceImpl::instance()->getEncodeModuleId('Upload', 'images');
         $objResponse->imagesManagerUrl   = ModuleServiceImpl::instance()->getEncodeModuleId('Upload', 'manager');
@@ -111,6 +112,7 @@ class ChannelConfigAction extends \BaseAction {
             $commonData['arrayAttribute']   = $arrayAttribute;
             //
             $commonData['channel_id']         = $objResponse->channel_id;
+            $commonData['this_config_url']    = $objResponse->this_config_url;
             $commonData['channel_config_url'] = $objResponse->channel_config_url;
             $commonData['imagesUploadUrl']    = $objResponse->imagesUploadUrl;
             $commonData['imagesManagerUrl']   = $objResponse->imagesManagerUrl;
@@ -329,6 +331,7 @@ class ChannelConfigAction extends \BaseAction {
         $arrayAttribute = ChannelServiceImpl::instance()->getAttributeValue($whereCriteria, $field);
         return $arrayAttribute;
     }
+
     //**********************************************餐厅**********************************//
     //菜式类别
     protected function doMethodCuisineCategory(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -337,7 +340,7 @@ class ChannelConfigAction extends \BaseAction {
         $objRequest->channel_config = 'cuisineCategory';//菜式类别
 
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '1');
         $arrayDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria);
 
         $successService         = new \SuccessService();
@@ -349,29 +352,51 @@ class ChannelConfigAction extends \BaseAction {
 
     //菜式配置
     protected function doMethodCuisine(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $cuisinePagination = $objRequest->cuisinePagination;
+        if ($cuisinePagination) {
+            $successService                = new \SuccessService();
+            $arrayResult['receivableData'] = CuisineServiceImpl::instance()->getChannelCuisinePage($objRequest, $objResponse);
+            //$objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
+            $successService->setData($arrayResult);
+            return $objResponse->successServiceResponse($successService);
+        }
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         $channel_id = decode($objRequest->c_id, getDay());
 
         $objRequest->channel_config = 'cuisine';//菜式
-
-        $whereCriteria = new \WhereCriteria();
+        /*$whereCriteria              = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '0');
-        $arrayDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria);
+        $arrayDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria);*/
         //类别
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '1');
         $arrayCategoryDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria, 'cuisine_id,cuisine_name,cuisine_en_name');
+        //SKU属性
+        $cuisineSkuAttr = ModulesConfig::$cuisineSkuAttr;
         //
-        $successService                 = new \SuccessService();
-        $commonData                     = $objResponse->commonData;
-        $commonData['itemList']         = $arrayDataList;
-        $commonData['itemCategoryList'] = $arrayCategoryDataList;
+        $successService                   = new \SuccessService();
+        $commonData                       = $objResponse->commonData;
+        $commonData['itemList']           = '';
+        $commonData['itemCategoryList']   = $arrayCategoryDataList;
+        $commonData['cuisineSkuAttrList'] = $cuisineSkuAttr;
         $successService->setData($commonData);
         return $objResponse->successServiceResponse($successService);
     }
 
     protected function doMethodTable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $company_id                 = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id                 = decode($objRequest->c_id, getDay());
+        $objRequest->channel_config = 'cuisineCategory';//菜式类别
 
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '1');
+        $arrayDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria);
+
+        $successService         = new \SuccessService();
+        $commonData             = $objResponse->commonData;
+        $commonData['itemList'] = $arrayDataList;
+        $successService->setData($commonData);
+        return $objResponse->successServiceResponse($successService);
     }
 
     protected function doMethodDelivery(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -380,127 +405,14 @@ class ChannelConfigAction extends \BaseAction {
 
     protected function doCuisineEditSave(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
-        $method     = $objRequest->method;
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;
-        $channel_id = decode($objRequest->c_id, getDay());
+        $method = $objRequest->method;
         if ($method == 'attribute') {
             $arrayAttribute = $this->getCuisineAttributeValue($objRequest, $objResponse);
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayAttribute);
         }
-        $cuisine_category_id = $objRequest->cuisine_category_id;
-        $cuisine_is_category = $objRequest->cuisine_is_category;
-        $cuisine_id          = $objRequest->cuisine_id;
-        if ($method == 'save') {
-            $arrayAttr       = $objRequest->getInput('attr_value');
-            $arrayItemImages = $objRequest->getInput('item_images');
-            CommonServiceImpl::instance()->startTransaction();
-            if ($cuisine_is_category) {//类别
-                $arrayCuisineCategory['cuisine_name']         = $objRequest->cuisine_name;
-                $arrayCuisineCategory['cuisine_en_name']      = $objRequest->cuisine_en_name;
-                $arrayCuisineCategory['cuisine_specialty']    = $objRequest->cuisine_specialty;
-                $arrayCuisineCategory['cuisine_en_specialty'] = $objRequest->cuisine_en_specialty;
-                $arrayCuisineCategory['image_src']            = $objRequest->image_src;
-                $arrayCuisineCategory['valid']                = $objRequest->valid;
-                if (empty($cuisine_id)) {//新数据
-                    $arrayCuisineCategory['company_id']          = $company_id;
-                    $arrayCuisineCategory['channel_id']          = $channel_id;
-                    $arrayCuisineCategory['cuisine_category_id'] = '0';
-                    $arrayCuisineCategory['cuisine_is_category'] = '1';
-                    $cuisine_id                                  = CuisineServiceImpl::instance()->saveCuisine($arrayCuisineCategory);
-                    $whereCriteria                               = new \WhereCriteria();
-                    $whereCriteria->EQ('channel_id', $channel_id)->EQ('company_id', $company_id)->EQ('cuisine_id', $cuisine_id);
-                    CuisineServiceImpl::instance()->updateCuisine($whereCriteria, ['cuisine_category_id' => $cuisine_id]);
-                } else {//修改
-                    $whereCriteria = new \WhereCriteria();
-                    $whereCriteria->EQ('channel_id', $channel_id)->EQ('company_id', $company_id)->EQ('cuisine_id', $cuisine_id);
-                    CuisineServiceImpl::instance()->updateCuisine($whereCriteria, $arrayCuisineCategory);
-                }
-                $cuisine_category_id = $cuisine_id;
-            } else {//菜式
-                $arrayCuisine['cuisine_name']         = $objRequest->cuisine_name;
-                $arrayCuisine['cuisine_en_name']      = $objRequest->cuisine_en_name;
-                $arrayCuisine['cuisine_specialty']    = $objRequest->cuisine_specialty;
-                $arrayCuisine['cuisine_en_specialty'] = $objRequest->cuisine_en_specialty;
-                $arrayCuisine['cuisine_inventory']    = $objRequest->cuisine_inventory;
-                $arrayCuisine['cuisine_price']        = $objRequest->cuisine_price;
-                $arrayCuisine['image_src']            = $objRequest->image_src;
-                $arrayCuisine['valid']                = $objRequest->valid;
-                if (empty($cuisine_id)) {//新数据
-                    $arrayCuisine['company_id']          = $company_id;
-                    $arrayCuisine['channel_id']          = $channel_id;
-                    $arrayCuisine['cuisine_category_id'] = $cuisine_category_id;
-                    $arrayCuisine['cuisine_is_category'] = '0';
-                    $cuisine_id                          = CuisineServiceImpl::instance()->saveCuisine($arrayCuisine);
-                } else {//修改
-                    $whereCriteria = new \WhereCriteria();
-                    $whereCriteria->EQ('channel_id', $channel_id)->EQ('company_id', $company_id)->EQ('cuisine_id', $cuisine_id);
-                    CuisineServiceImpl::instance()->updateCuisine($whereCriteria, $arrayCuisine);
-                }
-            }
-            $sql_attr_type = array();
-            $k             = 0;
-            if (!empty($arrayAttr)) {//属性值
-                foreach ($arrayAttr as $attribute_id => $value) {
-                    if (is_array($value)) {
-                        foreach ($value as $j => $v) {
-                            if (empty($v)) continue;
-                            $arrayInsertData[$k]['attribute_id']        = $attribute_id;
-                            $arrayInsertData[$k]['company_id']          = $company_id;
-                            $arrayInsertData[$k]['channel_id']          = $channel_id;
-                            $arrayInsertData[$k]['cuisine_category_id'] = $cuisine_category_id;
-                            $arrayInsertData[$k]['cuisine_id']          = $cuisine_id;
-                            $arrayInsertData[$k]['cuisine_images_src']  = '';
-                            $arrayInsertData[$k]['attr_value']          = $v;
-                            $arrayInsertData[$k]['attr_en_value']       = '';
-                            $arrayInsertData[$k]['attr_type']           = 'attr_value';
-                            $k++;
-                        }
-                    } else {
-                        if (empty($value)) continue;
-                        $arrayInsertData[$k]['attribute_id']        = $attribute_id;
-                        $arrayInsertData[$k]['company_id']          = $company_id;
-                        $arrayInsertData[$k]['channel_id']          = $channel_id;
-                        $arrayInsertData[$k]['cuisine_category_id'] = $cuisine_category_id;
-                        $arrayInsertData[$k]['cuisine_id']          = $cuisine_id;
-                        $arrayInsertData[$k]['cuisine_images_src']  = '';
-                        $arrayInsertData[$k]['attr_value']          = $value;
-                        $arrayInsertData[$k]['attr_en_value']       = '';
-                        $arrayInsertData[$k]['attr_type']           = 'attr_value';
-                        $k++;
-                    }
-                }
-                $sql_attr_type[] = 'attr_value';
-            }
-            if (!empty($arrayItemImages)) {//图片
-                foreach ($arrayItemImages as $image_url => $value) {
-                    $arrayInsertData[$k]['attribute_id']        = '0';
-                    $arrayInsertData[$k]['company_id']          = $company_id;
-                    $arrayInsertData[$k]['channel_id']          = $channel_id;
-                    $arrayInsertData[$k]['cuisine_category_id'] = $cuisine_category_id;
-                    $arrayInsertData[$k]['cuisine_id']          = $cuisine_id;
-                    $arrayInsertData[$k]['cuisine_images_src']  = $value['url'];
-                    $arrayInsertData[$k]['attr_value']          = $value['name'];
-                    $arrayInsertData[$k]['attr_en_value']       = '';
-                    $arrayInsertData[$k]['attr_type']           = 'images';
-                    $k++;
-                }
-                $sql_attr_type[] = 'images';
-            }
-            $whereCriteria = new \WhereCriteria();
-            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
-            if ($cuisine_is_category) {
-                $whereCriteria->EQ('cuisine_category_id', $cuisine_id);
-            } else {
-                $whereCriteria->EQ('cuisine_id', $cuisine_id);
-            }
-            //$whereCriteria->ArrayIN('attr_type', $sql_attr_type);
-            CuisineServiceImpl::instance()->deleteAttributeValue($whereCriteria);
-            if (!empty($arrayInsertData)) CuisineServiceImpl::instance()->batchInsertAttrValue($arrayInsertData);
-            CommonServiceImpl::instance()->commit();
-            return $objResponse->successResponse(ErrorCodeConfig::$successCode, []);
-        }
+        return CuisineServiceImpl::instance()->cuisineEditSave($objRequest, $objResponse);
 
-        return $objResponse->successResponse(ErrorCodeConfig::$errorCode['no_data_update'], []);
+
     }
 
     protected function getCuisineAttributeValue(\HttpRequest $objRequest, \HttpResponse $objResponse) {

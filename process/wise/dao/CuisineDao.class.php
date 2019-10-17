@@ -23,6 +23,10 @@ class CuisineDao extends CommonDao {
         return $this->setDsnRead($this->getDsnRead())->setTable('channel_cuisine')->getList($whereCriteria, $field);
     }
 
+    public function getChannelCuisineCount($whereCriteria, $field = null) {
+        return $this->setDsnRead($this->getDsnRead())->setTable('channel_cuisine')->getCount($whereCriteria, $field);
+    }
+
     public function saveCuisine($arrayData, $insert_type = 'INSERT') {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_cuisine')->insert($arrayData, $insert_type);
     }
