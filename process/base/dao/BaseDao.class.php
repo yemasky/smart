@@ -132,7 +132,7 @@ abstract class BaseDao {
     }
 
     public function batchUpdateByKey(\WhereCriteria $whereCriteria, $arrayUpdate, $update_type = '') {
-        return DBQuery::instance($this->getDsnWrite())->setTable($this->table)->batchUpdateByKey($arrayUpdate, $whereCriteria, $update_type);
+        return DBQuery::instance($this->getDsnWrite())->setTable($this->table)->batchUpdateByKey($whereCriteria, $arrayUpdate, $update_type);
     }
 
     public function delete(\WhereCriteria $whereCriteria) {

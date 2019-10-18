@@ -140,7 +140,6 @@
 			common = result.data.common;
 			$scope.setCommonSetting(common);
 			$scope.itemList            = result.data.item.itemList;
-			$scope.cuisineSkuAttrList  = result.data.item.cuisineSkuAttrList;
 			$scope.arrayConfig         = result.data.item.arrayConfig;
 			$scope.arrayChannel        = result.data.item.arrayChannel;
 			$scope.arrayDefaultAttr    = result.data.item.arrayDefaultAttr;
@@ -154,6 +153,11 @@
 			if($scope.channel_config_key == 'cuisine') {
 				$scope.itemCategoryList  = result.data.item.itemCategoryList;
 			}
+			var cuisineSkuAttr  = result.data.item.cuisineSkuAttrList, cuisineSkuAttrList = {};
+			cuisineSkuAttrList[1] = angular.copy(cuisineSkuAttr);
+			cuisineSkuAttrList[2] = angular.copy(cuisineSkuAttr);
+			cuisineSkuAttrList[3] = angular.copy(cuisineSkuAttr);
+			$scope.cuisineSkuAttrList = cuisineSkuAttrList;
 			
 			arrayAttribute = result.data.item.arrayAttribute;
 			var configArrtibute = {};
@@ -170,14 +174,14 @@
 			});
 		});
 		
-		$scope.haveSelectRoom = {};$scope.attrSelectRoom = {};$scope.haveSelectImages = {};$scope.extend_attr = {};
+		$scope.haveSelectImages = {};$scope.extend_attr = {};
 		//begin commom 右边数据/////////////////////////////////////////////////////////////////////////////////////
 		var myArrtibute = '';
 		$scope.addArrtibute = function(key, param) {
-			$scope.attrSelectRoom = {};$scope.haveSelectRoom = {};$scope.haveSelectImages = {};$scope.extend_attr = {};
+			$scope.deleteSKU = {};$scope.haveSelectImages = {};$scope.extend_attr = {};
 			if(param == 0) {
 				param = {};param["valid"] = "1";param["image_src"] = $scope._resource+'images/a10.jpg';
-				$scope.skuList = {"1":""}
+				$scope.skuList = {1:{"cuisine_id":0,"cc_id":""}}
 			} else {
 				var cuisine_category_id = param.cuisine_category_id, cuisine_name = '';
 				for(var i in $scope.itemCategoryList) {//找出类别名字
@@ -186,7 +190,6 @@
 					}
 				}
 				$scope.select_cuisineCategory = {'cuisine_id':cuisine_category_id,'cuisine_name':cuisine_name};
-				
 			} 
 			$scope.param = param;
             myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: __RESOURCE+'views/ChannelConfig/'+key+'.tpl.html'});
@@ -219,7 +222,6 @@
 			if($scope.channel_config_key=='cuisineCategory') {
 				arrt_param = '&cuisine_category_id='+cuisine_id
 			}	
-			$scope.attrSelectRoom = {};$scope.haveSelectRoom = {};
 			var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
 			$httpService.header('method', 'attribute');
 			var postParam = {};postParam.param = '';
@@ -234,15 +236,30 @@
 			var skuList = $scope.itemList[cuisine_id];
 			$scope.skuList = skuList;
 		};
-		$scope.selectSkuAttr = function($select) {console.log($select);
-			$scope.cuisineSkuAttrList[0].cn = $select;
+		$scope.selectSkuAttr = function($select, $attr, $index) {console.log($select);
+			$scope.cuisineSkuAttrList[$index][0].cn = $select;
 		}
-		$scope.addSKUArrtibute = function() {
+		$scope.select_SkuAttr = {};
+		$scope.changeSkuAttr = function($select, $attr, $index) {
+			if($index == 1) $scope.select_SkuAttr[1] = angular.copy($select);
+			if($index == 2) $scope.select_SkuAttr[2] = $select;
+			if($index == 3) $scope.select_SkuAttr[3] = $select;
+		}
+		$scope.addSKUArrtibute = function() {//添加SKU
 			var skuList = $scope.skuList, sku = {};
 			for(var i in skuList) {
 				sku = angular.copy(skuList[i]);
 			}
+			sku.cuisine_id = 0;sku.cc_id = '';
 			$scope.skuList[i+1] = sku;
+		}
+		$scope.deleteSKU = {};
+		$scope.deleteSKUArrtibute = function(key) {
+			var sku = $scope.skuList[key];
+			delete $scope.skuList[key];
+			if(sku.cuisine_id > 0 && sku.cc_id != '') {
+				$scope.deleteSKU[sku.cuisine_id] =  sku.cc_id;
+			}
 		}
         <!--end common 编辑-->
         <!--common保存-->
@@ -250,6 +267,10 @@
 			$scope.beginLoading =! $scope.beginLoading;
 			var setItemForm = $.serializeFormat('#setItemForm');
 			$scope.param = setItemForm;
+			if($scope.channel_config_key=='cuisine') {
+				$scope.param.deleteSKU = $scope.deleteSKU;
+				$scope.param.select_SkuAttr = $scope.select_SkuAttr;
+			}
 			$httpService.header('method', 'save');
 			var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
 			$httpService.post('app.do?channel='+$scope.channel_config_url+'&c_id='+$scope.channel_id, $scope, function(result){

@@ -31,8 +31,16 @@ class CuisineDao extends CommonDao {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_cuisine')->insert($arrayData, $insert_type);
     }
 
+    public function batchInsertCuisine($arrayValues, $insert_type = 'INSERT') {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_cuisine')->batchInsert($arrayValues, $insert_type);
+    }
+
     public function updateCuisine(\WhereCriteria $whereCriteria, $arrayUpdateData) {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_cuisine')->update($whereCriteria, $arrayUpdateData);
+    }
+
+    public function batchUpdateCuisine(\WhereCriteria $whereCriteria, $arrayUpdateData) {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('channel_cuisine')->batchUpdateByKey($whereCriteria, $arrayUpdateData);
     }
     //
     public function deleteAttributeValue(\WhereCriteria $whereCriteria) {

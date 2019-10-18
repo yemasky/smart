@@ -1096,26 +1096,26 @@ class DBQuery {
     }
 
     /*
-     * //field=>[field1=>[1=>2,3=>4],field2=>[1=>3,3=>5]]
+     * //field=>[field1(键1)=>[key_value1=>键1值1,key_value2=>键1值2],field2(键2)=>[key_value1=>键2值1,key_value2=>键1值2]]
      * //key=>[name=>'',value=>[value1,value2]]
      */
-    public function batchUpdateByKey($arrayUpdate, WhereCriteria $whereCriteria, $update_type = '') {
+    public function batchUpdateByKey(WhereCriteria $whereCriteria, $arrayUpdate, $update_type = '') {
         if (!is_array($arrayUpdate)) return false;
-        $fieldKey  = $arrayUpdate['key'];
+        $fieldKey  = $arrayUpdate['key'];//主键或唯一值
         $updateSql = "UPDATE $update_type {$this->table_name} SET \n";
         foreach ($arrayUpdate['field'] as $field => $arrayValue) {
             $updateSql .= $field . ' = CASE ' . $fieldKey . "\n";
-            foreach ($arrayValue as $key => $value) {
+            foreach ($arrayValue as $key_value => $value) {//$key_value 主键或唯一值的值
                 if ($value == '') {
-                    $updateSql .= " WHEN $key  THEN '{$value}'\n";
+                    $updateSql .= " WHEN '{$key_value}'  THEN '{$value}'\n";
                 } elseif ($value == 'NULL') {
-                    $updateSql .= " WHEN $key THEN NULL\n";
+                    $updateSql .= " WHEN '{$key_value}' THEN NULL\n";
                 } elseif ($value == null) {
-                    $updateSql .= " WHEN $key THEN NULL\n";
+                    $updateSql .= " WHEN '{$key_value}' THEN NULL\n";
                 } elseif (is_bool($value)) {
-                    $updateSql .= " WHEN $key THEN " . $value . "\n";
+                    $updateSql .= " WHEN '{$key_value}' THEN " . $value . "\n";
                 } else {
-                    $updateSql .= " WHEN $key THEN '{$value}'\n";
+                    $updateSql .= " WHEN '{$key_value}' THEN '{$value}'\n";
                 }
             }
             $updateSql .= "END,\n";
@@ -1124,9 +1124,11 @@ class DBQuery {
         $this->conn->executePrepareStatement($updateSql, $whereCriteria->getStatement(), $whereCriteria->getParam());
 
         return $this;
-        /*  $arrayUpdate = [field=>[[1=>2],[2=>3]];
+        /*
+            $arrayUpdate = [field=>[[1=>2],[2=>3]];
             UPDATE categories
-            SET display_order = CASE id
+            SET
+            display_order = CASE id
                 WHEN 1 THEN 3
                 WHEN 2 THEN 4
                 WHEN 3 THEN 5
