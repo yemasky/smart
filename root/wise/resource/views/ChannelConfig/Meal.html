@@ -13,7 +13,7 @@
                       <span class="pull-left w-xs m-r b-b-2x"><img class="img-responsive" width="90" height="90" ng-src="{{item.image_src}}"></span>
                       <div class="clear">
                         <span class="font-bold block">{{item.cuisine_name}}
-                            <a><i class="glyphicon glyphicon-edit pull-right" ng-click="editItem(item.cuisine_id)"></i></a>
+                            <a><i class="glyphicon glyphicon-edit pull-right" ng-click="editItem(item)"></i></a>
                         </span> 
                         特色:{{item.cuisine_specialty}}
                       </div>
@@ -177,19 +177,27 @@
 		$scope.haveSelectImages = {};$scope.extend_attr = {};
 		//begin commom 右边数据/////////////////////////////////////////////////////////////////////////////////////
 		var myArrtibute = '';
-		$scope.addArrtibute = function(key, param) {
-			$scope.deleteSKU = {};$scope.haveSelectImages = {};$scope.extend_attr = {};
-			if(param == 0) {
+		$scope.addArrtibute = function(key, editParam) {
+			$scope.deleteSKU = {};$scope.haveSelectImages = {};$scope.extend_attr = {};var param = {};
+			if(editParam == 0) {
 				param = {};param["valid"] = "1";param["image_src"] = $scope._resource+'images/a10.jpg';
 				$scope.skuList = {1:{"cuisine_id":0,"cc_id":""}}
 			} else {
-				var cuisine_category_id = param.cuisine_category_id, cuisine_name = '';
-				for(var i in $scope.itemCategoryList) {//找出类别名字
-					if($scope.itemCategoryList[i].cuisine_id == cuisine_category_id) {
-					   cuisine_name = $scope.itemCategoryList[i].cuisine_name;
+				param = angular.copy(editParam);
+				if($scope.channel_config_key=='cuisineCategory') {
+					var cuisine_category_id = param.cuisine_category_id, cuisine_name = '';
+					for(var i in $scope.itemCategoryList) {//找出类别名字
+						if($scope.itemCategoryList[i].cuisine_id == cuisine_category_id) {
+						   cuisine_name = $scope.itemCategoryList[i].cuisine_name;
+						}
 					}
+					$scope.select_cuisineCategory = {'cuisine_id':cuisine_category_id,'cuisine_name':cuisine_name};
+					var select_SkuAttr = {};
+					select_SkuAttr[1] = {'cn':param.sku_attr1,'en':''};
+					select_SkuAttr[2] = {'cn':param.sku_attr2,'en':''};
+					select_SkuAttr[3] = {'cn':param.sku_attr3,'en':''};
+					$scope.select_SkuAttr = select_SkuAttr;
 				}
-				$scope.select_cuisineCategory = {'cuisine_id':cuisine_category_id,'cuisine_name':cuisine_name};
 			} 
 			$scope.param = param;
             myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: __RESOURCE+'views/ChannelConfig/'+key+'.tpl.html'});
@@ -250,15 +258,20 @@
 			for(var i in skuList) {
 				sku = angular.copy(skuList[i]);
 			}
-			sku.cuisine_id = 0;sku.cc_id = '';
+			sku.cuisine_id = 0;sku.cc_id = '';sku.valid = 1;
 			$scope.skuList[i+1] = sku;
 		}
 		$scope.deleteSKU = {};
-		$scope.deleteSKUArrtibute = function(key) {
+		$scope.deleteSKUArrtibute = function($event, key) {
 			var sku = $scope.skuList[key];
-			delete $scope.skuList[key];
 			if(sku.cuisine_id > 0 && sku.cc_id != '') {
-				$scope.deleteSKU[sku.cuisine_id] =  sku.cc_id;
+				if($event.target.checked == true) {
+					$scope.deleteSKU[sku.cc_id] = '+';
+				} else {
+					$scope.deleteSKU[sku.cc_id] = '-';
+				}
+			} else {
+				delete $scope.skuList[key];
 			}
 		}
         <!--end common 编辑-->
@@ -278,7 +291,7 @@
 				$httpService.deleteHeader('method');
 				if(result.data.success == 1) {
 					myArrtibute.hide();
-					//$scope.itemList =  result.data.item;
+					//$scope.itemList[param.cuisine_id] = param;
 				} 
 				loading.hide();
 			});

@@ -26,7 +26,6 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
         $cuisine_category_id = $objRequest->cuisine_category_id;
         $cuisine_is_category = $objRequest->cuisine_is_category;
         $cuisine_id          = $objRequest->cuisine_id;
-        $sku_key             = $objRequest->sku_key;
         if ($method == 'save') {
             $arrayAttr       = $objRequest->getInput('attr_value');
             $arrayItemImages = $objRequest->getInput('item_images');
@@ -54,6 +53,7 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
                 }
                 $cuisine_category_id = $cuisine_id;
             } else {//菜式
+                $sku_key                              = $objRequest->sku_key;
                 $arrayCuisine['cuisine_name']         = trim($objRequest->cuisine_name);
                 $arrayCuisine['cuisine_en_name']      = trim($objRequest->cuisine_en_name);
                 $arrayCuisine['cuisine_specialty']    = $objRequest->cuisine_specialty;
@@ -76,8 +76,10 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
                     foreach ($arrayCc_id as $key => $cc_id) {
                         $arrayCuisine['cuisine_inventory'] = $arrayCuisineInventory[$key];
                         $arrayCuisine['cuisine_price']     = $arrayCuisinePrice[$key];
-                        foreach ($arraySelectSkuAttr as $sku_attr_key => $skuAttr) {
-                            $arrayCuisine['sku_attr' . $sku_attr_key] = $skuAttr['cn'];
+                        if (!empty($arraySelectSkuAttr)) {
+                            foreach ($arraySelectSkuAttr as $sku_attr_key => $skuAttr) {
+                                $arrayCuisine['sku_attr' . $sku_attr_key] = $skuAttr['cn'];
+                            }
                         }
                         foreach ($arraySkuAttrValue as $sku_attr_key => $skuAttrValue) {
                             $arrayCuisine['sku_attr' . $sku_attr_key . '_value'] = $skuAttrValue[$key];
@@ -106,6 +108,10 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
                             CuisineDao::instance()->updateCuisine($whereCriteria, ['sku_cuisine_id' => $cuisine_id]);
                             $whereCriteria->EQ('cuisine_id', $cuisine_id);
                             CuisineDao::instance()->updateCuisine($whereCriteria, ['sku' => '1']);
+                        } else {
+                            $whereCriteria = new \WhereCriteria();
+                            $whereCriteria->EQ('channel_id', $channel_id)->EQ('company_id', $company_id)->EQ('sku_key', $sku_key);
+                            CuisineDao::instance()->updateCuisine($whereCriteria, ['sku_cuisine_id' => $cuisine_id]);
                         }
                     }
                     if (!empty($arrayCuisineUpdateList)) {
@@ -123,13 +129,26 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
 
                 }
                 if (!empty($arrayDeleteSKU)) {
-                    $arayUpdateCc_id = [];
-                    foreach ($arrayDeleteSKU as $cuisine_id => $cc_id) {
-                        $arayUpdateCc_id[$cuisine_id] = decode($cc_id);
+                    $arrayActiveUpdateCc_id = $arrayDeleteUpdateCc_id = [];
+                    foreach ($arrayDeleteSKU as $cc_id => $valid) {
+                        if ($valid == '+') {
+                            $arrayActiveUpdateCc_id[$cuisine_id] = decode($cc_id);
+                        } else {
+                            $arrayDeleteUpdateCc_id[$cuisine_id] = decode($cc_id);
+                        }
                     }
-                    $whereCriteria = new \WhereCriteria();
-                    $whereCriteria->EQ('channel_id', $channel_id)->EQ('company_id', $company_id)->ArrayIN('cuisine_id', $arayUpdateCc_id);
-                    CuisineDao::instance()->updateCuisine($whereCriteria, ['valid' => '0']);
+                    if (!empty($arrayDeleteUpdateCc_id)) {
+                        $whereCriteria = new \WhereCriteria();
+                        $whereCriteria->EQ('channel_id', $channel_id)->EQ('company_id', $company_id);
+                        $whereCriteria->ArrayIN('cuisine_id', $arrayDeleteUpdateCc_id);
+                        CuisineDao::instance()->updateCuisine($whereCriteria, ['valid' => '0']);
+                    }
+                    if (!empty($arrayActiveUpdateCc_id)) {
+                        $whereCriteria = new \WhereCriteria();
+                        $whereCriteria->EQ('channel_id', $channel_id)->EQ('company_id', $company_id);
+                        $whereCriteria->ArrayIN('cuisine_id', $arrayActiveUpdateCc_id);
+                        CuisineDao::instance()->updateCuisine($whereCriteria, ['valid' => '1']);
+                    }
                 }
                 /*if (empty($cuisine_id)) {//新数据
                     $arrayCuisine['company_id']          = $company_id;

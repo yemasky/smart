@@ -117,8 +117,7 @@
 									<span class="input-group-btn" title="规格值/单位"><span class="btn btn-default">规格5值</span></span>
 									<input size="6" class="form-control w-xs" name="skuList[attr].sku_attr1_value" ng-model="skuList[attr].sku_attr1_value" type="text" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="值/单位,例:100克/1份/红色" bs-tooltip>
 								</div>-->
-								<a class="ti-trash" ng-click="deleteSKUArrtibute(attr)" ng-if="$index>0&&sku.valid==1"></a>
-								<a class="glyphicon glyphicon-ok-sign" ng-click="deleteSKUArrtibute(attr)" ng-if="sku.valid==0">恢复</a>
+								<label class="ui-switch bg-dark m-t-xs m-r" ng-if="$index>0"><input type="checkbox" ng-checked="sku.valid==1" ng-click="deleteSKUArrtibute($event,attr)"><i></i></label>
 							</div>
 						</div>
 					</div>
