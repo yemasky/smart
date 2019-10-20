@@ -54,7 +54,7 @@ class ModulesConfig extends \ModulesConfig {
 
 	public static $module = [
 		'Channel'=>['Add'=>16,'Config'=>18],
-		'ChannelConfig'=>['default'=>19,'room'=>20,'layout'=>24,'cuisineCategory'=>57,'cuisine'=>57,'table'=>'0','delivery'=>'0'],
+		'ChannelConfig'=>['default'=>19,'room'=>20,'layout'=>24,'cuisineCategory'=>57,'cuisine'=>57,'table'=>57,'delivery'=>57],
 		'Upload'=>['images'=>22,'manager'=>23],
 		'ChannelSetting'=>['paymentAddEdit'=>26, 'marketAddEdit'=>28],
 		'PriceSetting'=>['RoomPriceList'=>30,'RoomPriceSystem'=>33,'RoomPriceSystemAddEdit'=>34,'RoomPriceAddEdit'=>35],

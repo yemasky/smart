@@ -11,7 +11,6 @@ namespace wise;
 */
 class ChannelConfigAction extends \BaseAction {
     protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-
     }
 
     protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -356,7 +355,6 @@ class ChannelConfigAction extends \BaseAction {
         if ($cuisinePagination) {
             $successService                = new \SuccessService();
             $arrayResult['receivableData'] = CuisineServiceImpl::instance()->getChannelCuisinePage($objRequest, $objResponse);
-            //$objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
             $successService->setData($arrayResult);
             return $objResponse->successServiceResponse($successService);
         }
@@ -386,15 +384,16 @@ class ChannelConfigAction extends \BaseAction {
     protected function doMethodTable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $company_id                 = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         $channel_id                 = decode($objRequest->c_id, getDay());
-        $objRequest->channel_config = 'cuisineCategory';//菜式类别
+        $method = $objRequest->method;
+        $objRequest->channel_config = 'table';//
 
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '1');
-        $arrayDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria);
+
 
         $successService         = new \SuccessService();
         $commonData             = $objResponse->commonData;
-        $commonData['itemList'] = $arrayDataList;
+        $commonData['itemList'] = '';
         $successService->setData($commonData);
         return $objResponse->successServiceResponse($successService);
     }
@@ -409,6 +408,9 @@ class ChannelConfigAction extends \BaseAction {
         if ($method == 'attribute') {
             $arrayAttribute = $this->getCuisineAttributeValue($objRequest, $objResponse);
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayAttribute);
+        }
+        if ($method == 'save') {
+            return $this->doSaveChannelItem($objRequest, $objResponse);
         }
         return CuisineServiceImpl::instance()->cuisineEditSave($objRequest, $objResponse);
 

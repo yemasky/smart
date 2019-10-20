@@ -2,9 +2,9 @@
 <div class="p-md">
   <div class="box b-a bg-white m-b" ng-controller="MealController">
     <div class="col-md-10">
-      <div class="panel-heading b-b b-light">{{arrayChannel.channel_name}}</div>
+      <div class="panel-heading b-b b-light">{{arrayChannel.channel_name}}<span class="text-muted"> &raquo;{{channel_config_name}} <!--增加属性--><a class="pull-right fa fa-plus-square" ng-click="addArrtibute(channel_config_key, 0)"> </a></span></div>
       <div class="panel-body">
-        <p class="text-muted">{{channel_config_name}} <!--增加属性--><a class="pull-right fa fa-plus-square" ng-click="addArrtibute(channel_config_key, 0)"> </a></p>
+        
         <div class="m-b-lg">
             <div class="m-b">   
 				<!--菜式类别开始-->
@@ -78,10 +78,10 @@
                 <div class="w-xl w-auto-xs">
                     <div class="box bg-white m-xs">
                       <div class="box-col w-auto-xs v-m">
-                        <img ng-click="addArrtibute(channel_config_key, 0)" ng-src="{{__RESOURCE}}images/a10.jpg" width="120" height="120" class="b p-xs">
+                        <img ng-click="addArrtibute(channel_config_key, 0)" ng-src="{{__RESOURCE}}images/a10.jpg" width="120" height="120" class="b p-xs m-t-xs">
                       </div>
                       <div class="box-col p">
-                        <a href="" class="pull-right fa fa-plus-square" ng-click="addArrtibute(channel_config_key, 0)"> 添加{{channel_config_name}}</a>
+                        <a href="" class="fa fa-plus-square" ng-click="addArrtibute(channel_config_key, 0)"> 添加{{channel_config_name}}</a>
                         <div></div>
                       </div>
                     </div>
@@ -150,15 +150,7 @@
 			$scope.channel_config_url  = result.data.item.channel_config_url;
 			$scope.imagesUploadUrl     = result.data.item.imagesUploadUrl;
 			$scope.imagesManagerUrl    = result.data.item.imagesManagerUrl;
-			if($scope.channel_config_key == 'cuisine') {
-				$scope.itemCategoryList  = result.data.item.itemCategoryList;
-			}
-			var cuisineSkuAttr  = result.data.item.cuisineSkuAttrList, cuisineSkuAttrList = {};
-			cuisineSkuAttrList[1] = angular.copy(cuisineSkuAttr);
-			cuisineSkuAttrList[2] = angular.copy(cuisineSkuAttr);
-			cuisineSkuAttrList[3] = angular.copy(cuisineSkuAttr);
-			$scope.cuisineSkuAttrList = cuisineSkuAttrList;
-			
+			//
 			arrayAttribute = result.data.item.arrayAttribute;
 			var configArrtibute = {};
 			if(arrayAttribute != '') {
@@ -170,8 +162,17 @@
 			}
 			$scope.configArrtibute = configArrtibute;
 			$(document).ready(function(){
-				$scope.action_nav_name     = $rootScope._self_module.module_name;
+				$scope.setActionNavName('', $rootScope._self_module.module_name);
 			});
+			//按配置出初始化
+			if($scope.channel_config_key == 'cuisine') {
+				$scope.itemCategoryList  = result.data.item.itemCategoryList;
+				var cuisineSkuAttr  = result.data.item.cuisineSkuAttrList, cuisineSkuAttrList = {};
+				cuisineSkuAttrList[1] = angular.copy(cuisineSkuAttr);
+				cuisineSkuAttrList[2] = angular.copy(cuisineSkuAttr);
+				cuisineSkuAttrList[3] = angular.copy(cuisineSkuAttr);
+				$scope.cuisineSkuAttrList = cuisineSkuAttrList;
+			}
 		});
 		
 		$scope.haveSelectImages = {};$scope.extend_attr = {};
@@ -181,7 +182,12 @@
 			$scope.deleteSKU = {};$scope.haveSelectImages = {};$scope.extend_attr = {};var param = {};
 			if(editParam == 0) {
 				param = {};param["valid"] = "1";param["image_src"] = $scope._resource+'images/a10.jpg';
-				$scope.skuList = {1:{"cuisine_id":0,"cc_id":""}}
+				if($scope.channel_config_key=='cuisine') {
+					$scope.skuList = {1:{"cuisine_id":0,"cc_id":""}}
+				}
+				if($scope.channel_config_key=='table') {
+					$scope.param.number_max = 4;
+				}
 			} else {
 				param = angular.copy(editParam);
 				if($scope.channel_config_key=='cuisineCategory') {
@@ -192,6 +198,8 @@
 						}
 					}
 					$scope.select_cuisineCategory = {'cuisine_id':cuisine_category_id,'cuisine_name':cuisine_name};
+				}
+				if($scope.channel_config_key=='cuisine') {
 					var select_SkuAttr = {};
 					select_SkuAttr[1] = {'cn':param.sku_attr1,'en':''};
 					select_SkuAttr[2] = {'cn':param.sku_attr2,'en':''};

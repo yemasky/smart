@@ -517,7 +517,8 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			$scope.setMenu($rootScope.employeeMenu, $module_channel);
 		};
 		$rootScope._self_module = '';
-		$scope.setActionNavName = function(module_id) {
+		$scope.setActionNavName = function(module_id, nav) {
+			if(angular.isDefined(nav) && nav != '') {$scope.action_nav_name = '' + nav; return;}
 			var menus = $scope.hashEmployeeModule, nav = '', _self_module = $rootScope._self_module;			getChannelNav(_self_module);
 			function getChannelNav(_this_module) {console.log(nav);
 				if(typeof(menus[_this_module.module_id]) != 'undefined') {

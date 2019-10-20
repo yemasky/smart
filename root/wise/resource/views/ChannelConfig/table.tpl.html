@@ -19,11 +19,11 @@
                     <div class="form-group m-h-n clearfix">
                       <div class="col-sm-2 w-sm">
                       	<label>楼栋</label>
-                        <input class="form-control w-xs" name="item_attr2_value" ng-model="param.item_attr2_value" required type="text" ng-pattern="/^([0-9a-zA-Z\-_\.]+?)$/"  data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="数字,字母,含 _ - 和 . 符号" bs-tooltip>
+                        <input class="form-control w-xs" name="item_attr2_value" ng-model="param.item_attr2_value" type="text" ng-pattern="/^([0-9a-zA-Z\-_\.]+?)$/"  data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="数字,字母,含 _ - 和 . 符号" bs-tooltip>
                       </div>
                       <div class="col-sm-2 w-sm">
                         <label>楼层</label>
-                        <input class="form-control w-xs" name="item_attr1_value" ng-model="param.item_attr1_value" required type="text" ng-pattern="/^([0-9a-zA-Z\-_\.]+?)$/" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="数字,字母,含 _ - 和 . 符号" bs-tooltip>
+                        <input class="form-control w-xs" name="item_attr1_value" ng-model="param.item_attr1_value" type="text" ng-pattern="/^([0-9a-zA-Z\-_\.]+?)$/" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="数字,字母,含 _ - 和 . 符号" bs-tooltip>
                       </div>
                       <div class="col-sm-2 w-sm">
                         <label for="item_name">房间名称/餐桌编号</label>
@@ -33,17 +33,17 @@
                     <div class="form-group m-h-n clearfix">
                       <div class="col-sm-2 w-sm">
                       	<label>最多坐几人</label>
-                        <input class="form-control w-xs" value="2" name="number_max" ng-model="param.number_max" required type="number" string-to-number min="1" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="填入大于0数字" bs-tooltip>
+                        <input class="form-control w-xs" value="2" name="number_max" ng-model="param.number_max" type="number" string-to-number min="1" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="填入大于0数字" bs-tooltip>
                       </div>
                     </div>
                     <div class="form-group m-h-n clearfix">
                     	<div class="col-sm-2 w-sm">
                             <label>面积</label>
-                            <input class="form-control w-xs" value="20" name="item_attr4_value" ng-model="param.item_attr4_value" required type="number" string-to-number min="0">
+                            <input class="form-control w-xs" value="20" name="item_attr4_value" ng-model="param.item_attr4_value" type="number" string-to-number min="0">
                         </div>
                         <div class="col-sm-2">
                             <label>朝向</label>
-                            <select class="form-control w-xs" name="item_attr5_value" ng-model="param.item_attr5_value" required>
+                            <select class="form-control w-xs" name="item_attr5_value" ng-model="param.item_attr5_value">
 								<option value="">选择朝向</option>
                             	<option value="东">东</option>
                                 <option value="南">南</option>

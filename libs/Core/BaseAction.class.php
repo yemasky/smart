@@ -59,14 +59,15 @@ class HttpRequest {
         } else {
             $param = $this->php_input;
         }
-        if (get_magic_quotes_gpc()) {
+        /*if (get_magic_quotes_gpc()) {
             return $param;
         }
         if (is_array($param)) {
             return $this->addArraySlashes($param);
         }
 
-        return addslashes($param);
+        return addslashes($param);*/
+        return $param;
     }
 
     public function setInput($pname, $arrayInput) {
@@ -80,14 +81,15 @@ class HttpRequest {
     public function validInput($pname) {
         if (isset($this->php_input[$pname])) {
             $param = $this->php_input[$pname];
-            if (get_magic_quotes_gpc()) {
+            /*if (get_magic_quotes_gpc()) {
                 return $param;
             }
             if (is_array($param)) {
                 return $this->addArraySlashes($param);
             }
 
-            return addslashes($param);
+            return addslashes($param);*/
+            return $param;
         }
 
         return false;
@@ -110,27 +112,29 @@ class HttpRequest {
         } else {
             return null;
         }
-        if (get_magic_quotes_gpc()) {
+        /*if (get_magic_quotes_gpc()) {
             return $param;
         }
         if (is_array($param)) {
             return $this->addArraySlashes($param);
         }
 
-        return addslashes($param);
+        return addslashes($param);*/
+        return $param;
     }
 
     public function get($pname = '') {
         if (empty($pname)) return $this->parameters;
         if (isset($this->parameters[$pname])) {
-            if (get_magic_quotes_gpc()) {
+            /*if (get_magic_quotes_gpc()) {
                 return $this->parameters[$pname];
             }
             if (is_array($this->parameters[$pname])) {
                 return $this->addArraySlashes($this->parameters[$pname]);
             }
 
-            return addslashes($this->parameters[$pname]);
+            return addslashes($this->parameters[$pname]);*/
+            return $this->parameters[$pname];
         } else {
             return null;
         }
@@ -142,11 +146,12 @@ class HttpRequest {
                 return $this->__get($pname);
             }
         } else {
-            if (get_magic_quotes_gpc()) {
+            /*if (get_magic_quotes_gpc()) {
                 return $_POST;
             }
 
-            return $this->addArraySlashes($_POST);
+            return $this->addArraySlashes($_POST);*/
+            return $_POST;
         }
 
         return null;
