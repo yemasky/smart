@@ -52,7 +52,7 @@
 									<span class="input-group-btn" title="售价"><span class="btn btn-default">售价</span></span>
 									<input size="6" class="form-control w-xs" name="cuisine_price[{{attr}}]" string-to-number ng-model="skuList[attr].cuisine_price" type="number">
 									<span class="input-group-btn" title="库存"><span class="btn btn-default">库存</span></span>
-						  			<input size="6" class="form-control w-xs" name="cuisine_inventory[{{attr}}]" string-to-number ng-model="skuList[attr].cuisine_inventory" required type="number">
+						  			<input size="6" class="form-control w-xs" name="cuisine_inventory[{{attr}}]" string-to-number ng-model="skuList[attr].cuisine_inventory" required type="number" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="无限库存请加大值到1000000以上" bs-tooltip>
 									<input type="hidden" name="cc_id[{{attr}}]" value="{{sku.cc_id}}" ng-model="skuList[attr].cc_id">
 								</div>
 								<div class="input-group m-b-xs no-radius">

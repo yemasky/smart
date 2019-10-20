@@ -35,9 +35,7 @@
                       	<label>最多坐几人</label>
                         <input class="form-control w-xs" value="2" name="number_max" ng-model="param.number_max" type="number" string-to-number min="1" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="填入大于0数字" bs-tooltip>
                       </div>
-                    </div>
-                    <div class="form-group m-h-n clearfix">
-                    	<div class="col-sm-2 w-sm">
+					  <div class="col-sm-2 w-sm">
                             <label>面积</label>
                             <input class="form-control w-xs" value="20" name="item_attr4_value" ng-model="param.item_attr4_value" type="number" string-to-number min="0">
                         </div>
@@ -56,23 +54,21 @@
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>门锁号</label>
-                        <input class="form-control w-xs" name="item_number" value="" ng-model="param.item_number">
+                    <div class="form-group m-h-n clearfix">
+						<div class="col-sm-4">
+                        	<label>特色描述</label>
+                        	<input class="form-control" name="describe" value="" ng-model="param.describe">
+						</div>
+					</div>
+					<div class="form-group m-h-n clearfix">
+						<div class="col-sm-4">
+                        	<label>特色描述(英文)</label>
+                        	<input class="form-control" name="describe_en" value="" ng-model="param.describe_en">
+						</div>
                     </div>
                     <div class="form-group">
                         <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
                         <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
-                    </div>
-                    <div class="form-group">
-                        <label>房间类型</label>
-                        <div class="checkbox" ng-repeat="(i, defaultAttr) in arrayDefaultAttr" ng-if="i==9">
-                          <label class="checkbox-inline ui-checks"  ng-repeat="(j, attribute) in defaultAttr">
-                            <input type="checkbox" class="describe" name="describe[{{j}}]" value="{{attribute[0]}}">
-                            <i></i>
-                            {{attribute[0]}}
-                          </label>
-                        </div>
                     </div>
                     <div class="form-group"></div>
                 </div>
@@ -80,7 +76,7 @@
         </div>
       </div>
       <div class="aside-footer panel-footer">
-      	<input type="hidden" name="item_id" value="" ng-model="param.item_id" >
+      	<input type="hidden" name="item_id" value="{{param.item_id}}" ng-model="param.item_id" >
         <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
         <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
       </div>

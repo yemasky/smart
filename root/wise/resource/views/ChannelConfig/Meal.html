@@ -74,6 +74,57 @@
                   </div>
                 </div>
                 <!--菜式结束-->
+				<!--table开始-->
+                <div class="list-group no-radius" ng-if="channel_config_key=='table'">
+                    
+					<!--菜式分页开始 -->
+					<div class="panel panel-default no-border">
+                    <table st-pipe="callTableServer" st-table="itemList" class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th st-ratio="40" st-sort="item_name">房间名称/餐桌编号</th>
+                            <th st-ratio="10" st-sort="item_attr2_value">楼栋</th>
+                            <th st-ratio="15" st-sort="item_attr1_value">楼层</th>
+                            <th st-ratio="15" st-sort="number_max">最多坐几人</th>
+                            <th st-ratio="15" st-sort="item_attr4_value">面积</th>
+                            <th st-ratio="5" st-sort="valid">有效</th>
+							<th st-ratio="5">编辑</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td colspan="6">
+                                <div class="input-group col-xs-3">
+                                  <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button">房间名称/餐桌编号</button>
+                                  </span>
+                                  <input st-search="" class="form-control w" name="item_name" id="item_name" type="text" ng-model="item_name" >
+                                </div>
+                            </td>
+                        </tr>
+                        <tr ng-repeat="(i, item) in itemList">
+							<td>{{item.item_name}}</td>
+                            <td>{{item.item_attr2_value}}</td>
+							<td>{{item.item_attr1_value}}</td>
+							<td>{{item.number_max}}</td>
+							<td>{{item.item_attr4_value}}</td>
+							<td>{{item.valid}}</td>
+							<td><a><i class="glyphicon glyphicon-edit" ng-click="addArrtibute(channel_config_key, item)"></i></a></td>
+                        </tr>
+                        </tbody>
+                        <tfoot>
+                        <tr>
+                            <td colspan="7" class="text-center">
+                                <div st-items-by-page="10" st-pagination="" st-template="pagination.custom.html">
+                                    
+                                </div>
+                            </td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                  </div>
+                </div>
+                <!--table结束-->
 				<!--添加（房间|房型|菜式)按钮开始-->
                 <div class="w-xl w-auto-xs">
                     <div class="box bg-white m-xs">
@@ -213,7 +264,7 @@
 				myArrtibute.show();
 				$scope.setImage();
 				$(document).ready(function(){
-					if(typeof(param.cuisine_id) != 'undefined') $('input[name="cuisine_id"]').val(param.cuisine_id);
+					if(typeof(param.cuisine_id) != 'undefined' && $scope.channel_config_key=='cuisine') $('input[name="cuisine_id"]').val(param.cuisine_id);
 				});
             })
 		};
@@ -238,7 +289,7 @@
 			if($scope.channel_config_key=='cuisineCategory') {
 				arrt_param = '&cuisine_category_id='+cuisine_id
 			}	
-			var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
+			var loading = $alert({content: 'loading... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
 			$httpService.header('method', 'attribute');
 			var postParam = {};postParam.param = '';
 			$httpService.post('app.do?channel='+$scope.channel_config_url+'&c_id='+$scope.channel_id+arrt_param, postParam, function(result){
@@ -293,6 +344,9 @@
 				$scope.param.select_SkuAttr = $scope.select_SkuAttr;
 			}
 			$httpService.header('method', 'save');
+			if($scope.channel_config_key=='table') {
+				$httpService.header('method', 'saveTable');
+			}
 			var loading = $alert({content: 'Saving... 80%', placement: 'top', type: 'info', templateUrl: '/loading.html', show: true});
 			$httpService.post('app.do?channel='+$scope.channel_config_url+'&c_id='+$scope.channel_id, $scope, function(result){
 				$scope.beginLoading =! $scope.beginLoading;
@@ -413,8 +467,18 @@
 				tableState.pagination.numberOfPages = result.data.item.receivableData.numberOfPages;
 			});
 		};
-
+		////分页取出table
 		////////
+		$scope.callTableServer = function callServer(tableState) {
+			$scope.param = {};        
+			$scope.param.tableState = tableState;
+			$scope.loading.start();
+			$httpService.post('/app.do?'+param+'&tablePagination=1', $scope, function(result){
+				$scope.loading.percent();
+				$scope.itemList = result.data.item.receivableData.data;
+				tableState.pagination.numberOfPages = result.data.item.receivableData.numberOfPages;
+			});
+		};
 	});
 	//
 </script>

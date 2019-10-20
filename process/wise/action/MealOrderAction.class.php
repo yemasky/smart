@@ -9,10 +9,14 @@ namespace wise;
 
 class MealOrderAction extends \BaseAction {
     protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
     }
 
     protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         switch ($objRequest->getAction()) {
+            case 'RestaurantReservation':
+                $this->doRestaurantReservation($objRequest, $objResponse);
+                break;
             default:
                 $this->doDefault($objRequest, $objResponse);
                 break;
@@ -39,11 +43,15 @@ class MealOrderAction extends \BaseAction {
      */
     protected function doDefault(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         //赋值
-        //设置类别
+        $successService = new \SuccessService();
+
+        return $objResponse->successServiceResponse($successService);
     }
 
-    protected function doRoomStatus(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-		$arrayRoomStatus = HotelOrderServiceImpl::instance()->getRoomStatus();
+    protected function doRestaurantReservation(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $successService = new \SuccessService();
+
+        return $objResponse->successServiceResponse($successService);
 	}
 
 }

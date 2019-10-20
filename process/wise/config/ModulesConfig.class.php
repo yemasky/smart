@@ -15,7 +15,7 @@ class ModulesConfig extends \ModulesConfig {
 		'Sport'=>'Sport','Shop'=>'Shop','Service'=>'Service','Tour'=>'Tour'];
     public static $channel_config = [
         'Hotel'  =>['layout'=>'房型','room'=>'房间'],
-        'Meal'   =>['cuisineCategory'=>'菜式类别','cuisine'=>'菜式','table'=>'餐桌', 'delivery'=>'送餐配置'],
+        'Meal'   =>['cuisineCategory'=>'菜式类别','cuisine'=>'菜式','table'=>'餐桌'],
         'Meeting'=>['meeting'=>'会议'],
         'Sport'  =>['sport'=>'娱乐'],
         'Shop'   =>['shop'=>'商品'],
@@ -54,7 +54,7 @@ class ModulesConfig extends \ModulesConfig {
 
 	public static $module = [
 		'Channel'=>['Add'=>16,'Config'=>18],
-		'ChannelConfig'=>['default'=>19,'room'=>20,'layout'=>24,'cuisineCategory'=>57,'cuisine'=>57,'table'=>57,'delivery'=>57],
+		'ChannelConfig'=>['default'=>19,'room'=>20,'layout'=>24,'cuisineCategory'=>57,'cuisine'=>57,'table'=>57],
 		'Upload'=>['images'=>22,'manager'=>23],
 		'ChannelSetting'=>['paymentAddEdit'=>26, 'marketAddEdit'=>28],
 		'PriceSetting'=>['RoomPriceList'=>30,'RoomPriceSystem'=>33,'RoomPriceSystemAddEdit'=>34,'RoomPriceAddEdit'=>35],

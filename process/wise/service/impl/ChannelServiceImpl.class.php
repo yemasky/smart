@@ -152,9 +152,14 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 
     //get channel_item
     public function getChannelItemHash(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $company_id     = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id = decode($objRequest->c_id, getDay());
+        $loginInfo      = LoginServiceImpl::instance()->getLoginInfo();
+        $company_id     = $loginInfo->getCompanyId();
+        $channel_id     = $objRequest->channel_id;
         $channel_config = $objRequest->channel_config;
+        $_self_module   = $objResponse->getResponse('_self_module');
+        if (isset($_self_module['module']) && $_self_module['module'] == 'ChannelConfig') {
+            $channel_id = decode($objRequest->c_id, getDay());
+        }
 
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id);
@@ -286,12 +291,12 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
             ->setChildrenKey('price_system_id')->setMultiple(false);
         $arrayCommision = ChannelDao::instance()->DBCache($cacheId)->getChannelCommision($whereCriteria, $field);
         if (!empty($channel_id) && !empty($market_id)) {
-            if(isset($arrayCommision[$channel_id]) && isset($arrayCommision[$channel_id][$market_id])) {
+            if (isset($arrayCommision[$channel_id]) && isset($arrayCommision[$channel_id][$market_id])) {
                 return $arrayCommision[$channel_id][$market_id];
             }
             return [];
         } elseif (!empty($channel_id)) {
-            if(isset($arrayCommision[$channel_id]))
+            if (isset($arrayCommision[$channel_id]))
                 return $arrayCommision[$channel_id];
             return [];
         }

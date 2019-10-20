@@ -298,4 +298,42 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
     public function getAttributeValue($whereCriteria, $field = '') {
         return CuisineDao::instance()->getAttributeValue($whereCriteria, $field);
     }
+    //table
+    public function getChannelTablePage(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $tableState = $objRequest->tableState;
+        if (empty($tableState)) $tableState = array();
+        $company_id      = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id      = decode($objRequest->c_id, getDay());
+        $tableStateModel = new TableStateModel($tableState);
+        $objPagination   = $tableStateModel->getPagination();
+        $objSearch       = $tableStateModel->getSearch();
+        $objSort         = $tableStateModel->getSort();
+
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel_config', 'table');
+        if (!empty($searchValue = $objSearch->getPredicateObject())) {
+            //$whereCriteria->MATCH('receivable_name', $searchValue['$']);
+            $whereCriteria->LIKE('item_name', '%' . $searchValue['$'] . '%');
+        }
+        $tableCount = ChannelDao::instance()->getChannelItemCount($whereCriteria, 'item_id');
+        $objPagination->setTotalItemCount($tableCount);
+        $number        = $objPagination->getNumber();
+        $numberOfPages = ceil($tableCount / $number);
+        $objPagination->setNumberOfPages($numberOfPages);
+        if (!empty($predicate = $objSort->getPredicate())) {
+            $reverse = $objSort->isReverse() ? 'DESC' : 'ASC';
+            $whereCriteria->ORDER($predicate, $reverse);
+        }
+        $start         = $objPagination->getStart();
+        $whereCriteria->LIMIT($start, $number);
+        $arrayData = ChannelDao::instance()->getChannelItem($whereCriteria);
+        if (!empty($arrayData)) {
+            foreach ($arrayData as $i => $data) {
+                $arrayData[$i]['ci_id'] = encode($data['item_id']);
+
+            }
+        }
+        $tableStateModel->setItemData($arrayData);
+        return ['numberOfPages' => $numberOfPages, 'data' => $arrayData];
+    }
 }
