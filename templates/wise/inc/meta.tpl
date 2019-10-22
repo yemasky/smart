@@ -123,6 +123,8 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 	factory.deleteHeader = function($key) {
 		if(typeof($http.defaults.headers.common[$key]) != 'undefined') delete $http.defaults.headers.common[$key];
 	}
+	//删除刷新
+	if(typeof($http.defaults.headers.common['refresh']) != 'undefined') delete $http.defaults.headers.common['refresh'];
     return factory;
 }).service("$httpService", function($httpFactory){
     this.post = function($url, $scope, callBack) {return $httpFactory.post($url, $scope, callBack);}
@@ -311,8 +313,10 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
 		controller: function($rootScope, $scope, $ocLazyLoad, $httpService, $routeParams) {},
 		resolve: {
             deps: ["$ocLazyLoad","$stateParams",function($ocLazyLoad, $stateParams) {
-                return $ocLazyLoad.load(["resource/scripts/controllers/Booking/"+$stateParams.view+".js?<%$__VERSION%>",
-										 "resource/styles/booking.css"]);
+                return $ocLazyLoad.load(["resource/vendor/modules/angular-ui-select/select.min.css",
+                                         "resource/vendor/modules/angular-ui-select/select.min.js",
+                      					 "resource/scripts/controllers/Booking/"+$stateParams.view+".js?<%$__VERSION%>",
+										 "resource/styles/booking.css?<%$__VERSION%>"]);
             }]
         },
         data: {pageTitle: '预订'}
@@ -594,8 +598,8 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$rootScope.employeeChannel = {};
         $scope.setThisChannel = function(channel) {
 			var thisChannel = [];
-			var employeeChannel = $rootScope.employeeChannel;
-			var k = 0, thisChannel_id = '';
+			var employeeChannel = angular.copy($rootScope.employeeChannel);
+			var k = 0, thisChannel_id = '',channel_father_id = '';
 			if(channel == 'Hotel') {
 				/*thisChannel[0] = {};
 				thisChannel[0]['id'] = 0;
@@ -610,12 +614,18 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					thisChannel[k]['channel_id'] = employeeChannel[i].channel_id;
 					thisChannel[k]['channel_name'] = employeeChannel[i].channel_name;
                     thisChannel[k]['channel_father_id'] = employeeChannel[i].channel_father_id;
-					if(employeeChannel[i].default == 1) thisChannel_id = employeeChannel[i].id
+					if(employeeChannel[i].default == 1) {
+						thisChannel_id = employeeChannel[i].id;
+						channel_father_id = employeeChannel[i].channel_father_id;
+					}
 					k++;
 				}
 			}
-			if(thisChannel_id == '' && typeof(thisChannel[0]) != 'undefined') thisChannel_id = thisChannel[0]['value'];
-			$scope.thisChannel_id = thisChannel_id;
+			if(thisChannel_id == '' && typeof(thisChannel[0]) != 'undefined') {
+				thisChannel_id = thisChannel[0]['channel_id'];
+				channel_father_id = thisChannel[0]['channel_father_id'];
+			}
+			$scope.thisChannel_id = thisChannel_id;$scope.channel_father_id = channel_father_id;
 			$scope.thisChannel = thisChannel;
 		};
 		$scope.getChannelSetting = function(channel_id, key) {

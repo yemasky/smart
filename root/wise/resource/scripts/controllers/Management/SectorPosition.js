@@ -388,5 +388,4 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		}
 	}
 	//
-	$httpService.deleteHeader('refresh');
 });

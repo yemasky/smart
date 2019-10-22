@@ -7,9 +7,6 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
 		bookRoomFather_id = $scope.bookRoom.item_father_id;isBookRoom = true;$scope.bookRoom_quantity = '房号';$scope.param.isBookRoom = 1;//单独预定一个房间
 	}
     //日历部分
-    $ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.css",$scope._resource + "styles/booking.css",
-                      $scope._resource + "vendor/modules/angular-ui-select/select.min.css"]);
-    $ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.js"]);
     $scope.booking_room = {};$scope.booking_price = {}; $scope.system_price = {};
     var priceLayout = {};//房型价格
     //选择客源市场
@@ -583,5 +580,4 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             })
         }
     }
-    $httpService.deleteHeader('refresh');
 });

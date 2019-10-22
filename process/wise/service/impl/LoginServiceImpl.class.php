@@ -66,7 +66,7 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
                 $company_id          = $arrayEmployeeList[$i]['company_id'];
                 $employee_id         = $arrayEmployeeList[$i]['employee_id'];
                 $default_channel_id  = $arrayEmployeeList[$i]['default_channel_id'];//默认切换的channel
-                $arrayEmployeeModule = $this->getEmployeeModule($company_id, $employee_id, $default_channel_id);
+                $arrayEmployeeModule = $this->getEmployeeModule($company_id, $employee_id);//已删除参数$default_channel_id
                 //set cookie
                 unset($arrayEmployeeList[$i]['password_salt']);
                 unset($arrayEmployeeList[$i]['password']);
@@ -95,8 +95,8 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
         return $loginEmployeeModel;
     }
 
-    public function getEmployeeModule($company_id, $employee_id, $channel_id) {
-        $arrayEmployeeRoleModule = RoleServiceImpl::instance()->getEmployeeRoleModuleCache($company_id, $employee_id, $channel_id);
+    public function getEmployeeModule($company_id, $employee_id) {//已删除参数$channel_id
+        $arrayEmployeeRoleModule = RoleServiceImpl::instance()->getEmployeeRoleModuleCache($company_id, $employee_id);//已删除参数$channel_id
         $arrayEmployeeModule     = [];
         if (!empty($arrayEmployeeRoleModule)) {
             $arrayEmployeeModule = ModuleServiceImpl::instance()->getModuleInModuleId($arrayEmployeeRoleModule, $company_id, $employee_id);
@@ -137,7 +137,7 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
             $channelSettingList                 = $objSession->channelSettingList;
             $setCookie = false;
             if (empty($employeeMenu) || empty($channelSettingList)) {
-                $employeeMenu    = $this->getEmployeeModule($arrayEmployee['company_id'], $arrayEmployee['employee_id'], $arrayEmployee['default_channel_id']);
+                $employeeMenu    = $this->getEmployeeModule($arrayEmployee['company_id'], $arrayEmployee['employee_id']);//已删除参数$arrayEmployee['default_channel_id']
                 $employeeChannel = EmployeeServiceImpl::instance()->getEmployeeChannel($arrayEmployee['company_id'], $arrayEmployee['employee_id']);
                 //channelSettingList
                 $whereCriteria = new \WhereCriteria();

@@ -49,9 +49,32 @@ class MealOrderAction extends \BaseAction {
     }
 
     protected function doRestaurantReservation(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $method = $objRequest->method;
+        if (!empty($method)) {
+            return $this->doMethod($objRequest, $objResponse);
+        }
+        //
+        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //
+        $arrayResult['in_date'] = $in_date = LoginServiceImpl::getBusinessDay();
+        //客源市场
+        $arrayResult['marketList'] = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
+        //房间
+        $objRequest->channel_config = 'table';
+        $objRequest->hashKey        = 'item_attr2_value';
+        $objRequest->childrenHash   = 'item_attr1_value';
+        $objRequest->toHashArray    = true;
+        $arrayResult['roomList']    = ChannelServiceImpl::instance()->getChannelItemHash($objRequest, $objResponse);
+        //
         $successService = new \SuccessService();
-
+        $successService->setData($arrayResult);
         return $objResponse->successServiceResponse($successService);
-	}
+    }
 
+    //查询协议公司数据
+    protected function doMethodGetReceivable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $hotelOrderAction = new HotelOrderAction('RoomOrder');
+        $objRequest->setAction('RoomOrder');
+        return $hotelOrderAction->invoking($objRequest, $objResponse);
+    }
 }

@@ -106,7 +106,7 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
         return EmployeeDao::instance()->updateEmployeeSector($whereCriteria, $arrayUpdateData);
     }
 
-    public function getEmployeeChannelSectorCache($company_id, $employee_id, $channel_id, $isUpdate = false) {
+    public function getEmployeeChannelSectorCache($company_id, $employee_id, $channel_id = '', $isUpdate = false) {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('employee_id', $employee_id);//->EQ('channel_id', $channel_id)
         $cacheEmployeeSectorId = CacheConfig::getCacheId('employee_sector', $company_id, $employee_id);
@@ -114,6 +114,9 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
             $arrayEmployeeSector = EmployeeDao::instance()->DBCache($cacheEmployeeSectorId, -1)->getEmployeeSector($whereCriteria);
         } else {
             $arrayEmployeeSector = EmployeeDao::instance()->DBCache($cacheEmployeeSectorId)->getEmployeeSector($whereCriteria);
+        }
+        if(!empty($channel_id)) {
+            //取出channel_id 的sector
         }
         return $arrayEmployeeSector;
     }

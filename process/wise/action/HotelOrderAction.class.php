@@ -15,7 +15,7 @@ class HotelOrderAction extends \BaseAction {
         $this->setDisplay();
         $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
         $company_id       = $objLoginEmployee->getCompanyId();
-        $_self_module = $objResponse->getResponse('_self_module');
+        $_self_module     = $objResponse->getResponse('_self_module');
         //获取channel
         $channel_id                    = $objRequest->channel_id;
         $this->Booking_operationEntity = new Booking_operationEntity();
@@ -293,18 +293,20 @@ class HotelOrderAction extends \BaseAction {
 
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
+
     //查询协议公司数据
     protected function doMethodGetReceivable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
-        $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id       = $objRequest->channel_id;
+        $company_id    = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id    = $objRequest->channel_id;
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->ArrayIN('channel_id', [0, $channel_id])->EQ('valid', '1');
-        $arrayReceivable = ChannelServiceImpl::instance()->getChannelReceivable($whereCriteria, 'receivable_id,receivable_name');
+        $arrayReceivable   = ChannelServiceImpl::instance()->getChannelReceivable($whereCriteria, 'receivable_id,receivable_name');
         $objSuccessService = new \SuccessService();
-        $objSuccessService->setData(['receivableData'=>$arrayReceivable]);
+        $objSuccessService->setData(['receivableData' => $arrayReceivable]);
         return $objResponse->successServiceResponse($objSuccessService);
     }
+
     //查询订房数据
     protected function doMethodCheckOrderData(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
@@ -754,6 +756,7 @@ class HotelOrderAction extends \BaseAction {
         $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_update']);
 
     }
+
     //消费借物
     protected function doMethodRevokesOperations(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $revokes          = $objRequest->revokes;
@@ -928,8 +931,9 @@ class HotelOrderAction extends \BaseAction {
 
     //夜审过营业日
     protected function doMethodPassBusinessDay(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
-        $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $objLoginEmployee   = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id         = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $default_channel_id = $objLoginEmployee->getDefaultChannelId();
         //获取channel
         $channel_id     = $objRequest->channel_id;
         $businessDay    = LoginServiceImpl::getBusinessDay();
@@ -940,7 +944,7 @@ class HotelOrderAction extends \BaseAction {
         }
         $newBusinessDay                   = date("Y-m-d", strtotime($businessDay) - 0 + 86400);
         $arrayBusinessDay['company_id']   = $company_id;
-        $arrayBusinessDay['channel_id']   = $channel_id;
+        $arrayBusinessDay['channel_id']   = $default_channel_id;
         $arrayBusinessDay['business_day'] = $newBusinessDay;
         $arrayBusinessDay['add_datetime'] = getDateTime();
         ChannelServiceImpl::instance()->saveBusinessDay($arrayBusinessDay);

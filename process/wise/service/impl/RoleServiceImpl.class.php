@@ -18,8 +18,9 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
         return self::$objService;
     }
 
-    public function getEmployeeRoleModuleCache($company_id, $employee_id, $channel_id) {
-        $arrayEmployeeRole     = EmployeeServiceImpl::instance()->getEmployeeChannelSectorCache($company_id, $employee_id, $channel_id);
+    public function getEmployeeRoleModuleCache($company_id, $employee_id) {//$channel_id 已删除参数
+        //取得公司Sector（没有channel_id）
+        $arrayEmployeeRole     = EmployeeServiceImpl::instance()->getEmployeeChannelSectorCache($company_id, $employee_id);//$channel_id 无效
         $arrayEmployeeModuleId = array();
         if (!empty($arrayEmployeeRole)) {
             $whereCriteria = new \WhereCriteria();
@@ -33,12 +34,16 @@ class RoleServiceImpl extends \BaseServiceImpl implements RoleService {
             $whereCriteria->setHashKey('module_id');
             $cacheCompanyModuleId = CacheConfig::getCacheId('module_company', $company_id, $employee_id);
             $arrayModuleCompany   = ModuleDao::instance()->DBCache($cacheCompanyModuleId)->getModuleCompany($whereCriteria, 'module_id');
+            //begin moduleChannel *************************************************************
             //channel权限[公司下面有很多酒店餐馆组成，现在模式是 1酒店有餐馆等；可以拓展模式是 公司下面 多酒店，每个酒店多餐馆（暂未实现）]
+            /*
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('channel_id', $channel_id);
             $whereCriteria->setHashKey('module_id');
             $cacheChannelModuleId = CacheConfig::getCacheId('module_channel', $channel_id, $employee_id);
             $arrayModuleChannel   = ModuleDao::instance()->DBCache($cacheChannelModuleId)->getModuleChannel($whereCriteria, 'module_id');
+            */
+            //end moduleChannel *************************************************************
             //合并权限
             if (!empty($arrayEmployeeRoleModule) && !empty($arrayModuleCompany)) {
                 foreach ($arrayEmployeeRoleModule as $module_id => $arrayEmployeeModule) {

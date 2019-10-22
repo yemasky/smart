@@ -1,5 +1,5 @@
 //单个channel_id 的数据 并无多个，如需切换，则重新获取数据
-app.controller('RestaurantReservationController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
+app.controller('RestaurantInventoryController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
     $scope.param = {};
     $ocLazyLoad.load([$scope._resource + "vendor/modules/angular-ui-select/select.min.css",
                       $scope._resource + "vendor/modules/angular-ui-select/select.min.js",
@@ -70,5 +70,4 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
         $scope.isConsumePrint = isConsumePrint;$scope.isAccountPrint = isAccountPrint; $scope.isBorrowingPrint = isBorrowingPrint;
     };
     
-	$httpService.deleteHeader('refresh');
 });

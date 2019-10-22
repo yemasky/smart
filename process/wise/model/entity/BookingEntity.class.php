@@ -12,6 +12,7 @@ class BookingEntity extends \Entity {
 	protected $booking_id = null;
 	protected $booking_number = '0';
 	protected $booking_number_ext = '';
+	protected $booking_type;
 	protected $company_id;
 	protected $channel = 'Hotel';
 	protected $channel_id;
@@ -83,6 +84,20 @@ class BookingEntity extends \Entity {
      */
     public function setBookingNumberExt(string $booking_number_ext) {
         $this->booking_number_ext = $booking_number_ext;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBookingType() {
+        return $this->booking_type;
+    }
+
+    /**
+     * @param mixed $booking_type
+     */
+    public function setBookingType($booking_type) {
+        $this->booking_type = $booking_type;
     }
 
 	/**

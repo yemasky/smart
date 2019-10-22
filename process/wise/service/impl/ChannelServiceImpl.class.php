@@ -155,9 +155,11 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
         $loginInfo      = LoginServiceImpl::instance()->getLoginInfo();
         $company_id     = $loginInfo->getCompanyId();
         $channel_id     = $objRequest->channel_id;
+        $c_id           = $objRequest->c_id;
         $channel_config = $objRequest->channel_config;
         $_self_module   = $objResponse->getResponse('_self_module');
-        if (isset($_self_module['module']) && $_self_module['module'] == 'ChannelConfig') {
+        //if (isset($_self_module['module']) && $_self_module['module'] == 'ChannelConfig') {
+        if (!empty($c_id)) {
             $channel_id = decode($objRequest->c_id, getDay());
         }
 

@@ -126,7 +126,6 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
             tableState.pagination.numberOfPages = result.data.item.employeeList.numberOfPages;
         });
     };
-	$httpService.deleteHeader('refresh');
 	
 });
 

@@ -2,7 +2,7 @@
     <div class="" append-source>
             <form name="bookingRoomForm" class="form-inline" role="form" ng-submit="beginBooking('')">
             <div class="">
-            	<label class="control-label m-b"><i class="fa fa-clock-o"></i> 预抵</label>
+            	<label class="control-label m-b"><i class="fas fa-clock"></i> 预抵</label>
                 <div class="form-group">
                   <input type="text" size="9" class="form-control check_in w-thumb-lg" style="float:left;" name="check_in" ng-model="param.check_in" value="" readonly>
                   <input type="text" size="6" class="form-control w-thumb-lg" style="" name="in_time" ng-model="param.in_time" data-autoclose="1" data-time-format="HH:mm" placeholder="14:00" value="14:00" data-length="3" data-minute-step="15" data-timezone="UTC" bs-timepicker>
@@ -23,6 +23,7 @@
 					</ui-select>
 				</div>
                 <div class="form-group"><button class="btn btn-default" type="button" ng-click="checkOrderData()"><i class="fa fa-search"> </i> 查价格</button></div>
+				<div class="btn-group pull-right"><button type="button" class="btn btn-xs btn-default">营业日 {{getBusinessDay()}}</button></div>
                 <!--<button type="button" class="btn btn-default" data-animation="am-flip-x" bs-dropdown aria-haspopup="true" aria-expanded="false" data-trigger=""><i class="icon fa fa-users text-lt"></i> {{market_name}} <i class="fa fa-caret-down"></i></button>
                     <ul class="dropdown-menu" role="menu" style="overflow:visible;">
                       <li ng-repeat="(i, father) in marketList" class="dropdown-submenu">

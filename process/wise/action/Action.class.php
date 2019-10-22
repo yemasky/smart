@@ -25,7 +25,7 @@ class Action {
         //
         $channel_id = $objRequest->id;
         $channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : null;
-        if (!empty($channel_id)) $objRequest->channel_id = $channel_id;
+        if (!empty($channel_id)) $objRequest->channel_id = $channel_id;//如果没有传递channl_id 系统会在下面默认为用户登录的第一个channel_id
 
         $objResponse->__nav_name = '';
         $objLoginEmployee        = LoginServiceImpl::instance()->checkLoginEmployee();
@@ -46,17 +46,19 @@ class Action {
             $objResponse->noLogin = '0';
             $objEmployee          = $objLoginEmployee->getEmployeeInfo();
             //根据切换来变换default_channel_father_id
+            //每个酒店有自己的营业时间 default_channel_id 做为切换的酒店的设置 子酒店 使用母酒店的数据
+            //顶上的菜单做为切换的母酒店（菜单栏第一行,页面的第一行的切换）
+            //如果有酒店那么酒店一定做为母酒店，餐饮和其他没有营业日 所以不能。
+            //母酒店ID default_channel_id 不受下面的酒店或餐饮等切换的影响
             $default_channel_id                     = $objEmployee->getDefaultChannelId();
             $arrayEmployeeChannel                   = $objLoginEmployee->getEmployeeChannel();
             $default                                = $arrayEmployeeChannel[$default_channel_id];
+            //取出切换的酒店
             $default_channel                        = $arrayEmployeeChannel[$default['default_id']];
             $default_channel_father_id              = $default_channel['channel_id'];
             $objResponse->default_channel_father_id = $default_channel_father_id;
-            //默认值 channel_id
-            if (empty($channel_id)) $objRequest->channel_id = $channel_id = $default_channel['default_id'];
-
             $channelSettingList = $objLoginEmployee->getChannelSettingList();
-            //根据default_channel_father_id 来取得营业日
+            //根据母酒店default_channel_father_id 来取得营业日
             $business_day = getDay();//默认营业日 自动营业日
             if (isset($channelSettingList[$default_channel_father_id])) {
                 //设置默认的channel_id
@@ -67,7 +69,7 @@ class Action {
                         $business_day                      = getDay();
                         $arrayBussinessDay['business_day'] = $business_day;
                         $arrayBussinessDay['company_id']   = $objEmployee->getCompanyId();
-                        $arrayBussinessDay['channel_id']   = $channel_id;
+                        $arrayBussinessDay['channel_id']   = $default_channel_father_id;//$channel_id
                         $arrayBussinessDay['add_datetime'] = getDateTime();
                         ChannelServiceImpl::instance()->saveBusinessDay($arrayBussinessDay);
                     }
@@ -78,7 +80,7 @@ class Action {
             $_self_module              = array();
             if (is_numeric($module_id) && $module_id > 0) {
                 ////判断权限
-                $arrayEmployeeRoleModule = RoleServiceImpl::instance()->getEmployeeRoleModuleCache($objEmployee->getCompanyId(), $objEmployee->getEmployeeId(), $channel_id);
+                $arrayEmployeeRoleModule = RoleServiceImpl::instance()->getEmployeeRoleModuleCache($objEmployee->getCompanyId(), $objEmployee->getEmployeeId());//已删除参数$channel_id
                 if (isset($arrayEmployeeRoleModule[$module_id])) {//有权限
                     $arrayEmployeeModule = ModuleServiceImpl::instance()->getAllModuleCache();
                     if (isset($arrayEmployeeModule[$module_id])) {
@@ -90,6 +92,20 @@ class Action {
                     }
                     $objResponse->__module = $arrayEmployeeModule[$module_id]['module'];
                     $_self_module          = $arrayEmployeeModule[$module_id];
+                    //默认值 channel_id
+                    if (empty($channel_id)) {
+                        $objRequest->channel_id = $channel_id = $default_channel['default_id'];
+                        if($module == 'MealOrder') {//餐饮服务 取出第一个餐饮的channel_id
+                            if(!empty($arrayEmployeeChannel)) {
+                                foreach ($arrayEmployeeChannel as $key => $channelValue) {
+                                    if($channelValue['channel'] == 'Meal') {
+                                        $objRequest->channel_id = $channelValue['channel_id'];
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 } else {//无权限
                     return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['no_permission']['code']);
                 }
@@ -108,7 +124,7 @@ class Action {
             $objResponse->setResponse('_self_module', $_self_module);
         }
         $module = empty($module) ? 'Index' : ucwords($module);
-        $objRequest->setModule($module);
+        $objRequest->setModule($module);//设置module
 
         //common setting
         $objResponse->home_channel  = \Encrypt::instance()->encode('home', getDay());
