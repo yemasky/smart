@@ -173,7 +173,7 @@ class EmployeeServiceImpl extends \BaseServiceImpl implements EmployeeService {
                     $arrayEmployeeChannel[$channel_id]['channel_name']      = $channel['channel_name'];
                     $arrayEmployeeChannel[$channel_id]['channel_en_name']   = $channel['channel_en_name'];
                     $arrayEmployeeChannel[$channel_id]['company_chairman']  = $channel['company_chairman'];
-                    $arrayEmployeeChannel[$channel_id]['business_day']      = $channel['business_day'];//是否是夜審制度
+                    //$arrayEmployeeChannel[$channel_id]['business_day']      = $channel['business_day'];//是否是夜審制度
                     $arrayEmployeeChannel[$channel_id]['member_of']         = 0;
                     if ($channel['channel_father_id'] > 0) $arrayEmployeeChannel[$channel_id]['member_of'] = 1;
                 }

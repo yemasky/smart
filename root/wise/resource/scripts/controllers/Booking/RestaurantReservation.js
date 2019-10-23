@@ -38,7 +38,6 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
                 //$scope.defaultHotel = $scope.thisChannel[$scope.thisChannel_id]["channel_name"];
 				//设置客源市场  
             	$scope.selectCustomerMarket($scope.marketList[1].children[2], false);
-				$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
 				$scope.bookList          = result.data.item.bookList;//预订列表
 				$scope.roomList          = result.data.item.roomList;//客房列表
 				//时间
@@ -92,6 +91,24 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		$scope.param.receivable_id = receivable.receivable_id;
 		$scope.param.receivable_name = receivable.receivable_name;
 	}
+	//开台 预订 结账 加减菜
+	$scope.diningTable = function(diningType, table) {
+		var diningTypeName = '订单管理';
+		if(diningType == 'open') diningTypeName = '开台';
+		if(diningType == 'book') diningTypeName = '预订';
+		if(diningType == 'cuisine') diningTypeName = '加减菜';
+		if(diningType == 'account') diningTypeName = '结账';
+		$scope.diningTypeName = diningTypeName;$scope.diningType = diningType;
+		var asideRestaurantBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Restaurant/tableBook.html',show: false});
+		asideRestaurantBook.$promise.then(function() {
+			asideRestaurantBook.show();
+			$(document).ready(function(){
+				$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
+				//$('a.print-contents').printPreview('print_content');
+			});
+		});
+	}
+	
 	
     //打印
     $scope.printBill = function(print) {

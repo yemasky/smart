@@ -25,9 +25,15 @@
                         <a>菜品</a>
                     </li>
                     <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;">
-                        <a>所有订单</a>
+                        <a>订单</a>
                     </li>
-                 </ul>
+					<li class="pull-right">
+						<div class="btn-group m-r-xs" ng-init="activeBookAccountsEditTab=1">
+							<label class="btn btn-rounded btn-default btn-sm"><i class="ti-check-box"></i> 开台</label>
+							<label class="btn btn-rounded btn-default btn-sm"><i class="fas fa-columns"></i> 预订</label>
+						</div>
+					</li>                 
+				  </ul>
                  <div class="tab-content text-nowrap"><!--<img class="img-responsive w-thumb-xs" ng-src="{{_resource}}images/room.png">-->
                     <div ng-show="activeTab==1">
                         <div class="form-group m-h-n clearfix">
@@ -39,9 +45,10 @@
                                 <li ng-class="{active:activeAtaTab==2}" ng-click="activeAtaTab=2">
                                     <a>预订<span class="badge badge-xs" ng-bind="dueOut">0</span></a>
                                 </li>
-                                <li ng-class="{active:activeAtaTab==3}" ng-click="activeAtaTab=3">
-                                    <a>所有订单</a>
-                                </li>
+                                <!--<li ng-class="{active:activeAtaTab==3}" ng-click="activeAtaTab=3">
+                                </li>-->
+
+								
                             </ul>
 							<div class="p-md" ng-show="activeAtaTab==1">
 							  <div class="table-responsive">
@@ -52,15 +59,13 @@
 											<span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
 											<div class="list-group no-radius">
 												<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, room) in floor">
-												  <!--<span class="pull-left w-thumb-xs m-r b-b-2x"><i class="ui-icon ti-user {{bookRoomStatus[room.item_id].className}}"></i></span>-->
 												  <div class="clear p-xs">
-													<span class="font-bold block"><!--layout name-->{{layoutList[layoutRoom[room.item_id].item_category_id].item_name}}<span class="pull-right small fas fa-coins" ng-class="room.roomAccount>=0?'text-success-dk':room.roomAccount<0?'text-danger-dk':''" ng-if="room.status=='live_in'"> {{room.roomAccount}}</span></span>
 													<div>{{room.item_name}}
 														<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
 													</div>
 												  </div>
-													<button type="button" class="btn btn-default no-border no-margin p-xs w-full m-t-n" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
-													<span class="pull-left text-muted"><i class="fa fa-address-card" aria-hidden="true"></i>
+													<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
+													<span class="pull-left text-muted"><i class="fas fa-hamburger" aria-hidden="true"></i>
 														<span class="small" data-title="订单：{{bookRoomStatus[room.item_id].booking_number}}<br>预抵：{{bookRoomStatus[room.item_id].check_in}}　　<br>预离：{{bookRoomStatus[room.item_id].check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="roomLiveIn[room.item_id]">
 															<span ng-repeat="(live_id, liveIn) in roomLiveIn[room.item_id]">{{liveIn.member_name}} </span>
 														</span>
@@ -117,69 +122,7 @@
 							  </div>
 				            </div>
                             <div class="p-md form-inline" ng-show="activeAtaTab==3">
-                                <div class="m-b">
-                                    <form name="bookingRoomForm" class="form-inline" role="form" ng-submit="searchBooking(param)">
-                                    <label class="control-label m-b"><i class="fas fa-clock"></i> </label>
-                                    <select class="form-control" ng-model="param.condition_date">
-                                      <option value="">选择日期</option>
-									  <option value="check_in">预抵日期</option>
-									  <option value="actual_check_in">入住日期</option>
-									</select>
-                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.search_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" bs-datepicker>
-                                    <select class="form-control" ng-model="param.condition_key">
-                                      <option value="">选择条件</option>
-                                      <option value="booking_number">订单号</option>
-									  <option value="member_mobile">移动电话</option>
-									  <option value="member_email">Email</option>
-									  <option value="member_name">预订人</option>
-									</select>
-                               		<div class="input-group">
-                                        <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.search_value">
-                                        <span class="input-group-btn">
-                                            <button class="btn btn-default" type="submit">Go!</button>
-                                        </span>
-                                    </div>
-                                    </form>
-                                </div>
-                                <div class="table-responsive">
-								<table class="table table-bordered table-striped bg-white table-hover">
-								  <thead>
-									<tr>
-								      <th>订单号</th>
-									  <th translate="module.channel.market_name">客源市场</th>
-									  <th>房型</th>
-                                      <th>价格类型</th>
-									  <th>房号</th>
-									  <th>预订人</th>
-									  <th>电话/email</th>
-									  <th>预抵</th>
-									  <th>预离</th>
-									  <th></th>
-									</tr>
-								  </thead>
-								  <tbody><!-- bookingDetail -->
-									<tr ng-repeat="(detail_id, detail) in bookingSearchList">
-								      <td>{{detail.booking_number}}</td>
-									  <td class="text-nowrap">
-										  <span ng-if="detail.receivable_id==0">{{detail.market_name}}</span>
-										  <span ng-if="detail.receivable_id>0">{{detail.receivable_name}}</span>
-									  </td>
-									  <td><span>{{detail.item_category_name}}</span></td>
-                                      <td><span>{{detail.price_system_name}}</span></td>
-									  <td>{{detail.item_name==''?'未排房':detail.item_name}}</td>
-									  <td>{{bookList[detail.booking_number].member_name}}</td>
-									  <td>{{bookList[detail.booking_number].member_mobile==''?bookList[detail.booking_number].member_email:bookList[detail.booking_number].member_mobile}}</td>
-									  <td>{{detail.check_in | limitTo:10}}</td>
-									  <td>{{detail.check_out | limitTo:10}}</td>
-									  <td>
-                                          <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail, 1)">
-                                            <span>查看</span>
-                                          </a>
-                                      </td>
-									</tr>
-								  </tbody>
-								</table>
-							  </div>
+                                
 				            </div>
 						</div>
                     </div>
@@ -232,77 +175,69 @@
 						</div>
                     </div>
                     <div ng-show="activeTab==4">
-                        <!-- 远期房态 -->
-                        <div class="form-group m-h-n clearfix">
-							<div class="p-md">
-                              <form name="roomForcastingForm" class="form-validation" id="roomForcastingForm" ng-submit="roomForcasting(true)">
-							  <div class="form-inline form-group">
-                                <label class="control-label m-b"><i class="fa fa-clock-o"></i> 月份</label>
-                                <div class="input-group">
-                                    <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.eta_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-min-view="0" data-autoclose="true" data-min-date="{{getBusinessDay('MM/dd/yyyy')}}" data-autoclose="1" name="eta_date" bs-datepicker value="{{business_day}}">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-default" type="submit"> Go!</button>
-                                    </span>
-                                </div>
-                              </div>
-                              </form>
-							  <div class="table-responsive scroll-x scroll-y">
-								<table class="table table-bordered table-striped bg-white text-nowrap">
-                                  <thead>
-                                    <tr class="bg-light">
-                                      <th class="w" style="padding:1px;"></th>
-                                      <th style="padding:1px;"></th>
-                                      <th class="w-xs col-sm-1 b-r" ng-repeat="(thisDate, date) in forwardCalendar" style="padding:1px;"><div class="w-xs"></div></th>
-                                      <th style="padding:1px;"></th>
-                                    </tr>
-                                    <tr class="bs-sidebar">
-                                      <th class="w"><div class="w-xs">房型\日期</div></th>
-                                      <th class="no-padding panel"></th>
-                                      <th class="w-xs col-sm-1 b-r" ng-repeat="(thisDate, date) in forwardCalendar">
-                                        {{date.day}}<span class="text-xs m-l-xs" ng-class="date.week=='六'||date.week=='日'?'text-warning':'text-muted'"><small>{{date.week}}</small></span>
-                                      </th>
-                                      <th></th>
-                                    </tr>
-                                  </thead>
-                                  <!--房型列表-->
-                                  <tbody>
-                                    <tr><th colspan="{{forwardColspan}}"></th></tr>
-                                    <tr><th>全部房型 <code class="small font-thin">{{channelRoomNum}} <small>可订/<small>已订/预抵 入住率</small></small></code></th><th class="no-padding panel"></th>
-                                        <td ng-repeat="(thisDate, date) in forwardCalendar" class="book_td_count"><div class="book_status_count">{{channelAllRoomReservation[thisDate].room_num}}<small>/{{channelAllRoomReservation[thisDate].book_num}}/{{channelAllRoomReservation[thisDate].eta_num}} {{channelAllRoomReservation[thisDate].percentage}}%</small></div>
-                                        </td>
-                                    <th></th></tr>
-                                    <tr ng-repeat="(layout_id, layout) in layoutList"><!--酒店房型列表 循环 i-->
-                                      <td class="no-padding panel" ng-init="forwardLayoutShow[layout.item_id]=0">
-                                          <div style="padding: 10px 5px 7px 10px;">{{layout.item_name}} <code class="small" ng-if="layoutRoomNum[layout_id]>0">{{layoutRoomNum[layout_id]}}</code> <i class="ti-angle-double-down small pull-right cursor" ng-show="forwardLayoutShow[layout.item_id]==0" ng-click="setForwardLayoutShow(layout.item_id, 1)"></i> <i class="ti-angle-up small pull-right cursor" ng-show="forwardLayoutShow[layout.item_id]==1" ng-click="setForwardLayoutShow(layout.item_id, 0)"></i>
-                                          </div>
-                                          <table class="table no-margin"><!--酒店房型的房间列表 循环 i-->
-                                            <tr ng-repeat="room in layoutRoomList[layout.item_id]" ng-show="forwardLayoutShow[layout.item_id]==1">
-                                                <td>{{room.item_name}}</td>
-                                            </tr>
-                                          </table>
-                                      </td>
-                                      <td class="no-padding panel"></td>
-                                      <td class="w-xs col-sm-1 b-r cursor no-padding panel" ng-repeat="(thisDate, date) in forwardCalendar" ng-click="selectThisLayout($event)">
-                                        <table class="table no-margin">
-                                            <tr>
-                                                <td class="book_td_count"><div class="book_status_count">{{channelRoomReservation[layout_id][thisDate].room_num}}<small>/{{channelRoomReservation[layout_id][thisDate].book_num}}/{{channelRoomReservation[layout_id][thisDate].eta_num}}</small></div>
-                                                </td>
-                                            </tr>
-                                            <tr ng-repeat="room in layoutRoomList[layout.item_id]" ng-show="forwardLayoutShow[layout.item_id]==1">
-                                                <td class="w-xs w-xs-min" ng-class="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==1?'room_is_book':''">
-                                                    <div ng-if="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==1"><div class="book_status btn btn-sm btn-default btn-rounded" ng-repeat="(booking_detail_id,bookRoom) in channelRoomReservation[layout_id][thisDate]['room'][room.item_id].book_info" ng-style="bookRoom.style" ng-class="bookRoom.booking_detail_status==1?'':''" data-title="订单：{{bookRoom.booking_number}}<br>预抵：{{bookRoom.check_in}}　　<br>预离：{{bookRoom.check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip"><span ng-if="bookRoom.booking_detail_status=='1'&&bookRoom.check_out!=business_day">住 <i class="small fa fa-caret-right"></i></span><span ng-if="bookRoom.booking_detail_status=='1'&&bookRoom.check_out==business_day">预离 <i class="small fa fa-caret-right"></i></span><span ng-if="bookRoom.booking_detail_status=='0'">预抵 <i class="small fa fa-caret-right"></i></span></div></div>
-                                                    <div ng-if="channelRoomReservation[layout_id][thisDate]['room'][room.item_id].is_book==0">&nbsp;</div>
-                                                </td>
-                                            </tr>
-                                          </table>
-                                      </td>
-                                      <td></td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-							  </div>
+                        <div class="m-b">
+							<form name="bookingRoomForm" class="form-inline" role="form" ng-submit="searchBooking(param)">
+							<label class="control-label m-b"><i class="fas fa-clock"></i> </label>
+							<select class="form-control" ng-model="param.condition_date">
+							  <option value="">选择日期</option>
+							  <option value="check_in">预抵日期</option>
+							  <option value="actual_check_in">入住日期</option>
+							</select>
+							<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.search_date" data-date-format="yyyy-MM-dd" data-date-type="number"  data-autoclose="true"  data-min-date="02/10/86" data-autoclose="1" bs-datepicker>
+							<select class="form-control" ng-model="param.condition_key">
+							  <option value="">选择条件</option>
+							  <option value="booking_number">订单号</option>
+							  <option value="member_mobile">移动电话</option>
+							  <option value="member_email">Email</option>
+							  <option value="member_name">预订人</option>
+							</select>
+							<div class="input-group">
+								<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.search_value">
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="submit">Go!</button>
+								</span>
 							</div>
+							</form>
 						</div>
+						<div class="table-responsive">
+						<table class="table table-bordered table-striped bg-white table-hover">
+						  <thead>
+							<tr>
+							  <th>订单号</th>
+							  <th translate="module.channel.market_name">客源市场</th>
+							  <th>房型</th>
+							  <th>价格类型</th>
+							  <th>房号</th>
+							  <th>预订人</th>
+							  <th>电话/email</th>
+							  <th>预抵</th>
+							  <th>预离</th>
+							  <th></th>
+							</tr>
+						  </thead>
+						  <tbody><!-- bookingDetail -->
+							<tr ng-repeat="(detail_id, detail) in bookingSearchList">
+							  <td>{{detail.booking_number}}</td>
+							  <td class="text-nowrap">
+								  <span ng-if="detail.receivable_id==0">{{detail.market_name}}</span>
+								  <span ng-if="detail.receivable_id>0">{{detail.receivable_name}}</span>
+							  </td>
+							  <td><span>{{detail.item_category_name}}</span></td>
+							  <td><span>{{detail.price_system_name}}</span></td>
+							  <td>{{detail.item_name==''?'未排房':detail.item_name}}</td>
+							  <td>{{bookList[detail.booking_number].member_name}}</td>
+							  <td>{{bookList[detail.booking_number].member_mobile==''?bookList[detail.booking_number].member_email:bookList[detail.booking_number].member_mobile}}</td>
+							  <td>{{detail.check_in | limitTo:10}}</td>
+							  <td>{{detail.check_out | limitTo:10}}</td>
+							  <td>
+								  <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail, 1)">
+									<span>查看</span>
+								  </a>
+							  </td>
+							</tr>
+						  </tbody>
+						</table>
+					  </div>
                     </div>
                  </div>
               </div>  
@@ -421,17 +356,17 @@
   </div>
   <small class="text-muted">Place ng-app to the root of your application</small>
 </div>
-</script>
+</script><!-- /app/book_message.html -->
 <script type="text/ng-template" id="/app/manage_room.html">
 <ul class="dropdown-menu">
-  <li><a style="display:inline;" ng-click="editRoomStatus('dirty')"><i class="ti-check-box"></i> 开台</a>
-      <a style="display:inline;" ng-click="editRoomStatus('clean')"><i class="fas fa-columns"></i> 预订</a></li>
+  <li><a style="display:inline;" ng-click="diningTable('open', room)"><i class="ti-check-box"></i> 开台</a>
+      <a style="display:inline;" ng-click="diningTable('book', room)"><i class="fas fa-columns small"></i> 预订</a></li>
   <li class="divider"></li>
-  <li><a style="display:inline;" ng-click="editRoomStatus('repair')"><i class="glyphicon glyphicon-pencil"></i> +-菜</a>
-      <a style="display:inline;" ng-click="editRoomStatus('repair_ok')"><i class="fas fa-credit-card small"></i> 结账</a></li>
+  <li><a style="display:inline;" ng-click="diningTable('cuisine', room)"><i class="fas fa-pizza-slice"></i> +-菜</a>
+      <a style="display:inline;" ng-click="diningTable('account', room)"><i class="fas fa-credit-card small"></i> 结账</a></li>
   <li class="divider" style="height:0;"></li>
-  <li><a style="display:inline;" ng-click="editRoomStatus('lock')"><i class="fas fa-lock"></i> 锁台</a>
-      <a style="display:inline;" ng-click="editRoomStatus('unlock')"><i class="fas fa-lock-open"></i> 解锁</a></li>
+  <li><a style="display:inline;" ng-click="diningTable('lock', room)"><i class="fas fa-lock"></i> 锁台</a>
+      <a style="display:inline;" ng-click="diningTable('unlock', room)"><i class="fas fa-lock-open"></i> 解锁</a></li>
 
 </ul>
-</script>
+</script><!-- /app/manage_room.html -->

@@ -157,7 +157,7 @@
             <i class="icon fa fa-users text-lt"></i>
             <span>{{market_name}}</span>
          </a>
-         <ul class="nav nav-sub bg b">
+         <ul class="nav nav-sub bg-white b">
             <li ng-repeat="(i, father) in marketList">
               <a class="">
                 <span class="pull-right text-muted" ng-if="father.children!=''">
@@ -165,7 +165,7 @@
                 </span>
                 <span class="font-normal">{{father.market_name}}</span>
               </a>
-              <ul class="nav nav-sub bg b" ng-if="father.children!=''">
+              <ul class="nav nav-sub bg-white b" ng-if="father.children!=''">
                 <li ng-repeat="(j, market) in father.children"><a ng-click="selectCustomerMarket(market, true)">{{market.market_name}}</a></li>
               </ul>
             </li>
@@ -215,4 +215,4 @@
   </ul>
 </nav>
 </aside>
-</script><!-- /app/customerMarket.html -->
+</script><!-- /app/commonNavMenu.html -->
