@@ -41,6 +41,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
             	$scope.selectCustomerMarket($scope.marketList[1].children[2], false);
 				$scope.bookList          = result.data.item.bookList;//预订列表
 				$scope.roomList          = result.data.item.roomList;//客房列表
+				$scope.rowRoomList       = result.data.item.roomList;//客房列表
 				//时间
                 var _thisDay = result.data.item.in_date;
                 var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');

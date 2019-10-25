@@ -3,17 +3,17 @@
   <div class="box b-a bg-white m-b" ng-controller="MealController">
     <div class="col-md-10">
       <div class="panel-heading b-b b-light">{{arrayChannel.channel_name}}<span class="text-muted"> &raquo;{{channel_config_name}} <!--增加属性--><a class="pull-right fa fa-plus-square" ng-click="addArrtibute(channel_config_key, 0)"> </a></span></div>
-      <div class="panel-body">
+      <div class="panel-body no-padding">
         
         <div class="m-b-lg">
             <div class="m-b">   
 				<!--菜式类别开始-->
                 <div class="list-group no-radius" ng-if="channel_config_key=='cuisineCategory'">
-                    <div class="list-group-item col-sm-3 m-xs"  ng-repeat="(i, item) in itemList">
+                    <div class="list-group-item w-lg p-xs m-xs col-sm-3"  ng-repeat="(i, item) in itemList">
                       <span class="pull-left w-xs m-r b-b-2x"><img class="img-responsive" width="90" height="90" ng-src="{{item.image_src}}"></span>
                       <div class="clear">
                         <span class="font-bold block">{{item.cuisine_name}}
-                            <a><i class="glyphicon glyphicon-edit pull-right" ng-click="editItem(item)"></i></a>
+                            <a ng-if="item.company_id>0"><i class="glyphicon glyphicon-edit pull-right" ng-click="editItem(item)"></i></a>
                         </span> 
                         特色:{{item.cuisine_specialty}}
                       </div>
@@ -22,23 +22,24 @@
                 <!--菜式类别结束-->
 				<!--菜式开始-->
                 <div class="list-group no-radius" ng-if="channel_config_key=='cuisine'">
-                    
 					<!--菜式分页开始 -->
 					<div class="panel panel-default no-border">
                     <table st-pipe="callServer" st-table="itemList" class="table table-striped">
                         <thead>
                         <tr>
+							<th>图片</th>
                             <th st-ratio="40" st-sort="cuisine_name">菜式名字</th>
                             <th st-ratio="10" st-sort="cuisine_category_id">类别</th>
                             <th st-ratio="15" st-sort="cuisine_price">售价</th>
                             <th st-ratio="15" st-sort="cuisine_inventory">库存</th>
                             <th st-ratio="15" st-sort="cuisine_sell_clear">沽清</th>
                             <th st-ratio="5" st-sort="valid">有效</th>
+							<th st-ratio="5">编辑</th>
                         </tr>
                         </thead>
                         <tbody>
                         <tr>
-                            <td colspan="6">
+                            <td colspan="8">
                                 <div class="input-group col-xs-3">
                                   <span class="input-group-btn">
                                     <button class="btn btn-default" type="button">搜索菜名</button>
@@ -47,18 +48,15 @@
                                 </div>
                             </td>
                         </tr>
-                        <tr>
-                            <td colspan="6" class="no-padding">
-								<div class="list-group-item col-sm-3 m-xs p-xs" style="overflow: hidden;" ng-repeat="(i, item) in itemList">
-								  <span class="pull-left w-xs m-r b-b-2x"><img class="img-responsive" width="90" height="90" ng-src="{{item[i].image_src}}"></span>
-								  <div class="clear">
-									<span class="font-bold block">{{item[i].cuisine_name}}
-										<a><i class="glyphicon glyphicon-edit pull-right" ng-click="editItem(item[i])"></i></a>
-									</span> 
-									特色:{{item[i].cuisine_specialty}}
-								  </div>
-								</div>
-							</td>
+                        <tr ng-repeat="(i, item) in itemList">
+                            <td><img class="img-responsive" width="45" height="45" ng-src="{{item[i].image_src}}"></td>
+							<td title="{{item[i].cuisine_specialty}}">{{item[i].cuisine_name}}</td>
+							<td>{{itemCategoryList[item[i].cuisine_category_id].cuisine_name}}</td>
+							<td>{{item[i].cuisine_price}}</td>
+							<td>{{item[i].cuisine_inventory}}</td>
+							<td>{{item[i].cuisine_sell_clear==1?'沽清':''}}</td>
+							<td>{{item[i].valid==0?'无效':'有效'}}</td>
+							<td><a><i class="glyphicon glyphicon-edit" ng-click="editItem(item[i])"></i></a></td>
                         </tr>
                         </tbody>
                         <tfoot>
@@ -76,8 +74,6 @@
                 <!--菜式结束-->
 				<!--table开始-->
                 <div class="list-group no-radius" ng-if="channel_config_key=='table'">
-                    
-					<!--菜式分页开始 -->
 					<div class="panel panel-default no-border">
                     <table st-pipe="callTableServer" st-table="itemList" class="table table-striped">
                         <thead>
@@ -108,7 +104,7 @@
 							<td>{{item.item_attr1_value}}</td>
 							<td>{{item.number_max}}</td>
 							<td>{{item.item_attr4_value}}</td>
-							<td>{{item.valid}}</td>
+							<td>{{item.valid==0?'无效':'有效'}}</td>
 							<td><a><i class="glyphicon glyphicon-edit" ng-click="addArrtibute(channel_config_key, item)"></i></a></td>
                         </tr>
                         </tbody>

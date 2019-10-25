@@ -301,6 +301,12 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
         return CuisineDao::instance()->updateCuisine($whereCriteria, $arrayUpdateData);
     }
 
+    public function getCuisineCategory($company_id, $channel_id, $field = '*', $hashKey = '') {
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->ArrayIN('company_id', [0,$company_id])->ArrayIN('channel_id', [0,$channel_id])->EQ('cuisine_is_category', '1');
+        if(!empty($hashKey)) $whereCriteria->setHashKey($hashKey);
+        return CuisineServiceImpl::instance()->getCuisine($whereCriteria, $field);
+    }
     //
     public function deleteAttributeValue(\WhereCriteria $whereCriteria) {
         return CuisineDao::instance()->deleteAttributeValue($whereCriteria);

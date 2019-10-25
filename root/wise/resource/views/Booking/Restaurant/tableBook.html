@@ -5,7 +5,7 @@
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
-	  <div class="aside-body h-8x no-padding bg-light">
+	  <div class="aside-body no-padding bg-light">
           <form name="bookingRoomForm" class="form-inline p-xs" role="form" ng-submit="beginBooking('')">
             <div class="m-xs">
 				<button class="btn btn-default" type="button"><i class="fab fa-raspberry-pi"> </i> {{diningTypeName}}</button>
@@ -49,17 +49,17 @@
             </div>
          </form>  
 	  </div>
-      <form name="RestaurantBookEditForm" class="form-validation" id="thisForm" ng-submit="">
-      <div class="aside-body h-8x no-padding bg-light">
+      <form name="RestaurantBookEditForm" class="form-validation form-inline" id="thisForm" ng-submit="">
+      <div class="aside-body h-10x no-padding bg-light b-t">
         <div class="tab-container" ng-init="activeBookEditTab=1">
-            <ul class="nav nav-tabs">
+            <!--<ul class="nav nav-tabs">
                 <li ng-class="{active:activeBookEditTab==1}" ng-click="activeBookEditTab=1">
                     <a>开台管理</a>
                 </li>
 				<li ng-class="{active:activeBookEditTab==2}" ng-click="activeBookEditTab=2">
                     <a>操作日志</a>
                 </li>
-            </ul>
+            </ul>-->
             <div class="tab-content no-padding">
                 <div ng-show="activeBookEditTab==1">
 					<script type="text/ng-template" id="/app/checkOutMenu.html">
@@ -93,63 +93,16 @@
 						</div>
 				    </div>
 					<div class="tab-container">
-                        <div ng-show="activeBookAccountsEditTab==1">
+                        <div ng-show="activeBookAccountsEditTab==1"><!-- 菜式 -->
                             <div class="box">
-								<div class="col-md-8 b-t">
-								  <div class="box b-r" st-table="cuisineList" st-safe-src="rowCuisineList">
-									  <div class="p-h b-b">
-										  <div class="input-group col-xs-3 m-t-xs m-b-xs">
-											  <span class="input-group-btn">
-												<button class="btn btn-default" type="button">搜索菜名</button>
-											  </span>
-											  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
-											</div>
-
+								<div class="col-md-3 b-t">
+								  <div class="box b-r">
+									<div class="p-h b-b">
+										<div class="input-group col-xs-3 m-t-xs m-b-xs">
+											<span class="input-group-btn">
+												<button class="btn btn-default" type="button">已点菜式</button>
+											</span>
 										</div>
-									<div class="box-row">
-									  <div class="box-cell">
-										<div class="box-inner b-b">
-										  <!-- detail -->
-										  <div class="p tab-container ">
-											
-													<div class="list-group no-radius">
-														<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, cuisine) in cuisineList">
-														  <div class="clear p-xs">
-															<div>{{cuisine.cuisine_name}}
-																<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
-															</div>
-														  </div>
-															<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
-															<span class="pull-left text-muted"><i class="fas fa-hamburger" aria-hidden="true"></i>
-																<span class="small" data-title="订单：{{bookRoomStatus[room.item_id].booking_number}}<br>预抵：{{bookRoomStatus[room.item_id].check_in}}　　<br>预离：{{bookRoomStatus[room.item_id].check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="roomLiveIn[room.item_id]">
-																	<span ng-repeat="(live_id, liveIn) in roomLiveIn[room.item_id]">{{liveIn.member_name}} </span>
-																</span>
-															</span>
-															<span class="pull-right text-muted"><i class="fas fa-caret-square-down"></i></span></button>
-														</div>
-													</div>  
-											
-											 
-										  </div>  
-										  <!-- / detail -->
-										</div>
-									  </div>
-									</div>
-								  </div>
-								</div>
-								<div class="col-md-4 b-t">
-								  <div class="box">
-									<div class="p p-v-sm b-b">
-									  <script type="text/ng-template" id="filter">
-										<ul tabindex="-1" class="dropdown-menu" role="menu">
-										  <li><a >Read</a></li>
-										  <li><a >Unread</a></li>
-										</ul>
-									  </script>
-									  <a href class="pull-right text-muted"><i class="fa fa-trash"></i></a>
-									  <a href class="btn btn-default btn-xs text-muted" bs-dropdown="dropdown" data-animation="am-flip-x" data-template-url="filter">
-										Filter <span class="caret"></span>
-									  </a>
 									</div>
 									<!-- use box row -->
 									<div class="box-row">
@@ -160,6 +113,43 @@
 
 										  </div>
 										  <!-- / mail list -->
+										</div>
+									  </div>
+									</div>
+								  </div>
+								</div>
+								<div class="col-md-9 b-t">
+								  <div class="box" st-table="cuisineList" st-safe-src="rowCuisineList">
+									  <div class="p-h b-b">
+										  <div class="input-group col-xs-3 m-t-xs m-b-xs">
+											  <span class="input-group-btn">
+												<button class="btn btn-default" type="button">搜索菜名</button>
+											  </span>
+											  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
+										  </div>
+										  <div class="input-group w-sm m-t-xs m-b-xs">
+											  <select class="form-control" st-input-event="change" st-search="cuisine_category_id">
+												  <option value="">全部类别</option>
+												  <option value="1">早餐</option>
+												  <option value="{{i}}" ng-repeat="(i, category) in cuisineCategory">{{category.cuisine_name}}</option>
+											  </select>
+										  </div>
+									  </div>
+									<div class="box-row">
+									  <div class="box-cell" style="min-height: 440px;">
+										<div class="box-inner b-b">
+										  <!-- detail -->
+										  <div class="p tab-container">
+											<div class="list-group no-radius">
+												<div class="list-group-item col-sm-2 w-sm p-xs m-r-xs" ng-repeat="(i, cuisine) in cuisineList">
+												  <a href class="pull-left w-thumb m-r-xs" data-placement="bottom-left" data-type="success" data-html="true" data-animation="am-fade-and-scale" data-title="<img src='{{cuisine.image_src}}'>" bs-tooltip><img src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>
+												  <div class="clear"><div>{{cuisine.cuisine_name}}</div>
+												  <small>￥{{cuisine.cuisine_price}}</small>
+												  <a class="pull-right text-warning lt bg-white"><i class="glyphicon glyphicon-plus-sign"></i></a></div>
+												</div>
+											</div>  
+										  </div>  
+										  <!-- / detail -->
 										</div>
 									  </div>
 									</div>
@@ -167,38 +157,16 @@
 								</div>
   							</div>
                         </div>
-                        <div ng-show="activeBookAccountsEditTab==2">
+                        <div ng-show="activeBookAccountsEditTab==2"><!-- 餐桌 -->
                             <div class="box">
-								<div class="col-md-8 b-t">
+								<div class="col-md-3 b-t">
 								  <div class="box b-r">
-									<div class="box-row">
-									  <div class="box-cell">
-										<div class="box-inner b-b">
-										  <!-- detail -->
-										  <div class="p tab-container ">
-
-											 
-										  </div>  
-
-										  <!-- / detail -->
+									<div class="p-h b-b">
+										<div class="input-group col-xs-3 m-t-xs m-b-xs">
+											<span class="input-group-btn">
+												<button class="btn btn-default" type="button">进行中餐桌</button>
+											</span>
 										</div>
-									  </div>
-									</div>
-								  </div>
-								</div>
-								<div class="col-md-4 b-t">
-								  <div class="box">
-									<div class="p p-v-sm b-b">
-									  <script type="text/ng-template" id="filter">
-										<ul tabindex="-1" class="dropdown-menu" role="menu">
-										  <li><a >Read</a></li>
-										  <li><a >Unread</a></li>
-										</ul>
-									  </script>
-									  <a href class="pull-right text-muted"><i class="fa fa-trash"></i></a>
-									  <a href class="btn btn-default btn-xs text-muted" bs-dropdown="dropdown" data-animation="am-flip-x" data-template-url="filter">
-										Filter <span class="caret"></span>
-									  </a>
 									</div>
 									<!-- use box row -->
 									<div class="box-row">
@@ -209,6 +177,59 @@
 
 										  </div>
 										  <!-- / mail list -->
+										</div>
+									  </div>
+									</div>
+								  </div>
+								</div>
+								<div class="col-md-9 b-t">
+								  <div class="box">
+									  <div class="p-h b-b">
+										  <div class="input-group col-xs-3 m-t-xs m-b-xs">
+											  <span class="input-group-btn">
+												<button class="btn btn-default" type="button">搜索菜名</button>
+											  </span>
+											  <input class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
+										  </div>
+										  <div class="input-group w-sm m-t-xs m-b-xs">
+											  <select class="form-control">
+												  <option value="">全部类别</option>
+												  <option value="1">早餐</option>
+												  <option value="{{i}}" ng-repeat="(i, category) in cuisineCategory">{{category.cuisine_name}}</option>
+											  </select>
+										  </div>
+									  </div>
+									<div class="box-row">
+									  <div class="box-cell" style="min-height: 440px;">
+										<div class="box-inner b-b">
+										  <!-- detail -->
+										  <div class="p tab-container">
+											<div class="table-responsive">
+									<div class="buliding m-b" ng-repeat="(buliding_key, buliding) in roomList">
+										<div class="m-b-xs"><i class="fa fa-building text-xs"> {{buliding_key}}楼栋</i></div>
+										<div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
+											<span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
+											<div class="list-group no-radius">
+												<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, room) in floor">
+												  <div class="clear p-xs">
+													<div>{{room.item_name}}
+														<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
+													</div>
+												  </div>
+													<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
+													<span class="pull-left text-muted"><i class="fas fa-hamburger" aria-hidden="true"></i>
+														<span class="small" data-title="订单：{{bookRoomStatus[room.item_id].booking_number}}<br>预抵：{{bookRoomStatus[room.item_id].check_in}}　　<br>预离：{{bookRoomStatus[room.item_id].check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="roomLiveIn[room.item_id]">
+															<span ng-repeat="(live_id, liveIn) in roomLiveIn[room.item_id]">{{liveIn.member_name}} </span>
+														</span>
+													</span>
+													<span class="pull-right text-muted"><i class="fas fa-caret-square-down"></i></span></button>
+												</div>
+											</div> 
+										</div>
+									</div>
+							  </div>
+										  </div>  
+										  <!-- / detail -->
 										</div>
 									  </div>
 									</div>
@@ -312,6 +333,7 @@
     </div>
   </div>
 </div>
+<!--
 <div id="print_content">
     <div class="container-fluid">
         {{defaultHotel}}
@@ -350,7 +372,6 @@
                     <tr>
                       <th style="width: 135px;">房号</th>
                       <th style="width: 135px;">项目</th>
-                      <!--<th class="w">数量</th>-->
                       <th style="width: 135px;">金额</th>
                       <th>时间</th>
                     </tr>
@@ -359,7 +380,6 @@
                     <tr ng-repeat="(i, consume) in consumes">
                         <td class="contents">{{consume.item_name==''?'未排房':consume.item_name}}</td>
                         <td class="contents">{{consume.consume_title}}</td>
-                        <!--<td class="w">{{consume.item_amount}}</td>-->
                         <td class="contents">{{consume.consume_price_total}}</td>
                         <td class="contents">{{consume.add_datetime}}</td>
                     </tr>
@@ -380,7 +400,6 @@
                   <thead>
                     <tr>
                       <th style="width: 135px;">房号</th>
-                      <!--<th>支付方式</th>-->
                       <th style="width: 135px;">项目</th>
                       <th style="width: 135px;">金额</th>
                       <th>时间</th>  
@@ -389,14 +408,12 @@
                   <tbody>
                     <tr ng-repeat="(i, account) in accountPrint">
                       <td class="contents">{{account.item_name==''?'未排房':account.item_name}}</td>
-                      <!--<td class="contents">{{account.payment_name}}</td>-->
                       <td class="contents">{{account.accounts_type=='receipts'?'收款':account.accounts_type=='refund'?'退款':'挂账'}}</td>
                       <td class="contents">{{account.money}}</td>
                       <td class="contents">{{account.add_datetime}}</td>
                     </tr>
                     <tr>
                       <th>合计</th>
-                      <!--<td></td>-->
                       <td></td>
                       <td></td>
                       <td></td>
@@ -439,4 +456,5 @@
         </div>
     </div>
 </div>
+-->
 

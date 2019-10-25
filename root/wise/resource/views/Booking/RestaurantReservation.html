@@ -130,45 +130,30 @@
                         
                     </div>
                     <div ng-show="activeTab==3">
-						<table st-table="cuisineList" st-safe-src="rowCuisineList" class="table table-striped">
-						  <thead>
-						  <tr>
-							<th st-sort="cuisine_name">名称</th>  
-							<th st-sort="tag">标签</th>  
-							<th st-sort="notes">备注</th>
-							<th st-sort="valid">有效</th>
-							<th>编辑</th>
-						  </tr>
-						  </thead>
-						  <tbody>
-						  <tr>
-							<td colspan="5" class="no-padding">
-								<div class="input-group col-xs-3 m-t-xs m-b-xs">
-								  <span class="input-group-btn">
-									<button class="btn btn-default" type="button">搜索菜名</button>
-								  </span>
-								  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
-								</div>
-								<div class="list-group no-radius">
-									<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, cuisine) in cuisineList">
-									  <div class="clear p-xs">
-										<div>{{cuisine.cuisine_name}}
-											<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
-										</div>
-									  </div>
-										<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
-										<span class="pull-left text-muted"><i class="fas fa-hamburger" aria-hidden="true"></i>
-											<span class="small" data-title="订单：{{bookRoomStatus[room.item_id].booking_number}}<br>预抵：{{bookRoomStatus[room.item_id].check_in}}　　<br>预离：{{bookRoomStatus[room.item_id].check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="roomLiveIn[room.item_id]">
-												<span ng-repeat="(live_id, liveIn) in roomLiveIn[room.item_id]">{{liveIn.member_name}} </span>
-											</span>
-										</span>
-										<span class="pull-right text-muted"><i class="fas fa-caret-square-down"></i></span></button>
+						<div st-table="cuisineList" st-safe-src="rowCuisineList" class="form-group clearfix">
+							<div class="input-group col-xs-3 m-t-xs m-b-xs">
+							  <span class="input-group-btn">
+								<button class="btn btn-default" type="button">搜索菜名</button>
+							  </span>
+							  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
+							</div>
+							<div class="list-group no-radius">
+								<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, cuisine) in cuisineList">
+								  <div class="clear p-xs">
+									<div>{{cuisine.cuisine_name}}
+										<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
 									</div>
-								</div>  
-							</td>  
-						  </tr>
-						  </tbody>
-						</table>
+								  </div>
+									<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
+									<span class="pull-left text-muted"><i class="fas fa-hamburger" aria-hidden="true"></i>
+										<span class="small" data-title="订单：{{bookRoomStatus[room.item_id].booking_number}}<br>预抵：{{bookRoomStatus[room.item_id].check_in}}　　<br>预离：{{bookRoomStatus[room.item_id].check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="roomLiveIn[room.item_id]">
+											<span ng-repeat="(live_id, liveIn) in roomLiveIn[room.item_id]">{{liveIn.member_name}} </span>
+										</span>
+									</span>
+									<span class="pull-right text-muted"><i class="fas fa-caret-square-down"></i></span></button>
+								</div>
+							</div>  
+						</div>
                     </div>
                     <div ng-show="activeTab==4">
                         <div class="m-b">

@@ -456,7 +456,7 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
         $whereCriteria->ArrayIN('company_id', [$company_id, '0']);
         if (!empty($channel_id) && $channel_id > 0) $whereCriteria->EQ('channel_id', $channel_id);
         if (!empty($policy_id) && $policy_id > 0) $whereCriteria->EQ('policy_id', $policy_id);
-        $field = 'policy_id,policy_name,policy_en_name,channel_id,rules,rules_value,rules_days,rules_time,begin_datetime,end_datetime,policy_type,valid';
+        $field = 'policy_id,policy_name,policy_en_name,company_id,channel_id,rules,rules_value,rules_days,rules_time,begin_datetime,end_datetime,policy_type,valid';
 
         return ChannelDao::instance()->getCancellationPolicy($whereCriteria, $field);
     }

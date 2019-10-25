@@ -338,9 +338,7 @@ class ChannelConfigAction extends \BaseAction {
         $channel_id                 = decode($objRequest->c_id, getDay());
         $objRequest->channel_config = 'cuisineCategory';//菜式类别
 
-        $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '1');
-        $arrayDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria);
+        $arrayDataList = CuisineServiceImpl::instance()->getCuisineCategory($company_id, $channel_id);
 
         $successService         = new \SuccessService();
         $commonData             = $objResponse->commonData;
@@ -366,9 +364,8 @@ class ChannelConfigAction extends \BaseAction {
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '0');
         $arrayDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria);*/
         //类别
-        $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '1');
-        $arrayCategoryDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria, 'cuisine_id,cuisine_name,cuisine_en_name');
+        $field = 'cuisine_id,cuisine_name,cuisine_en_name';
+        $arrayCategoryDataList = CuisineServiceImpl::instance()->getCuisineCategory($company_id, $channel_id, $field, 'cuisine_id');
         //SKU属性
         $cuisineSkuAttr = ModulesConfig::$cuisineSkuAttr;
         //
