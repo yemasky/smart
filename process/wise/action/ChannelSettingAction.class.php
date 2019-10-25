@@ -168,7 +168,7 @@ class ChannelSettingAction extends \BaseAction {
         $successService->setData('');
         $objResponse->successServiceResponse($successService);
     }
-
+    //客源市场
     protected function doMarketAddEdit(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $method = $objRequest->method;
         if (!empty($method)) {

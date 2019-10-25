@@ -232,7 +232,10 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
         $tableState = $objRequest->tableState;
         if (empty($tableState)) $tableState = array();
         $company_id      = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id      = decode($objRequest->c_id, getDay());
+        $channel_id      = $objRequest->channel_id;
+        if(!empty($objRequest->c_id)) {
+            $channel_id = decode($objRequest->c_id, getDay());
+        }
         $tableStateModel = new TableStateModel($tableState);
         $objPagination   = $tableStateModel->getPagination();
         $objSearch       = $tableStateModel->getSearch();
@@ -249,24 +252,36 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
         $number        = $objPagination->getNumber();
         $numberOfPages = ceil($cuisineCount / $number);
         $objPagination->setNumberOfPages($numberOfPages);
-        if (!empty($predicate = $objSort->getPredicate())) {
-            $reverse = $objSort->isReverse() ? 'DESC' : 'ASC';
-            $whereCriteria->ORDER($predicate, $reverse);
-        }
-        $start         = $objPagination->getStart();
-        $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '0')
-            ->setHashKey('sku_cuisine_id')->setChildrenKey('cuisine_id');
-        $whereCriteria->LIMIT($start, $number);
-        $arrayData = $this->getCuisine($whereCriteria);
-        if (!empty($arrayData)) {
-            foreach ($arrayData as $sku_cuisine_id => $data) {
-                foreach ($data as $cuisine_id => $cuisine) {
-                    $arrayData[$sku_cuisine_id][$cuisine_id]['cc_id'] = encode($cuisine['cuisine_id']);
+        $start = $objPagination->getStart();
+
+        $arrayData = [];
+        if ($numberOfPages > 0) {
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '0')->EQ('sku', '1')
+                ->LIMIT($start, $number);
+            if (!empty($searchValue = $objSearch->getPredicateObject())) {
+                //$whereCriteria->MATCH('receivable_name', $searchValue['$']);
+                $whereCriteria->LIKE('cuisine_name', '%' . $searchValue['$'] . '%');
+            }
+            if (!empty($predicate = $objSort->getPredicate())) {
+                $reverse = $objSort->isReverse() ? 'DESC' : 'ASC';
+                $whereCriteria->ORDER($predicate, $reverse);
+            }
+            $arrayCuisineId = $this->getCuisine($whereCriteria, 'cuisine_id');
+            $arrayCuisineId = array_column($arrayCuisineId, 'cuisine_id');
+            //
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->setHashKey('sku_cuisine_id')->setChildrenKey('cuisine_id')->ArrayIN('sku_cuisine_id', $arrayCuisineId);
+            $arrayData = $this->getCuisine($whereCriteria);
+            if (!empty($arrayData)) {
+                foreach ($arrayData as $sku_cuisine_id => $data) {
+                    foreach ($data as $cuisine_id => $cuisine) {
+                        $arrayData[$sku_cuisine_id][$cuisine_id]['cc_id'] = encode($cuisine['cuisine_id']);
+                    }
                 }
             }
         }
-        $tableStateModel->setItemData($arrayData);
+        //$tableStateModel->setItemData($arrayData);
         return ['numberOfPages' => $numberOfPages, 'data' => $arrayData];
     }
 
@@ -298,6 +313,7 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
     public function getAttributeValue($whereCriteria, $field = '') {
         return CuisineDao::instance()->getAttributeValue($whereCriteria, $field);
     }
+
     //table
     public function getChannelTablePage(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $tableState = $objRequest->tableState;
@@ -324,7 +340,7 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
             $reverse = $objSort->isReverse() ? 'DESC' : 'ASC';
             $whereCriteria->ORDER($predicate, $reverse);
         }
-        $start         = $objPagination->getStart();
+        $start = $objPagination->getStart();
         $whereCriteria->LIMIT($start, $number);
         $arrayData = ChannelDao::instance()->getChannelItem($whereCriteria);
         if (!empty($arrayData)) {

@@ -48,9 +48,9 @@
 						<div href class="list-group-item">菜式规格 <a class="fa fa-plus-square" ng-click="addSKUArrtibute()"> </a></div>
 						<div class="list-group-item form-inline" ng-repeat="(attr, sku) in skuList track by $index">
 							<div class="form-group">
-								<div class="input-group m-b-xs col-sm-3">
+								<div class="input-group m-b-xs w-lg">
 									<span class="input-group-btn" title="售价"><span class="btn btn-default">售价</span></span>
-									<input size="6" class="form-control w-xs" name="cuisine_price[{{attr}}]" string-to-number ng-model="skuList[attr].cuisine_price" type="number">
+									<input size="6" class="form-control w-xs" name="cuisine_price[{{attr}}]" string-to-number ng-model="skuList[attr].cuisine_price" type="number" required>
 									<span class="input-group-btn" title="库存"><span class="btn btn-default">库存</span></span>
 						  			<input size="6" class="form-control w-xs" name="cuisine_inventory[{{attr}}]" string-to-number ng-model="skuList[attr].cuisine_inventory" required type="number" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="无限库存请加大值到1000000以上" bs-tooltip>
 									<input type="hidden" name="cc_id[{{attr}}]" value="{{sku.cc_id}}" ng-model="skuList[attr].cc_id">
@@ -58,12 +58,14 @@
 								<div class="input-group m-b-xs no-radius">
 									<span class="input-group-btn" title="规格"><span class="btn btn-default">规格</span>
 								  </span>
+								  <span class="input-group-btn">
 									<ui-select ng-model="select_SkuAttr[1]" ng-keyup="selectSkuAttr($select.search, attr, 1)" ng-change="changeSkuAttr($select.selected, attr, 1)" theme="bootstrap" ng-if="$index==0">
 										<ui-select-match placeholder="填写/选择 ">{{$select.selected.cn}}</ui-select-match>
 										<ui-select-choices repeat="SkuAttr in cuisineSkuAttrList[1] | filter: $select.search">
 											<div ng-bind-html="SkuAttr.cn | highlight: $select.search"></div>
 										</ui-select-choices>
 									</ui-select>
+									</span>
 									<input class="form-control w-xs" type="text" size="6" ng-model="select_SkuAttr[1].cn" ng-if="$index>0" readonly>
 									<span class="input-group-btn" title="规格值/单位"><span class="btn btn-default">规格值</span></span>
 									<input class="form-control w-xs" type="text" size="6" name="sku_attr_value[1][{{attr}}]" ng-model="skuList[attr].sku_attr1_value" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="值/单位,例:100克/1份/红色" bs-tooltip>

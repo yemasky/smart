@@ -1,9 +1,9 @@
 <div class="app-content-inner" ng-controller="RestaurantReservationController">
   <div class="box">
-    <div class="col-md-10">
+    <div class="col-md-9">
       <div class="box b-r">
         <div class="p p-v-sm b-b">
-          <button type="button" class="btn btn-default icon fab fa-raspberry-pi text-lt" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="{{defaultHotel}}" ng-change="selectChannel(param.channel_id)">
+          <button type="button" class="btn btn-default icon fab fa-raspberry-pi text-lt" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="请选择" ng-change="selectChannel(param.channel_id)">
               Action <span class="caret"></span>
           </button>
           <div class="btn-group pull-right"><button type="button" class="btn btn-xs btn-default">营业日 {{getBusinessDay()}}</button></div>
@@ -13,7 +13,7 @@
           <div class="box-cell">
             <div class="box-inner">
               <!-- detail -->
-              <div class="p b-b tab-container ">
+              <div class="p b-b tab-container">
                 <ul class="nav nav-tabs" ui-nav ng-init="activeTab=1">
                     <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
                         <a>桌态</a>
@@ -21,7 +21,7 @@
                     <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
                         <a>外卖</a>
                     </li>
-                    <li ng-class="{active:activeTab==3}" ng-click="activeTab=3;">
+                    <li ng-class="{active:activeTab==3}" ng-click="activeTab=3;getDiningCuisine();">
                         <a>菜品</a>
                     </li>
                     <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;">
@@ -45,9 +45,9 @@
                                 <li ng-class="{active:activeAtaTab==2}" ng-click="activeAtaTab=2">
                                     <a>预订<span class="badge badge-xs" ng-bind="dueOut">0</span></a>
                                 </li>
-                                <!--<li ng-class="{active:activeAtaTab==3}" ng-click="activeAtaTab=3">
-                                </li>-->
-
+                                <li ng-class="{active:activeAtaTab==3}" ng-click="activeAtaTab=3">
+									<a>排号<span class="badge badge-xs" ng-bind="dueOut">0</span></a>
+                                </li>
 								
                             </ul>
 							<div class="p-md" ng-show="activeAtaTab==1">
@@ -130,49 +130,45 @@
                         
                     </div>
                     <div ng-show="activeTab==3">
-                        <form name="nightAuditorForm" class="form-validation" id="nightAuditorForm" ng-submit="nightAuditor(-1, '')">
-                          <div class="form-inline form-group">
-                            <label class="control-label m-b"><i class="fa fa-clock-o"></i> 营业日</label>
-                            <div class="input-group">
-                                <input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.night_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-autoclose="true" data-max-date="{{getBusinessDay('MM/dd/yyyy')}}" data-autoclose="1" name="night_date" bs-datepicker value="{{getDay('yyyy-MM-dd')}}">
-                                <span class="input-group-btn">
-                                    <button class="btn btn-default" type="submit"> Go!</button>
-                                    <button class="btn btn-default" type="button" ng-click="passBusinessDay()"><i class="ti-calendar"></i> 夜审完毕 过营业日</button>
-                                </span>
-                            </div>
-                          </div>
-                        </form>
-                        <div class="form-group m-h-n clearfix">
-							<div class="p-md">
-							  <div class="table-responsive">
-								<table class="table bg-white">
-								  <thead>
-									<tr>
-								      <th>订单号</th>
-									  <th translate="module.channel.market_name">客源市场</th>
-									  <th>房号</th>
-									  <th>价格</th>
-									  <th>营业日</th>
-									  <th>审核</th>
-									</tr>
-								  </thead>
-								  <tbody>
-									<tr ng-repeat="(i, night) in nightAuditorList">
-								      <td>{{night.booking_number}}</td>
-									  <td class="text-nowrap">{{night.market_name}}</td>
-									  <td><span>{{night.item_name}}</span></td>
-									  <td>{{night.consume_price_total}}</td>
-									  <td>{{night.business_day}}</td>
-									  <td>
-									      <a class="btn btn-xs btn-default" ng-click="nightAuditor(night.bc_id, night)" ng-if="night.confirm==0"><span translate="common.hint.confirm" >确认</span></a>
-                                          <small ng-if="night.confirm>0">已确认</small>
-									  </td>
-									</tr>
-								  </tbody>
-								</table>
-							  </div>
-							</div>
-						</div>
+						<table st-table="cuisineList" st-safe-src="rowCuisineList" class="table table-striped">
+						  <thead>
+						  <tr>
+							<th st-sort="cuisine_name">名称</th>  
+							<th st-sort="tag">标签</th>  
+							<th st-sort="notes">备注</th>
+							<th st-sort="valid">有效</th>
+							<th>编辑</th>
+						  </tr>
+						  </thead>
+						  <tbody>
+						  <tr>
+							<td colspan="5" class="no-padding">
+								<div class="input-group col-xs-3 m-t-xs m-b-xs">
+								  <span class="input-group-btn">
+									<button class="btn btn-default" type="button">搜索菜名</button>
+								  </span>
+								  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
+								</div>
+								<div class="list-group no-radius">
+									<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, cuisine) in cuisineList">
+									  <div class="clear p-xs">
+										<div>{{cuisine.cuisine_name}}
+											<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
+										</div>
+									  </div>
+										<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
+										<span class="pull-left text-muted"><i class="fas fa-hamburger" aria-hidden="true"></i>
+											<span class="small" data-title="订单：{{bookRoomStatus[room.item_id].booking_number}}<br>预抵：{{bookRoomStatus[room.item_id].check_in}}　　<br>预离：{{bookRoomStatus[room.item_id].check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="roomLiveIn[room.item_id]">
+												<span ng-repeat="(live_id, liveIn) in roomLiveIn[room.item_id]">{{liveIn.member_name}} </span>
+											</span>
+										</span>
+										<span class="pull-right text-muted"><i class="fas fa-caret-square-down"></i></span></button>
+									</div>
+								</div>  
+							</td>  
+						  </tr>
+						  </tbody>
+						</table>
                     </div>
                     <div ng-show="activeTab==4">
                         <div class="m-b">
@@ -241,15 +237,12 @@
                     </div>
                  </div>
               </div>  
-
-              <div class="p-xs"></div>
-              <!-- / detail -->
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="col-md-2">
+    <div class="col-md-3">
       <div class="box">
         <div class="p p-v-sm b-b">
           <script type="text/ng-template" id="filter">

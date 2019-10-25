@@ -35,6 +35,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
             $(document).ready(function(){
                 $scope.param["channel_id"] = $scope.thisChannel_id;
                 $scope.param["channel_father_id"] = $scope.channel_father_id;
+				$scope.id = $rootScope.employeeChannel[$scope.thisChannel_id].id;
                 //$scope.defaultHotel = $scope.thisChannel[$scope.thisChannel_id]["channel_name"];
 				//设置客源市场  
             	$scope.selectCustomerMarket($scope.marketList[1].children[2], false);
@@ -57,7 +58,13 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
     }
 	//更换餐厅
 	$scope.selectChannel = function(channel_id) {
-        $scope.param["channel_father_id"] = $rootScope.employeeChannel[channel_id].channel_father_id;
+		if(angular.isUndefined(channel_id)) {
+			channel_id = $scope.thisChannel_id;
+			$scope.param["channel_id"] = channel_id;
+		}
+		var channel = $rootScope.employeeChannel[channel_id];
+        $scope.param["channel_father_id"] = channel.channel_father_id;
+		$scope.id = channel.id;
     };
 	//选择客人市场
 	$scope.receivableList = [];//协议公司数据
@@ -94,7 +101,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	//开台 预订 结账 加减菜
 	$scope.diningTable = function(diningType, table) {
 		var diningTypeName = '订单管理';
-		if(diningType == 'open') diningTypeName = '开台';
+		if(diningType == 'open') {diningTypeName = '开台';$scope.param.number_of_people = 1;$scope.activeBookAccountsEditTab=1}
 		if(diningType == 'book') diningTypeName = '预订';
 		if(diningType == 'cuisine') diningTypeName = '加减菜';
 		if(diningType == 'account') diningTypeName = '结账';
@@ -103,12 +110,51 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		asideRestaurantBook.$promise.then(function() {
 			asideRestaurantBook.show();
 			$(document).ready(function(){
+				$scope.getDiningCuisine();
 				$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
 				//$('a.print-contents').printPreview('print_content');
 			});
 		});
 	}
-	
+	var allCuisineList = '',cuisineCategory = {},cuisineSKU = {};$scope.cuisineList = {};
+	$scope.getDiningCuisine = function() {
+		if(allCuisineList == '') {
+			$scope.loading.show();
+			$httpService.header('method', 'cuisineList');
+			$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+				$scope.loading.percent();$httpService.deleteHeader('method');
+				if(result.data.success == '0') {
+					//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+					return;//错误返回
+				}
+				allCuisineList = result.data.item.allCuisineList;
+				var cuisineList = [], cuisineCategory = {}, cuisineSKU = {}, cuisine_id = 0;
+				if(allCuisineList != '') {
+					var j = 0;
+					for(var i in allCuisineList) {
+						cuisine_id = allCuisineList[i].cuisine_id;
+						if(allCuisineList[i].cuisine_is_category == '1') {
+							cuisineCategory[cuisine_id] = allCuisineList[i];
+						} else {
+							if(allCuisineList[i].sku == '1') {
+								cuisineList[j] = allCuisineList[i];j++;
+							} else {
+								if(angular.isUndefined(cuisineSKU[allCuisineList[i].sku_cuisine_id])) {
+									cuisineSKU[allCuisineList[i].sku_cuisine_id] = {};
+								}
+								cuisineSKU[allCuisineList[i].sku_cuisine_id][cuisine_id] = allCuisineList[i];
+							}
+						}
+					}
+					$scope.cuisineList = cuisineList;
+					$scope.rowCuisineList = cuisineList;
+					$scope.cuisineCategory = cuisineCategory;
+					$scope.cuisineSKU = cuisineSKU;
+				}
+			});
+		}
+	}
+
 	
     //打印
     $scope.printBill = function(print) {

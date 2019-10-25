@@ -254,7 +254,7 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->ArrayIN('company_id', [$company_id, '0']);
         $whereCriteria->ORDER('marketing')->ORDER('market_father_id', 'ASC')->ORDER('market_id', 'ASC');
-        $field                 = 'market_id,company_id,market_father_id,market_name,market_en_name,marketing,valid';
+        $field                 = 'market_id,company_id,market_father_id,market_name,market_en_name,marketing,market_level,valid';
         $cacheCustomerMarketId = CacheConfig::getCacheId('customer_market', $company_id);
         $whereCriteria->setHashKey('market_id')->setMultiple(false)->setFatherKey('market_father_id');
 

@@ -25,12 +25,24 @@
                     	</button>
                       </div>
                     </div>
+					<div class="form-group" ng-if="param.market_father_id==4||param.market_father_id==6">
+                        <label for="market_name">会员级别（1最高 10最低）</label>
+                        <select class="form-control w" name="market_level" ng-model="param.market_level">
+							<option value="">请选择</option>
+							<option value="1">1级</option>
+							<option value="2">2级</option>
+							<option value="3">3级</option>
+							<option value="4">4级</option>
+							<option value="5">5级</option>
+							<option value="6">6级</option>
+						</select>
+                    </div>
                     <div class="form-group">
-                        <label for="market_name">{{title}}名称</label>
+                        <label for="market_name">客源市场名称</label>
                         <input class="form-control w" name="market_name" value="" ng-model="param.market_name" required>
                     </div>
                     <div class="form-group">
-                        <label for="market_en_name">{{title}}英文名称</label>
+                        <label for="market_en_name">客源市场英文名称</label>
                         <input class="form-control w" name="market_en_name" value="" ng-model="param.market_en_name" required>
                     </div>
                     <div class="form-group">

@@ -125,6 +125,8 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 	}
 	//删除刷新
 	if(typeof($http.defaults.headers.common['refresh']) != 'undefined') delete $http.defaults.headers.common['refresh'];
+	//删除method
+	if(typeof($http.defaults.headers.common['method']) != 'undefined') delete $http.defaults.headers.common['method'];
     return factory;
 }).service("$httpService", function($httpFactory){
     this.post = function($url, $scope, callBack) {return $httpFactory.post($url, $scope, callBack);}
