@@ -1,6 +1,8 @@
 
 app.controller('RoomOrderController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter) {
     "use strict"; 
+	$ocLazyLoad.load([$scope._resource + "vendor/libs/daterangepicker.js",
+                      $scope._resource + "vendor/libs/daterangepicker.css"]);
 	$scope.loading.start();$scope.param = {};
 	var bookRoomFather_id = 0, isBookRoom = false; $scope.bookRoom_quantity = '数量';$scope.param.isBookRoom = 0;
 	if(angular.isDefined($scope.bookRoom) && $scope.bookRoom !== '') {//预定特定的房间 从房态页点过来

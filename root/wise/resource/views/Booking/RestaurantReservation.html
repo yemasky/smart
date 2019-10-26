@@ -27,12 +27,12 @@
                     <li ng-class="{active:activeTab==4}" ng-click="activeTab=4;">
                         <a>订单</a>
                     </li>
-					<li class="pull-right">
+					<!--<li class="pull-right">
 						<div class="btn-group m-r-xs" ng-init="activeBookAccountsEditTab=1">
 							<label class="btn btn-rounded btn-default btn-sm"><i class="ti-check-box"></i> 开台</label>
 							<label class="btn btn-rounded btn-default btn-sm"><i class="fas fa-columns"></i> 预订</label>
 						</div>
-					</li>                 
+					</li>-->             
 				  </ul>
                  <div class="tab-content text-nowrap"><!--<img class="img-responsive w-thumb-xs" ng-src="{{_resource}}images/room.png">-->
                     <div ng-show="activeTab==1">
@@ -48,7 +48,6 @@
                                 <li ng-class="{active:activeAtaTab==3}" ng-click="activeAtaTab=3">
 									<a>排号<span class="badge badge-xs" ng-bind="dueOut">0</span></a>
                                 </li>
-								
                             </ul>
 							<div class="p-md" ng-show="activeAtaTab==1">
 							  <div class="table-responsive">
@@ -131,11 +130,20 @@
                     </div>
                     <div ng-show="activeTab==3">
 						<div st-table="cuisineList" st-safe-src="rowCuisineList" class="form-group clearfix">
-							<div class="input-group col-xs-3 m-t-xs m-b-xs">
-							  <span class="input-group-btn">
-								<button class="btn btn-default" type="button">搜索菜名</button>
-							  </span>
-							  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
+							<div class="form-inline">
+								<div class="input-group col-xs-3 m-t-xs m-b-xs">
+								  <span class="input-group-btn">
+									<button class="btn btn-default" type="button">搜索菜名</button>
+								  </span>
+								  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
+								</div>
+								<div class="input-group w-sm m-t-xs m-b-xs">
+								  <select class="form-control" st-input-event="change" st-search="cuisine_category_id">
+									  <option value="">全部类别</option>
+									  <option value="1">早餐</option>
+									  <option value="{{i}}" ng-repeat="(i, category) in cuisineCategory">{{category.cuisine_name}}</option>
+								  </select>
+								</div>
 							</div>
 							<div class="list-group no-radius">
 								<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, cuisine) in cuisineList">

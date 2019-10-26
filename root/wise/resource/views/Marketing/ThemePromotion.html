@@ -3,21 +3,24 @@
     	<div class="col-md-8">
       		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addSalesTarget(0)"> </a></div>
             <div class="p-md">
+            <div class="table-responsive">
 				<div class="m-b form-inline">
 					<form name="salesForm" class="form-inline" role="form" ng-submit="searchSalesTarget(param)">
+					<label class="control-label m-b"><i class="fas fa-clock"></i> 年份</label>
+					<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.sales_date" data-date-format="yyyy" data-date-type="string" data-start-view="2" data-min-view="2" data-autoclose="true" data-autoclose="1" name="sales_date" bs-datepicker value="{{getDay('yyyy')}}">
 					<div class="input-group">
-						<span class="input-group-btn"><button class="btn btn-default"><i class="fas fa-clock"></i></button></span>
-						<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.sales_date" data-date-format="yyyy" data-date-type="string" data-start-view="2" data-min-view="2" data-autoclose="true" data-autoclose="1" name="sales_date" bs-datepicker value="{{getDay('yyyy')}}">
 						<span class="input-group-btn">
 							<button class="btn btn-default" type="submit" ng-click="getYearSalesTarget()">Go!</button>
+							
 						</span>
+					</div>
+					<div class="input-group">
 						<span class="input-group-btn">	
-						<button class="btn btn-icon btn-default" ng-click="addSalesTarget(0)"><i class="fa fa-edit"></i></button>
+						<button class="btn btn-addon btn-default" ng-click="addSalesTarget(0)"><i class="fa fa-edit"></i>Add/Edit</button>
 						</span>
 					</div>
 					</form>
 				</div>
-            <div class="table-responsive">
 				<table class="table table-bordered table-striped bg-white" id="print_content">
 				  <thead>
 				  <tr>

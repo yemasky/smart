@@ -102,7 +102,11 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	//开台 预订 结账 加减菜
 	$scope.diningTable = function(diningType, table) {
 		var diningTypeName = '订单管理';
-		if(diningType == 'open') {diningTypeName = '开台';$scope.param.number_of_people = 1;$scope.activeBookAccountsEditTab=1}
+		if(diningType == 'open') {
+			diningTypeName = '开台';$scope.param.number_of_people = 1;$scope.activeBookAccountsEditTab=1;
+			$scope.clearBookTable();$scope.clearBookCuisine();
+			$scope.addBookTable(table);
+		}
 		if(diningType == 'book') diningTypeName = '预订';
 		if(diningType == 'cuisine') diningTypeName = '加减菜';
 		if(diningType == 'account') diningTypeName = '结账';
@@ -155,8 +159,57 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 			});
 		}
 	}
-
-	
+	//已点菜式
+	$scope.haveBookCuisine = {};
+	$scope.addBookCuisine = function(cuisine) {
+		var table_id = 0;
+		if($scope.thisBookTable != '') {table_id = $scope.thisBookTable.item_id;}
+		if(angular.isUndefined($scope.haveBookCuisine[table_id])) {
+			$scope.haveBookCuisine[table_id] = {};
+		}
+		if(angular.isUndefined($scope.haveBookCuisine[table_id][cuisine.cuisine_id])) {
+			$scope.haveBookCuisine[table_id][cuisine.cuisine_id] = cuisine;
+			$scope.haveBookCuisine[table_id][cuisine.cuisine_id].bookNumber = 0;
+		}
+		$scope.haveBookCuisine[table_id][cuisine.cuisine_id].bookNumber++;
+	}
+	$scope.reduceBookCuisine = function(cuisine) {
+		var table_id = 0;
+		if($scope.thisBookTable != '') {table_id = $scope.thisBookTable.item_id;}
+		if(angular.isUndefined($scope.haveBookCuisine[table_id])) {return;}
+		if(angular.isUndefined($scope.haveBookCuisine[table_id][cuisine.cuisine_id])) {return;}
+		$scope.haveBookCuisine[table_id][cuisine.cuisine_id].bookNumber--;
+		if($scope.haveBookCuisine[table_id][cuisine.cuisine_id].bookNumber <= 0) 
+			delete $scope.haveBookCuisine[table_id][cuisine.cuisine_id];
+	}
+	$scope.clearBookCuisine = function() {
+		$scope.haveBookCuisine = {};
+	}
+	//已点菜匹配桌台
+	$scope.setHaveBookCuisineTable = function() {
+		if(angular.isDefined($scope.haveBookCuisine[0])) {//0 table_id 为没有选择桌前加的菜式
+			var haveBookCuisine = $scope.haveBookCuisine[0];
+			delete $scope.haveBookCuisine[0];
+			var table_id = $scope.thisBookTable.item_id;
+			$scope.haveBookCuisine[table_id] = haveBookCuisine;
+		}
+	}
+	//已选桌台
+	$scope.haveBookTable = {};$scope.thisBookTable = '';
+	$scope.addBookTable = function(table) {
+		if(angular.isUndefined($scope.haveBookTable[table.item_id])) {
+			$scope.haveBookTable[table.item_id] = table;
+		}
+		$scope.thisBookTable = table;
+	}
+	$scope.reduceBookTable = function(table) {
+		if(angular.isUndefined($scope.haveBookTable[table.item_id])) {return;}
+		delete $scope.haveBookTable[table.item_id];
+		if(angular.isDefined($scope.haveBookCuisine[table.item_id])) delete $scope.haveBookCuisine[table.item_id];
+	}
+	$scope.clearBookTable = function() {
+		$scope.haveBookTable = {};
+	}
     //打印
     $scope.printBill = function(print) {
         var consumePrint = $scope.consumePrint,accountPrint = $scope.accountPrint, borrowingPrint = $scope.borrowingPrint;

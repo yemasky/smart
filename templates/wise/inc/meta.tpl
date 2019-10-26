@@ -784,5 +784,3 @@ angular.module("app").directive("uiNav", ["$timeout", function() {
 }]);
 </script>
 <script language="javascript" src="<%$__RESOURCE%>vendor/libs/moment.min.js?<%$__VERSION%>"></script>
-<script language="javascript" src="<%$__RESOURCE%>vendor/libs/daterangepicker.js?<%$__VERSION%>"></script>
-<link rel="stylesheet" href="<%$__RESOURCE%>vendor/libs/daterangepicker.css?<%$__VERSION%>" type="text/css" />

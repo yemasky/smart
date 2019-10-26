@@ -93,12 +93,42 @@
 						</div>
 				    </div>
 					<div class="tab-container">
-                        <div ng-show="activeBookAccountsEditTab==1"><!-- 菜式 -->
+                        <div ng-show="activeBookAccountsEditTab==1"><!-- 餐台/房间 -->
                             <div class="box">
+								<div class="col-md-1 b-t">
+								  <div class="box b-r">
+									<div class="">
+										<div class="input-group col-xs-3 m-t-xs m-b-xs m-l">
+											<span class="input-group-btn">
+												<button class="btn btn-default" type="button">餐台/房间</button>
+											</span>
+										</div>
+									</div>
+									<!-- use box row -->
+									<div class="box-row">
+									  <div class="box-cell scrollable">
+										<div class="box-inner b-b">
+										  <!-- mail list -->
+										  <div class="list-group no-border no-radius no-margin">
+											  <div class="list-group-item p-xs p-h-xs" ng-repeat="(j, table) in haveBookTable">
+												  <div class="clear m-b-sm">
+													<span class="pull-right text-muted text-xs">
+													  {{getDay('HH:mm')}}
+													  <a class="ti-trash small" ng-click="reduceBookTable(table)"></a>
+													</span>
+													<div>{{table.item_name}}</div>
+												  </div>
+												</div>
+										  </div>
+										</div>
+									  </div>
+								    </div>
+								   </div>
+								</div>
 								<div class="col-md-3 b-t">
 								  <div class="box b-r">
-									<div class="p-h b-b">
-										<div class="input-group col-xs-3 m-t-xs m-b-xs">
+									<div class="">
+										<div class="input-group col-xs-3 m-t-xs m-b-xs m-l">
 											<span class="input-group-btn">
 												<button class="btn btn-default" type="button">已点菜式</button>
 											</span>
@@ -106,11 +136,22 @@
 									</div>
 									<!-- use box row -->
 									<div class="box-row">
-									  <div class="box-cell scrollable hover">
-										<div class="box-inner">
+									  <div class="box-cell scrollable">
+										<div class="box-inner b-b">
 										  <!-- mail list -->
-										  <div class="list-group list-group-md no-border no-radius no-margin">
-
+										  <div class="list-group no-border no-radius no-margin" ng-repeat="(i, tableCuisine) in haveBookCuisine">
+												<div class="list-group-item p-xs p-h-xs" ng-repeat="(j, cuisine) in tableCuisine">
+												  <a href="" class="w-thumb-md pull-left m-r-xs"><img class="img-responsive img-circle" src="{{cuisine.image_src}}"></a>
+												  <div class="clear m-b-sm">
+													<span class="pull-right text-muted text-xs">
+													  <a class="ti-plus small" ng-click="addBookCuisine(cuisine)"></a>
+													  <span class="badge">{{cuisine.bookNumber}}</span>
+													  <a class="ti-minus small" ng-click="reduceBookCuisine(cuisine)"></a>
+													</span>
+													<div>{{cuisine.cuisine_name}}</div>
+													<small class="text-ellipsis">￥{{cuisine.cuisine_price}}</small>
+												  </div>
+												</div>
 										  </div>
 										  <!-- / mail list -->
 										</div>
@@ -142,14 +183,14 @@
 										  <div class="p tab-container">
 											<div class="list-group no-radius">
 												<div class="list-group-item col-sm-2 w-sm p-xs m-r-xs" ng-repeat="(i, cuisine) in cuisineList">
-												  <a href class="pull-left w-thumb m-r-xs" data-placement="bottom-left" data-type="success" data-html="true" data-animation="am-fade-and-scale" data-title="<img src='{{cuisine.image_src}}'>" bs-tooltip><img src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>
+												  <a href class="pull-left w-thumb m-r-xs"><img src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>
 												  <div class="clear"><div>{{cuisine.cuisine_name}}</div>
 												  <small>￥{{cuisine.cuisine_price}}</small>
-												  <a class="pull-right text-warning lt bg-white"><i class="glyphicon glyphicon-plus-sign"></i></a></div>
+												  <a class="pull-right text-warning" ng-click="addBookCuisine(cuisine)"><i class="glyphicon glyphicon-plus-sign"></i></a></div>
 												</div>
 											</div>  
 										  </div>  
-										  <!-- / detail -->
+										  <!-- / detail  data-placement="bottom-left" data-type="success" data-html="true" data-animation="am-fade-and-scale" data-title="<img src='{{cuisine.image_src}}'>" bs-tooltip -->
 										</div>
 									  </div>
 									</div>
@@ -159,12 +200,12 @@
                         </div>
                         <div ng-show="activeBookAccountsEditTab==2"><!-- 餐桌 -->
                             <div class="box">
-								<div class="col-md-3 b-t">
+								<div class="col-md-1 b-t">
 								  <div class="box b-r">
 									<div class="p-h b-b">
 										<div class="input-group col-xs-3 m-t-xs m-b-xs">
 											<span class="input-group-btn">
-												<button class="btn btn-default" type="button">进行中餐桌</button>
+												<button class="btn btn-default" type="button">餐台/房间</button>
 											</span>
 										</div>
 									</div>
@@ -173,8 +214,16 @@
 									  <div class="box-cell scrollable hover">
 										<div class="box-inner">
 										  <!-- mail list -->
-										  <div class="list-group list-group-md no-border no-radius no-margin">
-
+										  <div class="list-group no-border no-radius no-margin">
+											  <div class="list-group-item p-xs p-h-xs" ng-repeat="(j, table) in haveBookTable">
+												  <div class="clear m-b-sm">
+													<span class="pull-right text-muted text-xs">
+													  {{getDay('HH:mm')}}
+													  <a class="ti-trash small" ng-click="reduceBookTable(table)"></a>
+													</span>
+													<div>{{table.item_name}}</div>
+												  </div>
+											  </div>
 										  </div>
 										  <!-- / mail list -->
 										</div>
@@ -182,21 +231,13 @@
 									</div>
 								  </div>
 								</div>
-								<div class="col-md-9 b-t">
+								<div class="col-md-11 b-t">
 								  <div class="box">
 									  <div class="p-h b-b">
 										  <div class="input-group col-xs-3 m-t-xs m-b-xs">
 											  <span class="input-group-btn">
-												<button class="btn btn-default" type="button">搜索菜名</button>
+												<button class="btn btn-default" type="button">所有桌台</button>
 											  </span>
-											  <input class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
-										  </div>
-										  <div class="input-group w-sm m-t-xs m-b-xs">
-											  <select class="form-control">
-												  <option value="">全部类别</option>
-												  <option value="1">早餐</option>
-												  <option value="{{i}}" ng-repeat="(i, category) in cuisineCategory">{{category.cuisine_name}}</option>
-											  </select>
 										  </div>
 									  </div>
 									<div class="box-row">
@@ -204,30 +245,23 @@
 										<div class="box-inner b-b">
 										  <!-- detail -->
 										  <div class="p tab-container">
-											<div class="table-responsive">
-									<div class="buliding m-b" ng-repeat="(buliding_key, buliding) in roomList">
-										<div class="m-b-xs"><i class="fa fa-building text-xs"> {{buliding_key}}楼栋</i></div>
-										<div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
-											<span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
-											<div class="list-group no-radius">
-												<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, room) in floor">
-												  <div class="clear p-xs">
-													<div>{{room.item_name}}
-														<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
+											  <div class="table-responsive">
+												  <div class="buliding m-b" ng-repeat="(buliding_key, buliding) in roomList">
+													<div class="m-b-xs"><i class="fa fa-building text-xs"> {{buliding_key}}楼栋</i></div>
+													<div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
+														<span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
+														<div class="list-group no-radius">
+															<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, room) in floor">
+															  <div class="clear p-xs">
+																<div>{{room.item_name}}
+																	<a ng-click="addBookTable(room)" class="pull-right text-success"><i class="glyphicon glyphicon-plus-sign"></i></a>
+																</div>
+															  </div>
+															</div>
+														</div> 
 													</div>
-												  </div>
-													<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
-													<span class="pull-left text-muted"><i class="fas fa-hamburger" aria-hidden="true"></i>
-														<span class="small" data-title="订单：{{bookRoomStatus[room.item_id].booking_number}}<br>预抵：{{bookRoomStatus[room.item_id].check_in}}　　<br>预离：{{bookRoomStatus[room.item_id].check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="roomLiveIn[room.item_id]">
-															<span ng-repeat="(live_id, liveIn) in roomLiveIn[room.item_id]">{{liveIn.member_name}} </span>
-														</span>
-													</span>
-													<span class="pull-right text-muted"><i class="fas fa-caret-square-down"></i></span></button>
 												</div>
-											</div> 
-										</div>
-									</div>
-							  </div>
+											  </div>
 										  </div>  
 										  <!-- / detail -->
 										</div>
