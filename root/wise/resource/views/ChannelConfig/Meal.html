@@ -255,13 +255,13 @@
 				} 
 			}
 			
-			$scope.param = param;
+			$scope.param = param;console.log($scope.param);
             myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: __RESOURCE+'views/ChannelConfig/'+key+'.tpl.html'});
             myArrtibute.$promise.then(function() {
 				myArrtibute.show();
 				$scope.setImage();
 				$(document).ready(function(){
-					if(typeof(param.cuisine_id) != 'undefined' && $scope.channel_config_key=='cuisine') $('input[name="cuisine_id"]').val(param.cuisine_id);
+					if(typeof(param.cuisine_id) != 'undefined' && $scope.channel_config_key=='cuisine') {$('input[name="cuisine_id"]').val(param.cuisine_id);}
 				});
             })
 		};
@@ -351,6 +351,8 @@
 				if(result.data.success == 1) {
 					myArrtibute.hide();
 					//$scope.itemList[param.cuisine_id] = param;
+					if($scope.channel_config_key == 'cuisineCategory') {
+					}
 				} 
 				loading.hide();
 			});

@@ -153,7 +153,7 @@
         </div>
       </div>
       <div class="aside-footer panel-footer">
-        <input type="hidden" name="cuisine_id" value="" ng-model="param.cuisine_id" >
+        <input type="hidden" name="cuisine_id" value="{{param.cuisine_id}}" ng-model="param.cuisine_id" >
 		<input type="hidden" name="cuisine_is_category" value="1" ng-model="param.cuisine_is_category" >
         <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
         <button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>

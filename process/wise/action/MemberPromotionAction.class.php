@@ -41,10 +41,16 @@ class MemberPromotionAction extends \BaseAction {
         return $objResponse->successServiceResponse($objSuccessService);
     }
 
-    //交班收银报表
+    //会员促销
     protected function doMemberPromotion(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $objSuccessService = new \SuccessService();
+        $company_id     = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id     = $objRequest->channel_id;
+        //取得门店会员促销
         
+
+        $objSuccessService = new \SuccessService();
+
+
         return $objResponse->successServiceResponse($objSuccessService);
     }
 

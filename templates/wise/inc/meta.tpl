@@ -454,7 +454,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.setUiNav = function($event) {
 			var b = angular.element($event.target).parent();
 			b.parent().find("li").removeClass("active"), b.toggleClass("active"), b.find("ul") && ($scope.app.asideCollapse = !1)
-		}		//
+		}//
         $scope.switchChannel = function(channel_id) {
             console.log($scope.employeeChannel[channel_id]);
         }
@@ -535,27 +535,6 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					getChannelNav(menus[_self_module.module_father_id]);
 				}
 			}
-			
-			/*if(typeof(menus[module_id]) != 'undefined') {
-				nav = menus[module_id].module_name;
-			} else if(_self_module != '' && _self_module.module_id == module_id) {
-				nav = _self_module.module_name;
-				module_id = _self_module.module_father_id;
-			} else {
-			}
-			if(menus != '') {
-				for(var i = 0; i<=5; i++) {
-					if(typeof(menus[module_id]) == 'undefined') continue;
-					var father_id = menus[module_id].module_father_id;
-					if(typeof(menus[father_id]) != 'undefined') {
-						var href = 'href="/#!/app/'+menus[father_id].module_channel+'/'+menus[father_id].url+'" '
-						          +'ng-click="setActionNavName('+father_id+')"';
-						nav = '<a '+href+'>' + menus[father_id].module_name + '</a> <i class="fa fa-angle-double-right"></i> ' + nav;
-						module_id = father_id;
-					} 
-				}
-			}*/
-            //if(nav == '') nav = 'Welcome';//angular.element('#action_nav_name').html(nav);
 			$scope.action_nav_name = '' + nav;
 		};
         $scope.getChannelModule = function(module_id) {
@@ -630,7 +609,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			$scope.thisChannel_id = thisChannel_id;$scope.channel_father_id = channel_father_id;
 			$scope.thisChannel = thisChannel;
 		};
-		$scope.getChannelSetting = function(channel_id, key) {
+		$scope.getChannelSetting = function(channel_id, key) {//取得门店的默认设置
 			if(angular.isDefined($rootScope.channelSettingList[channel_id][key])) {
 				return $rootScope.channelSettingList[channel_id][key];
 			}

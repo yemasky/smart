@@ -57,12 +57,18 @@ app.controller('MemberPromotionController', function($rootScope, $scope, $httpSe
 		$scope.loading.hide();
 		if(result.data.success == '0') {
 			return;
-			var message = $scope.getErrorByCode(result.data.code);
-			$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+			//var message = $scope.getErrorByCode(result.data.code);
+			//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
 		}
+		//设置common
 		common = result.data.common;
 		$scope.setCommonSetting(common);
 		$scope.setThisChannel('ALL');
+		$scope.channel_id = $rootScope.defaultChannel.channel_id;
+        $scope.channel_father_id = $rootScope.defaultChannel.channel_father_id;
+        $scope.defaultHotel = $rootScope.defaultChannel.channel_name;
+		$scope.id = $rootScope.defaultChannel.id;
+		//end common
 		$(document).ready(function(){
 		});
 	});
