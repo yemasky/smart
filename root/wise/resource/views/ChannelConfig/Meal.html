@@ -237,7 +237,8 @@
 				}
 			} else {
 				param = angular.copy(editParam);
-				if($scope.channel_config_key=='cuisineCategory') {
+				if($scope.channel_config_key=='cuisine') {
+				//if($scope.channel_config_key=='cuisineCategory') {
 					var cuisine_category_id = param.cuisine_category_id, cuisine_name = '';
 					for(var i in $scope.itemCategoryList) {//找出类别名字
 						if($scope.itemCategoryList[i].cuisine_id == cuisine_category_id) {
@@ -245,15 +246,15 @@
 						}
 					}
 					$scope.select_cuisineCategory = {'cuisine_id':cuisine_category_id,'cuisine_name':cuisine_name};
-				}
-				if($scope.channel_config_key=='cuisine') {
+				//}
 					var select_SkuAttr = {};
 					select_SkuAttr[1] = {'cn':param.sku_attr1,'en':''};
 					select_SkuAttr[2] = {'cn':param.sku_attr2,'en':''};
 					select_SkuAttr[3] = {'cn':param.sku_attr3,'en':''};
 					$scope.select_SkuAttr = select_SkuAttr;
-				}
-			} 
+				} 
+			}
+			
 			$scope.param = param;
             myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: __RESOURCE+'views/ChannelConfig/'+key+'.tpl.html'});
             myArrtibute.$promise.then(function() {

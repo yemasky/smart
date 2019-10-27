@@ -44,6 +44,31 @@
                         <input class="form-control" name="cuisine_en_name" ng-model="param.cuisine_en_name" type="text">
                       </div>
                     </div>
+                    <div class="form-group">
+                        <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
+                        <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
+                    </div>
+                    <div class="form-group m-h-n clearfix">
+                        <div class="col-sm-6"><label>特色描述</label>
+                        <textarea class="form-control" name="cuisine_specialty" ng-model="param.cuisine_specialty" rows="2"></textarea></div>
+                        <div class="col-sm-6"><label>特色描述(英文)</label>
+                        <textarea class="form-control" name="cuisine_en_specialty" ng-model="param.cuisine_en_specialty" rows="2"></textarea></div>
+                    </div>
+                    <div class="form-group">
+                      <label>菜式主图</label>
+                      <div class="w-xl w-auto-xs">
+                        <div class="box bg-white">
+                          <div class="box-col w-auto-xs v-m">
+                            <img id="main_images" ng-src="{{param.image_src}}" width="120" height="120" class="b p-xs">
+                            <input id="image_src" name="image_src" type="hidden" ng-model="param.image_src" value="{{param.image_src}}">
+                          </div>
+                          <div class="box-col p">
+                            <button class="btn btn-addon btn-default set_image_src" type="button" isMain="1"><i class="fa fa-upload"></i> 上传图片</button>
+                            [2M/600x600px]
+                          </div>
+                        </div>
+                      </div>
+                    </div>
 					<div class="list-group no-radius">
 						<div href class="list-group-item">菜式规格 <a class="fa fa-plus-square" ng-click="addSKUArrtibute()"> </a></div>
 						<div class="list-group-item form-inline" ng-repeat="(attr, sku) in skuList track by $index">
@@ -123,32 +148,6 @@
 							</div>
 						</div>
 					</div>
-                    
-                    <div class="form-group">
-                        <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
-                        <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
-                    </div>
-                    <div class="form-group m-h-n clearfix">
-                        <div class="col-sm-6"><label>特色描述</label>
-                        <textarea class="form-control" name="cuisine_specialty" ng-model="param.cuisine_specialty" rows="2"></textarea></div>
-                        <div class="col-sm-6"><label>特色描述(英文)</label>
-                        <textarea class="form-control" name="cuisine_en_specialty" ng-model="param.cuisine_en_specialty" rows="2"></textarea></div>
-                    </div>
-                    <div class="form-group">
-                      <label>菜式主图</label>
-                      <div class="w-xl w-auto-xs">
-                        <div class="box bg-white">
-                          <div class="box-col w-auto-xs v-m">
-                            <img id="main_images" ng-src="{{param.image_src}}" width="120" height="120" class="b p-xs">
-                            <input id="image_src" name="image_src" type="hidden" ng-model="param.image_src" value="{{param.image_src}}">
-                          </div>
-                          <div class="box-col p">
-                            <button class="btn btn-addon btn-default set_image_src" type="button" isMain="1"><i class="fa fa-upload"></i> 上传图片</button>
-                            [2M/600x600px]
-                          </div>
-                        </div>
-                      </div>
-                    </div>
                 </div>
                 <div ng-show="activeTab==2">
                 	<div class="list-group no-border-sm" ng-repeat="(father_id, childen) in configArrtibute[0]" ng-if="childen.attribute_id>1">

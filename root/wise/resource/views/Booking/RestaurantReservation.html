@@ -13,7 +13,7 @@
           <div class="box-cell">
             <div class="box-inner">
               <!-- detail -->
-              <div class="p b-b tab-container">
+              <div class="b-b tab-container p-v-xs">
                 <ul class="nav nav-tabs" ui-nav ng-init="activeTab=1">
                     <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
                         <a>桌态</a>
@@ -34,10 +34,10 @@
 						</div>
 					</li>-->             
 				  </ul>
-                 <div class="tab-content text-nowrap"><!--<img class="img-responsive w-thumb-xs" ng-src="{{_resource}}images/room.png">-->
+                 <div class="tab-content text-nowrap p-v-xs"><!--<img class="img-responsive w-thumb-xs" ng-src="{{_resource}}images/room.png">-->
                     <div ng-show="activeTab==1">
                         <div class="form-group m-h-n clearfix">
-                            <ul class="nav nav-tabs" ng-init="activeAtaTab=1">
+                            <!--<ul class="nav nav-tabs" ng-init="activeAtaTab=1">
                                 <li ng-class="{active:activeAtaTab==0}">　</li>
                                 <li ng-class="{active:activeAtaTab==1}" ng-click="activeAtaTab=1">
                                     <a>堂食<span class="badge bg-info badge-xs m-l-xs" ng-bind-html="bookAta">0</span></a>
@@ -48,22 +48,33 @@
                                 <li ng-class="{active:activeAtaTab==3}" ng-click="activeAtaTab=3">
 									<a>排号<span class="badge badge-xs" ng-bind="dueOut">0</span></a>
                                 </li>
-                            </ul>
-							<div class="p-md" ng-show="activeAtaTab==1">
-							  <div class="table-responsive">
+                            </ul>-->
+							<div class="btn-group m-l-xs" ng-model="activeAtaTab" bs-radio-group ng-init="activeAtaTab=1">
+							  <label class="btn btn-default">
+								<input type="radio" class="btn btbtn-default" value="1">堂食
+							  </label>
+							  <label class="btn btn-default">
+								<input type="radio" class="btn btn-default" value="2">预订
+							  </label>
+							  <label class="btn btn-default">
+								<input type="radio" class="btn btn-default" value="3">排号
+							  </label>
+							</div>
+							<div class="p-xs" ng-show="activeAtaTab==1">
+							  <div class="">
 								<div class="form-group clearfix">
 									<div class="buliding m-b" ng-repeat="(buliding_key, buliding) in roomList">
 										<div class="m-b-xs"><i class="fa fa-building text-xs"> {{buliding_key}}楼栋</i></div>
 										<div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
 											<span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
 											<div class="list-group no-radius">
-												<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, room) in floor">
+												<div class="list-group-item col-sm-2 col-xs-3 no-padding" ng-repeat="(i, room) in floor">
 												  <div class="clear p-xs">
 													<div>{{room.item_name}}
 														<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
 													</div>
 												  </div>
-													<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
+													<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
 													<span class="pull-left text-muted"><i class="fas fa-hamburger" aria-hidden="true"></i>
 														<span class="small" data-title="订单：{{bookRoomStatus[room.item_id].booking_number}}<br>预抵：{{bookRoomStatus[room.item_id].check_in}}　　<br>预离：{{bookRoomStatus[room.item_id].check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="roomLiveIn[room.item_id]">
 															<span ng-repeat="(live_id, liveIn) in roomLiveIn[room.item_id]">{{liveIn.member_name}} </span>
@@ -79,7 +90,6 @@
                             </div>
                             <div class="p-md" ng-show="activeAtaTab==2">
                                <div class="table-responsive">
-								<div class="form-inline form-group">
 								<table class="table table-bordered table-striped bg-white table-hover">
 								  <thead>
 									<tr>
@@ -117,7 +127,6 @@
 									</tr>
 								  </tbody>
 								</table>
-							    </div>
 							  </div>
 				            </div>
                             <div class="p-md form-inline" ng-show="activeAtaTab==3">

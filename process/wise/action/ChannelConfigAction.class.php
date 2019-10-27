@@ -365,7 +365,7 @@ class ChannelConfigAction extends \BaseAction {
         $arrayDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria);*/
         //类别
         $field = 'cuisine_id,cuisine_name,cuisine_en_name';
-        $arrayCategoryDataList = CuisineServiceImpl::instance()->getCuisineCategory($company_id, $channel_id, $field, 'cuisine_id');
+        $arrayCategoryDataList = CuisineServiceImpl::instance()->getCuisineCategory($company_id, $channel_id, $field);
         //SKU属性
         $cuisineSkuAttr = ModulesConfig::$cuisineSkuAttr;
         //

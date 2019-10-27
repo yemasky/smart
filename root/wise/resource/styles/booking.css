@@ -22,3 +22,4 @@ position:absolute;
 .room_is_book{padding-top: 3px !important; padding-bottom: 4px !important;}
 .w-s{width: 98px;}
 .small-xs{font-size: 8px;}
+.list-group-item{margin-left: -1px;}

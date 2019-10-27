@@ -3,43 +3,34 @@
     	<div class="col-md-8">
       		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addSalesTarget(0)"> </a></div>
             <div class="p-md">
-				<div class="m-b form-inline">
-					<form name="salesForm" class="form-inline" role="form" ng-submit="searchSalesTarget(param)">
-					<div class="input-group">
-						<span class="input-group-btn"><button class="btn btn-default"><i class="fas fa-clock"></i></button></span>
-						<input type="text" size="9" class="form-control w-thumb-lg" ng-model="param.sales_date" data-date-format="yyyy" data-date-type="string" data-start-view="2" data-min-view="2" data-autoclose="true" data-autoclose="1" name="sales_date" bs-datepicker value="{{getDay('yyyy')}}">
-						<span class="input-group-btn">
-							<button class="btn btn-default" type="submit" ng-click="getYearSalesTarget()">Go!</button>
-						</span>
-						<span class="input-group-btn">	
-						<button class="btn btn-icon btn-default" ng-click="addSalesTarget(0)"><i class="fa fa-edit"></i></button>
-						</span>
-					</div>
-					</form>
+				<div class="m-b-xs form-inline">
+					<button type="button" class="btn btn-default" ng-model="channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择店面"  ng-change="changeChannel(channel_id)">
+                  Action <span class="caret"></span>
+                	</button>
 				</div>
-            <div class="table-responsive">
-				<table class="table table-bordered table-striped bg-white" id="print_content">
-				  <thead>
-				  <tr>
-					<th>月份</th>
-					<th>销售目标</th>
-					<th></th>
-					<th></th>
-					<th width="50"></th>
-				  </tr>
-				  </thead>
-				  <tbody>
-				  <tr ng-repeat="(month, value) in salse_month">
-					<td>{{value.name}}</td>
-					<td>{{value.salse}}</td>
-					<td></td>
-					<td></td>
-					<td></td>
-				  </tr>
-				  <tr><td colspan="5"><a class="ti-printer print-contents" ng-click="printStatementsData()">A4打印报表</a></td></tr>
-				  </tbody>
-				</table>
-            </div>
+				<div class="table-responsive">
+					<table class="table table-bordered table-striped bg-white" id="print_content">
+					  <thead>
+					  <tr>
+						<th>店面</th>
+						<th>适用类型</th>
+						<th>适用对象</th>
+						<th>有效时间</th>
+						<th>促销政策</th>
+					  </tr>
+					  </thead>
+					  <tbody>
+					  <tr ng-repeat="(month, value) in salse_month">
+						<td>{{value.name}}</td>
+						<td>{{value.salse}}</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					  </tr>
+					  <tr><td colspan="5"><a class="ti-printer print-contents" ng-click="printStatementsData()">A4打印报表</a></td></tr>
+					  </tbody>
+					</table>
+				</div>
             </div>
         
      	</div>
@@ -71,7 +62,7 @@ app.controller('MemberPromotionController', function($rootScope, $scope, $httpSe
 		}
 		common = result.data.common;
 		$scope.setCommonSetting(common);
-		
+		$scope.setThisChannel('ALL');
 		$(document).ready(function(){
 		});
 	});
