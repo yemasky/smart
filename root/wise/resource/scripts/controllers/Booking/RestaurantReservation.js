@@ -67,7 +67,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
         $scope.param["channel_father_id"] = channel.channel_father_id;
 		$scope.id = channel.id;
     };
-	//选择客人市场
+	//选择客源市场
 	$scope.receivableList = [];//协议公司数据
     $scope.selectCustomerMarket = function(market, ajaxRoomForcasting) {
         $scope.marketSystemLayout = {};

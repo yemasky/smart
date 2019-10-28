@@ -46,10 +46,11 @@ class MemberPromotionAction extends \BaseAction {
         $company_id     = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         $channel_id     = $objRequest->channel_id;
         //取得门店会员促销
-        
+        //客源市场
+        $arrayResult['marketList'] = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
 
         $objSuccessService = new \SuccessService();
-
+        $objSuccessService->setData($arrayResult);
 
         return $objResponse->successServiceResponse($objSuccessService);
     }

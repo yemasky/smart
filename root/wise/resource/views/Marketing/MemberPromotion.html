@@ -1,7 +1,7 @@
 <div class="app-content-inner" ng-controller="MemberPromotionController">
 	<div class="box b-a bg-white m-b">
     	<div class="col-md-8">
-      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addSalesTarget(0)"> </a></div>
+      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addEditDiscount(0)"> </a></div>
             <div class="p-md">
 				<div class="m-b-xs form-inline">
 					<button type="button" class="btn btn-default" ng-model="channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择店面"  ng-change="changeChannel(channel_id)">
@@ -66,13 +66,62 @@ app.controller('MemberPromotionController', function($rootScope, $scope, $httpSe
 		$scope.setThisChannel('ALL');
 		$scope.channel_id = $rootScope.defaultChannel.channel_id;
         $scope.channel_father_id = $rootScope.defaultChannel.channel_father_id;
-        $scope.defaultHotel = $rootScope.defaultChannel.channel_name;
+		$scope.channel = $rootScope.defaultChannel.channel;
 		$scope.id = $rootScope.defaultChannel.id;
 		//end common
+		$scope.marketList = result.data.item.marketList;//客源市场
+		$scope.marketList[0] = {'children':{'0':{'market_id':'0','market_name':'所有来源'}},'market_id':'0','market_name':'所有来源'};
+		//设置客源市场  
+        $scope.selectCustomerMarket($scope.marketList[0].children[0], false);
 		$(document).ready(function(){
 		});
 	});
+	//选择客源市场
+	$scope.selectMarket = {};
+    $scope.selectCustomerMarket = function(market, ajaxRoomForcasting) {
+        $scope.marketSystemLayout = {};
+        if(angular.isDefined(market)) {
+            $scope.market_name = market.market_name;
+            $scope.market_id = market.market_id;
+            $scope.market_father_id =  market.market_father_id;
+            $('#customer_ul').next().hide();
+            if(market.market_id > 0) $scope.selectMarket[market.market_id] = market.market_name;
+        }
+    };
+	$scope.deleteSelectMarket = function(market_id) {
+		delete $scope.selectMarket[market_id];
+		var selectMarket = Object.keys($scope.selectMarket);
+		if(selectMarket.length == 0) {
+			$scope.selectCustomerMarket($scope.marketList[0].children[0], false);
+		}
+	}
 	//
+	$scope.changeChannel = function(channel_id) {
+		$scope.id = $rootScope.employeeChannel[channel_id].id;
+		$scope.channel_id = $rootScope.employeeChannel[channel_id].channel_id;
+        $scope.channel = $rootScope.employeeChannel[channel_id].channel;
+		$scope.loading.show();
+		$httpService.header('method', 'cuisineList');
+		$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+			$scope.loading.percent();$httpService.deleteHeader('method');
+			if(result.data.success == '0') {
+				return;//
+			}
+		});
+		
+	}
+	//MemberPromotion_AddEdit.html
+	$scope.addEditDiscount = function () {
+		$scope.param.discount_category='discount';
+		var asideaddEdit = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Marketing/MemberPromotion_AddEdit.html',show: false});
+		asideaddEdit.$promise.then(function() {
+			asideaddEdit.show();
+			$(document).ready(function(){
+				$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
+				//$('a.print-contents').printPreview('print_content');
+			});
+		});
+	}
 	
 });
 
