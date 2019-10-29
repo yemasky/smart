@@ -121,6 +121,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 			});
 		});
 	}
+	//解析菜式
 	var allCuisineList = '',cuisineCategory = {},cuisineSKU = {};$scope.cuisineList = {};
 	$scope.getDiningCuisine = function() {
 		if(allCuisineList == '') {

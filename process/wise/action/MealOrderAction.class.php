@@ -23,16 +23,6 @@ class MealOrderAction extends \BaseAction {
         }
     }
 
-    protected function doMethod(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        // TODO: Implement method() method.
-        $method = $objRequest->method;
-        if (!empty($method)) {
-            $method = 'doMethod' . ucfirst($method);
-            return $this->$method($objRequest, $objResponse);
-        }
-
-    }
-
     public function invoking(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->check($objRequest, $objResponse);
         $this->service($objRequest, $objResponse);

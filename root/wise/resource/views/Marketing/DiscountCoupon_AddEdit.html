@@ -1,0 +1,116 @@
+<div class="aside box-shadow h-10x b-r box-shadow no-padding" tabindex="-1" role="dialog">
+  <div class="aside-dialog">
+    <form name="thisForm" class="form-validation form-inline" id="thisForm" ng-submit="savePromotion()">
+     <div class="aside-content">
+      <div class="aside-header" ng-show="title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4 class="aside-title" ng-bind-html="title"></h4>
+      </div>
+	  <div class="aside-body no-padding clear">
+		<div class="col-md-12 p-v">
+			<div class="form-group no-margin">
+				<label class="clear">折扣/优惠卷名称</label>
+				<div class="input-group">
+				  <input type="text" class="form-control" name="discount_name" ng-model="param.discount_name" required>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-12 m-b">
+			<div class="form-group">
+				<div class="input-group">
+				  <span class="input-group-addon no-radius">客源</span>
+				  <div ng-include="'/app/customerMarket.html'"></div>
+				</div>
+				<div class="input-group" ng-if="selectMarket!=''">
+					<div class="list-group no-radius">
+						<div class="list-group-item col-sm-2 col-xs-3 w-thumb-lg no-padding" ng-repeat="(market_id, market_name) in param.selectMarket">
+							<button class="btn no-border btn-default">{{market_name}}</button><a class="badge no-bg glyphicon glyphicon-remove-circle up text-warning" ng-click="deleteSelectMarket(market_id)"> </a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="p-h">
+			<div class="form-group">
+				<div class="input-group m-b">
+					<span class="input-group-addon no-radius">类型</span>
+					<select class="form-control w-thumb-lg" name="discount_category" ng-model="param.discount_category">
+						<option value="discount" selected>折扣</option>
+						<option value="coupon">优惠卷</option>
+					</select>
+					<span class="input-group-addon no-radius" ng-if="param.discount_category=='discount'">折扣类型</span>
+					<select class="form-control w-thumb-lg" name="discount_type" ng-model="param.discount_type" ng-if="param.discount_category=='discount'">
+						<option value="1">打折</option>
+						<option value="2">直减</option>
+						<option value="3">满减</option>
+					</select>
+					<span class="input-group-addon no-radius" ng-if="param.discount_category=='coupon'">卷类型</span>
+					<select class="form-control w-thumb-lg" name="discount_type" ng-model="param.discount_type" ng-if="param.discount_category=='coupon'">
+						<option value="1">打折卷</option>
+						<option value="3">满减卷</option>
+						<option value="5">直减卷</option>
+						<!--<option value="6">现金红包</option>--><!-- 红包功能暂时没开发 -->
+						<option value="7">现金卷</option>
+					</select>
+				</div>
+			</div>				
+			<div class="form-group no-margin">
+				<div class="input-group m-b" ng-class="param.discount_category=='coupon'?'col-sm-6':'col-sm-8'">
+					<span class="input-group-addon no-radius" ng-if="param.discount_type==3">满</span>
+					<input type="number" string-to-number class="form-control" name="discount_consume_money" ng-model="param.discount_consume_money" ng-if="param.discount_type==3">
+					<span class="input-group-addon no-radius" ng-if="param.discount_type==3">元</span>
+					<span class="input-group-addon no-radius">
+						<span ng-if="param.discount_type==1">折扣</span>
+						<span ng-if="param.discount_type==2">直减</span>
+						<span ng-if="param.discount_type==3">减</span>
+						<span ng-if="param.discount_type==5">直减</span>
+						<span ng-if="param.discount_type==6">红包</span>
+						<span ng-if="param.discount_type==7">卷</span>
+					</span>
+					<input type="number" string-to-number class="form-control" name="discount" ng-model="param.discount" required>
+					<span class="input-group-addon no-radius">
+						<span ng-if="param.discount_type==1">%</span>
+						<span ng-if="param.discount_type!=1">元</span>
+					</span>
+				</div>
+				<div class="input-group col-sm-5 w m-b" ng-if="param.discount_category=='coupon'">
+					<span class="input-group-addon no-radius">发行</span>
+					<input type="number" string-to-number class="form-control" name="coupon_issue" ng-model="param.coupon_issue">
+					<span class="input-group-addon no-radius">张</span>
+				</div>
+			</div>
+		</div>
+		<div class="p-h m-b">
+			<div class="form-group no-margin">
+				<div class="input-group">
+				  <span class="input-group-addon no-radius">有效时间</span>
+				  <input type="text" size="9" class="form-control w-thumb-lg" name="begin_date" ng-model="param.begin_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-min-view="0" data-autoclose="true" data-min-date="{{getBusinessDay('MM/dd/yyyy')}}" data-autoclose="1" bs-datepicker value="{{business_day}}" onkeypress="return false;">
+				  <span class="input-group-addon no-radius no-b-l no-b-r">-</span>
+				  <input type="text" size="9" class="form-control w-thumb-lg" name="end_date" ng-model="param.end_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-min-view="0" data-autoclose="true" data-min-date="{{param.begin_date}}" data-autoclose="1" bs-datepicker value="{{business_day}}" onkeypress="return false;">
+				</div>
+				<div class="input-group">
+
+				  <div class="checkbox">周 
+					  <label class="ui-checks w-thumb"><input type="checkbox" name="use_week[1]" ng-model="param.use_week[1]" value="1"><i></i>一 </label>
+					  <label class="ui-checks w-thumb"><input type="checkbox" name="use_week[2]" ng-model="param.use_week[2]" value="2"><i></i>二 </label>
+					  <label class="ui-checks w-thumb"><input type="checkbox" name="use_week[3]" ng-model="param.use_week[3]" value="3"><i></i>三 </label>
+					  <label class="ui-checks w-thumb"><input type="checkbox" name="use_week[4]" ng-model="param.use_week[4]" value="4"><i></i>四 </label>
+					  <label class="ui-checks w-thumb"><input type="checkbox" name="use_week[5]" ng-model="param.use_week[5]" value="5"><i></i>五 </label>
+					  <label class="ui-checks w-thumb"><input type="checkbox" name="use_week[6]" ng-model="param.use_week[6]" value="6"><i></i>六 </label>
+					  <label class="ui-checks"><input type="checkbox" name="use_week[0]" ng-model="param.use_week[0]" value="0"><i></i>日 </label>
+				  </div>
+				</div>
+			</div>
+		</div>
+		<div class="p-h m-b"><div ng-include="'resource/views/Marketing/DiscountCoupon_AddEdit_Meal.html'" ng-if="channel=='Meal'"></div></div>
+	  </div>
+      <div class="aside-footer panel-footer">
+      	<input type="hidden" name="cd_id" value="{{param.cd_id}}" ng-model="param.cd_id" >
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+		<button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>
+

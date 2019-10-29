@@ -431,7 +431,6 @@ abstract class BaseAction {
         $method = $objRequest->method;
         if (!empty($method)) {
             $method = 'doMethod' . ucfirst($method);
-
             return $this->$method($objRequest, $objResponse);
         }
     }

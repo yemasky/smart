@@ -92,6 +92,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 			callBack({'data':{'success':0,'code':'000000'}});
             cfpLoadingBar.complete();
 		});
+		factory.deleteHeader('method');
     }
 	factory.get = function($url, $scope, callBack) {//,'Content-Type': 'application/json'
         //$http.defaults.headers.common.ajaxrequest = true;
@@ -115,6 +116,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 			callBack({'data':{'success':0,'code':'000000'}});
             cfpLoadingBar.complete();
 		});
+		factory.deleteHeader('method');
     }
 	factory.header = function($key, $value) {
 		var header = {};header[$key] = $value;
@@ -123,10 +125,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 	factory.deleteHeader = function($key) {
 		if(typeof($http.defaults.headers.common[$key]) != 'undefined') delete $http.defaults.headers.common[$key];
 	}
-	//删除刷新
-	if(typeof($http.defaults.headers.common['refresh']) != 'undefined') delete $http.defaults.headers.common['refresh'];
-	//删除method
-	if(typeof($http.defaults.headers.common['method']) != 'undefined') delete $http.defaults.headers.common['method'];
+	if(typeof($http.defaults.headers.common['refresh']) != 'undefined') delete $http.defaults.headers.common['refresh'];//删除刷新
     return factory;
 }).service("$httpService", function($httpFactory){
     this.post = function($url, $scope, callBack) {return $httpFactory.post($url, $scope, callBack);}
@@ -141,8 +140,7 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 			$scope.$watch(function(){
 				return $scope.$eval($attr.triggerLoading);
 			},function($value){
-				if(angular.isDefined($value)){
-                    //element.toggleClass('disabled',value);
+				if(angular.isDefined($value)){//element.toggleClass('disabled',value);
 					$value ? $element.attr('disabled', true) : $element.removeAttr('disabled');
 					$element.html(($value ? '<div class="spinner-icon"></div>'+$attr.btnLoadingText : $scope.prevText));
 				}

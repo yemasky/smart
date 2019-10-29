@@ -1,0 +1,25 @@
+<div st-table="cuisineList" st-safe-src="rowCuisineList">
+  <div class="form-inline">
+	  <div class="form-group">
+		<div class="input-group m-t-xs m-b-xs">
+		  <span class="input-group-addon no-radius">搜索菜名</span>
+		  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
+		  <span class="input-group-addon no-radius no-padding no-border"></span>
+		  <select class="form-control" st-input-event="change" st-search="cuisine_category_id">
+			  <option value="">全部类别</option>
+			  <option value="1">早餐</option>
+			  <option value="{{i}}" ng-repeat="(i, category) in cuisineCategory">{{category.cuisine_name}}</option>
+		  </select>
+		</div>
+	</div>
+	<div class="list-group no-radius">
+		<div class="list-group-item col-sm-1 col-xs-4 no-padding m-r-xs" ng-repeat="(i, cuisine) in cuisineList">
+		  <div class="clear p-xs">
+			<div>{{cuisine.cuisine_name}}
+				<label class="pull-right ui-checks"><input type="checkbox" name="cuisine[{{cuisine.cuisine_id}}]" ng-model="param.cuisine[cuisine.cuisine_id]" value="{{cuisine.cuisine_id}}"><i></i></label>
+			</div>
+		  </div>
+		</div>
+	</div>  
+  </div>
+</div>
