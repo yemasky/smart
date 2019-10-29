@@ -35,7 +35,7 @@ class DiscountServiceImpl extends \BaseServiceImpl implements \BaseService {
         $tableState = $objRequest->tableState;
         if (empty($tableState)) $tableState = array();
         $company_id      = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id      = decode($objRequest->c_id, getDay());
+        $channel_id      = $objRequest->channel_id;
         $tableStateModel = new TableStateModel($tableState);
         $objPagination   = $tableStateModel->getPagination();
         $objSearch       = $tableStateModel->getSearch();

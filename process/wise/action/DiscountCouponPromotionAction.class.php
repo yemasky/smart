@@ -69,23 +69,22 @@ class DiscountCouponPromotionAction extends \BaseAction {
     }
 
     protected function doMethodMealSellList(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $mealAction = new MealOrderAction();
-        $objRequest->setAction('RestaurantReservation');
-        unset($objRequest->method);
-        $objRequest->method = 'CuisineList';
-        $mealAction->invoking($objRequest, $objResponse);
-
+        $arrayResult['receivableData'] = DiscountServiceImpl::instance()->getChannelDiscountPage($objRequest, $objResponse);
+        $arrayResult['allCuisineList'] = CuisineServiceImpl::instance()->getCuisineList($objRequest, $objResponse);
+        $successService                = new \SuccessService();
+        $successService->setData($arrayResult);
+        return $objResponse->successServiceResponse($successService);
     }
 
     protected function doMethodSaveMealPromotion(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         $channel_id = $objRequest->channel_id;
-        $cd_id = decode($objRequest->cd_id);
+        $cd_id      = decode($objRequest->cd_id);
         $arrayInput = $objRequest->getInput();
 
         $arraySelectMarket = $objRequest->getInput('selectMarket');
         unset($arrayInput['selectMarket']);
-        if(!empty($arraySelectMarket)) {
+        if (!empty($arraySelectMarket)) {
             $arrayMarketPromotion = [];
             foreach ($arraySelectMarket as $item => $value) {
                 $arrayMarketPromotion[] = $item;
@@ -93,24 +92,24 @@ class DiscountCouponPromotionAction extends \BaseAction {
             $arrayInput['market_ids'] = implode(',', $arrayMarketPromotion);
         }
         $arrayCuisine = $objRequest->getInput('cuisine');
-        if(!empty($arrayCuisine)) {
+        if (!empty($arrayCuisine)) {
             $arrayCuisinePromotion = [];
             foreach ($arrayCuisine as $item => $value) {
-                if($value) $arrayCuisinePromotion[] = $item;
+                if ($value) $arrayCuisinePromotion[] = $item;
             }
             $arrayInput['discount_item_list'] = implode(',', $arrayCuisinePromotion);
         }
         unset($arrayInput['cuisine']);
-        $arrayInput['use_week'] = implode(',', $arrayInput['use_week']);
+        $arrayInput['use_week']          = implode(',', $arrayInput['use_week']);
         $arrayInput['market_father_ids'] = json_encode($arrayInput['market_father_ids']);
-        if(empty($cd_id)) {
+        if (empty($cd_id)) {
             $arrayInput['company_id'] = $company_id;
             $arrayInput['channel_id'] = $channel_id;
         }
         $discount_id = DiscountServiceImpl::instance()->saveDiscount($arrayInput);
 
         $objSuccessService = new \SuccessService();
-        $objSuccessService->setData(['discount_id'=>$discount_id,'cd_id'=>encode($discount_id)]);
+        $objSuccessService->setData(['discount_id' => $discount_id, 'cd_id' => encode($discount_id)]);
 
         return $objResponse->successServiceResponse($objSuccessService);
     }

@@ -12,7 +12,7 @@
 					<table st-pipe="callDiscountCoupon" st-table="discountCouponList" class="table table-bordered table-striped bg-white" id="print_content">
 					  <thead>
 					  <tr>
-						<th>店面</th>
+						<th>折扣/优惠卷名称</th>
 						<th>适用类型</th>
 						<th>适用对象</th>
 						<th>有效时间</th>
@@ -20,9 +20,9 @@
 					  </tr>
 					  </thead>
 					  <tbody>
-					  <tr ng-repeat="(month, value) in discountCouponList">
-						<td>{{value.name}}</td>
-						<td>{{value.salse}}</td>
+					  <tr ng-repeat="(i, discount) in discountCouponList">
+						<td>{{discount.discount_name}}</td>
+						<td>{{discount.market_ids}}</td>
 						<td></td>
 						<td></td>
 						<td></td>
@@ -116,6 +116,8 @@ app.controller('DiscountCouponController', function($rootScope, $scope, $httpSer
 				return;//
 			}
 			if($scope.channel == 'Meal') analysisMealCuisine(result.data.item.allCuisineList);
+			$scope.discountCouponList = result.data.item.receivableData.data;
+            tableState.pagination.numberOfPages = result.data.item.receivableData.numberOfPages;
 		});
 		//解析菜式
 		function analysisMealCuisine(allCuisineList) {
@@ -169,7 +171,7 @@ app.controller('DiscountCouponController', function($rootScope, $scope, $httpSer
 	}
 	//
 	/////////
-    $scope.discountCouponList = [];
+    $scope.discountCouponList = [];$scope.param.tableState = {};
     $scope.callDiscountCoupon = function callDiscountCoupon(tableState) {
         $scope.param = {};        
         $scope.param.tableState = tableState;
