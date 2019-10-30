@@ -69,7 +69,7 @@ class Action {
                         $business_day                      = getDay();
                         $arrayBussinessDay['business_day'] = $business_day;
                         $arrayBussinessDay['company_id']   = $objEmployee->getCompanyId();
-                        //如果有酒店那么酒店一定做为母酒店，餐饮和其他没有营业日 所以不能。
+                        //如果有酒店那么酒店做为母酒店(临时定义)，餐饮和其他没有营业日 所以不能。
                         $arrayBussinessDay['channel_id']   = $default_channel_father_id;//$channel_id
                         $arrayBussinessDay['add_datetime'] = getDateTime();
                         ChannelServiceImpl::instance()->saveBusinessDay($arrayBussinessDay);
@@ -97,7 +97,7 @@ class Action {
                     return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['no_permission']['code']);
                 }
             }
-            //默认值 channel_id
+            //默认值 channel_id 预订模块默认值
             if (empty($channel_id)) {
                 $objRequest->channel_id = $channel_id = $default_channel_id;//$default_channel['default_id'];
                 if($module == 'MealOrder') {//餐饮服务 取出第一个餐饮的channel_id

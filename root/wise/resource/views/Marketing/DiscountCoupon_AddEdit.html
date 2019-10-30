@@ -6,7 +6,7 @@
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
-	  <div class="aside-body no-padding clear">
+	  <div class="aside-body no-padding">
 		<div class="col-md-12 p-v">
 			<div class="form-group no-margin">
 				<label class="clear">折扣/优惠卷名称</label>
@@ -89,7 +89,6 @@
 				  <input type="text" size="9" class="form-control w-thumb-lg" name="end_date" ng-model="param.end_date" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-min-view="0" data-autoclose="true" data-min-date="{{param.begin_date}}" data-autoclose="1" bs-datepicker value="{{business_day}}" onkeypress="return false;">
 				</div>
 				<div class="input-group">
-
 				  <div class="checkbox">周 
 					  <label class="ui-checks w-thumb"><input type="checkbox" name="use_week[1]" ng-model="param.use_week[1]" value="1"><i></i>一 </label>
 					  <label class="ui-checks w-thumb"><input type="checkbox" name="use_week[2]" ng-model="param.use_week[2]" value="2"><i></i>二 </label>
@@ -102,7 +101,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="p-h m-b"><div ng-include="'resource/views/Marketing/DiscountCoupon_AddEdit_Meal.html'" ng-if="channel=='Meal'"></div></div>
+		<div class="p-h m-b">
+			<div ng-include="'resource/views/Marketing/DiscountCoupon_AddEdit_Meal.html'" ng-if="channel=='Meal'"></div>
+			<div ng-include="'resource/views/Marketing/DiscountCoupon_AddEdit_Hotel.html'" ng-if="channel=='Hotel'"></div>
+		</div>
 	  </div>
       <div class="aside-footer panel-footer">
       	<input type="hidden" name="cd_id" value="{{param.cd_id}}" ng-model="param.cd_id" >

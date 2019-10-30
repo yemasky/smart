@@ -1,0 +1,89 @@
+<div class="p-md" ng-controller="RewardPointsController">
+	<div class="box b-a bg-white m-b">
+    	<div class="col-md-12">
+      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> </div>
+            <div class="p-md">
+				<div class="m-b-xs form-inline">
+					<button type="button" class="btn btn-default" ng-model="channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择店面"  ng-change="changeChannel(channel_id)">
+                  Action <span class="caret"></span>
+                	</button>
+				</div>
+				<div class="m-b form-inline">
+					<form name="thisForm" class="form-inline" role="form" ng-submit="saveData(param)">
+						<div class="form-group">
+							<div class="input-group col-sm-5">
+								<span class="input-group-addon no-radius">消费1元兑换几</span>
+								<input type="number" string-to-number class="form-control w" name="consume_for_points" ng-model="param.consume_for_points">
+								<span class="input-group-addon no-radius">积分</span>
+							</div>
+							<div class="input-group col-sm-5">
+								<span class="input-group-addon no-radius">多少积分兑换1元</span>
+								<input type="number" string-to-number class="form-control w" name="integral_exchange" ng-model="param.integral_exchange">
+								<span class="input-group-addon no-radius">积分</span>
+							</div>
+						</div>
+						<div class="form-group">
+						<button type="submit" class="btn btn-primary" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading">Save changes</button></div>
+					</form>
+				</div>
+				
+            </div>
+     	</div>
+     </div>
+</div>
+<script language="javascript">
+app.controller('RewardPointsController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $ocLazyLoad) {
+	$scope.param = {};
+	//获取数据
+	var _channel = $scope.$stateParams.channel, common = '';
+	var _view = $scope.$stateParams.view;
+	var param = 'channel='+_channel+'&view='+_view;
+	$scope.loading.show();
+	$httpService.post('/app.do?'+param, $scope, function(result){
+		$scope.loading.hide();
+		if(result.data.success == '0') {
+			return;
+		}
+		common = result.data.common;
+		$scope.setCommonSetting(common);
+		$scope.setThisChannel('ALL');
+		$scope.changeChannel($rootScope.defaultChannel.channel_id);
+        $scope.channel_father_id = $rootScope.defaultChannel.channel_father_id;
+		//end common
+		$(document).ready(function(){
+			
+		});
+	});
+	//
+	$scope.thisChannelSetting = {};
+	$scope.changeChannel = function(channel_id) {
+		$scope.id = $rootScope.employeeChannel[channel_id].id;
+		$scope.channel_id = $rootScope.employeeChannel[channel_id].channel_id;
+        $scope.channel = $rootScope.employeeChannel[channel_id].channel;
+		$scope.param.consume_for_points = $rootScope.channelSettingList[$scope.channel_id].consume_for_points;
+		$scope.param.integral_exchange = $rootScope.channelSettingList[$scope.channel_id].integral_exchange;
+	}
+	//
+	$scope.saveData = function() {
+		var thisParam = this.param;
+		if(thisParam == null || thisParam == '') {
+			return;
+		}
+		$scope.loading.show();
+		$scope.param = thisParam;
+		$httpService.header('method', 'saveRewardPoints');
+		$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+			$scope.loading.hide();
+			$httpService.deleteHeader('method');
+			if (result.data.success == '0') {
+				return;
+			}
+			$rootScope.channelSettingList[$scope.channel_id].consume_for_points = angular.copy($scope.param.consume_for_points);
+			$rootScope.channelSettingList[$scope.channel_id].integral_exchange = angular.copy($scope.param.integral_exchange);
+		});
+	}
+	
+	
+});
+
+</script>

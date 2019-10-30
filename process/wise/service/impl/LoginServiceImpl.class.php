@@ -62,36 +62,51 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
         for ($i = 0; $i < $lenght; $i++) {
             //md5(1 . '`　-   `' . md5('14e1b600b1fd579f47433b88e8d85291') . md5('5483116858d36bd6d1f6c'))
             if (md5($arrayEmployeeList[$i]['company_id'] . '`　-   `' . md5($password) . md5($arrayEmployeeList[$i]['password_salt'])) == $arrayEmployeeList[$i]['password']) {//找到登录者
-                //查找权限
-                $company_id          = $arrayEmployeeList[$i]['company_id'];
-                $employee_id         = $arrayEmployeeList[$i]['employee_id'];
-                $default_channel_id  = $arrayEmployeeList[$i]['default_channel_id'];//默认切换的channel
-                $arrayEmployeeModule = $this->getEmployeeModule($company_id, $employee_id);//已删除参数$default_channel_id
-                //set cookie
-                unset($arrayEmployeeList[$i]['password_salt']);
-                unset($arrayEmployeeList[$i]['password']);
-
-                $employeeChannel = EmployeeServiceImpl::instance()->getEmployeeChannel($company_id, $employee_id);
-                $Employee        = new Employee();
-                $Employee->setEmployeeId($arrayEmployeeList[$i]['employee_id']);
-                $Employee->setCompanyId($arrayEmployeeList[$i]['company_id']);
-                $Employee->setDefaultChannelId($default_channel_id);
-                $Employee->setEmployeeName($arrayEmployeeList[$i]['employee_name']);
-                $Employee->setPhoto($arrayEmployeeList[$i]['photo']);
-                self::$objEmployee = $Employee;
-                $loginEmployeeModel->setEmployeeInfo($Employee);
-                $loginEmployeeModel->setEmployeeMenu($arrayEmployeeModule);
-                $loginEmployeeModel->setEmployeeChannel($employeeChannel);
-                //channelSettingList
-                $whereCriteria = new \WhereCriteria();
-                $whereCriteria->setHashKey('channel_id');
-                $channelSettingList = ChannelDao::instance()->getChannelSettingList($whereCriteria->EQ('company_id', $Employee->getCompanyId()));
-                $loginEmployeeModel->setChannelSettingList($channelSettingList);
-                $this->setLoginEmployeeCookie($loginEmployeeModel);
+                $loginEmployeeModel = $this->addEmployeeCookie($arrayEmployeeList[$i], $loginEmployeeModel);
                 break;
             }
         }
 
+        return $loginEmployeeModel;
+    }
+
+    public function updateEmployeeCookie() {
+        $objLoginEmployee = LoginServiceImpl::instance()->getLoginEmployee();
+        $loginEmployeeModel = new LoginEmployeeModel();
+        $whereCriteria      = new \WhereCriteria();
+        $whereCriteria->EQ('employee_id', $objLoginEmployee->getEmployeeInfo()->getEmployeeId());
+        $field              = 'employee_id,company_id,employee_name,photo,`password`,password_salt,default_channel_id';
+        $arrayEmployeeList  = EmployeeDao::instance()->getEmployee($whereCriteria, $field);
+        $this->addEmployeeCookie($arrayEmployeeList[0], $loginEmployeeModel);
+    }
+
+    public function addEmployeeCookie($arrayEmployee, LoginEmployeeModel $loginEmployeeModel) {
+        //查找权限
+        $company_id          = $arrayEmployee['company_id'];
+        $employee_id         = $arrayEmployee['employee_id'];
+        $default_channel_id  = $arrayEmployee['default_channel_id'];//默认切换的channel
+        $arrayEmployeeModule = $this->getEmployeeModule($company_id, $employee_id);//已删除参数$default_channel_id
+        //set cookie
+        unset($arrayEmployee['password_salt']);
+        unset($arrayEmployee['password']);
+
+        $employeeChannel = EmployeeServiceImpl::instance()->getEmployeeChannel($company_id, $employee_id);
+        $Employee        = new Employee();
+        $Employee->setEmployeeId($arrayEmployee['employee_id']);
+        $Employee->setCompanyId($arrayEmployee['company_id']);
+        $Employee->setDefaultChannelId($default_channel_id);
+        $Employee->setEmployeeName($arrayEmployee['employee_name']);
+        $Employee->setPhoto($arrayEmployee['photo']);
+        self::$objEmployee = $Employee;
+        $loginEmployeeModel->setEmployeeInfo($Employee);
+        $loginEmployeeModel->setEmployeeMenu($arrayEmployeeModule);
+        $loginEmployeeModel->setEmployeeChannel($employeeChannel);
+        //channelSettingList
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->setHashKey('channel_id');
+        $channelSettingList = ChannelDao::instance()->getChannelSettingList($whereCriteria->EQ('company_id', $Employee->getCompanyId()));
+        $loginEmployeeModel->setChannelSettingList($channelSettingList);
+        $this->setLoginEmployeeCookie($loginEmployeeModel);
         return $loginEmployeeModel;
     }
 

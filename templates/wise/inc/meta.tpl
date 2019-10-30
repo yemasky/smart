@@ -616,6 +616,18 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			}
 			return null;
 		}
+		$scope.getHashMarket = function (marketList) {
+			var hashMarket = {};
+			if(marketList != '') {
+				for(var i in marketList) {
+					hashMarket[marketList[i].market_id] = marketList[i];
+					for(var k in marketList[i].children) {
+						hashMarket[marketList[i].children[k].market_id] = marketList[i].children[k];
+					}
+				}
+			}
+			$scope.hashMarket = hashMarket;
+		}
 		////*********************************////
 		$scope.redirect = function(url) {
 			$location.path(url);

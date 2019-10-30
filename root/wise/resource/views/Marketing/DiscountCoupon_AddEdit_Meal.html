@@ -1,4 +1,4 @@
-<div st-table="cuisineList" st-safe-src="rowCuisineList">
+<div st-table="itemList" st-safe-src="rowList">
   <div class="form-inline">
 	  <div class="form-group">
 		<div class="input-group m-t-xs m-b-xs">
@@ -12,8 +12,8 @@
 		  </select>
 		</div>
 	</div>
-	<div class="list-group no-radius">
-		<div class="list-group-item col-sm-1 col-xs-4 no-padding m-r-xs" ng-repeat="(i, cuisine) in cuisineList">
+	<div class="list-group no-radius clearfix">
+		<div class="list-group-item col-sm-1 col-xs-4 no-padding m-r-xs" ng-repeat="(i, cuisine) in itemList">
 		  <div class="clear p-xs">
 			<div>{{cuisine.cuisine_name}}
 				<label class="pull-right ui-checks"><input type="checkbox" name="cuisine[{{cuisine.cuisine_id}}]" ng-model="param.cuisine[cuisine.cuisine_id]" value="{{cuisine.cuisine_id}}"><i></i></label>

@@ -19,8 +19,8 @@ class DiscountCouponPromotionAction extends \BaseAction {
             case "DiscountCoupon":
                 $this->doDiscountCoupon($objRequest, $objResponse);
                 break;
-            case "ThemePromotion":
-                $this->doThemePromotion($objRequest, $objResponse);
+            case "RewardPoints":
+                $this->doRewardPoints($objRequest, $objResponse);
                 break;
             default:
                 $this->doDefault($objRequest, $objResponse);
@@ -49,21 +49,24 @@ class DiscountCouponPromotionAction extends \BaseAction {
         if (!empty($method)) {
             return $this->doMethod($objRequest, $objResponse);
         }
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id = $objRequest->channel_id;
-        //取得门店会员促销
+        $objLoginEmployee = LoginServiceImpl::instance()->getLoginEmployee();
+        $company_id       = $objLoginEmployee->getEmployeeInfo()->getCompanyId();
+        $channel_id       = $objRequest->channel_id;
+        //默认channel
+        $arrayEmployeeChannel = $objLoginEmployee->getEmployeeChannel();
+        $thisChannel          = $arrayEmployeeChannel[$channel_id];
+        if ($thisChannel['channel'] == 'Hotel') {
+            $objRequest->sqlHashKey       = 'item_id';
+            $arrayResult['allLayoutList'] = ChannelServiceImpl::instance()->getChannelItemLayout($objRequest);
+        }
+        if ($thisChannel['channel'] == 'Meal') {
+            $arrayResult['allCuisineList'] = CuisineServiceImpl::instance()->getCuisineList($objRequest, $objResponse);
+        }
         //客源市场
         $arrayResult['marketList'] = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
 
         $objSuccessService = new \SuccessService();
         $objSuccessService->setData($arrayResult);
-
-        return $objResponse->successServiceResponse($objSuccessService);
-    }
-
-    protected function doThemePromotion(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $objSuccessService = new \SuccessService();
-
 
         return $objResponse->successServiceResponse($objSuccessService);
     }
@@ -76,11 +79,13 @@ class DiscountCouponPromotionAction extends \BaseAction {
         return $objResponse->successServiceResponse($successService);
     }
 
-    protected function doMethodSaveMealPromotion(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id = $objRequest->channel_id;
-        $cd_id      = decode($objRequest->cd_id);
-        $arrayInput = $objRequest->getInput();
+    protected function doMethodSavePromotion(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $company_id     = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id     = $objRequest->channel_id;
+        $module_channel = $objRequest->module_channel;
+        $cd_id          = decode($objRequest->cd_id);
+        $arrayInput     = $objRequest->getInput();
+        unset($arrayInput['tableState']);
 
         $arraySelectMarket = $objRequest->getInput('selectMarket');
         unset($arrayInput['selectMarket']);
@@ -91,22 +96,52 @@ class DiscountCouponPromotionAction extends \BaseAction {
             }
             $arrayInput['market_ids'] = implode(',', $arrayMarketPromotion);
         }
-        $arrayCuisine = $objRequest->getInput('cuisine');
-        if (!empty($arrayCuisine)) {
-            $arrayCuisinePromotion = [];
-            foreach ($arrayCuisine as $item => $value) {
-                if ($value) $arrayCuisinePromotion[] = $item;
+        if ($module_channel == 'Hotel') {
+            $arrayLayout = $objRequest->getInput('layout');
+            if (!empty($arrayLayout)) {
+                $arrayyLayoutPromotion = [];
+                foreach ($arrayLayout as $item => $value) {
+                    if ($value) $arrayyLayoutPromotion[] = $item;
+                }
+                $arrayInput['discount_item_list'] = implode(',', $arrayyLayoutPromotion);
             }
-            $arrayInput['discount_item_list'] = implode(',', $arrayCuisinePromotion);
+            unset($arrayInput['layout']);
         }
-        unset($arrayInput['cuisine']);
-        $arrayInput['use_week']          = implode(',', $arrayInput['use_week']);
+        if ($module_channel == 'Meal') {
+            $arrayCuisine = $objRequest->getInput('cuisine');
+            if (!empty($arrayCuisine)) {
+                $arrayCuisinePromotion = [];
+                foreach ($arrayCuisine as $item => $value) {
+                    if ($value) $arrayCuisinePromotion[] = $item;
+                }
+                $arrayInput['discount_item_list'] = implode(',', $arrayCuisinePromotion);
+            }
+            unset($arrayInput['cuisine']);
+        }
+        if (isset($arrayInput['use_week'])) {
+            if (!empty($arrayInput['use_week'])) {
+                $arrayUse_week = [];
+                foreach ($arrayInput['use_week'] as $item => $value) {
+                    if ($value) $arrayUse_week[] = $item;
+                }
+                $arrayInput['use_week'] = implode(',', $arrayUse_week);
+            }
+        }
         $arrayInput['market_father_ids'] = json_encode($arrayInput['market_father_ids']);
         if (empty($cd_id)) {
             $arrayInput['company_id'] = $company_id;
             $arrayInput['channel_id'] = $channel_id;
+            $discount_id              = DiscountServiceImpl::instance()->saveDiscount($arrayInput);
+        } else {
+            unset($arrayInput['cd_id']);
+            unset($arrayInput['use_condition']);
+            unset($arrayInput['add_datetime']);
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('discount_id', $cd_id);
+            DiscountServiceImpl::instance()->updateDiscount($whereCriteria, $arrayInput);
+            $discount_id = $cd_id;
         }
-        $discount_id = DiscountServiceImpl::instance()->saveDiscount($arrayInput);
+
 
         $objSuccessService = new \SuccessService();
         $objSuccessService->setData(['discount_id' => $discount_id, 'cd_id' => encode($discount_id)]);
@@ -115,12 +150,12 @@ class DiscountCouponPromotionAction extends \BaseAction {
     }
 
     protected function doMethodHotelSellList(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id = $objRequest->channel_id;
+        $objRequest->sqlHashKey        = 'item_id';
+        $arrayResult['allLayoutList']  = ChannelServiceImpl::instance()->getChannelItemLayout($objRequest);
+        $arrayResult['receivableData'] = DiscountServiceImpl::instance()->getChannelDiscountPage($objRequest, $objResponse);
 
         $objSuccessService = new \SuccessService();
-
-
+        $objSuccessService->setData($arrayResult);
         return $objResponse->successServiceResponse($objSuccessService);
     }
 
@@ -128,5 +163,42 @@ class DiscountCouponPromotionAction extends \BaseAction {
         $arrayResult['receivableData'] = DiscountServiceImpl::instance()->getChannelDiscountPage($objRequest, $objResponse);
         $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
     }
+
+    //积分兑换
+    protected function doRewardPoints(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $method = $objRequest->method;
+        if (!empty($method)) {
+            return $this->doMethod($objRequest, $objResponse);
+        }
+        $objLoginEmployee  = LoginServiceImpl::instance()->getLoginEmployee();
+        $company_id        = $objLoginEmployee->getEmployeeInfo()->getCompanyId();
+        $channel_id        = $objRequest->channel_id;
+        $objSuccessService = new \SuccessService();
+        return $objResponse->successServiceResponse($objSuccessService);
+    }
+
+    public function doMethodSaveRewardPoints(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objLoginEmployee = LoginServiceImpl::instance()->getLoginEmployee();
+        $company_id       = $objLoginEmployee->getEmployeeInfo()->getCompanyId();
+        $channel_id       = $objRequest->channel_id;
+        $arrayInput       = $objRequest->getInput();
+
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
+
+        $arrayChannelId = ChannelServiceImpl::instance()->getChannelSettingList($whereCriteria, 'channel_id');
+        if (empty($arrayChannelId)) {
+            $arrayInput['company_id'] = $company_id;
+            $arrayInput['channel_id'] = $channel_id;
+            ChannelServiceImpl::instance()->saveChannelSetting($arrayInput);
+        } else {
+            ChannelServiceImpl::instance()->updateChannelSetting($whereCriteria, $arrayInput);
+        }
+        LoginServiceImpl::instance()->updateEmployeeCookie();
+
+        $objSuccessService = new \SuccessService();
+        return $objResponse->successServiceResponse($objSuccessService);
+    }
+
 
 }

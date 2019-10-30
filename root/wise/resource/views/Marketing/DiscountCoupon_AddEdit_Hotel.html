@@ -1,0 +1,19 @@
+<div st-table="itemList" st-safe-src="rowList">
+  <div class="form-inline">
+	  <div class="form-group">
+		<div class="input-group m-t-xs m-b-xs">
+		  <span class="input-group-addon no-radius">搜索房型</span>
+		  <input st-search="item_name" class="form-control w" name="item_name" id="item_name" type="text" ng-model="item_name" >
+		</div>
+	</div>
+	<div class="list-group no-radius clearfix">
+		<div class="list-group-item col-sm-1 col-xs-4 no-padding m-r-xs" ng-repeat="(i, layout) in itemList">
+		  <div class="clear p-xs">
+			<div>{{layout.item_name}}
+				<label class="pull-right ui-checks"><input type="checkbox" name="layout[{{layout.item_id}}]" ng-model="param.layout[layout.item_id]" value="{{layout.item_id}}"><i></i></label>
+			</div>
+		  </div>
+		</div>
+	</div>  
+  </div>
+</div>

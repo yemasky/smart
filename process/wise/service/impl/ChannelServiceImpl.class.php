@@ -150,6 +150,23 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
         return ChannelDao::instance()->saveUploadImages($arrayData, $insert_type);
     }
 
+    //channel_setting
+    public function getChannelSettingEntity(\WhereCriteria $whereCriteria, $field = null) : Channel_settingEntity {
+        return ChannelDao::instance()->getChannelSettingEntity($whereCriteria, $field);
+    }
+
+    public function getChannelSettingList(\WhereCriteria $whereCriteria, $field = null)  {
+        return ChannelDao::instance()->getChannelSettingList($whereCriteria, $field);
+    }
+
+    public function saveChannelSetting($arrayData, $insert_type = 'INSERT') {
+        return ChannelDao::instance()->saveChannelSetting($arrayData, $insert_type);
+    }
+
+    public function updateChannelSetting(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
+        return ChannelDao::instance()->updateChannelSetting($whereCriteria, $arrayUpdateData, $update_type);
+    }
+
     //get channel_item
     public function getChannelItemHash(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $loginInfo      = LoginServiceImpl::instance()->getLoginInfo();
@@ -196,6 +213,19 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
 
     public function updateChannelItem(\WhereCriteria $whereCriteria, $arrayUpdateData, $update_type = '') {
         return ChannelDao::instance()->updateChannelItem($whereCriteria, $arrayUpdateData, $update_type);
+    }
+
+    public function getChannelItemLayout(\HttpRequest $objRequest, $field = '') {
+        $objLoginEmployee = LoginServiceImpl::instance()->getLoginEmployee();
+        $company_id       = $objLoginEmployee->getEmployeeInfo()->getCompanyId();
+        $channel_id       = $objRequest->channel_id;
+        $whereCriteria    = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel_config', 'layout')
+            ->EQ('item_type', 'category')->EQ('valid', '1');
+        if (!empty($sqlHashKey = $objRequest->sqlHashKey)) $whereCriteria->setHashKey($sqlHashKey);
+        if (empty($field)) $field = 'item_id,item_name,item_en_name,image_src,`describe`,describe_en';
+        return $this->getChannelItem($whereCriteria, $field);
+
     }
 
     //payment_type

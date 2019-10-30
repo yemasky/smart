@@ -1,7 +1,7 @@
 <div class="app-content-inner" ng-controller="DiscountCouponController">
 	<div class="box b-a bg-white m-b">
-    	<div class="col-md-8">
-      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addEditDiscount(0)"> </a></div>
+    	<div class="col-md-12">
+      		<div class="panel-heading b-b b-light"><span class="no-margin" ng-bind-html="_self_module.module_name"></span> <a class="pull-right fa fa-plus" ng-click="addEditDiscount(0, -1)"> </a></div>
             <div class="p-md">
 				<div class="m-b-xs form-inline">
 					<button type="button" class="btn btn-default" ng-model="channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择店面"  ng-change="changeChannel(channel_id)">
@@ -11,44 +11,83 @@
 				<div class="table-responsive">
 					<table st-pipe="callDiscountCoupon" st-table="discountCouponList" class="table table-bordered table-striped bg-white" id="print_content">
 					  <thead>
-					  <tr>
+					  <tr class="text-nowrap">
 						<th>折扣/优惠卷名称</th>
-						<th>适用类型</th>
+						<th>类型</th>
+						<th>客源市场</th>
 						<th>适用对象</th>
+						<th>使用条件</th>
+						<th>优惠类型</th>
+						<th>满减(元)</th>
+						<th>优惠</th>  
+						<th>卷/领取</th>  
+						<th>星期</th>
 						<th>有效时间</th>
-						<th>促销政策</th>
+						<th>编辑</th>
 					  </tr>
 					  </thead>
 					  <tbody>
 					  <tr ng-repeat="(i, discount) in discountCouponList">
 						<td>{{discount.discount_name}}</td>
-						<td>{{discount.market_ids}}</td>
-						<td></td>
-						<td></td>
-						<td></td>
+						<td>
+							<span ng-if="discount.discount_category=='discount'">折扣</span>
+							<span ng-if="discount.discount_category=='coupon'">优惠劵</span>
+						</td>
+						<td>
+							<span ng-repeat="(i, market) in discount.market_ids">{{hashMarket[market].market_name}} </span>
+						</td>
+						<td>
+							<span ng-if="channel=='Hotel'"><span ng-repeat="(i, item) in discount.discount_item_list">{{hashItem[item].item_name}} </span></span>
+							<span ng-if="channel=='Meal'"><span ng-repeat="(i, item) in discount.discount_item_list">{{hashItem[item].cuisine_name}} </span></span>
+							
+						</td>
+						<td>
+							<span ng-if="discount.use_condition=='0'">-</span>
+							<span ng-if="discount.discount_category=='new_member'">新用户</span>
+						</td>
+						<td><!-- 1打折 2直减 3满减 4积分 5优惠卷 6现金红包 7现金卷 -->
+						    <span ng-if="discount.discount_type=='1'">打折</span>
+							<span ng-if="discount.discount_type=='2'">直减</span>
+							<span ng-if="discount.discount_type=='3'">满减</span>
+							<span ng-if="discount.discount_type=='5'">优惠卷</span>
+							<span ng-if="discount.discount_type=='6'">现金红包</span>
+							<span ng-if="discount.discount_type=='7'">现金卷</span>
+						</td>
+						<td>
+							<span ng-if="discount.discount_type=='3'">{{discount.discount_consume_money}}</span>
+							<span ng-if="discount.discount_type!='3'">-</span>
+					    </td>  
+						<td>
+						  	<span ng-if="discount.discount_type=='1'">{{discount.discount}}%</span>
+							<span ng-if="discount.discount_type=='2'">{{discount.discount}}</span>
+							<span ng-if="discount.discount_type=='3'">{{discount.discount}}</span>
+							<span ng-if="discount.discount_type=='5'">{{discount.discount}}</span>
+							<span ng-if="discount.discount_type=='6'">红包 {{discount.discount}}</span>
+							<span ng-if="discount.discount_type=='7'">{{discount.discount}}</span>
+						</td>  
+						<td>
+							<span ng-if="discount.discount_category=='discount'">-</span>
+							<span ng-if="discount.discount_category=='coupon'">{{discount.coupon_issue}}/{{discount.coupon_receive}}</span>
+						</td>
+						<td>
+							<span ng-repeat="(i, week) in discount.use_week track by $index">{{weekday[week]}} </span>
+						</td>
+						<td>{{discount.begin_date}}~{{discount.end_date}}</td>
+						<td><a class="fa fa-edit" ng-click="addEditDiscount(discount, i)"></a></td>
 					  </tr>
-					  <tr><td colspan="5"><a class="ti-printer print-contents" ng-click="printStatementsData()">A4打印报表</a></td></tr>
+					  <tr><td colspan="12"><div st-items-by-page="10" st-pagination="" st-template="pagination.custom.html"></div></td></tr>
 					  </tbody>
 					</table>
 				</div>
             </div>
         
      	</div>
-     	<div class="col-md-4 b-l no-border-sm">
-     		<div class="panel-heading b-b b-light"> 部门目标</div>
-            <div class="list-group no-border no-radius">
-                <div class="list-group-item">
-                  <span class="pull-right">293,200</span>
-                  <i class="fa fa-fw fa-circle text-info"></i>
-                </div>
-             </div>
-     	</div>
      </div>
 </div>
 <script language="javascript">
 app.controller('DiscountCouponController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $ocLazyLoad) {
 	$ocLazyLoad.load([$scope._resource + "styles/booking.css"]);
-	$scope.param = {};
+	$scope.param = {};$scope.param.selectMarket = '';$scope.param.market_father_ids = {};
 	//获取数据
 	var _channel = $scope.$stateParams.channel, common = '';
 	var _view = $scope.$stateParams.view;
@@ -74,20 +113,21 @@ app.controller('DiscountCouponController', function($rootScope, $scope, $httpSer
 		$scope.marketList[0] = {'children':{'0':{'market_id':'0','market_name':'所有来源'}},'market_id':'0','market_name':'所有来源'};
 		//设置客源市场  
         $scope.selectCustomerMarket($scope.marketList[0].children[0], false);
+		$scope.getHashMarket($scope.marketList);
 		$(document).ready(function(){
+			if($scope.channel == 'Hotel') analysisHotelLayout(result.data.item.allLayoutList);
+			if($scope.channel == 'Meal') analysisMealCuisine(result.data.item.allCuisineList);
 		});
 	});
 	//选择客源市场
-	$scope.param.selectMarket = '';$scope.param.market_father_ids = {};
     $scope.selectCustomerMarket = function(market, ajaxRoomForcasting) {
-        $scope.marketSystemLayout = {};
         if(angular.isDefined(market)) {
             $scope.market_name = market.market_name;
             $scope.market_id = market.market_id;
             $scope.market_father_id =  market.market_father_id;
             $('#customer_ul').next().hide();
             if(market.market_id > 0) {
-				if($scope.param.selectMarket == '') $scope.param.selectMarket = {};
+				if($scope.param.selectMarket == '') {$scope.param.selectMarket = {};$scope.param.market_father_ids = {};};
 				$scope.param.market_father_ids[market.market_id] = market.market_father_id;
 				$scope.param.selectMarket[market.market_id] = market.market_name;
 			}
@@ -99,7 +139,7 @@ app.controller('DiscountCouponController', function($rootScope, $scope, $httpSer
 		var selectMarket = Object.keys($scope.param.selectMarket);
 		if(selectMarket.length == 0) {
 			$scope.selectCustomerMarket($scope.marketList[0].children[0], false);
-			$scope.param.selectMarket = '';
+			$scope.param.selectMarket = '';$scope.param.market_father_ids = {};
 		}
 	}
 	//
@@ -116,73 +156,149 @@ app.controller('DiscountCouponController', function($rootScope, $scope, $httpSer
 				return;//
 			}
 			if($scope.channel == 'Meal') analysisMealCuisine(result.data.item.allCuisineList);
-			$scope.discountCouponList = result.data.item.receivableData.data;
+			if($scope.channel == 'Hotel') analysisHotelLayout(result.data.item.allLayoutList);
+			var tableState = $scope.param.tableState;
+			$scope.discountCouponList = setDiscountCoupon(result.data.item.receivableData.data);
             tableState.pagination.numberOfPages = result.data.item.receivableData.numberOfPages;
 		});
-		//解析菜式
-		function analysisMealCuisine(allCuisineList) {
-			var cuisineList = [], cuisineCategory = {}, cuisineSKU = {}, cuisine_id = 0;
-			if(allCuisineList != '') {
-				var j = 0;
-				for(var i in allCuisineList) {
-					cuisine_id = allCuisineList[i].cuisine_id;
-					if(allCuisineList[i].cuisine_is_category == '1') {
-						cuisineCategory[cuisine_id] = allCuisineList[i];
-					} else {
-						if(allCuisineList[i].sku == '1') {
-							cuisineList[j] = allCuisineList[i];j++;
-						} else {
-							if(angular.isUndefined(cuisineSKU[allCuisineList[i].sku_cuisine_id])) {
-								cuisineSKU[allCuisineList[i].sku_cuisine_id] = {};
-							}
-							cuisineSKU[allCuisineList[i].sku_cuisine_id][cuisine_id] = allCuisineList[i];
-						}
-					}
-				}
-				$scope.cuisineList = cuisineList;
-				$scope.rowCuisineList = cuisineList;
-				$scope.cuisineCategory = cuisineCategory;
-				$scope.cuisineSKU = cuisineSKU;
+	}
+	//解析房型
+	function analysisHotelLayout(allLayoutList) {
+		var layoutList = [];
+		if(allLayoutList != '') {
+			var j = 0;
+			for(var i in allLayoutList) {
+				layoutList[j] = allLayoutList[i];j++;
 			}
+			$scope.itemList = layoutList;$scope.rowList = layoutList;$scope.hashItem = allLayoutList;
 		}
 	}
-	//MemberPromotion_AddEdit.html
-	$scope.addEditDiscount = function () {
+	//解析菜式
+	function analysisMealCuisine(allCuisineList) {
+		var cuisineList = [], cuisineCategory = {}, cuisineSKU = {}, cuisine_id = 0;
+		if(allCuisineList != '') {
+			var j = 0;
+			for(var i in allCuisineList) {
+				cuisine_id = allCuisineList[i].cuisine_id;
+				if(allCuisineList[i].cuisine_is_category == '1') {
+					cuisineCategory[cuisine_id] = allCuisineList[i];
+				} else {
+					if(allCuisineList[i].sku == '1') {
+						cuisineList[j] = allCuisineList[i];j++;
+					} else {
+						if(angular.isUndefined(cuisineSKU[allCuisineList[i].sku_cuisine_id])) {
+							cuisineSKU[allCuisineList[i].sku_cuisine_id] = {};
+						}
+						cuisineSKU[allCuisineList[i].sku_cuisine_id][cuisine_id] = allCuisineList[i];
+					}
+				}
+			}
+			$scope.itemList = cuisineList;$scope.rowList = cuisineList;
+			$scope.cuisineCategory = cuisineCategory;$scope.cuisineSKU = cuisineSKU;
+			$scope.hashItem = allCuisineList;
+		}
+	}
+	//DiscountCoupon_AddEdit.html
+	var asideaddEdit = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Marketing/DiscountCoupon_AddEdit.html',show: false});
+	$scope.addEditDiscount = function (discount, discount_i) {
+		$scope.discount_i = discount_i;
 		$scope.param.discount_category='discount';
 		$scope.param.discount_type = '1';
-		var asideaddEdit = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Marketing/DiscountCoupon_AddEdit.html',show: false});
+		var tableState = $scope.param.tableState;
 		asideaddEdit.$promise.then(function() {
 			asideaddEdit.show();
 			$(document).ready(function(){
 				$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
-				//$('a.print-contents').printPreview('print_content');
+				if(discount != 0) {
+					$scope.param = angular.copy(discount);
+					$scope.param.selectMarket = '';
+					for(var i in discount.market_ids) {
+						$scope.selectCustomerMarket($scope.hashMarket[discount.market_ids[i]], '');
+					}
+					if($scope.channel == 'Hotel') {
+						$scope.param.layout = {};
+						for(var i in discount.discount_item_list) {
+							$scope.param.layout[discount.discount_item_list[i]] = true;
+						}
+					}
+					if($scope.channel == 'Meal') {
+						$scope.param.cuisine = {};
+						for(var i in discount.discount_item_list) {
+							$scope.param.cuisine[discount.discount_item_list[i]] = true;
+						}
+					}
+					$scope.param.use_week = {};
+					for(var i in discount.use_week) {
+						$scope.param.use_week[discount.use_week[i]] = true;
+					}
+					
+				}
+				$scope.param.tableState = tableState;
 			});
 		});
 	}
 	//
 	$scope.savePromotion = function() {
-		$httpService.header('method', 'save'+$scope.channel+'Promotion');
-		$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+		$httpService.header('method', 'savePromotion');
+		$httpService.post('/app.do?'+param+'&id='+$scope.id+'&module_channel='+$scope.channel, $scope, function(result){
 			$scope.loading.percent();
 			if(result.data.success == '0') {
 				return;//
 			}
+			asideaddEdit.$promise.then(function() {
+				asideaddEdit.hide();
+				$(document).ready(function(){
+					if($scope.discount_i > -1) {//修改数据
+						$scope.param.discount_item_list = {};
+						var j = 0;
+						for(var i in $scope.param.layout) {
+							if($scope.param.layout[i]) {
+								$scope.param.discount_item_list[j] = i;j++;
+							}
+						}
+						$scope.param.market_ids = {};j=0;
+						for(var i in $scope.param.selectMarket) {
+							$scope.param.market_ids[j] = i;j++;
+						}
+						var use_week = {};j=0;
+						for(var i in $scope.param.use_week) {
+							if($scope.param.use_week[i]) use_week[j] = i;j++;
+						}
+						$scope.param.use_week = use_week;
+						console.log($scope.discountCouponList[$scope.discount_i]);
+						$scope.discountCouponList[$scope.discount_i] = angular.copy($scope.param);
+						console.log($scope.discountCouponList[$scope.discount_i]);
+					} else {
+						
+					}
+					
+				});
+			})
 		});
 	}
 	//
 	/////////
     $scope.discountCouponList = [];$scope.param.tableState = {};
     $scope.callDiscountCoupon = function callDiscountCoupon(tableState) {
-        $scope.param = {};        
         $scope.param.tableState = tableState;
         $scope.loading.start();
         $httpService.header('method', 'discountCouponPagination');
         $httpService.post('/app.do?'+param, $scope, function(result){
             $scope.loading.percent();
-            $scope.discountCouponList = result.data.item.receivableData.data;
+            $scope.discountCouponList = setDiscountCoupon(result.data.item.receivableData.data);
             tableState.pagination.numberOfPages = result.data.item.receivableData.numberOfPages;
         });
     };
+	function setDiscountCoupon(discountList) {
+		if(discountList != '') {
+			for(var i in discountList) {
+				discountList[i].market_ids = discountList[i].market_ids.split(',');
+				discountList[i].use_week = discountList[i].use_week.split(',');
+				discountList[i].discount_item_list = discountList[i].discount_item_list.split(',');
+			}
+		}
+		return discountList;
+	}
 });
 
 </script>

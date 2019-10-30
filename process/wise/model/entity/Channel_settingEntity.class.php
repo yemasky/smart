@@ -19,6 +19,8 @@ class Channel_settingEntity extends \Entity {
     protected $half_price_time = '18:00:00';
     protected $plus_price_time = '06:00:00';
     protected $decimal_price = '0';
+    protected $consume_for_points = 0;
+    protected $integral_exchange = 0;
 
     /**
      * @return int
@@ -145,4 +147,33 @@ class Channel_settingEntity extends \Entity {
     public function setDecimalPrice(string $decimal_price): void {
         $this->decimal_price = $decimal_price;
     }
+
+    /**
+     * @return int
+     */
+    public function getConsumeForPoints(): int {
+        return $this->consume_for_points;
+    }
+
+    /**
+     * @param int $consume_for_points
+     */
+    public function setConsumeForPoints(int $consume_for_points): void {
+        $this->consume_for_points = $consume_for_points;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIntegralExchange(): int {
+        return $this->integral_exchange;
+    }
+
+    /**
+     * @param int $integral_exchange
+     */
+    public function setIntegralExchange(int $integral_exchange) {
+        $this->integral_exchange = $integral_exchange;
+    }
+
 }
