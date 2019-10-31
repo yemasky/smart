@@ -70,17 +70,16 @@ app.controller('PolicyController', function($rootScope, $scope, $httpService, $l
 	//
 	var asidePolicy = '', begin_datetime = {}, end_datetime = {};
 	$scope.addPolicy = function(_this) {
-		$scope.param = {}; $scope.param["valid"] = "1";$scope.param["_rules_time"] = "2018-01-01T18:00:00.000Z";
-		$scope.param["_begin_datetime"] = "00-00";$scope.param["_end_datetime"] = "00-00";
+		$scope.param = {}; $scope.param["valid"] = "1";$scope.param["_rules_time"] = "9999-01-01T18:00:00.000Z";
+		$scope.param["_begin_datetime"] = $scope.getDay('yyyy-MM-dd');$scope.param["_end_datetime"] = "2999-01-01";
 		if(_this != 0) {
-			var thisYear = $filter('date')($scope._baseDateTime(), 'yyyy', '0800')
 			$scope.param = _this;
-			$scope.param["_begin_datetime"] = thisYear+'-'+$scope.param["begin_datetime"] + 'T00:00:00.000Z';
-			$scope.param["_end_datetime"] = thisYear+'-'+$scope.param["end_datetime"] + 'T00:00:00.000Z';
+			$scope.param["_begin_datetime"] = $scope.param["begin_datetime"];
+			$scope.param["_end_datetime"] = $scope.param["end_datetime"];
 			$scope.param["_rules_time"] = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd', 'UTC') + 'T'+$scope.param["rules_time"]+'.000Z';
 		}
 		$scope.action = '添加/编辑';
-		asidePolicy = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/PolicyAddEdit.tpl.html'});
+		asidePolicy = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/PolicyAddEdit.tpl.html?'+__VERSION});
 		asidePolicy.$promise.then(function() {
 			asidePolicy.show();
 			$(document).ready(function(){
@@ -95,9 +94,9 @@ app.controller('PolicyController', function($rootScope, $scope, $httpService, $l
 			return;
 		}
 		$scope.loading.show();
-		param.begin_datetime = $filter('date')(param._begin_datetime, 'MM-dd', '0000');
+		param.begin_datetime = param._begin_datetime;
 		delete param._begin_datetime;
-		param.end_datetime = $filter('date')(param._end_datetime, 'MM-dd', '0000');
+		param.end_datetime = param._end_datetime;
 		delete param._end_datetime;
 		param.rules_time = $filter('date')(param._rules_time, 'HH:mm', 'UTC');
 		delete param._rules_time;

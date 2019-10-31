@@ -45,11 +45,11 @@
             <div class="form-group m-h-n clearfix">
             	<div class="col-sm-3">
                 <label for="rules">生效时间</label>
-                <input class="form-control w" name="begin_datetime" id="begin_datetime" type="text" value="" data-date-format="MM-dd" ng-model="param._begin_datetime" data-autoclose="1" bs-datepicker>
+                <input class="form-control w" name="begin_datetime" id="begin_datetime" ng-model="param._begin_datetime" type="text" value="{{getDay('yyyy-mm-dd')}}" data-date-format="yyyy-MM-dd" data-date-type="string" data-autoclose="1" bs-datepicker>
                 </div>
                 <div class="col-sm-3">
                 <label for="rules">结束时间</label>
-                <input class="form-control w" name="end_datetime" id="end_datetime" type="text" value="" ng-model="param._end_datetime" data-min-date="{{param.begin_datetime}}" data-date-format="MM-dd" data-autoclose="1" bs-datepicker>
+                <input class="form-control w" name="end_datetime" id="end_datetime" ng-model="param._end_datetime" type="text" value="9999-01-01" data-date-format="yyyy-MM-dd" data-date-type="string" data-min-date="{{param.begin_datetime}}" data-autoclose="1" bs-datepicker>
                 </div>
             </div>
             <div class="form-group clearfix">

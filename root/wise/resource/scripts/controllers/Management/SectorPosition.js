@@ -129,7 +129,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 			$('#main_images').attr('src', '/data/images/userimg/user_b.png');
 		}
 		$scope.action = '添加/编辑';
-		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/EmployeeAddEdit.tpl.html'});
+		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/EmployeeAddEdit.tpl.html?'+__VERSION});
 		asideEmployee.$promise.then(function() {
 			asideEmployee.show();
 			$(document).ready(function(){
@@ -306,7 +306,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		$scope.param["valid"] = "1";
 		//if(branch != null) $scope.param = branch;
 		$scope.action = '添加/编辑'+title;
-		asideSectorPosition = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/SectorPositionAddEdit.tpl.html'});
+		asideSectorPosition = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/SectorPositionAddEdit.tpl.html?'+__VERSION});
 		asideSectorPosition.$promise.then(function() {
 			asideSectorPosition.show();
 			$(document).ready(function(){

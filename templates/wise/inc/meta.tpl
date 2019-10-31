@@ -325,7 +325,14 @@ app.run(["$rootScope", "$state", "$stateParams", "$location", "$httpService", fu
         templateUrl: function($routeParams) {
             return 'resource/views/Management/'+$routeParams.view+'.html?<%$__VERSION%>';
         },
-		controller: function() {}
+		controller: function($rootScope, $scope, $ocLazyLoad, $httpService, $routeParams) {},
+		resolve: {
+            deps: ["$ocLazyLoad","$stateParams",function($ocLazyLoad, $stateParams) {
+                if($stateParams.view == 'SectorPosition' || $stateParams.view == 'Employee') {
+					return $ocLazyLoad.load(["resource/scripts/controllers/Management/SectorPosition.js?<%$__VERSION%>"]);
+				}
+            }]
+        }
     }).state('app.Setting', {
         url: "/Setting/:view/:channel", //url: "/role/edit?id",
         templateUrl: function($routeParams, $rootScope, $scope) {
@@ -454,7 +461,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 			b.parent().find("li").removeClass("active"), b.toggleClass("active"), b.find("ul") && ($scope.app.asideCollapse = !1)
 		}//
         $scope.switchChannel = function(channel_id) {
-            console.log($scope.employeeChannel[channel_id]);
+            //console.log($scope.employeeChannel[channel_id]);
         }
 		$rootScope.employeeMenu = {};$scope.hashEmployeeModule = {};
 		$scope.setMenu = function($menus, $module_channel) {
@@ -524,7 +531,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.setActionNavName = function(module_id, nav) {
 			if(angular.isDefined(nav) && nav != '') {$scope.action_nav_name = '' + nav; return;}
 			var menus = $scope.hashEmployeeModule, nav = '', _self_module = $rootScope._self_module;			getChannelNav(_self_module);
-			function getChannelNav(_this_module) {console.log(nav);
+			function getChannelNav(_this_module) {
 				if(typeof(menus[_this_module.module_id]) != 'undefined') {
 					var href = 'href="/#!/app/'+menus[_this_module.module_id].module_channel+'//'+menus[_this_module.module_id].url+'"';
 					nav = '<a '+href+'>' + menus[_this_module.module_id].module_name + '</a> <i class="fa fa-angle-double-right"></i> ' + nav;
@@ -677,7 +684,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.weekday[0]="日";$scope.weekday[1]="一";$scope.weekday[2]="二";
 		$scope.weekday[3]="三";$scope.weekday[4]="四";$scope.weekday[5]="五";$scope.weekday[6]="六";
         $scope.loading = $alert({scope : $scope, placement: 'top', type: 'info', templateUrl: '/loading.html', show: false});
-        $scope.successAlert = $alert({scope : $scope, title: 'Success', templateUrl: '/resource/views/Common/successAlertRound.html', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
+        $scope.successAlert = $alert({scope : $scope, title: 'Success', templateUrl: '/app/successAlertRound.html', content: '操作成功！', placement: 'top-left', duration: 3, type: 'success', show: false});
         var vm = $scope.vm = {};
         vm.value = 0;
         $scope.startProgressBar = function(index) {

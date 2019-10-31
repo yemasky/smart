@@ -11,7 +11,7 @@
            <div class="form-group m-h-n clearfix">
             	<div class="col-sm-12">
                     <div class="col-sm-12 w-sm no-padding">
-                    <label for="rules">酒店消费类别</label>
+                    <label for="rules">消费类别</label>
                     <select class="form-control w-sm" name="channel_consume_father_id" id="channel_consume_father_id" ng-model="param.channel_consume_father_id" required ng-options="data.channel_consume_id as data.consume_title for (i, data) in dataConsumeFather" ng-change="changeChannelConsume(param.channel_consume_father_id)">
                         <option value="">选择类别</option>
                     </select>
@@ -20,11 +20,11 @@
             </div>
             <div class="form-group m-h-n clearfix">
             	<div class="col-sm-6">
-                <label for="policy_name">酒店消费名称</label>
+                <label for="policy_name">消费名称</label>
                 <input class="form-control w" name="consume_title" value="" ng-model="param.consume_title" required>
                 </div>
                 <div class="col-sm-6">
-            	<label for="policy_en_name">酒店消费英文名称</label>
+            	<label for="policy_en_name">消费英文名称</label>
                 <input class="form-control w" name="consume_en_title" value="" ng-model="param.consume_en_title" required>
                 </div>
             </div>

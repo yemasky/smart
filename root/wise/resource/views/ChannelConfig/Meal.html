@@ -26,7 +26,7 @@
 					<div class="panel panel-default no-border">
                     <table st-pipe="callServer" st-table="itemList" class="table table-striped">
                         <thead>
-                        <tr>
+                        <tr class="text-nowrap">
 							<th>图片</th>
                             <th st-ratio="40" st-sort="cuisine_name">菜式名字</th>
                             <th st-ratio="10" st-sort="cuisine_category_id">类别</th>
@@ -77,7 +77,7 @@
 					<div class="panel panel-default no-border">
                     <table st-pipe="callTableServer" st-table="itemList" class="table table-striped">
                         <thead>
-                        <tr>
+                        <tr class="text-nowrap">
                             <th st-ratio="40" st-sort="item_name">房间名称/餐桌编号</th>
                             <th st-ratio="10" st-sort="item_attr2_value">楼栋</th>
                             <th st-ratio="15" st-sort="item_attr1_value">楼层</th>
@@ -256,7 +256,7 @@
 			}
 			
 			$scope.param = param;console.log($scope.param);
-            myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: __RESOURCE+'views/ChannelConfig/'+key+'.tpl.html'});
+            myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: __RESOURCE+'views/ChannelConfig/'+key+'.tpl.html?'+__VERSION});
             myArrtibute.$promise.then(function() {
 				myArrtibute.show();
 				$scope.setImage();

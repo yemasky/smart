@@ -157,7 +157,7 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
 		$scope.param = {}; $scope.param["valid"] = "1";
 		if(_this != 0) $scope.param = _this;
 		$scope.action = '添加/编辑';
-		asideCustomerMarket = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketAddEdit.tpl.html'});
+		asideCustomerMarket = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketAddEdit.tpl.html?'+__VERSION});
 		asideCustomerMarket.$promise.then(function() {
 			asideCustomerMarket.show();
 			$(document).ready(function(){
@@ -188,7 +188,7 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
 		$scope.param = {}; $scope.param["valid"] = "1"; editReceivable = i;
 		if(_this != 0) $scope.param = angular.copy(_this);
 		$scope.action = '添加/编辑';
-		asideReceivable = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketReceivableAddEdit.tpl.html'});
+		asideReceivable = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketReceivableAddEdit.tpl.html?'+__VERSION});
 		asideReceivable.$promise.then(function() {
 			asideReceivable.show();
 			$(document).ready(function(){
