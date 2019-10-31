@@ -2,7 +2,7 @@
     <div class="" append-source>
             <form name="bookingRoomForm" class="form-inline" role="form" ng-submit="beginBooking('')">
             <div class="">
-            	<label class="control-label"><i class="fas fa-clock"></i> </label>
+            	<label class="control-label"><i class="fas fa-clock"></i> </label><div class="btn-group pull-right"><button type="button" class="btn btn-xs btn-default">营业日 {{getBusinessDay()}}</button></div>
                 <div class="form-group m-b-xs">
 					<div class="input-group">
 				  		<span class="input-group-btn"><button class="btn btn-default" type="button">预抵</button></span>
@@ -20,17 +20,25 @@
                   		<span class="input-group-btn"><button class="btn btn-default check_date" type="button"><i class="fa fa-calendar text-info"> 选择日期</i></button></span>
 					</div>
                 </div>
-                <div class="form-group m-b-xs" ng-include="'/app/customerMarket.html'"></div>
-				<div class="form-group m-b-xs" ng-if="market_father_id==6">
-					<ui-select ng-model="receivableSelected" ng-change="selectReceivable($select.selected)" theme="bootstrap">
-						<ui-select-match placeholder="　选择协议客源　">{{$select.selected.receivable_name}}</ui-select-match>
-						<ui-select-choices repeat="receivable in receivableList | filter: $select.search">
-							<div ng-bind-html="receivable.receivable_name | highlight: $select.search"></div>
-						</ui-select-choices>
-					</ui-select>
+				<div class="form-group m-b-xs">
+					<div class="input-group">
+						<span style="z-index: 1000;" class="form-control no-padding no-border" ng-include="'/app/customerMarket.html'"></span>
+						<span class="input-group-addon no-radius no-padding no-border"></span>
+						<span class="form-control no-padding no-border" ng-if="market_father_id==6" style="z-index: 1000;">
+							<ui-select ng-model="receivableSelected" ng-change="selectReceivable($select.selected)" theme="bootstrap">
+								<ui-select-match placeholder="选择协议客源">{{$select.selected.receivable_name}}</ui-select-match>
+								<ui-select-choices repeat="receivable in receivableList | filter: $select.search">
+									<div ng-bind-html="receivable.receivable_name | highlight: $select.search"></div>
+								</ui-select-choices>
+							</ui-select>
+						</span>
+						<div class="form-control no-padding no-border w-thumb-lg" ng-show="market_father_id==7||market_father_id==8">
+						  <input type="text" class="form-control btn-default" id="booking_number_ext" name="booking_number_ext" ng-model="param.booking_number_ext" placeholder="OTA订单号" required>
+						</div>
+						<span class="input-group-addon no-radius no-padding no-border"></span>
+						<div class="form-control no-padding no-border"><button class="btn btn-default" type="button" ng-click="checkOrderData()"><i class="fa fa-search"> </i> 查价格</button></div>
+					</div>
 				</div>
-                <div class="form-group m-b-xs"><button class="btn btn-default" type="button" ng-click="checkOrderData()"><i class="fa fa-search"> </i> 查价格</button></div>
-				<div class="btn-group pull-right"><button type="button" class="btn btn-xs btn-default">营业日 {{getBusinessDay()}}</button></div>
                 <!--<button type="button" class="btn btn-default" data-animation="am-flip-x" bs-dropdown aria-haspopup="true" aria-expanded="false" data-trigger=""><i class="icon fa fa-users text-lt"></i> {{market_name}} <i class="fa fa-caret-down"></i></button>
                     <ul class="dropdown-menu" role="menu" style="overflow:visible;">
                       <li ng-repeat="(i, father) in marketList" class="dropdown-submenu">
@@ -40,22 +48,23 @@
                         </ul>
                       </li>
                     </ul>-->
-                <hr>
+                <hr class="p-v-xs no-margin">
             </div>
 			<div class="form-horizontal">
 				<button type="button" class="btn btn-default icon fa fa-building text-lt" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder=" {{defaultHotel}}" ng-change="selectChannel(param.channel_id)">
               Action <span class="caret"></span>
             	</button>
-                <div class="form-group m-b-xs p-h has-feedback">
-                  <input type="text" size="10" class="form-control" id="member_name" name="member_name" ng-model="param.member_name" placeholder="{{customer_name}}" required >
-				  <span class="glyphicon glyphicon-user form-control-feedback"></span>
-				</div>
 				<div class="form-group m-b-xs p-h">
-                  <div class="input-group">
-                      <input type="text" size="10" class="form-control" id="mobile_email" name="mobile_email" ng-model="param.mobile_email" placeholder="手机/Email" required >
-                      <span class="input-group-btn">
-                          <button class="btn btn-default" type="button" ng-click="beginBooking('member')"><i class="fa fa-search"> </i> 会员</button>
-                      </span>
+					<div class="input-group">
+						<div class="form-control no-padding no-border has-feedback">
+                  		<input type="text" size="10" class="form-control" id="member_name" name="member_name" ng-model="param.member_name" placeholder="{{customer_name}}" required >
+				  		<span class="glyphicon glyphicon-user form-control-feedback"></span>
+					    </div>
+						<span class="input-group-addon no-radius no-padding no-border"></span>
+                      	<input type="text" size="10" class="form-control" id="mobile_email" name="mobile_email" ng-model="param.mobile_email" placeholder="手机/Email" required >
+					    <span class="input-group-btn">
+						  <button class="btn btn-default" type="button" ng-click="beginBooking('member')"><i class="fa fa-search"> </i> 会员</button>
+					    </span>
                   </div>
 				</div>
 				<div class="form-group m-b-xs p-h has-feedback" ng-show="market_father_id==7||market_father_id==8">

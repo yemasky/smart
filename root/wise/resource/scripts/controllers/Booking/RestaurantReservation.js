@@ -33,8 +33,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
             $scope.setThisChannel('Meal');//酒店频道
 			$scope.marketList = result.data.item.marketList;//客源市场
             $(document).ready(function(){
-                $scope.param["channel_id"] = $scope.thisChannel_id;
-                $scope.param["channel_father_id"] = $scope.channel_father_id;
+                $scope.channel_id = $scope.thisChannel_id;
 				$scope.id = $rootScope.employeeChannel[$scope.thisChannel_id].id;
                 //$scope.defaultHotel = $scope.thisChannel[$scope.thisChannel_id]["channel_name"];
 				//设置客源市场  
@@ -48,25 +47,36 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
                 $scope.param["check_in"] = _thisDay;
                 $('.check_in').val(_thisDay);
                 $scope.param["in_time"] = _thisDay+'T14:00:00.000Z';$scope.param["out_time"] = _thisDay+'T12:00:00.000Z';
-				$('.check_date').daterangepicker({singleDatePicker: true, "autoApply": true,"startDate": _thisDay,"locale":{"format" : 'YYYY-MM-DD hh:mm'}
+				/*$('.check_date').daterangepicker({singleDatePicker: true, "autoApply": true,"startDate": _thisDay,"locale":{"format" : 'YYYY-MM-DD hh:mm'}
 				}, function(start, label) {
 					var check_in = start.format('YYYY-MM-DD');
 					$scope.param.check_in = check_in;
 					$('.check_in').val(check_in);
-				});
+				});*/
             });
         });	
     }
 	//更换餐厅
-	$scope.selectChannel = function(channel_id) {
-		if(angular.isUndefined(channel_id)) {
-			channel_id = $scope.thisChannel_id;
-			$scope.param["channel_id"] = channel_id;
-		}
-		var channel = $rootScope.employeeChannel[channel_id];
-        $scope.param["channel_father_id"] = channel.channel_father_id;
-		$scope.id = channel.id;
-    };
+	$scope.changeChannel = function(channel_id) {
+		$scope.id = $rootScope.employeeChannel[channel_id].id;
+		$scope.channel_id = $rootScope.employeeChannel[channel_id].channel_id;
+        $scope.channel = $rootScope.employeeChannel[channel_id].channel;
+		$scope.loading.show();
+		$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+			$scope.loading.percent();
+			if(result.data.success == '0') {
+				return;//
+			}
+			$scope.bookList          = result.data.item.bookList;//预订列表
+			$scope.roomList          = result.data.item.roomList;//客房列表
+			$scope.rowRoomList       = result.data.item.roomList;//客房列表
+			allCuisineList = '';
+			$scope.cuisineList = {};
+			$scope.rowCuisineList = {};
+			$scope.cuisineCategory = {};
+			$scope.cuisineSKU = {};
+		});
+	}
 	//选择客源市场
 	$scope.receivableList = [];//协议公司数据
     $scope.selectCustomerMarket = function(market, ajaxRoomForcasting) {

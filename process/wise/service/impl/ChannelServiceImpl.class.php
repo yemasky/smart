@@ -528,12 +528,13 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
     }
     //
     //channel_consume
-    public function getChannelConsume($company_id, $channel_id = '', $channel_consume_id = '', $field = '') {
+    public function getChannelConsume($company_id, $channel_id = '', $channel = '', $channel_consume_id = '', $field = '') {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->ArrayIN('company_id', [$company_id, '0'])->ORDER('channel_consume_father_id', 'ASC')->NE('valid', '-1');
         if (!empty($channel_id) && $channel_id > 0) $whereCriteria->ArrayIN('channel_id', [$channel_id, 0]);
+        if (!empty($channel)) $whereCriteria->ArrayIN('channel', ['commom', $channel]);
         if (!empty($channel_consume_id) && $channel_consume_id > 0) $whereCriteria->EQ('channel_consume_id', $channel_consume_id);
-        if (empty($field)) $field = 'channel_consume_id,channel_consume_father_id,channel,company_id,channel_id,consume_title,consume_en_title,consume_code,consume_price,consume_unit,valid';
+        if (empty($field)) $field = 'channel_consume_id,channel_consume_father_id,channel,company_id,channel_id,consume_title,consume_en_title,consume_code,consume_price,consume_unit,`explain`,valid';
 
         return ChannelDao::instance()->getChannelConsume($whereCriteria, $field);
     }

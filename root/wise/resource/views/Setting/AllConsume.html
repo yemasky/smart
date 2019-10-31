@@ -15,6 +15,7 @@
 							<th class="w">类别</th>
 							<th class="w">中文名称</th>
 							<th class="w">英文名称</th>
+							<th class="w">说明</th>
 							<th class="w-xxs">有效</th>
 							<th class="w-xxs">编辑</th>
 						</tr>
@@ -24,11 +25,12 @@
 							  <td class="w text-nowrap b-r">{{dataConsumeFather[data.channel_consume_father_id].consume_title}}</td>
 							  <td class="w b-r">{{data.consume_title}}</td>
 							  <td class="w b-r">{{data.consume_en_title}}</td>
-							  <td class="w b-r">
+							  <td class="w b-r">{{data.explain}}</td>
+							  <td class="w-xxs b-r">
 								<i ng-if="data.valid=='1'" class="fas fa-check-circle text-success"></i>
 								<i ng-if="data.valid=='0'" class="fa fa-ban text-warning"></i>
 							  </td>
-							  <td>
+							  <td class="w-xxs">
 								<a class="pull-right" ng-click="addChannelConsume(data)" ng-if="data.company_id>0"><i class="fa fa-edit"></i> </a>
 							  </td>
 						  </tr>
@@ -45,7 +47,7 @@
 app.controller('AllConsumeController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
 	//获取数据
 	var _channel = $scope.$stateParams.channel, common = '';
-	var _view = $scope.$stateParams.view, dataConsume = {}, dataConsumeFather = {};
+	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
 	$httpService.post('/app.do?'+param, $scope, function(result){
@@ -63,19 +65,9 @@ app.controller('AllConsumeController', function($rootScope, $scope, $httpService
 		$scope.id = $rootScope.defaultChannel.id;
 		//end common
 		$scope.dataList = result.data.item.channelConsume;
-        if($scope.dataList != '') {
-            for(var i in $scope.dataList){
-                var data = $scope.dataList[i];
-                if(data.channel_consume_id == data.channel_consume_father_id)   {
-                    dataConsumeFather[data.channel_consume_id] = data;
-                } else {
-                    if(angular.isUndefined(dataConsume[data.channel_consume_father_id])) dataConsume[data.channel_consume_father_id] = {};
-                    dataConsume[data.channel_consume_father_id][data.channel_consume_id] = data;
-                }
-            }
-        }
+        resolutionData();
 	});
-    $scope.dataConsume = dataConsume;$scope.dataConsumeFather = dataConsumeFather;
+    
 	//
 	var asideChannelConsume = '', begin_datetime = {}, end_datetime = {};
 	$scope.addChannelConsume = function(_this) {
@@ -107,42 +99,49 @@ app.controller('AllConsumeController', function($rootScope, $scope, $httpService
 				return;//
 			}
 			$scope.dataList = result.data.item.channelConsume;
-			if($scope.dataList != '') {
-				for(var i in $scope.dataList){
-					var data = $scope.dataList[i];
-					if(data.channel_consume_id == data.channel_consume_father_id)   {
-						dataConsumeFather[data.channel_consume_id] = data;
-					} else {
-						if(angular.isUndefined(dataConsume[data.channel_consume_father_id])) dataConsume[data.channel_consume_father_id] = {};
-						dataConsume[data.channel_consume_father_id][data.channel_consume_id] = data;
-					}
-				}
-			}
+			resolutionData();
 		});
 	}
 	$scope.saveData = function() {
-		var param = this.param;
-		if(param == null || param == '' || !angular.isDefined(param.channel_consume_father_id)) {
-			$alert({title: 'Notice', content: '“酒店消费类别”必须选择！', templateUrl: '/modal-warning.html', show: true});
+		if(angular.isUndefined($scope.param.channel_consume_father_id)) {
+			$alert({title: 'Notice', content: '“消费类别”必须选择！', templateUrl: '/modal-warning.html', show: true});
 			return;
 		}
 		$scope.loading.show();
-		$scope.param = param;
         $httpService.header('method', 'editChannelConsume');
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+		$httpService.post('/app.do?channel='+common.saveAddEditUrl+'&id='+$scope.id, $scope, function(result){
             $httpService.deleteHeader('method');
 			$scope.loading.hide();
 			if(result.data.success == '0') {
 				return;
 			}
-            var channel_consume_id = result.data.item.channel_consume_id;
-            param.channel_consume_id = channel_consume_id;
-			$scope.dataList[param.channel_consume_father_id][channel_consume_id] = angular.copy(param);
-			asideChannelConsume.hide();
+            var channel_consume_id = result.data.item.channel_consume_id, c_c_id = result.data.item.c_c_id;
+            $scope.param.channel_consume_id = channel_consume_id;$scope.param.c_c_id = c_c_id;
 			
+			if(angular.isUndefined($scope.dataConsume[$scope.param.channel_consume_father_id])) 
+				$scope.dataConsume[$scope.param.channel_consume_father_id] = {};
+			$scope.dataConsume[$scope.param.channel_consume_father_id][channel_consume_id] = angular.copy($scope.param);
+
+			asideChannelConsume.$promise.then(function() {
+				asideChannelConsume.hide();
+			});
 		});
 	}
-	
+	function resolutionData() {
+		var dataConsume = {}, dataConsumeFather = {}
+		if($scope.dataList != '') {
+            for(var i in $scope.dataList){
+                var data = $scope.dataList[i];
+                if(data.channel_consume_id == data.channel_consume_father_id)   {
+                    dataConsumeFather[data.channel_consume_id] = data;
+                } else {
+                    if(angular.isUndefined(dataConsume[data.channel_consume_father_id])) dataConsume[data.channel_consume_father_id] = {};
+                    dataConsume[data.channel_consume_father_id][data.channel_consume_id] = data;
+                }
+            }
+        }
+		$scope.dataConsume = dataConsume;$scope.dataConsumeFather = dataConsumeFather;
+	}
 });
 
 </script>

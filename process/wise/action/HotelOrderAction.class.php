@@ -75,9 +75,13 @@ class HotelOrderAction extends \BaseAction {
         if (!empty($method)) {
             return $this->doMethod($objRequest, $objResponse);
         }
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $objLoginEmployee = LoginServiceImpl::instance()->getLoginEmployee();
+        $company_id       = $objLoginEmployee->getEmployeeInfo()->getCompanyId();
         //获取channel
         $channel_id = $objRequest->channel_id;
+        //默认channel
+        $arrayEmployeeChannel = $objLoginEmployee->getEmployeeChannel();
+        $thisChannel          = $arrayEmployeeChannel[$channel_id];
         //
         $in_date                 = $objRequest->in_day;
         $in_date                 = empty($in_date) ? LoginServiceImpl::getBusinessDay() : $in_date;
@@ -172,7 +176,7 @@ class HotelOrderAction extends \BaseAction {
             }
         }
         //消费类别
-        $arrayChannelConsume = ChannelServiceImpl::instance()->getChannelConsume($company_id, $channel_id);
+        $arrayChannelConsume = ChannelServiceImpl::instance()->getChannelConsume($company_id, $channel_id, $thisChannel['channel']);
         //客房借物
         $arrayBorrowing = [];
         if (!empty($arrayBookingNumber)) {

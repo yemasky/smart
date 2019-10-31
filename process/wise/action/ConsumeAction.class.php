@@ -57,9 +57,13 @@ class ConsumeAction extends \BaseAction {
         if (!empty($method)) {
             return $this->doMethod($objRequest, $objResponse);
         }
-        $company_id                    = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id = $objRequest->channel_id;
-        $arrayResult['channelConsume'] = ChannelServiceImpl::instance()->getChannelConsume($company_id, $channel_id);
+        $objLoginEmployee = LoginServiceImpl::instance()->getLoginEmployee();
+        $company_id       = $objLoginEmployee->getEmployeeInfo()->getCompanyId();
+        $channel_id       = $objRequest->channel_id;
+        //默认channel
+        $arrayEmployeeChannel          = $objLoginEmployee->getEmployeeChannel();
+        $thisChannel                   = $arrayEmployeeChannel[$channel_id];
+        $arrayResult['channelConsume'] = ChannelServiceImpl::instance()->getChannelConsume($company_id, $channel_id, $thisChannel['channel']);
         if (!empty($arrayResult['channelConsume'])) {
             foreach ($arrayResult['channelConsume'] as $k => $value) {
                 $arrayResult['channelConsume'][$k]['c_c_id'] = encode($value['channel_consume_id']);
@@ -76,21 +80,28 @@ class ConsumeAction extends \BaseAction {
         if ($channel_consume_father_id == 0) {//新类别
 
         }
-        $c_c_id                   = $objRequest->getInput('c_c_id');
-        $c_c_id                   = !empty($c_c_id) ? decode($c_c_id) : null;
-        $arrayInput               = $objRequest->getInput();
-        $arrayInput['company_id'] = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id               = $objRequest->channel_id;
-        if (is_numeric($channel_id) && $channel_id > 0) $arrayInput['channel_id'] = $channel_id;
+        $objLoginEmployee = LoginServiceImpl::instance()->getLoginEmployee();
+        $company_id       = $objLoginEmployee->getEmployeeInfo()->getCompanyId();
+        $channel_id       = $objRequest->channel_id;
+        //默认channel
+        $arrayEmployeeChannel = $objLoginEmployee->getEmployeeChannel();
+        $thisChannel          = $arrayEmployeeChannel[$channel_id];
+
+        $c_c_id     = $objRequest->getInput('c_c_id');
+        $c_c_id     = !empty($c_c_id) ? decode($c_c_id) : null;
+        $arrayInput = $objRequest->getInput();
         if (is_numeric($c_c_id) && $c_c_id > 0) {
             unset($arrayInput['c_c_id']);
             ChannelServiceImpl::instance()->updateChannelConsume($arrayInput['company_id'], $c_c_id, $arrayInput);
         } else {
+            $arrayInput['company_id']   = $company_id;
+            $arrayInput['channel_id']   = $channel_id;
+            $arrayInput['channel']      = $thisChannel['channel'];
             $arrayInput['add_datetime'] = getDateTime();
             $c_c_id                     = ChannelServiceImpl::instance()->saveChannelConsume($arrayInput);
         }
 
-        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['channel_consume_id' => $c_c_id]);
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['channel_consume_id' => $c_c_id, 'c_c_id'=>encode($c_c_id)]);
     }
 
     protected function doBorrowing(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -132,7 +143,6 @@ class ConsumeAction extends \BaseAction {
 
         return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], ['borrowing_id' => $c_b_id]);
     }
-
 
 
 }

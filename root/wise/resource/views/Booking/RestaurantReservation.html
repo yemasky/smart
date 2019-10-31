@@ -3,8 +3,8 @@
     <div class="col-md-9">
       <div class="box b-r">
         <div class="p p-v-sm b-b">
-          <button type="button" class="btn btn-default icon fab fa-raspberry-pi text-lt" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="请选择" ng-change="selectChannel(param.channel_id)">
-              Action <span class="caret"></span>
+          <button type="button" class="btn btn-default" ng-model="channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择店面"  ng-change="changeChannel(channel_id)">
+                  Action <span class="caret"></span>
           </button>
           <div class="btn-group pull-right"><button type="button" class="btn btn-xs btn-default">营业日 {{getBusinessDay()}}</button></div>
           
@@ -14,7 +14,7 @@
             <div class="box-inner">
               <!-- detail -->
               <div class="b-b tab-container p-v-xs">
-                <ul class="nav nav-tabs" ui-nav ng-init="activeTab=1">
+                <ul class="nav nav-tabs p-h" ui-nav ng-init="activeTab=1">
                     <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
                         <a>桌态</a>
                     </li>
@@ -37,18 +37,6 @@
                  <div class="tab-content text-nowrap"><!--<img class="img-responsive w-thumb-xs" ng-src="{{_resource}}images/room.png">-->
                     <div ng-show="activeTab==1">
                         <div class="form-group clearfix">
-                            <!--<ul class="nav nav-tabs" ng-init="activeAtaTab=1">
-                                <li ng-class="{active:activeAtaTab==0}">　</li>
-                                <li ng-class="{active:activeAtaTab==1}" ng-click="activeAtaTab=1">
-                                    <a>堂食<span class="badge bg-info badge-xs m-l-xs" ng-bind-html="bookAta">0</span></a>
-                                </li>
-                                <li ng-class="{active:activeAtaTab==2}" ng-click="activeAtaTab=2">
-                                    <a>预订<span class="badge badge-xs" ng-bind="dueOut">0</span></a>
-                                </li>
-                                <li ng-class="{active:activeAtaTab==3}" ng-click="activeAtaTab=3">
-									<a>排号<span class="badge badge-xs" ng-bind="dueOut">0</span></a>
-                                </li>
-                            </ul>-->
 							<div class="btn-group" ng-model="activeAtaTab" bs-radio-group ng-init="activeAtaTab=1">
 							  <label class="btn btn-default">
 								<input type="radio" class="btn btbtn-default" value="1">堂食
@@ -61,17 +49,16 @@
 							  </label>
 							</div>
 							<div class="p-v-xs" ng-show="activeAtaTab==1">
-							  <div class="">
 								<div class="form-group clearfix">
 									<div class="buliding m-b" ng-repeat="(buliding_key, buliding) in roomList">
 										<div class="m-b-xs"><i class="fa fa-building text-xs"> {{buliding_key}}楼栋</i></div>
 										<div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
 											<span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
 											<div class="list-group no-radius">
-												<div class="list-group-item col-sm-2 col-xs-3 no-padding" ng-repeat="(i, room) in floor">
+												<div class="list-group-item col-sm-2 col-xs-4 no-padding" ng-repeat="(i, room) in floor">
 												  <div class="clear p-xs">
 													<div>{{room.item_name}}
-														<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
+														<small class="pull-right" ng-click="diningTable('open', room)"><i class="ti-check-box"></i></small>
 													</div>
 												  </div>
 													<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
@@ -86,7 +73,6 @@
 										</div>
 									</div>
 								</div>
-							  </div>
                             </div>
                             <div class="p-v-xs" ng-show="activeAtaTab==2">
                                <div class="table-responsive">
@@ -137,36 +123,28 @@
                     <div ng-show="activeTab==2">
                         
                     </div>
-                    <div ng-show="activeTab==3">
-						<div st-table="cuisineList" st-safe-src="rowCuisineList" class="form-group clearfix">
+                    <div ng-show="activeTab==3" class="clearfix">
+						<div st-table="cuisineList" st-safe-src="rowCuisineList" class="form-group">
 							<div class="form-inline">
-								<div class="input-group col-xs-3 m-t-xs m-b-xs">
-								  <span class="input-group-btn">
-									<button class="btn btn-default" type="button">搜索菜名</button>
-								  </span>
+								<div class="input-group col-sm-5 col-xs-12 m-t-xs m-b-xs">
+								  <span class="input-group-addon no-radius">搜索</span>
 								  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
-								</div>
-								<div class="input-group w-sm m-t-xs m-b-xs">
-								  <select class="form-control" st-input-event="change" st-search="cuisine_category_id">
-									  <option value="">全部类别</option>
+								  <span class="input-group-addon no-radius no-padding no-border"></span>
+								  <select class="form-control w" st-input-event="change" st-search="cuisine_category_id">
+									  <option value="">全部类别　</option>
 									  <option value="1">早餐</option>
 									  <option value="{{i}}" ng-repeat="(i, category) in cuisineCategory">{{category.cuisine_name}}</option>
 								  </select>
 								</div>
 							</div>
 							<div class="list-group no-radius">
-								<div class="list-group-item col-sm-2 no-padding m-r-xs" ng-repeat="(i, cuisine) in cuisineList">
+								<div class="list-group-item col-sm-2 col-xs-4 no-padding" ng-repeat="(i, cuisine) in cuisineList">
 								  <div class="clear p-xs">
 									<div>{{cuisine.cuisine_name}}
 										<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
 									</div>
 								  </div>
 									<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
-									<span class="pull-left text-muted"><i class="fas fa-hamburger" aria-hidden="true"></i>
-										<span class="small" data-title="订单：{{bookRoomStatus[room.item_id].booking_number}}<br>预抵：{{bookRoomStatus[room.item_id].check_in}}　　<br>预离：{{bookRoomStatus[room.item_id].check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="roomLiveIn[room.item_id]">
-											<span ng-repeat="(live_id, liveIn) in roomLiveIn[room.item_id]">{{liveIn.member_name}} </span>
-										</span>
-									</span>
 									<span class="pull-right text-muted"><i class="fas fa-caret-square-down"></i></span></button>
 								</div>
 							</div>  
