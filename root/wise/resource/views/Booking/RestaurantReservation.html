@@ -55,13 +55,13 @@
 										<div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
 											<span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
 											<div class="list-group no-radius">
-												<div class="list-group-item col-sm-2 col-xs-4 no-padding" ng-repeat="(i, room) in floor">
+												<div class="list-group-item col-sm-2 col-xs-6 no-padding" ng-repeat="(i, room) in floor">
 												  <div class="clear p-xs">
-													<div>{{room.item_name}}
-														<small class="pull-right" ng-click="diningTable('open', room)"><i class="ti-check-box"></i></small>
+													<div><i class="fa fa-clipboard"></i> {{room.item_name}}
+														<small class="pull-right" ng-click="diningTable('open', room)"><a class="ti-check-box"></a></small>
 													</div>
 												  </div>
-													<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
+													<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
 													<span class="pull-left text-muted"><i class="fas fa-hamburger" aria-hidden="true"></i>
 														<span class="small" data-title="订单：{{bookRoomStatus[room.item_id].booking_number}}<br>预抵：{{bookRoomStatus[room.item_id].check_in}}　　<br>预离：{{bookRoomStatus[room.item_id].check_out}}　　" data-placement="right" data-animation="am-flip-x" data-html="true" bs-tooltip="tooltip" ng-if="roomLiveIn[room.item_id]">
 															<span ng-repeat="(live_id, liveIn) in roomLiveIn[room.item_id]">{{liveIn.member_name}} </span>

@@ -6,7 +6,7 @@
 <!-- brand logo -->
 	<a class="navbar-brand text-lt" bs-aside="aside" data-template-url="/app/header/aside.tpl.html" data-placement="top" data-animation="am-slide-top aside-open-backdrop" data-container="body">
 	  <i class="pull-right ti-arrow-circle-down text-sm m-v-xs m-l-xs"></i>
-	  <i class="fas fa-frog text-xl"></i>
+	  <i class="fab fa-suse text-xl"></i>
 	  <img src="<%$__RESOURCE%>images/logo.png" alt="." class="hide">
 	  <span class="hidden-folded m-l-xs">{{app.name}}<sup class="text-xs font-thin">{{app.version}}</sup></span>
 	</a>
