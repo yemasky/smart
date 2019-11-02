@@ -357,21 +357,21 @@ class ChannelConfigAction extends \BaseAction {
             return $objResponse->successServiceResponse($successService);
         }
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
-        $channel_id = decode($objRequest->c_id, getDay());
+        $channel_id = $objRequest->channel_id;
+        if(!empty($objRequest->c_id)) $channel_id = decode($objRequest->c_id, getDay());
 
         $objRequest->channel_config = 'cuisine';//菜式
-        /*$whereCriteria              = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '0');
-        $arrayDataList = CuisineServiceImpl::instance()->getCuisine($whereCriteria);*/
         //类别
-        $field = 'cuisine_id,cuisine_name,cuisine_en_name';
+        $field                 = 'cuisine_id,cuisine_name,cuisine_en_name';
         $arrayCategoryDataList = CuisineServiceImpl::instance()->getCuisineCategory($company_id, $channel_id, $field);
         //SKU属性
         $cuisineSkuAttr = ModulesConfig::$cuisineSkuAttr;
         //
+        $allCuisine = CuisineServiceImpl::instance()->getCuisineSKUList($objRequest, $objResponse);
+        //
         $successService                   = new \SuccessService();
         $commonData                       = $objResponse->commonData;
-        $commonData['itemList']           = '';
+        $commonData['itemList']           = $allCuisine;
         $commonData['itemCategoryList']   = $arrayCategoryDataList;
         $commonData['cuisineSkuAttrList'] = $cuisineSkuAttr;
         $successService->setData($commonData);
@@ -379,23 +379,6 @@ class ChannelConfigAction extends \BaseAction {
     }
 
     protected function doMethodTable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $tablePagination = $objRequest->tablePagination;
-        if ($tablePagination) {
-            $successService                = new \SuccessService();
-            $arrayResult['receivableData'] = CuisineServiceImpl::instance()->getChannelTablePage($objRequest, $objResponse);
-            $successService->setData($arrayResult);
-            return $objResponse->successServiceResponse($successService);
-        }
-        $objRequest->channel_config = 'table';//
-
-        $successService         = new \SuccessService();
-        $commonData             = $objResponse->commonData;
-        $commonData['itemList'] = '';
-        $successService->setData($commonData);
-        return $objResponse->successServiceResponse($successService);
-    }
-
-    protected function doMethodDelivery(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $tablePagination = $objRequest->tablePagination;
         if ($tablePagination) {
             $successService                = new \SuccessService();
@@ -421,14 +404,15 @@ class ChannelConfigAction extends \BaseAction {
         }
         if ($method == 'saveTable') {
             $objRequest->channel_config = 'table';
-            $item_id = $this->doSaveChannelItem($objRequest, $objResponse);
-            if($item_id == false) return;
+            $item_id                    = $this->doSaveChannelItem($objRequest, $objResponse);
+            if ($item_id == false) return;
             return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], '');
         }
         return CuisineServiceImpl::instance()->cuisineEditSave($objRequest, $objResponse);
 
 
     }
+
     //菜式attr
     protected function getCuisineAttributeValue(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();;

@@ -123,8 +123,9 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	//开台 预订 结账 加减菜
 	$scope.diningTable = function(diningType, table) {
 		var diningTypeName = '订单管理';
+		$scope.activeBookAccountsEditTab=1;
 		if(diningType == 'open') {//$scope.param.number_of_people = 1;
-			diningTypeName = '堂食';$scope.activeBookAccountsEditTab=1;
+			diningTypeName = '堂食';
 			$scope.clearBookTable();$scope.clearBookCuisine();
 			$scope.addBookTable(table);
 			$scope.param.booking_type = 'meal_dine_in';

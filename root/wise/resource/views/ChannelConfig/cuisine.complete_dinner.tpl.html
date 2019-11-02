@@ -1,0 +1,75 @@
+<div class="aside box-shadow col-sm-8 h-10x b-r no-padding" tabindex="-1" role="dialog">
+  <div class="aside-dialog">
+    <div class="aside-content">
+      <div class="aside-header" ng-show="title">
+        <button type="button" class="close" ng-click="$hide()">&times;</button>
+        <h4 class="aside-title" ng-bind-html="title"></h4>
+      </div>
+      <form name="form-layout" class="form-validation" id="setItemForm" ng-submit="saveItem()">
+      <div class="m-t" ng-show="content">
+        <div class="tab-container">
+			<div class="panel panel-default no-border table-responsive">
+				<table st-table="itemList"  st-safe-src="safeItemList" class="table table-striped">
+					<thead>
+					<tr>
+						<td>已选套菜</td>
+						<td colspan="8">
+							<div class="list-group no-radius ng-scope">
+								<div class="list-group-item p-xs col-sm-2 col-xs-6" ng-repeat="(i, item) in selectCompleteCuisine">{{item.cuisine_name}} <label class="ui-checks pull-right no-margin"><input type="checkbox" checked ng-click="selectSkuCompleteDinner($event, item)"><i></i></label>
+								<div class="clear>">￥ {{item.cuisine_price}}</div></div>
+							</div>
+						</td>	
+					</tr>
+					<tr class="text-nowrap">
+						<th>图片</th>
+						<th st-ratio="40" st-sort="cuisine_name">菜式名字</th>
+						<th st-ratio="10" st-sort="cuisine_category_id">类别</th>
+						<th st-ratio="15" st-sort="cuisine_price">售价</th>
+						<th st-ratio="15">规格</th>
+						<th st-ratio="15">规格</th>
+						<th st-ratio="15">规格</th>
+						<th st-ratio="5" st-sort="valid">有效</th>
+						<th st-ratio="5"></th>
+					</tr>
+					</thead>
+					<tbody>
+					<tr>
+						<td colspan="9">
+							<div class="input-group col-xs-3">
+							  <span class="input-group-btn">
+								<button class="btn btn-default" type="button">搜索菜名</button>
+							  </span>
+							  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
+							</div>
+						</td>
+					</tr>
+					<tr ng-repeat="(i, item) in itemList" ng-if="item.cuisine_id!=param.cuisine_id">
+						<td><img class="img-responsive" width="25" height="25" ng-src="{{item.image_src}}"></td>
+						<td title="{{item.cuisine_specialty}}">{{item.cuisine_name}}</td>
+						<td>{{itemCategoryList[item.cuisine_category_id].cuisine_name}}</td>
+						<td>{{item.cuisine_price}}</td>
+						<td>{{item.sku_attr1}}:{{item.sku_attr1_value}}</td>
+						<td>{{item.sku_attr2}}:{{item.sku_attr2_value}}</td>
+						<td>{{item.sku_attr3}}:{{item.sku_attr3_value}}</td>
+						<td>{{item.valid==0?'无效':'有效'}}</td>
+						<td><label class="ui-checks"><input type="checkbox" ng-model="param.sku_complete_dinner_ids[item.cuisine_id]" value="{{item.cuisine_id}}" name="sku_complete_dinner_ids[item.cuisine_id]" ng-click="selectSkuCompleteDinner($event, item)"><i></i></label></td>
+					</tr>
+					</tbody>
+					<tfoot>
+					<tr>
+						<td colspan="6" class="text-center">
+							<div st-pagination st-items-by-page="10" st-displayed-pages="5" class="no-margin"></div>
+						</td>
+					</tr>
+					</tfoot>
+				</table>
+		  </div>
+        </div>
+      </div>
+      <div class="aside-footer panel-footer">
+        <button type="button" class="btn btn-default" ng-click="$hide()">Close</button>
+      </div>
+      </form>
+    </div>
+  </div>
+</div>

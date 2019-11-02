@@ -415,7 +415,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		isIE && angular.element($window.document.body).addClass("ie"); 
 		matchNavigator($window) && angular.element($window.document.body).addClass("smart");
 		$scope.app = {
-			name: "iHotelWork", version: "<%$__VERSION%>",
+			name: "iHotel.Work", version: "<%$__VERSION%>",
 			color: {
 				primary: "#155abb",info: "#2772ee",success: "#4bb622",warning: "#f88311",danger: "#e11144",
 				inverse: "#a66bee",light: "#f1f2f3",dark: "#202a3a"

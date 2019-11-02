@@ -44,10 +44,6 @@
                         <input class="form-control" name="cuisine_en_name" ng-model="param.cuisine_en_name" type="text">
                       </div>
                     </div>
-                    <div class="form-group">
-                        <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
-                        <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
-                    </div>
                     <div class="form-group m-h-n clearfix">
                         <div class="col-sm-6"><label>特色描述</label>
                         <textarea class="form-control" name="cuisine_specialty" ng-model="param.cuisine_specialty" rows="2"></textarea></div>
@@ -69,15 +65,19 @@
                         </div>
                       </div>
                     </div>
-					<div class="list-group no-radius">
-						<div href class="list-group-item">菜式规格 <a class="fa fa-plus-square" ng-click="addSKUArrtibute()"> </a></div>
+					<div class="form-group">
+                        <label class="radio-inline"> <input type="radio" value="1" id="sku_complete_dinner1" ng-model="param.sku_complete_dinner" name="sku_complete_dinner"> 套菜</label>
+                        <label class="radio-inline"> <input type="radio" value="0" id="sku_complete_dinner0" ng-model="param.sku_complete_dinner" name="sku_complete_dinner" checked> 单菜</label>
+                    </div>
+					<div class="list-group no-radius" ng-if="param.sku_complete_dinner=='0'">
+						<div href class="list-group-item">菜式规格 <a class="fa fa-plus-square" ng-click="addSKUArrtibute()"> </a> [无限库存填-999]</div>
 						<div class="list-group-item form-inline" ng-repeat="(attr, sku) in skuList track by $index">
 							<div class="form-group">
 								<div class="input-group m-b-xs w-lg">
 									<span class="input-group-btn" title="售价"><span class="btn btn-default">售价</span></span>
 									<input size="6" class="form-control w-xs" name="cuisine_price[{{attr}}]" string-to-number ng-model="skuList[attr].cuisine_price" type="number" required>
 									<span class="input-group-btn" title="库存"><span class="btn btn-default">库存</span></span>
-						  			<input size="6" class="form-control w-xs" name="cuisine_inventory[{{attr}}]" string-to-number ng-model="skuList[attr].cuisine_inventory" required type="number" data-trigger="focus" data-container="body" data-html="true" data-type="success" data-title="无限库存请加大值到1000000以上" bs-tooltip>
+						  			<input size="6" class="form-control w-xs" name="cuisine_inventory[{{attr}}]" string-to-number ng-model="skuList[attr].cuisine_inventory" required type="number">
 									<input type="hidden" name="cc_id[{{attr}}]" value="{{sku.cc_id}}" ng-model="skuList[attr].cc_id">
 								</div>
 								<div class="input-group m-b-xs no-radius">
@@ -148,7 +148,28 @@
 							</div>
 						</div>
 					</div>
-                </div>
+					<div class="list-group no-radius clearfix" ng-if="param.sku_complete_dinner=='1'">
+						<div class="list-group-item">套菜规格 <a class="fa fa-plus-square" ng-click="editCompleteDinner()"> </a></div>
+						<div class="list-group-item form-inline" ng-repeat="(attr, sku) in skuList track by $index">
+							<div class="form-group">
+								<div class="input-group m-b-xs w-sm">
+									<span class="input-group-btn" title="售价"><span class="btn btn-default">售价</span></span>
+									<input size="6" class="form-control w-xs" name="cuisine_price[{{attr}}]" string-to-number ng-model="skuList[attr].cuisine_price" type="number" required>
+									<input type="hidden" name="cc_id[{{attr}}]" value="{{sku.cc_id}}" ng-model="skuList[attr].cc_id">
+								</div>
+							</div>
+						</div>
+						<div class="list-group-item clearfix">
+							<div class="list-group no-radius">
+								<div class="list-group-item p-xs col-sm-2 col-xs-6" ng-repeat="(i, item) in selectCompleteCuisine">{{item.cuisine_name}} <label class="ui-checks pull-right no-margin"><input type="checkbox" checked ng-click="selectSkuCompleteDinner($event, item)" name="sku_complete_dinner_ids[{{item.cuisine_id}}]" value="{{item.cuisine_id}}"><i></i></label><div class="clear>">￥ {{item.cuisine_price}}<span class="pull-right">库存:{{item.cuisine_inventory}}</span></div></div>
+							</div>
+						</div>
+					</div>
+                    <div class="form-group">
+                        <label class="radio-inline"> <input type="radio" value="1" id="valid1" ng-model="param.valid" name="valid" checked> 有效</label>
+                        <label class="radio-inline"> <input type="radio" value="0" id="valid0" ng-model="param.valid" name="valid"> 无效</label>
+                    </div>
+				</div>
                 <div ng-show="activeTab==2">
                 	<div class="list-group no-border-sm" ng-repeat="(father_id, childen) in configArrtibute[0]" ng-if="childen.attribute_id>1">
                       <div class="panel-heading no-border no-radius b-b b-light">{{childen.attribute_name}}</div>

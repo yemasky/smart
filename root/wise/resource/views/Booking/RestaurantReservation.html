@@ -138,14 +138,11 @@
 								</div>
 							</div>
 							<div class="list-group no-radius">
-								<div class="list-group-item col-sm-2 col-xs-4 no-padding" ng-repeat="(i, cuisine) in cuisineList">
-								  <div class="clear p-xs">
-									<div>{{cuisine.cuisine_name}}
-										<label class="pull-right" ng-bind-html="bookRoomStatus[room.item_id].roomStatus" ng-click="roomStatusBook(bookRoomStatus[room.item_id].detail_id, room)"></label>
-									</div>
-								  </div>
-									<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
-									<span class="pull-right text-muted"><i class="fas fa-caret-square-down"></i></span></button>
+								<div class="list-group-item col-sm-2 col-xs-6" ng-repeat="(i, cuisine) in cuisineList">
+								  <a href class="pull-left w-thumb m-r-xs"><img src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>
+								  <div class="clear"><div>{{cuisine.cuisine_name}}</div>
+								  <small>￥{{cuisine.cuisine_price}}</small>
+								  <span class="pull-right"><a class="text-warning" ng-click="diningTable('cuisine', room);addBookCuisine(cuisine, 0)"><i class="glyphicon glyphicon-plus-sign"></i></a></span></div>
 								</div>
 							</div>  
 						</div>
@@ -340,6 +337,5 @@
   <li class="divider" style="height:0;"></li>
   <li><a style="display:inline;" ng-click="diningTable('lock', room)"><i class="fas fa-lock"></i> 锁台</a>
       <a style="display:inline;" ng-click="diningTable('unlock', room)"><i class="fas fa-lock-open"></i> 解锁</a></li>
-
 </ul>
 </script><!-- /app/manage_room.html -->
