@@ -32,21 +32,22 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
             $scope.setCommonSetting(common);
             $scope.setThisChannel('Meal');//酒店频道
 			$scope.marketList = result.data.item.marketList;//客源市场
+			$scope.channelDiscountList = result.data.item.channelDiscountList;//折扣
             $(document).ready(function(){
                 $scope.channel_id = $scope.thisChannel_id;
 				$scope.id = $rootScope.employeeChannel[$scope.thisChannel_id].id;
                 //$scope.defaultHotel = $scope.thisChannel[$scope.thisChannel_id]["channel_name"];
 				//设置客源市场  
             	$scope.selectCustomerMarket($scope.marketList[1].children[2], false);
-				$scope.bookList          = result.data.item.bookList;//预订列表
 				$scope.roomList          = result.data.item.roomList;//客房列表
 				$scope.rowRoomList       = result.data.item.roomList;//客房列表
+				//$scope.bookList          = result.data.item.bookList;//预订列表
 				//时间
                 var _thisDay = result.data.item.in_date;
                 var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');
                 $scope.param["check_in"] = _thisDay;
                 $('.check_in').val(_thisDay);
-                $scope.param["in_time"] = _thisDay+'T14:00:00.000Z';$scope.param["out_time"] = _thisDay+'T12:00:00.000Z';
+                $scope.param["in_time"] = _thisDay+'T14:00:00.000Z';
 				/*$('.check_date').daterangepicker({singleDatePicker: true, "autoApply": true,"startDate": _thisDay,"locale":{"format" : 'YYYY-MM-DD hh:mm'}
 				}, function(start, label) {
 					var check_in = start.format('YYYY-MM-DD');
@@ -63,18 +64,16 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
         $scope.channel = $rootScope.employeeChannel[channel_id].channel;
 		$scope.loading.show();
 		$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
-			$scope.loading.percent();
-			if(result.data.success == '0') {
-				return;//
-			}
-			$scope.bookList          = result.data.item.bookList;//预订列表
-			$scope.roomList          = result.data.item.roomList;//客房列表
-			$scope.rowRoomList       = result.data.item.roomList;//客房列表
+			$scope.loading.percent();if(result.data.success == '0') {return;}//
+			$scope.roomList            = result.data.item.roomList;//客房列表
+			$scope.rowRoomList         = result.data.item.roomList;//客房列表
+			$scope.channelDiscountList = result.data.item.channelDiscountList;//折扣
+			//
+			//$scope.bookList            = result.data.item.bookList;//预订列表
 			allCuisineList = '';
-			$scope.cuisineList = {};
-			$scope.rowCuisineList = {};
-			$scope.cuisineCategory = {};
-			$scope.cuisineSKU = {};
+			$scope.cuisineList = {};$scope.rowCuisineList = {};
+			$scope.cuisineCategory = {};$scope.cuisineSKU = {};
+			if($scope.activeTab == 3) {$scope.getDiningCuisine();};//菜品页
 		});
 	}
 	//更换预订类型
@@ -157,11 +156,15 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 					return;//错误返回
 				}
 				allCuisineList = result.data.item.allCuisineList;
-				var cuisineList = [], cuisineCategory = {}, cuisineSKU = {}, cuisine_id = 0;
+				var cuisineList = [], cuisineCategory = {}, cuisineSKU = {}, cuisine_id = 0, hashCuisineSKU = {};
 				if(allCuisineList != '') {
 					var j = 0;
 					for(var i in allCuisineList) {
 						cuisine_id = allCuisineList[i].cuisine_id;
+						if(allCuisineList[i].sku_complete_dinner == 1) {//套菜
+							var complete_ids = allCuisineList[i].sku_complete_dinner_ids.split(',');
+							allCuisineList[i].complete_ids = complete_ids;
+						}
 						if(allCuisineList[i].cuisine_is_category == '1') {
 							cuisineCategory[cuisine_id] = allCuisineList[i];
 						} else {
@@ -174,11 +177,11 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 								cuisineSKU[allCuisineList[i].sku_cuisine_id][cuisine_id] = allCuisineList[i];
 							}
 						}
+						hashCuisineSKU[cuisine_id] = allCuisineList[i];
 					}
-					$scope.cuisineList = cuisineList;
-					$scope.rowCuisineList = cuisineList;
-					$scope.cuisineCategory = cuisineCategory;
-					$scope.cuisineSKU = cuisineSKU;
+					$scope.cuisineList = cuisineList;$scope.rowCuisineList = cuisineList;
+					$scope.cuisineCategory = cuisineCategory;$scope.cuisineSKU = cuisineSKU;
+					$scope.hashCuisineSKU = hashCuisineSKU;
 				}
 			});
 		}
@@ -215,6 +218,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		$scope.haveBookCuisine = {};
 	}
 	$scope.setThisTable = function(table_id) {
+		$scope.activeBookAccountsEditTab = 1;
 		$scope.thisBookTable = $scope.haveBookTable[table_id];
 	}
 	//已点菜匹配桌台
@@ -260,4 +264,18 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
         $scope.isConsumePrint = isConsumePrint;$scope.isAccountPrint = isAccountPrint; $scope.isBorrowingPrint = isBorrowingPrint;
     };
     //
+	$scope.saveRestaurantBook = function() {
+		$scope.param.booking_data = $scope.haveBookCuisine;
+		$scope.param.channel_id = $scope.channel_id;
+        $scope.param.channel_father_id = $rootScope.employeeChannel[$scope.thisChannel_id].channel_father_id;
+		$scope.loading.show();
+		$httpService.header('method', 'saveRestaurantBook');
+		$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+			$scope.loading.percent();
+			if(result.data.success == '0') {
+				//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+				return;//错误返回
+			}
+		})
+	}
 });

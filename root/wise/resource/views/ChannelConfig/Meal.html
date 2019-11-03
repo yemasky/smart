@@ -1,4 +1,4 @@
-<span ng-include="'/resource/views/Common/nav.tpl.html'"></span>
+<span ng-include="'resource/views/Common/nav.tpl.html'"></span>
 <div class="p-md">
   <div class="box b-a bg-white m-b" ng-controller="MealController">
     <div class="col-md-10">
@@ -30,8 +30,8 @@
 								<th>图片</th>
 								<th st-ratio="40" st-sort="cuisine_name">菜式名字</th>
 								<th st-ratio="10" st-sort="cuisine_category_id">类别</th>
-								<th st-ratio="15" st-sort="cuisine_price">售价</th>
-								<th st-ratio="15" st-sort="cuisine_inventory">库存</th>
+								<th st-ratio="15" st-sort="cuisine_price">￥售价</th>
+								<th st-ratio="15" st-sort="cuisine_inventory"><small class="ti-server" title="库存"></small> 库存</th>
 								<th st-ratio="15" st-sort="cuisine_sell_clear">沽清</th>
 								<th st-ratio="5" st-sort="valid">有效</th>
 								<th st-ratio="5">编辑</th>
@@ -48,15 +48,15 @@
 									</div>
 								</td>
 							</tr>
-							<tr ng-repeat="(i, item) in itemList">
-								<td><img class="img-responsive" width="45" height="45" ng-src="{{item.image_src}}"></td>
-								<td title="{{item.cuisine_specialty}}">{{item.cuisine_name}}<button type="button" class="btn btn-xs"  data-html="true" data-placement="bottom" title="套菜" data-container="body" data-template="/app/complete_dinner.html" data-trigger="click" bs-popover ng-if="item.sku_complete_dinner==1">套菜<i class="fa fa-caret-down"></i></button></td>
-								<td>{{itemCategoryList[item.cuisine_category_id].cuisine_name}}</td>
-								<td>{{item.cuisine_price}}</td>
-								<td><span ng-if="item.cuisine_inventory==-999">无限</span><span ng-if="item.cuisine_inventory==-9999">-</span><span ng-if="item.cuisine_inventory!=-999&&item.cuisine_inventory!=-9999">{{item.cuisine_inventory}}</span></td>
-								<td>{{item.cuisine_sell_clear==1?'沽清':''}}</td>
-								<td>{{item.valid==0?'无效':'有效'}}</td>
-								<td><a><i class="glyphicon glyphicon-edit" ng-click="editItem(item)"></i></a></td>
+							<tr ng-repeat="(i, cuisine) in itemList">
+								<td><img class="img-responsive" width="45" height="45" ng-src="{{cuisine.image_src}}"></td>
+								<td title="{{cuisine.cuisine_specialty}}">{{cuisine.cuisine_name}}<button type="button" class="btn btn-xs" data-html="true" data-placement="bottom" title="套菜" data-container="body" data-template-url="/app/complete_dinner.html" data-trigger="click" bs-popover ng-if="cuisine.sku_complete_dinner==1">套菜<i class="fa fa-caret-down"></i></button></td>
+								<td>{{itemCategoryList[cuisine.cuisine_category_id].cuisine_name}}</td>
+								<td>{{cuisine.cuisine_price}}</td>
+								<td><span ng-if="cuisine.cuisine_inventory==-999">无限</span><span ng-if="cuisine.cuisine_inventory==-9999">-</span><span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span></td>
+								<td>{{cuisine.cuisine_sell_clear==1?'沽清':''}}</td>
+								<td>{{cuisine.valid==0?'无效':'有效'}}</td>
+								<td><a><i class="glyphicon glyphicon-edit" ng-click="editItem(cuisine)"></i></a></td>
 							</tr>
 							</tbody>
 							<tfoot>
@@ -166,10 +166,7 @@
     <!--右边添加属性结束-->
   </div>
 </div>
-<script type="text/ng-template" id="/app/complete_dinner.html">
-<div class="col-sm-4">
-<div class="list-group no-radius"><div class="list-group-item p-xs col-sm-6 col-xs-6" ng-repeat="(_i, id) in item.complete_ids">{{hashCuisineSKU[id].cuisine_name}} <div class="clear">￥ {{hashCuisineSKU[id].cuisine_price}}<span class="pull-right">库存:{{hashCuisineSKU[id].cuisine_inventory}}</span></div></div></div></div>
-</script>
+<span ng-include="'resource/views/Common/meal_common.tpl.html'"></span>
 <script language="JavaScript">
     app.controller('MealController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
 		$scope.param = {};

@@ -32,7 +32,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
      * [channel_id => item_category_id => system_id => room_info]
      */
     public function beginBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
-        $objSuccess                        = new \SuccessService();
+        $objSuccessService                 = new \SuccessService();
         $objLoginEmployee                  = LoginServiceImpl::instance()->checkLoginEmployee();
         $objEmployee                       = $objLoginEmployee->getEmployeeInfo();
         $company_id                        = $objEmployee->getCompanyId();
@@ -43,7 +43,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $check_out                         = $objRequest->validInput('check_out');
         $in_time                           = $objRequest->validInput('in_time');
         $out_time                          = $objRequest->validInput('out_time');
-        $booking_number                    = decode($objRequest->getInput('book_id'));
+        $booking_number                    = decode($objRequest->getInput('book_id'));//在一个订单下面继续添加客房
         $set_prices                        = $objRequest->set_prices;//手动设置房型价格
         $isBookRoom                        = $objRequest->isBookRoom;//单独预定1个房间
         $arrayCommonData['booking_number'] = 0;
@@ -61,7 +61,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $channel_father_id = $objRequest->validInput('channel_father_id');
         $arrayBookingData  = $objRequest->validInput('booking_data');
         if ($channel_father_id === false || $arrayBookingData === false) {
-            return $objSuccess->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '缺失多个参数');
+            return $objSuccessService->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '缺失多个参数');
         }
         $arrayCommonData['company_id']    = $company_id;
         $arrayCommonData['channel']       = ModulesConfig::$channel_value['Hotel'];
@@ -137,7 +137,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                         if ($set_prices) {
                             $arrayBusinessDayPrice = $arrayBookingPrice[$channel_id][$item_category_id][$system_id];
                             if ($arrayBusinessDayPrice == -1) {
-                                return $objSuccess->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '自定价格为-1', []);
+                                return $objSuccessService->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '自定价格为-1', []);
                             }
                         }
                         //预订的房型房子
@@ -218,7 +218,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 }
             }
             if (empty($arraySystemId)) {
-                return $objSuccess->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '没有价格体系', []);
+                return $objSuccessService->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '没有价格体系', []);
             }
             //
             $bookData['item_category_id']   = '';
@@ -234,7 +234,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 //查找价格体系
                 $arrayPriceSystem = ChannelServiceImpl::instance()->getLayoutPriceSystem($whereCriteria, $field);
                 if (empty($arrayPriceSystem)) {
-                    return $objSuccess->setSuccessService(false, '000009', '找不到价格体系', []);
+                    return $objSuccessService->setSuccessService(false, '000009', '找不到价格体系', []);
                 }
                 $arrayDirectSystemId = [];//手动放盘价格体系ID
                 $arrayFormulaSystem  = [];//公式放盘价格体系ID
@@ -258,7 +258,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 }
 
                 if (empty($arrayDirectSystemId)) {
-                    return $objSuccess->setSuccessService(false, '000009', '价格体系为空', []);
+                    return $objSuccessService->setSuccessService(false, '000009', '价格体系为空', []);
                 }
                 //{begin} 根据手动放盘价格体系[$arrayDirectSystemId]查找房型房价 父价格 组合system 和 item_id
                 $whereSqlStr = '';
@@ -275,7 +275,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $arrayPriceLayout = ChannelServiceImpl::instance()->getLayoutPrice(null, $channel_id, null, null, $check_in,
                     $check_out, $whereSqlStr, $arrayHashKey);
                 if (empty($arrayPriceLayout)) {
-                    return $objSuccess->setSuccessService(false, '100001', '价格体系没有设置价格', []);
+                    return $objSuccessService->setSuccessService(false, '100001', '价格体系没有设置价格', []);
                 }
                 //計算價格 $arrayFormulaSystem[system_id] 公式放盘[根据上面传输数据构造出来] $arrayDirectSystemId[system_id] 手动放盘
                 if (!empty($arrayFormulaSystem)) {//计算价格[公式放盘]
@@ -310,7 +310,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                             $price_day = 'day_' . $day;
                                             $price     = $priceDateList[$price_day];
                                             if (empty($price)) {
-                                                return $objSuccess->setSuccessService(false, '100001', '时间：' . substr($monthDate, 0, 8) . $day, []);
+                                                return $objSuccessService->setSuccessService(false, '100001', '时间：' . substr($monthDate, 0, 8) . $day, []);
                                             }
                                             $decimalPrice = $objLoginEmployee->getChannelSetting($channel_id)->getDecimalPrice();
                                             if (!empty($formula['formula_value'])) {
@@ -367,11 +367,11 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                         }
                                     }
                                 } else {//如果找不到说明没有价格返回错误。
-                                    return $objSuccess->setSuccessService(false, '100001', $formulaData['price_system_name'], []);
+                                    return $objSuccessService->setSuccessService(false, '100001', $formulaData['price_system_name'], []);
                                 }
                             }
                         } else {//如果找不到说明没有价格返回错误。
-                            return $objSuccess->setSuccessService(false, '100001', $formulaData['price_system_name'], []);
+                            return $objSuccessService->setSuccessService(false, '100001', $formulaData['price_system_name'], []);
                         }
                         //$fatherPrice = $arrayPriceLayout[$formulaData['system_father_id']];
                         //计算本体系价格
@@ -384,7 +384,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                         } elseif ((isset($arrayPriceLayout[$arrayFormulaSystem[$system_id]['system_father_id']]))) {
                             $arraySystemPrice = $arrayPriceLayout[$arrayFormulaSystem[$system_id]['system_father_id']];
                         } else {
-                            return $objSuccess->setSuccessService(false, '100001', '没有找到价格体系', []);
+                            return $objSuccessService->setSuccessService(false, '100001', '没有找到价格体系', []);
                         }
                         //计算佣金
                         $systemCommision = [];
@@ -406,7 +406,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                                         $price_day = 'day_' . $day;
                                         $price     = $priceDateList[$price_day];
                                         if (empty($price)) {
-                                            return $objSuccess->setSuccessService(false, '100001', '时间：' . substr($monthDate, 0, 8) . $day, []);
+                                            return $objSuccessService->setSuccessService(false, '100001', '时间：' . substr($monthDate, 0, 8) . $day, []);
                                         }
                                         $bookPrice[$insert_key]['price'] = $price;//售卖价格
                                         //$room_quantity = $roomData['value'] = $arrayLayoutRooms[$item_category_id][$system_id]['value'];
@@ -457,16 +457,16 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $BookingData->setBookingEntity($BookingEntity);
             $BookingData->setBookDetailList($arrayBookDetailList);
             $BookingData->setBookingDetailConsumeList($BookingDetailConsumeList);
-            return $objSuccess->setSuccessService(true, ErrorCodeConfig::$successCode['success'], '', $BookingData);
+            return $objSuccessService->setSuccessService(true, ErrorCodeConfig::$successCode['success'], '', $BookingData);
         }
 
         //返回参数错误
-        return $objSuccess->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '没有取到预订数据', []);
+        return $objSuccessService->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '没有取到预订数据', []);
     }
 
     public function saveBooking(BookingDataModel $BookingData): \SuccessService {
         CommonServiceImpl::instance()->startTransaction();
-        $objSuccess               = new \SuccessService();
+        $objSuccessService        = new \SuccessService();
         $bookingEntity            = $BookingData->getBookingEntity();
         $bookDetailList           = $BookingData->getBookDetailList();
         $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();
@@ -478,7 +478,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             $whereCriteria->EQ('booking_id', $booking_id);
             BookingDao::instance()->updateBooking($whereCriteria, ['booking_number' => $bookingNumber]);
         }
-        $objSuccess->setData(['booking_number' => $bookingNumber]);
+        $objSuccessService->setData(['booking_number' => $bookingNumber]);
         foreach ($bookDetailList as $k => $bookDetail) {
             $bookDetailList[$k]->setBookingNumber($bookingNumber);
         }
@@ -556,19 +556,19 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             }
             if ($isOverBook) {
                 CommonServiceImpl::instance()->rollback();
-                $objSuccess->setSuccess(false);
-                $objSuccess->setCode(ErrorCodeConfig::$errorCode['over_booking']);
+                $objSuccessService->setSuccess(false);
+                $objSuccessService->setCode(ErrorCodeConfig::$errorCode['over_booking']);
             } else {
                 CommonServiceImpl::instance()->commit();
             }
         }
 
-        return $objSuccess;
+        return $objSuccessService;
     }
 
     public function editBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
-        $objSuccess = new \SuccessService();
-        $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $objSuccessService = new \SuccessService();
+        $company_id        = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         //获取channel
         $channel_id = $objRequest->channel_id;
         //
@@ -776,10 +776,10 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                     }
                     if ($isOverBook) {
                         CommonServiceImpl::instance()->rollback();
-                        $objSuccess->setSuccess(false);
-                        $objSuccess->setCode(ErrorCodeConfig::$errorCode['over_booking']);
-                        $objSuccess->setData($overBook);
-                        return $objSuccess;
+                        $objSuccessService->setSuccess(false);
+                        $objSuccessService->setCode(ErrorCodeConfig::$errorCode['over_booking']);
+                        $objSuccessService->setData($overBook);
+                        return $objSuccessService;
                     }
                     //////////////////////////
                 }
@@ -794,17 +794,17 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             }
             //
             CommonServiceImpl::instance()->commit();
-            return $objSuccess;
+            return $objSuccessService;
         }
-        $objSuccess->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
-        return $objSuccess;
+        $objSuccessService->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
+        return $objSuccessService;
     }
 
     public function closeBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
         // TODO: Implement closeBooking() method.
-        $objSuccess       = new \SuccessService();
-        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
-        $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $objSuccessService = new \SuccessService();
+        $objLoginEmployee  = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id        = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         //获取channel
         $channel_id = $objRequest->channel_id;
         $closeType  = $objRequest->getInput('closeType');
@@ -842,9 +842,9 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                     $this->updateBooking($whereCriteria, $updateData);
                 }
                 //
-                //$objSuccess->setSuccess(false);
-                //$objSuccess->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
-                return $objSuccess;
+                //$objSuccessService->setSuccess(false);
+                //$objSuccessService->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
+                return $objSuccessService;
             }
             $arrayLiveInRoomId = array_keys($arrayLiveInRoom);
             //计算消费
@@ -916,10 +916,10 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 }
                 if ($accounts_id > 0) {
                 } else {
-                    $objSuccess->setNotice(true);
-                    $objSuccess->setCode(ErrorCodeConfig::$notice['no_equal_account']);
-                    $objSuccess->setData([bcsub($totalAccounts, $totalConsume, 2)]);
-                    return $objSuccess;
+                    $objSuccessService->setNotice(true);
+                    $objSuccessService->setCode(ErrorCodeConfig::$notice['no_equal_account']);
+                    $objSuccessService->setData([bcsub($totalAccounts, $totalConsume, 2)]);
+                    return $objSuccessService;
                 }
             }
             //取消订单
@@ -981,9 +981,9 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
             }
             $this->updateBookingDetail($whereCriteria, $updateData);
             CommonServiceImpl::instance()->commit();
-            return $objSuccess;
+            return $objSuccessService;
         }
-        return $objSuccess;
+        return $objSuccessService;
 
     }
 

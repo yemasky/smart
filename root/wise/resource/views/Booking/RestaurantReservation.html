@@ -19,7 +19,7 @@
                         <a>桌态</a>
                     </li>
                     <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
-                        <a>外卖</a>
+                        <a>外卖<span class="badge bg-info badge-xs m-l-xs ng-binding">0</span></a>
                     </li>
                     <li ng-class="{active:activeTab==3}" ng-click="activeTab=3;getDiningCuisine();">
                         <a>菜品</a>
@@ -39,13 +39,16 @@
                         <div class="form-group clearfix">
 							<div class="btn-group" ng-model="activeAtaTab" bs-radio-group ng-init="activeAtaTab=1">
 							  <label class="btn btn-default">
-								<input type="radio" class="btn btbtn-default" value="1">堂食
+								  <input type="radio" class="btn btbtn-default" value="1">堂食
+								  <span class="badge bg-info badge-xs m-l-xs ng-binding">0</span>
 							  </label>
 							  <label class="btn btn-default">
-								<input type="radio" class="btn btn-default" value="2">预订
+								  <input type="radio" class="btn btn-default" value="2">预订
+								  <span class="badge bg-info badge-xs m-l-xs ng-binding">0</span>
 							  </label>
 							  <label class="btn btn-default">
-								<input type="radio" class="btn btn-default" value="3">排号
+								  <input type="radio" class="btn btn-default" value="3">排号
+								  <span class="badge bg-info badge-xs m-l-xs ng-binding">0</span>
 							  </label>
 							</div>
 							<div class="p-v-xs" ng-show="activeAtaTab==1">
@@ -58,7 +61,7 @@
 												<div class="list-group-item col-sm-2 col-xs-6 no-padding" ng-repeat="(i, room) in floor">
 												  <div class="clear p-xs">
 													<div><i class="fa fa-clipboard"></i> {{room.item_name}}
-														<small class="pull-right" ng-click="diningTable('open', room)"><a class="ti-check-box"></a></small>
+														<small class="pull-right" ng-click="diningTable('open', room)"><a class="glyphicon glyphicon-plus-sign" title="开台"></a></small>
 													</div>
 												  </div>
 													<button type="button" class="btn btn-default no-border no-margin p-xs w-full" data-animation="am-flip-x" data-template-url="/app/manage_room.html" data-placement="bottom-right" bs-dropdown="dropdown" ng-click="setRoomStatus(room)">
@@ -138,10 +141,14 @@
 								</div>
 							</div>
 							<div class="list-group no-radius">
-								<div class="list-group-item col-sm-2 col-xs-6" ng-repeat="(i, cuisine) in cuisineList">
-								  <a href class="pull-left w-thumb m-r-xs"><img src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>
-								  <div class="clear"><div>{{cuisine.cuisine_name}}</div>
-								  <small>￥{{cuisine.cuisine_price}}</small>
+								<div class="list-group-item col-sm-2 col-xs-6 p-xs" ng-repeat="(i, cuisine) in cuisineList">
+								  <a href class="pull-left w-thumb m-r-xs"><img ng-src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>
+								  <div class="clear"><div><span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:7}}</span><code ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="body" data-template-url="/app/complete_dinner.html" data-trigger="click" bs-popover>套<i class="fa fa-caret-down"></i></code></div>
+									  <small>￥{{cuisine.cuisine_price}} <small class="ti-server" title="库存"></small>
+										  <span ng-if="cuisine.cuisine_inventory==-999">无限</span>
+										  <span ng-if="cuisine.cuisine_inventory==-9999">-</span>
+										  <span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span>
+									  </small>
 								  <span class="pull-right"><a class="text-warning" ng-click="diningTable('cuisine', room);addBookCuisine(cuisine, 0)"><i class="glyphicon glyphicon-plus-sign"></i></a></span></div>
 								</div>
 							</div>  
@@ -249,6 +256,7 @@
     </div>
   </div>
 </div>
+<span ng-include="'resource/views/Common/meal_common.tpl.html'"></span>
 <script type="text/ng-template" id="/app/book_message.html">
 <div class="list-group-item">
   <a href class="w-thumb-md pull-left m-r"><img src="/data/images/userimg/user_m.png" class="img-responsive"></a>

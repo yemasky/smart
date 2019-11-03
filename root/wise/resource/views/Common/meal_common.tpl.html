@@ -1,0 +1,4 @@
+<script type="text/ng-template" id="/app/complete_dinner.html">
+<div class="col-sm-4">
+<div class="list-group no-radius"><div class="list-group-item p-xs col-sm-6 col-xs-6" ng-repeat="(_i, id) in cuisine.complete_ids">{{hashCuisineSKU[id].cuisine_name}} <div class="clear">￥ {{hashCuisineSKU[id].cuisine_price}}<span class="pull-right"><small class="ti-server" title="库存"></small> <span ng-if="hashCuisineSKU[id].cuisine_inventory==-999">无限</span><span ng-if="hashCuisineSKU[id].cuisine_inventory==-9999">-</span><span ng-if="hashCuisineSKU[id].cuisine_inventory!=-999&&hashCuisineSKU[id].cuisine_inventory!=-9999">{{hashCuisineSKU[id].cuisine_inventory}}</span></span></div></div></div></div>
+</script>

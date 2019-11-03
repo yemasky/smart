@@ -4,7 +4,7 @@
  * Date: 2016/7/23
  * Time: 23:55
  */
-
+//操作日志
 namespace wise;
 class BookingOperationServiceImpl extends \BaseServiceImpl implements RoleService {
 	private static $objService = null;

@@ -1,11 +1,11 @@
-<div class="aside box-shadow h-10x b-r box-shadow no-padding" tabindex="-1" role="dialog">
+<div class="aside box-shadow h-10x col-sm-12 b-r box-shadow no-padding" tabindex="-1" role="dialog" id="idTableBook">
   <div class="aside-dialog">
     <div class="aside-content">
       <div class="aside-header" ng-show="title">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
         <h4 class="aside-title" ng-bind-html="title"></h4>
       </div>
-      <form name="RestaurantBookEditForm" class="form-validation form-inline" id="thisForm" ng-submit="">
+      <form name="RestaurantBookEditForm" class="form-validation form-inline" id="thisForm" ng-submit="saveRestaurantBook();">
 	  <div class="aside-body no-padding bg-light">
             <div class="p-xs">
 				<div class="form-group m-b-xs">
@@ -18,7 +18,6 @@
 						<input type="text" size="9" class="form-control check_in w-thumb-lg" name="check_in" ng-model="param.check_in" data-date-format="yyyy-MM-dd" data-date-type="string" data-start-view="0" data-min-view="0" data-autoclose="true" data-min-date="{{getBusinessDay('MM/dd/yyyy')}}" data-autoclose="1" bs-datepicker value="{{business_day}}" onkeypress="return false;">
 						<span class="input-group-addon no-radius no-padding no-border"></span>
                     	<input type="text" size="6" class="form-control w-thumb-lg" name="in_time" ng-model="param.in_time" data-autoclose="1" data-time-format="HH:mm" placeholder="{{getDay('hh:mm')}}" value="{{getDay('hh:mm')}}" data-length="3" data-minute-step="15" data-timezone="UTC" bs-timepicker>
-						<span class="input-group-addon no-radius no-padding no-border"></span>
 					</div>
 				</div>
                 <div class="form-group m-b-xs">
@@ -33,7 +32,7 @@
 								</ui-select-choices>
 							</ui-select>
 						</span>
-						<div class="form-control no-padding no-border w-thumb-lg" ng-show="market_father_id==7||market_father_id==8">
+						<div class="form-control no-padding no-border w-thumb-lg" ng-if="market_father_id==7||market_father_id==8">
 						  <input type="text" class="form-control btn-default" id="booking_number_ext" name="booking_number_ext" ng-model="param.booking_number_ext" placeholder="OTA订单号" required>
 						</div>
 						<span class="input-group-addon no-radius no-padding no-border"></span>
@@ -43,11 +42,11 @@
 				<div class="form-group m-b-xs">
 					<div class="input-group form-horizontal">
 						<div class="form-control no-padding no-border has-feedback">
-                  		<input type="text" size="10" class="form-control" id="member_name" name="member_name" ng-model="param.member_name" placeholder="{{customer_name}}" required >
+                  		<input type="text" size="10" class="form-control" id="member_name" name="member_name" ng-model="param.member_name" placeholder="{{customer_name}}" >
 				  		<span class="glyphicon glyphicon-user form-control-feedback"></span>
 					    </div>
 						<span class="input-group-addon no-radius no-padding no-border"></span>
-                      	<input type="text" size="10" class="form-control" id="mobile_email" name="mobile_email" ng-model="param.mobile_email" placeholder="手机/Email" required >
+                      	<input type="text" size="10" class="form-control" id="mobile_email" name="mobile_email" ng-model="param.mobile_email" placeholder="手机/Email" >
 					    <span class="input-group-btn">
 						  <button class="btn btn-default" type="button" ng-click="beginBooking('member')"><i class="fa fa-search"> </i> 会员</button>
 					    </span>
@@ -57,7 +56,7 @@
                   <div class="input-group">
                       <input type="text" size="10" class="form-control btn-default" id="node" name="node" ng-model="param.node" placeholder="备注">
                       <span class="input-group-btn">
-                          <button class="btn btn-default" type="submit" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading"><i class="fa fa-save"> </i> 确定</button>
+                          <button class="btn btn-default" type="submit" btn-loading-text="{{'common.hint.LOADING' | translate}}" trigger-loading="beginLoading"><i class="fa fa-save"> </i> 下单</button>
                       </span>
                   </div>
                 </div>
@@ -90,7 +89,7 @@
 					<div class="form-group m-b-xs has-feedback">
                   		<div class="input-group">
 							<div class="btn-group m-xs">
-								<div class="btn-group dropdown" ng-click="activeBookAccountsEditTab=3">
+								<div class="btn-group dropdown">
 								  <button type="button" class="btn btn-sm btn-default" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top"><i class="fas fa-cash-register"></i> 
 									消费 <span class="caret"></span>
 								  </button>
@@ -114,8 +113,8 @@
 						<div class="col-sm-11 col-xs-9 p-xs scroll-x">
 							<div class="list-group no-radius">
 								<div class="list-group-item col-sm-2 col-xs-6 no-padding" ng-repeat="(table_id, table) in haveBookTable">
-								  <div class="clear p-xs" ng-click="setThisTable(table_id)">
-									<div><i class="fa fa-clipboard" ng-class="thisBookTable.item_id==table_id?'text-info':''"></i> {{table.item_name}}
+								  <div class="clear btn btn-sm p-xs" ng-click="setThisTable(table_id)">
+									<div class="text-left"><i class="fa fa-clipboard" ng-class="thisBookTable.item_id==table_id?'text-info':''"></i> {{table.item_name}}
 										<small class="pull-right" ng-click="reduceBookTable(table)"><a class="text-warning ti-trash"></a></small>
 									</div>
 								  </div>
@@ -125,12 +124,15 @@
 					</div>
 					<div class="b-t clear">
 						<div class="col-sm-1 col-xs-3 p-xs">已点菜品</div>
-						<div class="col-sm-11 col-xs-9 p-xs scroll-x">
+						<div class="col-sm-11 col-xs-9 p-xs scroll-x text-nowrap">
 							<div class="list-group clearfix no-radius" ng-repeat="(table_id, tableCuisine) in haveBookCuisine">
 								<div class="list-group-item col-sm-2 col-xs-6 p-xs" ng-repeat="(j, cuisine) in tableCuisine">
-								  <!--<a href class="pull-left w-thumb m-r-xs"><img src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>-->
-								  <div class="clear"><div>{{cuisine.cuisine_name}}</div>
-								  <small>￥{{cuisine.cuisine_price}}</small>
+								  <!--<a href class="pull-left w-thumb m-r-xs"><img ng-src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>-->
+								  <div class="clear"><div><span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:7}}</span><code ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="click" bs-popover>套<i class="fa fa-caret-down"></i></code></div>
+								  <small>￥{{cuisine.cuisine_price}} <small class="ti-server" title="库存"></small>
+										  <span ng-if="cuisine.cuisine_inventory==-999">无限</span>
+										  <span ng-if="cuisine.cuisine_inventory==-9999">-</span>
+										  <span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span></small>
 								  <span class="pull-right"><a class="text-color" ng-click="reduceBookCuisine(cuisine, table_id)"><i class="glyphicon glyphicon-minus-sign"></i></a>{{cuisine.bookNumber}}<a class="text-warning" ng-click="addBookCuisine(cuisine, table_id)"><i class="glyphicon glyphicon-plus-sign"></i></a></span></div>
 								</div>
 							</div> 
@@ -138,47 +140,48 @@
 					</div>
 					<div class="tab-container">
                         <div ng-show="activeBookAccountsEditTab==1"><!-- 餐台/房间 -->
-                            <div class="box">
-								<div class="col-md-12 b-t">
-								  <div class="box" st-table="cuisineList" st-safe-src="rowCuisineList">
-									  <div class="p-h b-b">
-										  <div class="input-group col-sm-3 col-xs-12 m-t-xs m-b-xs">
-											  <span class="input-group-addon no-radius">搜索菜名</span>
-											  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
-											  <span class="input-group-addon no-radius no-padding no-border"></span>
-											  <select class="form-control" st-input-event="change" st-search="cuisine_category_id">
-												  <option value="">全部类别</option>
-												  <option value="1">早餐</option>
-												  <option value="{{i}}" ng-repeat="(i, category) in cuisineCategory">{{category.cuisine_name}}</option>
-											  </select>
-										  </div>
-									  </div>
-									<div class="box-row">
-									  <div class="box-cell" style="min-height: 440px;">
-										<div class="box-inner b-b">
-										  <!-- detail -->
-										  <div class="p tab-container clear">
-											<div class="list-group no-radius">
-												<div class="list-group-item col-sm-2 col-xs-6" ng-repeat="(i, cuisine) in cuisineList">
-												  <a href class="pull-left w-thumb m-r-xs"><img src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>
-												  <div class="clear"><div>{{cuisine.cuisine_name}}</div>
-												  <small>￥{{cuisine.cuisine_price}}</small>
-												  <span class="pull-right"><a class="text-color" ng-click="reduceBookCuisine(cuisine, 0)" ng-if="thisBookCuisine[cuisine.cuisine_id]>0"><i class="glyphicon glyphicon-minus-sign"></i></a>{{thisBookCuisine[cuisine.cuisine_id]}}<a class="text-warning" ng-click="addBookCuisine(cuisine, 0)"><i class="glyphicon glyphicon-plus-sign"></i></a></span></div>
-												</div>
-											</div>  
-										  </div>  
-										  <!-- / detail  data-placement="bottom-left" data-type="success" data-html="true" data-animation="am-fade-and-scale" data-title="<img src='{{cuisine.image_src}}'>" bs-tooltip -->
-										</div>
-									  </div>
+						  <div class="box b-t" st-table="cuisineList" st-safe-src="rowCuisineList">
+							  <div class="p-h b-b">
+								  <div class="input-group col-sm-3 col-xs-12 m-t-xs m-b-xs">
+									  <span class="input-group-addon no-radius">搜索菜名</span>
+									  <input st-search="cuisine_name" class="form-control w" name="cuisine_name" id="cuisine_name" type="text" ng-model="cuisine_name" >
+									  <span class="input-group-addon no-radius no-padding no-border"></span>
+									  <select class="form-control" st-input-event="change" st-search="cuisine_category_id">
+										  <option value="">全部类别</option>
+										  <option value="1">早餐</option>
+										  <option value="{{i}}" ng-repeat="(i, category) in cuisineCategory">{{category.cuisine_name}}</option>
+									  </select>
+								  </div>
+							  </div>
+							  <div class="box-row">
+								  <div class="box-cell h-full">
+									<div class="box-inner b-b">
+									  <!-- detail -->
+									  <div class="p tab-container clear">
+										<div class="list-group no-radius text-nowrap">
+											<div class="list-group-item col-sm-2 col-xs-6 p-xs" ng-repeat="(i, cuisine) in cuisineList">
+											  <a href class="pull-left w-thumb m-r-xs"><img ng-src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>
+											  <div class="clear"><div><span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:7}}</span><code ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="click" bs-popover>套<i class="fa fa-caret-down"></i></code></div>
+											  <small>￥{{cuisine.cuisine_price}} <small class="ti-server" title="库存"></small>
+										  		<span ng-if="cuisine.cuisine_inventory==-999">无限</span>
+										  		<span ng-if="cuisine.cuisine_inventory==-9999">-</span>
+										  		<span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span></small>
+											  <span class="pull-right"><a class="text-color" ng-click="reduceBookCuisine(cuisine, 0)" ng-if="thisBookCuisine[cuisine.cuisine_id]>0"><i class="glyphicon glyphicon-minus-sign"></i></a>{{thisBookCuisine[cuisine.cuisine_id]}}<a class="text-warning" ng-click="addBookCuisine(cuisine, 0)"><i class="glyphicon glyphicon-plus-sign"></i></a></span></div>
+											</div>
+										</div>  
+									  </div>  
+									  <!-- / detail  data-placement="bottom-left" data-type="success" data-html="true" data-animation="am-fade-and-scale" data-title="<img ng-src='{{cuisine.image_src}}'>" bs-tooltip -->
 									</div>
 								  </div>
-								</div>
-  							</div>
+							  </div>
+						  </div>
                         </div>
                         <div ng-show="activeBookAccountsEditTab==2"><!-- 餐桌 -->
-                            <div class="box">
-								<div class="p">
-									  <div class="buliding m-b" ng-repeat="(buliding_key, buliding) in roomList">
+                            <div class="box b-t">
+								<div class="box-row">
+								  <div class="box-cell h-full">
+									<div class="box-inner">
+									  <div class="buliding m-b p" ng-repeat="(buliding_key, buliding) in roomList">
 											<div class="m-b-xs"><i class="fa fa-building text-xs"> {{buliding_key}}楼栋</i></div>
 											<div class="floor clearfix" ng-repeat="(floor_key, floor) in buliding">
 												<span class="badge badge-xs bg-success pos-rlt m-r-xs">{{floor_key}}楼层</span>
@@ -194,66 +197,11 @@
 												</div> 
 											</div>
 										</div>
+									  </div>
+									 </div>
+									</div>
 								</div>
   							</div>
-                        </div>
-                        <div ng-show="activeBookAccountsEditTab==3">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-striped bg-white text-nowrap">
-                                  <thead>
-                                    <tr>
-                                      <th class="w-xs">打印</th>
-                                      <th class="w">房号</th>
-                                      <th class="w">物品</th>
-                                      <th class="w-xxs">数量</th>
-                                      <th class="w-xs">押金</th>
-                                      <th class="w">时间</th>
-                                      <th class="w-xxs">已还</th>  
-                                      <th class="col-xs-1">管理</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    <tr ng-repeat="(detail_id, borrowing) in bookBorrowing">
-                                        <td colspan="8" class="no-padding panel">
-                                            <table class="table no-margin">
-                                                <tr ng-repeat="(borrow_id, borrow) in borrowing">
-                                                    <td class="w-xs">
-                                                        <label class="checkbox-inline ui-checks"><input type="checkbox" ng-model="checkBorrowing[detail_id][borrow_id]" ng-click="setPrintBill('borrowing', borrow, borrow_id, $event)"><i></i></label>
-                                                    </td>
-                                                    <td class="w">{{borrow.item_name}}</td>
-                                                    <td class="w">{{borrow.borrowing_name}}</td>
-                                                    <td class="w-xxs">{{borrow.borrowing_num}}</td>
-                                                    <td class="w-xs">{{borrow.cash_pledge}}</td>
-                                                    <td class="w">{{borrow.add_datetime}}</td>
-                                                    <td class="w-xxs">{{borrow.borrowing_return_num}}</td>
-                                                    <td class="col-xs-1">
-                                                        <span class="btn-group">
-                                                            <button class="btn btn-xs btn-default" ng-click="editBorrowing(borrow)" ng-if="borrow.borrowing_return=='0'"><span translate="common.hint.edit" >编辑</span></button>
-                                                            <button class="btn btn-xs btn-default" ng-click="revokesOperations(borrow, 'borrow')" ng-if="borrow.borrowing_return=='0'"><span translate="common.hint.give_back" >归还</span></button>
-                                                            <button class="btn btn-xs btn-default" ng-if="borrow.borrowing_return=='1'"><span>已归还</span></button>
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                      <th class="text-nowrap">合计</th>
-                                      <td></td>
-                                      <td></td>  
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                      <td></td>
-                                    </tr>
-                                    <tr>
-                                      <td class="w-xs"></td>
-                                      <td colspan="7"> <a class="ti-printer print-contents" ng-click="printBill('borrowing')">A4打印借物</a></td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                            </div>
                         </div>
                     </div>
                 </div>

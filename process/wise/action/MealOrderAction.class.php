@@ -45,6 +45,7 @@ class MealOrderAction extends \BaseAction {
         }
         //
         $company_id = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $channel_id = $objRequest->channel_id;
         //
         $arrayResult['in_date'] = $in_date = LoginServiceImpl::getBusinessDay();
         //客源市场
@@ -55,11 +56,16 @@ class MealOrderAction extends \BaseAction {
         $objRequest->childrenHash   = 'item_attr1_value';
         $objRequest->toHashArray    = true;
         $arrayResult['roomList']    = ChannelServiceImpl::instance()->getChannelItemHash($objRequest, $objResponse);
+        //取出折扣
+        $whereCriteria = new \WhereCriteria();
+        $whereCriteria->EQ('company_id', $company_id)->ArrayIN('channel_id', ['0', $channel_id])->GE('end_date', getDay());
+        $arrayResult['channelDiscountList'] = DiscountServiceImpl::instance()->getDiscount($whereCriteria);
         //
         $successService = new \SuccessService();
         $successService->setData($arrayResult);
         return $objResponse->successServiceResponse($successService);
     }
+
     //
     protected function doMethodCuisineList(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $arrayResult['allCuisineList'] = CuisineServiceImpl::instance()->getCuisineList($objRequest, $objResponse);
@@ -70,8 +76,21 @@ class MealOrderAction extends \BaseAction {
 
     //查询协议公司数据
     protected function doMethodGetReceivable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $hotelOrderAction = new HotelOrderAction('RoomOrder');
+        $hotelOrderAction = new HotelOrderAction();
         $objRequest->setAction('RoomOrder');
-        return $hotelOrderAction->invoking($objRequest, $objResponse);
+        $hotelOrderAction->invoking($objRequest, $objResponse);
+    }
+
+    //保存预订数据
+    protected function doMethodSaveRestaurantBook(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objSuccessService = BookingRestaurantServiceImpl::instance()->beginBooking($objRequest, $objResponse);
+        if ($objSuccessService->isSuccess()) {
+            $objSuccessService = BookingRestaurantServiceImpl::instance()->saveBooking($objSuccessService->getData());
+            if ($objSuccessService->isSuccess()) {
+
+                return $objResponse->successServiceResponse($objSuccessService);
+            }
+        }
+        return $objResponse->successServiceResponse($objSuccessService);
     }
 }
