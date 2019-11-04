@@ -18,7 +18,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
     var _view = $scope.$stateParams.view;
     //获取数据
     var param = 'channel='+_channel+'&view='+_view+'&market_id='+$scope.market_id;
-    $httpService.post('/app.do?'+param, $scope, function(result){
+    $httpService.post('app.do?'+param, $scope, function(result){
         $scope.loading.percent();
         if(result.data.success === '0') {
             var message = $scope.getErrorByCode(result.data.code);
@@ -86,7 +86,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             } else if(market.market_father_id == '6') {//选择协议公司 取出协议公司数据
 				if($scope.receivableList == '') {
 					$scope.loading.start();$httpService.header('method', 'getReceivable');
-					$httpService.post('/app.do?'+param, $scope, function(result){
+					$httpService.post('app.do?'+param, $scope, function(result){
 						$scope.loading.percent();$httpService.deleteHeader('method');
 						if(result.data.success === '0') {
 							return;
@@ -225,7 +225,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
         var market_id = $scope.market_id;
         var param = 'channel='+_channel+'&market_id='+market_id;
         $httpService.header('method', 'checkOrderData');
-        $httpService.post('/app.do?'+param, $scope, function(result){
+        $httpService.post('app.do?'+param, $scope, function(result){
             $scope.loading.percent();
 			$httpService.deleteHeader('method');
             if(result.data.success == '0') {
@@ -515,7 +515,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
             $checkMember.param['member_email']      = member_email;
             $checkMember.param['member_mobile']     = member_mobile;
             $checkMember.param['channel_father_id'] = $scope.param.channel_father_id;
-            $httpService.post('/app.do?'+param, $checkMember, function(result){
+            $httpService.post('app.do?'+param, $checkMember, function(result){
                 $scope.loading.percent();$httpService.deleteHeader('method');
                 if(result.data.success == '0') {
                     var message = $scope.getErrorByCode(result.data.code);
@@ -568,7 +568,7 @@ app.controller('RoomOrderController', function($rootScope, $scope, $httpService,
 				$scope.param.booking_number = $scope.bookInfo.booking_number;
 				$scope.param.book_id = $scope.bookInfo.book_id;
 			}
-            $httpService.post('/app.do?'+param, $scope, function(result){
+            $httpService.post('app.do?'+param, $scope, function(result){
                 $scope.beginLoading =! $scope.beginLoading;$scope.loading.percent();
 				$httpService.deleteHeader('method');
                 if(result.data.success == '0') {

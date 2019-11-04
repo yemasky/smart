@@ -1,14 +1,14 @@
 // JavaScript Document
 
 app.controller('EmployeeSectorPositionController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
-	$ocLazyLoad.load([$scope.__RESOURCE+"editor/kindeditor/themes/default/default.css",
-					  $scope.__RESOURCE+"vendor/libs/md5.min.js",$scope.__RESOURCE+"vendor/libs/utils.js"]);
+	$ocLazyLoad.load(["resource/editor/kindeditor/themes/default/default.css",
+					  "resource/vendor/libs/md5.min.js","resource/vendor/libs/utils.js"]);
 	//获取数据
 	var _channel = $scope.$stateParams.channel, common = '', sectorList = {}, sectorChildrenList = {}, positionList = {}, sectorPositionList = [],imagesUploadUrl = '',imagesManagerUrl = '';
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();$scope.param = {};
-	$httpService.post('/app.do?'+param, $scope, function(result){
+	$httpService.post('app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
 			return;
@@ -129,7 +129,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 			$('#main_images').attr('src', '/data/images/userimg/user_b.png');
 		}
 		$scope.action = '添加/编辑';
-		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/EmployeeAddEdit.tpl.html?'+__VERSION});
+		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Management/EmployeeAddEdit.tpl.html?'+__VERSION});
 		asideEmployee.$promise.then(function() {
 			asideEmployee.show();
 			$(document).ready(function(){
@@ -168,7 +168,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		var password = $scope.param.password;
 		$scope.param.password = md5(md5($.trim(password)));
 		$httpService.header('method', 'saveEmployee');
-		$httpService.post('/app.do?'+param, $scope, function(result){
+		$httpService.post('app.do?'+param, $scope, function(result){
 			$scope.loading.percent();
             $httpService.deleteHeader('method');
 			if(result.data.success == '0') {
@@ -188,7 +188,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		if(!angular.isString(sectorParam)) sectorParam = '';
 		if(thisSectorParam != '') sectorParam = thisSectorParam;
         $httpService.header('method', 'EmployeePagination');
-        $httpService.post('/app.do?'+param+'&'+sectorParam, $scope, function(result){
+        $httpService.post('app.do?'+param+'&'+sectorParam, $scope, function(result){
             $scope.loading.percent();
             $httpService.deleteHeader('method');
 			if(result.data.success == '0') {
@@ -306,7 +306,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		$scope.param["valid"] = "1";
 		//if(branch != null) $scope.param = branch;
 		$scope.action = '添加/编辑'+title;
-		asideSectorPosition = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/SectorPositionAddEdit.tpl.html?'+__VERSION});
+		asideSectorPosition = $aside({scope : $scope, title: $scope.action_nav_name, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Management/SectorPositionAddEdit.tpl.html?'+__VERSION});
 		asideSectorPosition.$promise.then(function() {
 			asideSectorPosition.show();
 			$(document).ready(function(){
@@ -323,7 +323,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 			console.log(branch);
 			var sector_name = angular.copy($scope.param.sector_name);
 			$httpService.header('method', 'saveSectorPosition');
-			$httpService.post('/app.do?'+param, $scope, function(result){
+			$httpService.post('app.do?'+param, $scope, function(result){
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if(result.data.success == '0') {
@@ -360,7 +360,7 @@ app.controller('EmployeeSectorPositionController', function($rootScope, $scope, 
 		function deleteData() {
 			$scope.param.s_id = branch.data.s_id;
 			$httpService.header('method', 'deleteSectorPosition');
-			$httpService.post('/app.do?'+param, $scope, function(result){
+			$httpService.post('app.do?'+param, $scope, function(result){
 				$scope.loading.percent();
 				$httpService.deleteHeader('method');
 				if(result.data.success == '0') {

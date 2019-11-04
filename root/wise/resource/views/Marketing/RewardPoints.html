@@ -39,7 +39,7 @@ app.controller('RewardPointsController', function($rootScope, $scope, $httpServi
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
-	$httpService.post('/app.do?'+param, $scope, function(result){
+	$httpService.post('app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
 			return;
@@ -72,7 +72,7 @@ app.controller('RewardPointsController', function($rootScope, $scope, $httpServi
 		$scope.loading.show();
 		$scope.param = thisParam;
 		$httpService.header('method', 'saveRewardPoints');
-		$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+		$httpService.post('app.do?'+param+'&id='+$scope.id, $scope, function(result){
 			$scope.loading.hide();
 			$httpService.deleteHeader('method');
 			if (result.data.success == '0') {

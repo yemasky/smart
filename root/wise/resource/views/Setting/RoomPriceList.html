@@ -67,16 +67,16 @@
         </table>
      </div>
 </div>
-<script language="javascript" src="/resource/vendor/libs/moment.min.js"></script>
-<script language="javascript" src="/resource/vendor/libs/daterangepicker.js"></script>
-<script language="javascript" src="/resource/vendor/modules/angular-smart-table/smart-table.min.js"></script>
+<script language="javascript" src="resource/vendor/libs/moment.min.js"></script>
+<script language="javascript" src="resource/vendor/libs/daterangepicker.js"></script>
+<script language="javascript" src="resource/vendor/modules/angular-smart-table/smart-table.min.js"></script>
 <script language="javascript">
 app.controller('RoomPriceListController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
 	//获取数据
 	var _channel = $scope.$stateParams.channel;var _view = $scope.$stateParams.view,common = '';
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
-	$httpService.post('/app.do?'+param, $scope, function(result){
+	$httpService.post('app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
@@ -117,7 +117,7 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 			
 		}
 		$scope.action = '添加/编辑';
-		asideRoomPrice = $aside({scope : $scope, title: $scope._self_module.module_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/RoomPriceAddEdit.tpl.html?'+__VERSION});
+		asideRoomPrice = $aside({scope : $scope, title: $scope._self_module.module_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: 'resource/views/Setting/RoomPriceAddEdit.tpl.html?'+__VERSION});
 		asideRoomPrice.$promise.then(function() {
 			asideRoomPrice.show();
 			$(document).ready(function(){
@@ -172,7 +172,7 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 		formParam['price_system_id'] = param['price_system_id'];
 		formParam['price_system_type'] = $scope.thisPriceSystem['price_system_type'];
 		$scope.param = formParam;
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+		$httpService.post('app.do?channel='+common.saveAddEditUrl, $scope, function(result){
 			$scope.loading.hide();
 			if(result.data.success == '0') return; 
 			//asideRoomPrice.hide();
@@ -192,7 +192,7 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 		$scope.param['end_date'] = $('#end_date').val().substr(0,10);
 		$httpService.header('method', 'checkHistoryPrice');
 		$scope.loading.show();
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+		$httpService.post('app.do?channel='+common.saveAddEditUrl, $scope, function(result){
 			$httpService.deleteHeader('method');
             $scope.loading.hide();
 			if(result.data.success == '0') return; 

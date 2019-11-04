@@ -48,8 +48,8 @@
      	</div>
      </div>
 </div>
-<script language="javascript" src="/resource/vendor/libs/moment.min.js"></script>
-<script language="javascript" src="/resource/vendor/libs/daterangepicker.js"></script>
+<script language="javascript" src="resource/vendor/libs/moment.min.js"></script>
+<script language="javascript" src="resource/vendor/libs/daterangepicker.js"></script>
 <script language="javascript">
 app.controller('PolicyController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $alert, $filter) {
 	//获取数据
@@ -57,7 +57,7 @@ app.controller('PolicyController', function($rootScope, $scope, $httpService, $l
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
-	$httpService.post('/app.do?'+param, $scope, function(result){
+	$httpService.post('app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
@@ -79,7 +79,7 @@ app.controller('PolicyController', function($rootScope, $scope, $httpService, $l
 			$scope.param["_rules_time"] = $filter('date')($scope._baseDateTime(), 'yyyy-MM-dd', 'UTC') + 'T'+$scope.param["rules_time"]+'.000Z';
 		}
 		$scope.action = '添加/编辑';
-		asidePolicy = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/PolicyAddEdit.tpl.html?'+__VERSION});
+		asidePolicy = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: 'resource/views/Setting/PolicyAddEdit.tpl.html?'+__VERSION});
 		asidePolicy.$promise.then(function() {
 			asidePolicy.show();
 			$(document).ready(function(){
@@ -101,7 +101,7 @@ app.controller('PolicyController', function($rootScope, $scope, $httpService, $l
 		param.rules_time = $filter('date')(param._rules_time, 'HH:mm', 'UTC');
 		delete param._rules_time;
 		$scope.param = param;
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+		$httpService.post('app.do?channel='+common.saveAddEditUrl, $scope, function(result){
 			$scope.loading.hide();
 			if(result.data.success == '0') {
 				return;

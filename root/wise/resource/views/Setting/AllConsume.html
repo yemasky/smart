@@ -50,7 +50,7 @@ app.controller('AllConsumeController', function($rootScope, $scope, $httpService
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
-	$httpService.post('/app.do?'+param, $scope, function(result){
+	$httpService.post('app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
@@ -76,7 +76,7 @@ app.controller('AllConsumeController', function($rootScope, $scope, $httpService
 			$scope.param = _this;
 		}
 		$scope.action = '添加/编辑';
-		asideChannelConsume = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/AllConsumeAddEdit.tpl.html?'+__VERSION});
+		asideChannelConsume = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: 'resource/views/Setting/AllConsumeAddEdit.tpl.html?'+__VERSION});
 		asideChannelConsume.$promise.then(function() {
 			asideChannelConsume.show();
 			$(document).ready(function(){
@@ -93,7 +93,7 @@ app.controller('AllConsumeController', function($rootScope, $scope, $httpService
 		$scope.channel_id = $rootScope.employeeChannel[channel_id].channel_id;
         $scope.channel = $rootScope.employeeChannel[channel_id].channel;
 		$scope.loading.show();
-		$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+		$httpService.post('app.do?'+param+'&id='+$scope.id, $scope, function(result){
 			$scope.loading.percent();
 			if(result.data.success == '0') {
 				return;//
@@ -109,7 +109,7 @@ app.controller('AllConsumeController', function($rootScope, $scope, $httpService
 		}
 		$scope.loading.show();
         $httpService.header('method', 'editChannelConsume');
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl+'&id='+$scope.id, $scope, function(result){
+		$httpService.post('app.do?channel='+common.saveAddEditUrl+'&id='+$scope.id, $scope, function(result){
             $httpService.deleteHeader('method');
 			$scope.loading.hide();
 			if(result.data.success == '0') {

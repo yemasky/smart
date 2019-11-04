@@ -8,7 +8,7 @@
 namespace wise;
 
 class ModulesConfig extends \ModulesConfig {
-	public static $__VERSION = '1.2.1';
+	public static $__VERSION = '1.2.2';
 	public static $channel_type = ['Hotel'=>'酒店','Meal'=>'餐馆/Bar','Meeting'=>'商务会议',
 								   'Sport'=>'健身娱乐','Shop'=>'商城/商店','Service'=>'商务服务','Tour'=>'旅行路线'];
 	public static $channel_value = ['Hotel'=>'Hotel','Meal'=>'Meal','Meeting'=>'Meeting',

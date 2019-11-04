@@ -511,7 +511,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         $scope.param.payment_id = $scope.payment_id;
         $scope.param.payment_name = $scope.payment_name;
         $scope.loading.show();$httpService.header('method', 'saveBorrowing');
-        $httpService.post('/app.do?'+param, $scope, function(result){
+        $httpService.post('app.do?'+param, $scope, function(result){
             $httpService.deleteHeader('method');
             $scope.loading.percent();
             if(result.data.success == '0') {
@@ -534,7 +534,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         $scope.param.channel_consume_father_id = $scope.thisConsume.channel_consume_father_id;
         $scope.param.book_id = $scope.bookDetail.book_id;
         $scope.loading.show();$httpService.header('method', 'saveConsume');
-        $httpService.post('/app.do?'+param, $scope, function(result){
+        $httpService.post('app.do?'+param, $scope, function(result){
             $httpService.deleteHeader('method');
             $scope.loading.percent();
             if(result.data.success == '0') {
@@ -580,7 +580,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
 	$scope.getReceivable = function() {
 		if($scope.receivableList == '') {
 			$scope.loading.start();$httpService.header('method', 'getReceivable');
-			$httpService.post('/app.do?'+param, $scope, function(result){
+			$httpService.post('app.do?'+param, $scope, function(result){
 				$scope.loading.percent();$httpService.deleteHeader('method');
 				if(result.data.success === '0') {
 					return;
@@ -640,7 +640,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         }
         $scope.param.book_id = roomDetailEdit.book_id;
         $scope.beginLoading =! $scope.beginLoading;
-        $httpService.post('/app.do?'+param+getParam, $scope, function(result) {
+        $httpService.post('app.do?'+param+getParam, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $scope.param.changeCheckDate = 0;
             $httpService.deleteHeader('method');
@@ -682,7 +682,7 @@ app.controller('EditBookRoomController', function($rootScope, $scope, $httpServi
         getParam = '&market_id='+market_id+'&price_system_id='+price_system_id+'&item_category_id='+item_category_id;
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'changeCheckDate');
-        $httpService.post('/app.do?'+param+getParam, $scope, function(result) {
+        $httpService.post('app.do?'+param+getParam, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $scope.param.changeCheckDate = 1;
             $httpService.deleteHeader('method');

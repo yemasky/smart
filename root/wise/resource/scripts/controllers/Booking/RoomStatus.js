@@ -63,7 +63,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     beginRoomStatus();//开始执行
     function beginRoomStatus() {
         $scope.loading.show();
-        $httpService.post('/app.do?'+param, $scope, function(result){
+        $httpService.post('app.do?'+param, $scope, function(result){
             $scope.loading.percent();
             if(result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);
@@ -314,7 +314,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         if(angular.isUndefined($scope.consumeList[booking_number])) {
             $httpService.header('method', 'getEditRoomBookInfo');
 			$scope.param.booking_number = booking_number;
-            $httpService.post('/app.do?'+param, $scope, function(result) {
+            $httpService.post('app.do?'+param, $scope, function(result) {
                 $httpService.deleteHeader('method');
                 if (result.data.success == '0') {
                     var message = $scope.getErrorByCode(result.data.code);
@@ -369,7 +369,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             $scope.accountPrint = angular.copy($scope.accountDetail);
             $scope.borrowingPrint = angular.copy($scope.bookBorrowing);;
             $scope.isConsumePrint = true;$scope.isAccountPrint = true;$scope.isBorrowingPrint = true;
-            var asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/Edit.html',show: false});
+            var asideEditRoomBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: 'resource/views/Booking/Room/Edit.html',show: false});
             asideEditRoomBook.$promise.then(function() {
                 asideEditRoomBook.show();
                 $(document).ready(function(){
@@ -385,7 +385,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			room.item_father_id = $scope.layoutRoom[room.item_id].item_category_id;
             $scope.bookRoom = room;$scope.bookInfo = '';
             var title = '预定 : '+$scope.layoutList[$scope.layoutRoom[room.item_id].item_category_id].item_name +'-'+room.item_name;
-			asideBookRoom = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Book.html',show: false});
+			asideBookRoom = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Booking/Room/Book.html',show: false});
 			asideBookRoom.$promise.then(function() {
 				asideBookRoom.show();
 				$(document).ready(function(){
@@ -430,7 +430,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         }
         $scope.consumeRoomPrice = consumeRoomPrice;
         $scope.param.price = price;
-        $scope.editBookRoomAside = $aside({scope:$scope,container:'#MainController',templateUrl:'/resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
+        $scope.editBookRoomAside = $aside({scope:$scope,container:'#MainController',templateUrl:'resource/views/Booking/Room/EditRoom.html',placement:'left',show: false});
         $scope.editBookRoomAside.$promise.then($scope.editBookRoomAside.show);
         //$('#customer_ul').mouseover(function(e) {$('#customer_ul').next().show();});
     };
@@ -444,7 +444,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		$scope.param.book_id = $scope.bookDetail.book_id;
 		$scope.param.liveInType = liveIn.type;
 		if(angular.isDefined(liveIn.detail_id)) $scope.param.detail_id = liveIn.detail_id;
-        $httpService.post('/app.do?'+param, $scope, function(result) {
+        $httpService.post('app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
@@ -455,13 +455,13 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         });
 	};
     ////添加入住客人////////////////////////////////////////////////////////////////////////////////////////////
-    var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
+    var addGuestLiveInAside = $aside({scope:$scope,templateUrl:'resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});;
     $scope.addGuestLiveIn = function(liveInGuest, OLiveIn) {
         var ObjectLiveIn = angular.copy(OLiveIn);
 		if(liveInGuest == 'AddBookRoom') {
 			$scope.bookInfo = $scope.bookDetail;$scope.bookRoom = '';
 			var title = '添加客房 订单号: '+$scope.bookDetail.booking_number;
-			asideBookRoom = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/book.html',show: false});
+			asideBookRoom = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Booking/Room/book.html',show: false});
 			asideBookRoom.$promise.then(function() {
 				asideBookRoom.show();
 				$(document).ready(function(){
@@ -472,7 +472,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 		}
 		if(liveInGuest=='HaveLiveIn'){$scope.confirm({'content':'确定要设置客房全部入住状态吗？','callback':$scope.liveInRoom,'param':{'type':'all'}});return;}//入住全部房间
         if(liveInGuest == 'LiveInOne') {$scope.confirm({'content':'确定要设置客房入住状态吗？','callback':$scope.liveInRoom,'param':{'type':'one','detail_id':ObjectLiveIn.detail_id}});return;}//入住一个房间
-        addGuestLiveInAside = $aside({scope:$scope,templateUrl:'/resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
+        addGuestLiveInAside = $aside({scope:$scope,templateUrl:'resource/views/Booking/Room/addGuestLiveIn.html',placement:'left',show: false});
         addGuestLiveInAside.$promise.then(addGuestLiveInAside.show);
         $(document).ready(function(){
             $('#saveAddGuestLiveInForm input').val('');
@@ -504,7 +504,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param.item_id = item_id;
         $scope.beginLoading =! $scope.beginLoading;
         $scope.param.book_id = $scope.bookDetail.book_id;
-        $httpService.post('/app.do?'+param, $scope, function(result) {
+        $httpService.post('app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
@@ -580,7 +580,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             }
             var title = '锁房';
             if(editType == 'repair') title = '维修房';
-            myOtherAside = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Booking/Room/EditRoomStatus.html',show: false});
+            myOtherAside = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: 'resource/views/Booking/Room/EditRoomStatus.html',show: false});
             // Show when some event occurs (use $promise property to ensure the template has been loaded)
             myOtherAside.$promise.then(function() {
                 myOtherAside.show();
@@ -600,7 +600,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param['begin_datetime'] = $filter("date")( $scope.param['begin_datetime'], "yyyy-MM-dd");
 		$scope.param['end_datetime'] = $filter("date")($scope.param['end_datetime'], "yyyy-MM-dd");
         $httpService.header('method', 'saveRoomStatusEdit');
-        $httpService.post('/app.do?'+param, $scope, function(result) {
+        $httpService.post('app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
@@ -657,7 +657,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         if(type == 'edit') title = '修改账款';
         $scope.param.credit_authorized_days = $scope.getDay('yyyy-MM-dd HH:mm:ss');
         $scope.param.accounts_type = accounts_type;$scope.param.ba_id = '';
-        asideAccounts = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
+        asideAccounts = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Booking/Room/Accounts.html',show: false});
 		asideAccounts.$promise.then(function() {
 			asideAccounts.show();
 			$(document).ready(function(){
@@ -693,7 +693,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             console.log($scope.param);
             return;
         }
-        $httpService.post('/app.do?'+param, $scope, function(result) {
+        $httpService.post('app.do?'+param, $scope, function(result) {
             $scope.beginLoading =! $scope.beginLoading;
             $scope.param.ba_id = '';//设置编辑为空
             $httpService.deleteHeader('method');
@@ -735,7 +735,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         
         if(accounts.accounts_type == 'refund') type = '退款';
         if(accounts.accounts_type == 'pre-authorization') type = '预授权';
-        asideAccounts = $aside({scope : $scope, title: title+'-'+type, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Accounts.html',show: false});
+        asideAccounts = $aside({scope : $scope, title: title+'-'+type, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Booking/Room/Accounts.html',show: false});
         asideAccounts.$promise.then(function() {
 			asideAccounts.show();
 			$(document).ready(function(){
@@ -751,7 +751,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param.item_id = angular.copy(consume.item_id)+'';
         $scope.consume_title = angular.copy(consume.consume_title);
         $scope.param.money = angular.copy(consume.consume_price_total);
-        $scope.asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/Consume.html',show: false});
+        $scope.asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Booking/Room/Consume.html',show: false});
         $scope.asideConsume.$promise.then(function() {
 			$scope.asideConsume.show();
 			$(document).ready(function(){
@@ -785,7 +785,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         function close(consume) {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.header('method', 'revokesOperations');
-            $httpService.post('/app.do?'+param, $scope, function(result) {
+            $httpService.post('app.do?'+param, $scope, function(result) {
                 $scope.beginLoading =! $scope.beginLoading;
                 $httpService.deleteHeader('method');
                 if (result.data.success == '0') {
@@ -804,10 +804,10 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 	////消费、借物//////////////////////////////////////////////////
 	$scope.bookingConsume = function(consume) {
         var title = '消费';
-        var templateUrl = '/resource/views/Booking/Room/Consume.html';
+        var templateUrl = 'resource/views/Booking/Room/Consume.html';
         if(consume == 'borrowing') {
             title = "借物";
-            templateUrl = '/resource/views/Booking/Room/Borrowing.html';
+            templateUrl = 'resource/views/Booking/Room/Borrowing.html';
         }
 		$scope.asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: templateUrl,show: false});
         $scope.asideConsume.$promise.then(function() {
@@ -844,7 +844,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
     }
     $scope.editBorrowing = function(borrow) {
         var title = "借物";
-        var templateUrl = '/resource/views/Booking/Room/Borrowing.html';
+        var templateUrl = 'resource/views/Booking/Room/Borrowing.html';
         $scope.param = angular.copy(borrow);
         $scope.param.item_id = angular.copy(borrow.item_id+"");
         $scope.param.money = borrow.cash_pledge;
@@ -871,7 +871,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
             var title = '退房';$scope.closeThisBooking = close;
             if(closeType == 'hanging') {title = '挂账退房';};
             if(closeType == 'part') {title = '部分结账';};
-            var asideBookingClose = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Room/bookClose.html',show: false});
+            var asideBookingClose = $aside({scope : $scope, title: title, placement:'top',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Booking/Room/bookClose.html',show: false});
             asideBookingClose.$promise.then(function() {
                 asideBookingClose.show();
                 $(document).ready(function(){
@@ -892,7 +892,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         	    $scope.param['payment_id'] = $scope.payment_id;
         	    $scope.param['payment_father_id'] = $scope.payment_father_id;
             }
-            $httpService.post('/app.do?'+param, $scope, function(result) {
+            $httpService.post('app.do?'+param, $scope, function(result) {
                 $scope.beginLoading =! $scope.beginLoading;
                 $httpService.deleteHeader('method');
                 if (result.data.success == '0') {
@@ -939,7 +939,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         if(Get == -2) {if($scope.nightAuditorList !== '') return;Get = -1;}
 		$httpService.header('method', 'nightAuditor');
 		$scope.loading.start();
-		$httpService.post('/app.do?'+param+'&get='+Get, $scope, function(result) {
+		$httpService.post('app.do?'+param+'&get='+Get, $scope, function(result) {
             $scope.loading.percent();
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
@@ -961,7 +961,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         function pass() {
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.header('method', 'passBusinessDay');
-            $httpService.post('/app.do?'+param, $scope, function(result) {
+            $httpService.post('app.do?'+param, $scope, function(result) {
                 $scope.beginLoading =! $scope.beginLoading;
                 $httpService.deleteHeader('method');
                 if (result.data.success == '0') {
@@ -987,7 +987,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         if(angular.isDefined($scope.param.search_date)) $scope.param.search_date = $filter('date')($scope.param.search_date, 'yyyy-MM-dd');
         $httpService.header('method', 'searchBooking');
 		$scope.loading.start();
-		$httpService.post('/app.do?'+param, $scope, function(result) {
+		$httpService.post('app.do?'+param, $scope, function(result) {
             $scope.loading.percent()
             $httpService.deleteHeader('method');
             if (result.data.success == '0') {
@@ -1005,7 +1005,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
         $scope.param.book_id = book_id;
         $httpService.header('method', 'getBookingOperation');
         $scope.loading.start();
-        $httpService.post('/app.do?'+param, $scope, function(result) {
+        $httpService.post('app.do?'+param, $scope, function(result) {
             $scope.loading.percent();
             $httpService.deleteHeader('method');
             if (result.data.success == '0'){
@@ -1027,7 +1027,7 @@ app.controller('RoomStatusController', function($rootScope, $scope, $httpService
 			$scope.loading.start();
 			$httpService.header('method', 'roomForcasting');
             //$scope.param.eta_date = $filter("date")($scope.param.eta_date, 'yyyy-MM-dd');
-			$httpService.post('/app.do?'+param, $scope, function(result) {
+			$httpService.post('app.do?'+param, $scope, function(result) {
 				$scope.loading.percent()
 				$httpService.deleteHeader('method');
 				if (result.data.success == '0') {

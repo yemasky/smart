@@ -242,7 +242,7 @@ angular.module("app").directive("uiFullscreen", ["$ocLazyLoad", "$document", fun
     return {
         restrict: "AC",
         link: function(c, d, e) {
-            d.addClass("hide"), a.load("/resource/vendor/libs/screenfull.min.js").then(function() {
+            d.addClass("hide"), a.load("resource/vendor/libs/screenfull.min.js").then(function() {
                 screenfull.enabled && d.removeClass("hide"), d.bind("click", function() {
                     var a;
                     e.target && (a = angular.element(e.target)[0]), screenfull.toggle(a)
@@ -715,7 +715,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		$scope.confirm = function(param) {//content, confirmCallback, param
 			var content = angular.isDefined(param.content)?param.content : '';var confirmCallback = angular.isDefined(param.callback)?param.callback : null;
 			var callbackParam = angular.isDefined(param.param)?param.param : null;
-			$alert({scope : $scope, title: 'Notice', templateUrl: '/resource/views/Common/modalConfirm.html', content: content, placement: 'top', type: 'success', show: true, controller : function($scope) {$scope.callback = function() {if(confirmCallback){
+			$alert({scope : $scope, title: 'Notice', templateUrl: 'resource/views/Common/modalConfirm.html', content: content, placement: 'top', type: 'success', show: true, controller : function($scope) {$scope.callback = function() {if(confirmCallback){
 				if(callbackParam != null) {confirmCallback(callbackParam);}else{confirmCallback();}};}}});
 		}
 		

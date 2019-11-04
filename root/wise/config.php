@@ -7,7 +7,7 @@ if(!defined('CONFIG_PHP')) {
 	define('__WEB_KEY', 'localhost');
 	define('__KEY', 'xyzABcdeee12345');
 	define('__WX_KEY', 'wx_work_hotel_brain');
-	define('__WEB', '/');
+	define('__WEB', '');
 	define('__RESOURCE', __WEB . 'resource/');
 
 	define('__WWW_PATH', dirname(__FILE__) . '/');

@@ -21,7 +21,7 @@ app.controller('RestaurantInventoryController', function($rootScope, $scope, $ht
     beginRoomStatus();//开始执行
     function beginRoomStatus() {
         $scope.loading.show();
-        $httpService.post('/app.do?'+param, $scope, function(result){
+        $httpService.post('app.do?'+param, $scope, function(result){
             $scope.loading.percent();
             if(result.data.success == '0') {
                 var message = $scope.getErrorByCode(result.data.code);

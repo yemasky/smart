@@ -68,6 +68,7 @@ class MealOrderAction extends \BaseAction {
 
     //
     protected function doMethodCuisineList(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objRequest->order = ['cuisine_category_id'=>'ASC'];
         $arrayResult['allCuisineList'] = CuisineServiceImpl::instance()->getCuisineList($objRequest, $objResponse);
         $successService                = new \SuccessService();
         $successService->setData($arrayResult);

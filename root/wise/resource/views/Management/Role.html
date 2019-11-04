@@ -57,7 +57,7 @@ app.controller('RoleController', function($rootScope, $scope, $httpService, $loc
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();$scope.param = {};
-	$httpService.post('/app.do?'+param, $scope, function(result){
+	$httpService.post('app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
@@ -96,10 +96,10 @@ app.controller('RoleController', function($rootScope, $scope, $httpService, $loc
 	$scope.addRole = function(_this) {
 		$scope.param["valid"] = "1";
 		$scope.action = '添加/编辑';
-		asideRole = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Management/RoleAddEdit.tpl.html?'+__VERSION});
+		asideRole = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Management/RoleAddEdit.tpl.html?'+__VERSION});
 		if(_this != 0) {
 			$httpService.header('method', 'getRole');
-			$httpService.post('/app.do?'+param+'&r_id='+_this.r_id, $scope, function(result){
+			$httpService.post('app.do?'+param+'&r_id='+_this.r_id, $scope, function(result){
 				$scope.loading.percent();$httpService.deleteHeader('method');
 				if(result.data.success == '0') {return;}
 				var roleModuleList = result.data.item.roleModuleList;
@@ -137,7 +137,7 @@ app.controller('RoleController', function($rootScope, $scope, $httpService, $loc
 		$scope.loading.show();
 		$scope.param = thisParam;
 		$httpService.header('method', 'saveRole');
-		$httpService.post('/app.do?'+param, $scope, function(result){
+		$httpService.post('app.do?'+param, $scope, function(result){
 			$scope.loading.percent();$httpService.deleteHeader('method');
 			if(result.data.success == '0') {
 				var message = $scope.getErrorByCode(result.data.code);

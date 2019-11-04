@@ -85,7 +85,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
-	$httpService.post('/app.do?'+param, $scope, function(result){
+	$httpService.post('app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
@@ -100,7 +100,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		$scope.param = {}; $scope.param["valid"] = "1";
 		if(_this != 0) $scope.param = _this;
 		$scope.action = '添加/编辑';
-		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Management/EmployeeAddEdit.tpl.html'});
+		asideEmployee = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: 'resource/views/Management/EmployeeAddEdit.tpl.html'});
 		asideEmployee.$promise.then(function() {
 			asideEmployee.show();
 			$(document).ready(function(){
@@ -117,7 +117,7 @@ app.controller('EmployeeController', function($rootScope, $scope, $httpService, 
 		}
 		$scope.loading.show();
 		$scope.param = param;
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+		$httpService.post('app.do?channel='+common.saveAddEditUrl, $scope, function(result){
 			$scope.loading.hide();
 			$scope.dataList = result.data.item;
 			asideEmployee.hide();

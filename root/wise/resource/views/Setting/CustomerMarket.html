@@ -120,7 +120,7 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
 	var _view = $scope.$stateParams.view,common = '';
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
-	$httpService.post('/app.do?'+param, $scope, function(result){
+	$httpService.post('app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
@@ -157,7 +157,7 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
 		$scope.param = {}; $scope.param["valid"] = "1";
 		if(_this != 0) $scope.param = _this;
 		$scope.action = '添加/编辑';
-		asideCustomerMarket = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketAddEdit.tpl.html?'+__VERSION});
+		asideCustomerMarket = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: 'resource/views/Setting/CustomerMarketAddEdit.tpl.html?'+__VERSION});
 		asideCustomerMarket.$promise.then(function() {
 			asideCustomerMarket.show();
 			$(document).ready(function(){
@@ -176,7 +176,7 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
 		var market = $scope.dataList[param['market_father_id']];
 		param['marketing'] = market['marketing'];
 		$scope.param = param;
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+		$httpService.post('app.do?channel='+common.saveAddEditUrl, $scope, function(result){
 			$scope.loading.hide();
 			$scope.dataList = result.data.item;
 			asideCustomerMarket.hide();
@@ -188,7 +188,7 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
 		$scope.param = {}; $scope.param["valid"] = "1"; editReceivable = i;
 		if(_this != 0) $scope.param = angular.copy(_this);
 		$scope.action = '添加/编辑';
-		asideReceivable = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Setting/CustomerMarketReceivableAddEdit.tpl.html?'+__VERSION});
+		asideReceivable = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: 'resource/views/Setting/CustomerMarketReceivableAddEdit.tpl.html?'+__VERSION});
 		asideReceivable.$promise.then(function() {
 			asideReceivable.show();
 			$(document).ready(function(){
@@ -211,7 +211,7 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
 		$scope.param = param;
         $scope.beginLoading =! $scope.beginLoading;
         $httpService.header('method', 'Receivable');
-		$httpService.post('/app.do?channel='+common.saveAddEditUrl, $scope, function(result){
+		$httpService.post('app.do?channel='+common.saveAddEditUrl, $scope, function(result){
             $scope.beginLoading =! $scope.beginLoading;
             $httpService.deleteHeader('method');
 			$scope.loading.hide();
@@ -233,7 +233,7 @@ app.controller('CustomerMarketController', function($rootScope,$scope,$httpServi
         $scope.param.tableState = tableState;
         $scope.loading.start();
         $httpService.header('method', 'ReceivablePagination');
-        $httpService.post('/app.do?'+param, $scope, function(result){
+        $httpService.post('app.do?'+param, $scope, function(result){
             $scope.loading.percent();
             $httpService.deleteHeader('method');
             $scope.displayed = result.data.item.receivableData.data;

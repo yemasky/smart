@@ -51,7 +51,7 @@
 							<tr ng-repeat="(i, cuisine) in itemList">
 								<td><img class="img-responsive" width="45" height="45" ng-src="{{cuisine.image_src}}"></td>
 								<td title="{{cuisine.cuisine_specialty}}">{{cuisine.cuisine_name}}<button type="button" class="btn btn-xs" data-html="true" data-placement="bottom" title="套菜" data-container="body" data-template-url="/app/complete_dinner.html" data-trigger="click" bs-popover ng-if="cuisine.sku_complete_dinner==1">套菜<i class="fa fa-caret-down"></i></button></td>
-								<td>{{itemCategoryList[cuisine.cuisine_category_id].cuisine_name}}</td>
+								<td>{{hashCategoryList[cuisine.cuisine_category_id].cuisine_name}}</td>
 								<td>{{cuisine.cuisine_price}}</td>
 								<td><span ng-if="cuisine.cuisine_inventory==-999">无限</span><span ng-if="cuisine.cuisine_inventory==-9999">-</span><span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span></td>
 								<td>{{cuisine.cuisine_sell_clear==1?'沽清':''}}</td>
@@ -123,7 +123,7 @@
                 <div class="w-xl w-auto-xs">
                     <div class="box bg-white m-xs">
                       <div class="box-col w-auto-xs v-m">
-                        <img ng-click="addArrtibute(channel_config_key, 0)" ng-src="{{__RESOURCE}}images/a10.jpg" width="120" height="120" class="b p-xs m-t-xs">
+                        <img ng-click="addArrtibute(channel_config_key, 0)" ng-src="resource/images/a10.jpg" width="120" height="120" class="b p-xs m-t-xs">
                       </div>
                       <div class="box-col p">
                         <a href="" class="fa fa-plus-square" ng-click="addArrtibute(channel_config_key, 0)"> 添加{{channel_config_name}}</a>
@@ -170,14 +170,14 @@
 <script language="JavaScript">
     app.controller('MealController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
 		$scope.param = {};
-		$ocLazyLoad.load([__RESOURCE+"editor/kindeditor/lang/zh-CN.js"]);
+		$ocLazyLoad.load(["resource/editor/kindeditor/lang/zh-CN.js"]);
 		var arrayAttribute = {};
 		//获取数据
 		var _channel = $scope.$stateParams.channel, common = '';
 		var _view = $scope.$stateParams.view;
 		var param = 'channel='+_channel+'&view='+_view;
 		$scope.loading.show();
-		$httpService.post('/app.do?'+param, $scope, function(result){
+		$httpService.post('app.do?'+param, $scope, function(result){
 			$scope.loading.hide();
 			if(result.data.success == '0') {
 				var message = $scope.getErrorByCode(result.data.code);
@@ -219,7 +219,7 @@
 				cuisineSkuAttrList[3] = angular.copy(cuisineSkuAttr);
 				$scope.cuisineSkuAttrList = cuisineSkuAttrList;
 				//$scope.safeItemList = result.data.item.itemList;
-				var itemList = [], j = 0, cuisineSKU = {},hashCuisineSKU = {};
+				var itemList = [], j = 0, cuisineSKU = {},hashCuisineSKU = {},hashCategoryList = {};
 				for(var i in $scope.itemList) {
 					itemList[j] = $scope.itemList[i][i];
 					cuisineSKU[i] = $scope.itemList[i];
@@ -232,8 +232,11 @@
 					}
 					j++;
 				}
+				for(var i in $scope.itemCategoryList) {
+					hashCategoryList[$scope.itemCategoryList[i].cuisine_id] = $scope.itemCategoryList[i];
+				}
 				$scope.itemList = itemList;$scope.safeItemList = itemList;$scope.cuisineSKU = cuisineSKU;
-				$scope.hashCuisineSKU = hashCuisineSKU;
+				$scope.hashCuisineSKU = hashCuisineSKU;$scope.hashCategoryList = hashCategoryList;
 			}
 		});
 		
@@ -241,6 +244,7 @@
 		//begin commom 右边数据/////////////////////////////////////////////////////////////////////////////////////
 		var myArrtibute = '';
 		$scope.addArrtibute = function(key, editParam) {
+			$scope.editParam = editParam;
 			$scope.param.sku_complete_dinner_ids = {};
 			$scope.deleteSKU = {};$scope.haveSelectImages = {};$scope.extend_attr = {};var param = {};
 			if(editParam == 0) {
@@ -281,7 +285,7 @@
 			}
 			
 			$scope.param = param;
-            myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: __RESOURCE+'views/ChannelConfig/'+key+'.tpl.html?'+__VERSION});
+            myArrtibute = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: 'resource/views/ChannelConfig/'+key+'.tpl.html?'+__VERSION});
             myArrtibute.$promise.then(function() {
 				myArrtibute.show();
 				$scope.setImage();
@@ -377,8 +381,10 @@
 					myArrtibute.hide();
 					//$scope.itemList[param.cuisine_id] = param;
 					if($scope.channel_config_key == 'cuisineCategory') {
+						
 					}
 					if($scope.channel_config_key == 'cuisine') $scope.editCuisine = '';
+					$scope.editParam = $scope.param;
 				} 
 				loading.hide();
 			});
@@ -486,7 +492,7 @@
 			$scope.param = {};        
 			$scope.param.tableState = tableState;
 			$scope.loading.start();
-			$httpService.post('/app.do?'+param+'&cuisinePagination=1', $scope, function(result){
+			$httpService.post('app.do?'+param+'&cuisinePagination=1', $scope, function(result){
 				$scope.loading.percent();
 				$scope.itemList = result.data.item.receivableData.data;
 				tableState.pagination.numberOfPages = result.data.item.receivableData.numberOfPages;
@@ -496,7 +502,7 @@
 		var complete_dinner = '';
 		$scope.editCompleteDinner = function() {
 			//$scope.editCuisine
-			complete_dinner = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: __RESOURCE+'views/ChannelConfig/cuisine.complete_dinner.tpl.html?'+__VERSION});
+			complete_dinner = $aside({scope : $scope, title: $scope.arrayChannel.channel_name+$scope.channel_config_name, content: 'My Content', placement : 'top', animation : 'am-fade-and-slide-top', backdrop : "static", container: 'body', templateUrl: 'resource/views/ChannelConfig/cuisine.complete_dinner.tpl.html?'+__VERSION});
             complete_dinner.$promise.then(function() {
 				complete_dinner.show();
 				$scope.setImage();
@@ -519,7 +525,7 @@
 			$scope.param = {};        
 			$scope.param.tableState = tableState;
 			$scope.loading.start();
-			$httpService.post('/app.do?'+param+'&tablePagination=1', $scope, function(result){
+			$httpService.post('app.do?'+param+'&tablePagination=1', $scope, function(result){
 				$scope.loading.percent();
 				$scope.itemList = result.data.item.receivableData.data;
 				tableState.pagination.numberOfPages = result.data.item.receivableData.numberOfPages;

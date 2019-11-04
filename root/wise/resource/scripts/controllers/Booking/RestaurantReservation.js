@@ -19,10 +19,11 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	var _channel = $scope.$stateParams.channel;
 	var _view = $scope.$stateParams.view,common = '';
 	var param = 'channel='+_channel+'&view='+_view;
+	$scope.absurl = '#!/app/booking/'+_view+'/'+_channel;
     beginMealStatus();//开始执行
     function beginMealStatus() {
         $scope.loading.show();
-        $httpService.post('/app.do?'+param, $scope, function(result){
+        $httpService.post('app.do?'+param, $scope, function(result){
             $scope.loading.percent();
             if(result.data.success == '0') {
                 //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
@@ -63,7 +64,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		$scope.channel_id = $rootScope.employeeChannel[channel_id].channel_id;
         $scope.channel = $rootScope.employeeChannel[channel_id].channel;
 		$scope.loading.show();
-		$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+		$httpService.post('app.do?'+param+'&id='+$scope.id, $scope, function(result){
 			$scope.loading.percent();if(result.data.success == '0') {return;}//
 			$scope.roomList            = result.data.item.roomList;//客房列表
 			$scope.rowRoomList         = result.data.item.roomList;//客房列表
@@ -104,7 +105,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
             } else if(market.market_father_id == '6') {//选择协议公司 取出协议公司数据
 				if($scope.receivableList == '') {
 					$scope.loading.start();$httpService.header('method', 'getReceivable');
-					$httpService.post('/app.do?'+param, $scope, function(result){
+					$httpService.post('app.do?'+param, $scope, function(result){
 						$scope.loading.percent();$httpService.deleteHeader('method');
 						if(result.data.success === '0') {
 							return;
@@ -133,7 +134,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		if(diningType == 'cuisine') diningTypeName = '加减菜';
 		if(diningType == 'account') diningTypeName = '结账';
 		$scope.diningTypeName = diningTypeName;$scope.diningType = diningType;
-		var asideRestaurantBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: '/resource/views/Booking/Restaurant/tableBook.html',show: false});
+		var asideRestaurantBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Booking/Restaurant/tableBook.html',show: false});
 		asideRestaurantBook.$promise.then(function() {
 			asideRestaurantBook.show();
 			$(document).ready(function(){
@@ -149,14 +150,14 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		if(allCuisineList == '') {
 			$scope.loading.show();
 			$httpService.header('method', 'cuisineList');
-			$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+			$httpService.post('app.do?'+param+'&id='+$scope.id, $scope, function(result){
 				$scope.loading.percent();$httpService.deleteHeader('method');
 				if(result.data.success == '0') {
 					//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
 					return;//错误返回
 				}
 				allCuisineList = result.data.item.allCuisineList;
-				var cuisineList = [], cuisineCategory = {}, cuisineSKU = {}, cuisine_id = 0, hashCuisineSKU = {};
+				var cuisineList=[],cuisineCategory={},cuisineSKU={},cuisine_id=0,hashCuisineSKU={},categoryKey={};
 				if(allCuisineList != '') {
 					var j = 0;
 					for(var i in allCuisineList) {
@@ -168,8 +169,15 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 						if(allCuisineList[i].cuisine_is_category == '1') {
 							cuisineCategory[cuisine_id] = allCuisineList[i];
 						} else {
+							cuisineList[j] = allCuisineList[i];
+							if(angular.isUndefined(categoryKey[cuisineList[j].cuisine_category_id])) {
+								categoryKey[cuisineList[j].cuisine_category_id] = '';
+								cuisineList[j].categoryKey = 'category_'+cuisineList[j].cuisine_category_id;
+							} else {
+								cuisineList[j].categoryKey = '';
+							}
+							j++;
 							if(allCuisineList[i].sku == '1') {
-								cuisineList[j] = allCuisineList[i];j++;
 							} else {
 								if(angular.isUndefined(cuisineSKU[allCuisineList[i].sku_cuisine_id])) {
 									cuisineSKU[allCuisineList[i].sku_cuisine_id] = {};
@@ -185,6 +193,9 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 				}
 			});
 		}
+	}
+	$scope.setCuisineCategory = function($event, category_id) {
+		$event.target.value = category_id;
 	}
 	//已点菜式
 	$scope.haveBookCuisine = {};$scope.thisBookCuisine = {};
@@ -270,7 +281,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
         $scope.param.channel_father_id = $rootScope.employeeChannel[$scope.thisChannel_id].channel_father_id;
 		$scope.loading.show();
 		$httpService.header('method', 'saveRestaurantBook');
-		$httpService.post('/app.do?'+param+'&id='+$scope.id, $scope, function(result){
+		$httpService.post('app.do?'+param+'&id='+$scope.id, $scope, function(result){
 			$scope.loading.percent();
 			if(result.data.success == '0') {
 				//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});

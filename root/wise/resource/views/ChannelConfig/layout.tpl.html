@@ -174,7 +174,7 @@
                         <div class="list-group no-radius clear" id="selectRoom">
                             <input id="channel_item_multipe_delete" type="hidden" value="">
                         	<div class="list-group-item col-sm-2 m-xs" ng-repeat="(room_id, room) in haveSelectRoom">
-                            	<span class="pull-left w-thumb m-r b-b-2x"><img class="img-responsive" ng-src="/resource/images/room.png" src="/resource/images/room.png"></span>
+                            	<span class="pull-left w-thumb m-r b-b-2x"><img class="img-responsive" ng-src="resource/images/room.png" src="resource/images/room.png"></span>
                              	{{room.item_name}}  
                                 <label class="checkbox-inline ui-checks pull-right">
                                     <input type="checkbox" name="channel_item_multipe[{{room.item_id}}]" ng-click="selectRoom($event, room_id)" value="{{room.item_id}}" checked>

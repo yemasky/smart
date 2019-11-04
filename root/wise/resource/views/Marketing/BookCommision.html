@@ -69,7 +69,7 @@ app.controller('BookCommisionController', function($rootScope, $scope, $httpServ
 	var _view = $scope.$stateParams.view;
 	var param = 'channel='+_channel+'&view='+_view;
 	$scope.loading.show();
-	$httpService.post('/app.do?'+param, $scope, function(result){
+	$httpService.post('app.do?'+param, $scope, function(result){
 		$scope.loading.hide();
 		if(result.data.success == '0') {
 			var message = $scope.getErrorByCode(result.data.code);
@@ -113,7 +113,7 @@ app.controller('BookCommisionController', function($rootScope, $scope, $httpServ
 	$scope.addBookCommision = function(_this) {
 		if(_this != 0) $scope.param = _this;
 		$scope.action = '添加/编辑';
-		asideBookCommision = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: '/resource/views/Marketing/SalesTargetEdit.tpl.html'});
+		asideBookCommision = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'body', templateUrl: 'resource/views/Marketing/SalesTargetEdit.tpl.html'});
 		asideBookCommision.$promise.then(function() {
 			asideBookCommision.show();
 			$(document).ready(function(){
@@ -130,7 +130,7 @@ app.controller('BookCommisionController', function($rootScope, $scope, $httpServ
 		$scope.loading.show();
 		$scope.param = thisParam;
 		$httpService.header('method', 'saveSalesTarget');
-		$httpService.post('/app.do?'+param, $scope, function(result){
+		$httpService.post('app.do?'+param, $scope, function(result){
 			$scope.loading.hide();
 			$httpService.deleteHeader('method');
 			if (result.data.success == '0') {
@@ -142,7 +142,7 @@ app.controller('BookCommisionController', function($rootScope, $scope, $httpServ
 	$scope.getYearSalesTarget = function() {
 		$scope.loading.show();
 		$httpService.deleteHeader('method');
-		$httpService.post('/app.do?'+param+'&sales_date='+$scope.param.sales_date, $scope, function(result){
+		$httpService.post('app.do?'+param+'&sales_date='+$scope.param.sales_date, $scope, function(result){
 			$scope.loading.hide();
 			if (result.data.success == '0') {
 				return;

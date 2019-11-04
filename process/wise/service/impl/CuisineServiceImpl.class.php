@@ -56,6 +56,7 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
                 $sku_key                              = $objRequest->sku_key;
                 $arrayCuisine['cuisine_name']         = trim($objRequest->cuisine_name);
                 $arrayCuisine['cuisine_en_name']      = trim($objRequest->cuisine_en_name);
+                $arrayCuisine['cuisine_category_id']  = $objRequest->cuisine_category_id;
                 $arrayCuisine['sku_complete_dinner']  = $objRequest->sku_complete_dinner;//套菜
                 $arrayCuisine['cuisine_specialty']    = $objRequest->cuisine_specialty;
                 $arrayCuisine['cuisine_en_specialty'] = $objRequest->cuisine_en_specialty;
@@ -324,8 +325,13 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
 
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('valid', '1');
+        if (!empty($arrayOrder = $objRequest->order)) {
+            foreach ($arrayOrder as $key => $order) {
+                $whereCriteria->ORDER($key, $order);
+            }
+        }
         $field = 'cuisine_id,cuisine_category_id,cuisine_name,cuisine_en_name,image_src,sku,sku_complete_dinner,sku_complete_dinner_ids,'
-            .'sku_cuisine_id,sku_attr1,sku_attr1_value,sku_attr2,'
+            . 'sku_cuisine_id,sku_attr1,sku_attr1_value,sku_attr2,'
             . 'sku_attr2_value,sku_attr3,sku_attr3_value,sku_attr4,sku_attr4_value,sku_attr5,sku_attr5_value,cuisine_inventory,cuisine_price,'
             . 'cuisine_sell_clear,cuisine_specialty,cuisine_en_specialty,cuisine_is_category';
         return CuisineServiceImpl::instance()->getCuisine($whereCriteria, $field);
