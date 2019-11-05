@@ -1,10 +1,10 @@
-<div class="aside box-shadow h-10x b-r box-shadow no-padding" tabindex="-1" role="dialog">
+<div class="aside box-shadow h-10x b-r box-shadow no-padding" tabindex="-1" role="dialog" id="idCoupon">
   <div class="aside-dialog">
     <form name="thisForm" class="form-validation form-inline" id="thisForm" ng-submit="savePromotion()">
      <div class="aside-content">
-      <div class="aside-header" ng-show="title">
+      <div class="aside-header">
         <button type="button" class="close" ng-click="$hide()">&times;</button>
-        <h4 class="aside-title" ng-bind-html="title"></h4>
+        <h4 class="aside-title">优惠卷</h4>
       </div>
 	  <div class="aside-body no-padding">
 		<div class="col-md-12 p-v">
@@ -102,8 +102,9 @@
 			</div>
 		</div>
 		<div class="p-h m-b">
-			<div ng-include="'resource/views/Marketing/DiscountCoupon_AddEdit_Meal.html'" ng-if="channel=='Meal'"></div>
-			<div ng-include="'resource/views/Marketing/DiscountCoupon_AddEdit_Hotel.html'" ng-if="channel=='Hotel'"></div>
+			<div ng-include="'resource/views/Marketing/DiscountCoupon_AddEdit_Hotel.html?{{app.version}}'" ng-if="channel=='Hotel'"></div>
+			<span ng-include="'resource/views/Common/meal_common.tpl.html?{{app.version}}'" ng-if="channel=='Meal'"></span>
+			<div ng-include="'resource/views/Marketing/DiscountCoupon_AddEdit_Meal.html?{{app.version}}'" ng-if="channel=='Meal'"></div>
 		</div>
 	  </div>
       <div class="aside-footer panel-footer">

@@ -175,16 +175,20 @@ app.controller('DiscountCouponController', function($rootScope, $scope, $httpSer
 	}
 	//解析菜式
 	function analysisMealCuisine(allCuisineList) {
-		var cuisineList = [], cuisineCategory = {}, cuisineSKU = {}, cuisine_id = 0;
+		var cuisineList = [], cuisineCategory = {}, cuisineSKU = {}, cuisine_id = 0,hashCuisineSKU = {};
 		if(allCuisineList != '') {
 			var j = 0;
 			for(var i in allCuisineList) {
 				cuisine_id = allCuisineList[i].cuisine_id;
+				if(allCuisineList[i].sku_complete_dinner == 1) {//套菜
+					var complete_ids = allCuisineList[i].sku_complete_dinner_ids.split(',');
+					allCuisineList[i].complete_ids = complete_ids;
+				}
 				if(allCuisineList[i].cuisine_is_category == '1') {
 					cuisineCategory[cuisine_id] = allCuisineList[i];
 				} else {
+					cuisineList[j] = allCuisineList[i];j++;
 					if(allCuisineList[i].sku == '1') {
-						cuisineList[j] = allCuisineList[i];j++;
 					} else {
 						if(angular.isUndefined(cuisineSKU[allCuisineList[i].sku_cuisine_id])) {
 							cuisineSKU[allCuisineList[i].sku_cuisine_id] = {};
@@ -192,14 +196,15 @@ app.controller('DiscountCouponController', function($rootScope, $scope, $httpSer
 						cuisineSKU[allCuisineList[i].sku_cuisine_id][cuisine_id] = allCuisineList[i];
 					}
 				}
+				hashCuisineSKU[cuisine_id] = allCuisineList[i];
 			}
 			$scope.itemList = cuisineList;$scope.rowList = cuisineList;
 			$scope.cuisineCategory = cuisineCategory;$scope.cuisineSKU = cuisineSKU;
-			$scope.hashItem = allCuisineList;
+			$scope.hashItem = allCuisineList;$scope.hashCuisineSKU = hashCuisineSKU;
 		}
 	}
 	//DiscountCoupon_AddEdit.html
-	var asideaddEdit = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Marketing/DiscountCoupon_AddEdit.html',show: false});
+	var asideaddEdit = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Marketing/DiscountCoupon_AddEdit.html?'+__VERSION,show: false});
 	$scope.addEditDiscount = function (discount, discount_i) {
 		$scope.discount_i = discount_i;
 		$scope.param.discount_category='discount';

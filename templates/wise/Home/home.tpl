@@ -141,7 +141,7 @@
       <ul class="list-group list-group-md">
         <%foreach key=i item=member from=$newMember%>
           <li class="list-group-item">
-          <a href class="pull-left w-thumb m-r b-b b-b-2x b-success"><img src="<%$member.wx_avatar%>" onerror="this.src='/data/images/userimg/user_h.png'" class="img-responsive"></a>
+          <a href class="pull-left w-thumb m-r b-b b-b-2x b-success"><img src="<%$member.wx_avatar%>" onerror="this.src='data/images/userimg/user_h.png'" class="img-responsive"></a>
           <div class="clear">
             <a href class="font-bold block"><%$member.member_name%></a>
             注册时间:<%$member.add_datetime%>

@@ -79,43 +79,7 @@
                             </div>
                             <div class="p-v-xs" ng-show="activeAtaTab==2">
                                <div class="table-responsive">
-								<table class="table table-bordered table-striped bg-white table-hover">
-								  <thead>
-									<tr>
-								      <th>订单号</th>
-									  <th translate="module.channel.market_name">客源市场</th>
-									  <th>房型</th>
-                                      <th>价格类型</th>
-									  <th>房号</th>
-									  <th>预订人</th>
-									  <th>电话/email</th>
-									  <th>预抵</th>
-									  <th>预离</th>
-									  <th></th>
-									</tr>
-								  </thead>
-								  <tbody><!-- bookingDetail -->
-									<tr ng-repeat="(item_id, detail) in check_outRoom">
-								      <td>{{detail.booking_number}}</td>
-									  <td class="text-nowrap">
-										  <span ng-if="detail.receivable_id==0">{{detail.market_name}}</span>
-										  <span ng-if="detail.receivable_id>0">{{detail.receivable_name}}</span>
-									  </td>
-									  <td><span>{{detail.item_category_name}}</span></td>
-                                      <td><span>{{detail.price_system_name}}</span></td>
-									  <td>{{detail.item_name==''?'未排房':detail.item_name}}</td>
-									  <td>{{bookList[detail.booking_number].member_name}}</td>
-									  <td>{{bookList[detail.booking_number].member_mobile==''?bookList[detail.booking_number].member_email:bookList[detail.booking_number].member_mobile}}</td>
-									  <td>{{detail.check_in | limitTo:10}}</td>
-									  <td>{{detail.check_out | limitTo:10}}</td>
-									  <td>
-                                          <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail, 1)">
-                                            <span>离店</span>
-                                          </a>
-                                      </td>
-									</tr>
-								  </tbody>
-								</table>
+								
 							  </div>
 				            </div>
                             <div class="p-v-xs form-inline" ng-show="activeAtaTab==3">
@@ -140,16 +104,24 @@
 								  </select>
 								</div>
 							</div>
-							<div class="list-group no-radius">
+							<div class="list-group no-radius" id="idRestaurantBook">
 								<div class="list-group-item col-sm-2 col-xs-6 p-xs" ng-repeat="(i, cuisine) in cuisineList">
 								  <a href class="pull-left w-thumb m-r-xs"><img ng-src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>
-								  <div class="clear"><div><span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:7}}</span><code ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="body" data-template-url="/app/complete_dinner.html" data-trigger="click" bs-popover>套<i class="fa fa-caret-down"></i></code></div>
+								  <div class="clear">
+									  <div><span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:7}}</span><a class="label label-xs" ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idRestaurantBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></a></div>
 									  <small>￥{{cuisine.cuisine_price}} <small class="ti-server" title="库存"></small>
 										  <span ng-if="cuisine.cuisine_inventory==-999">无限</span>
 										  <span ng-if="cuisine.cuisine_inventory==-9999">-</span>
 										  <span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span>
 									  </small>
-								  <span class="pull-right"><a class="text-warning" ng-click="diningTable('cuisine', room);addBookCuisine(cuisine, 0)"><i class="glyphicon glyphicon-plus-sign"></i></a></span></div>
+								  	  <span class="pull-right"><a class="text-warning" ng-click="diningTable('cuisine', room);addBookCuisine(cuisine, 0)"><i class="glyphicon glyphicon-plus-sign"></i></a></span>
+								  </div>
+								  <span class="clear text-ellipsis small">
+									  <a class="label label-xs bg-danger" ng-if="cuisine.discount!=''" data-html="true" data-placement="bottom" title="折扣" data-container="#idRestaurantBook" data-template-url="/app/dscount_dinner.html" data-trigger="hover" bs-popover>折<i class="fa fa-caret-down"></i></a>
+									  <span class="badge badge-xs" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
+									  <span class="badge badge-xs" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
+									  <span class="badge badge-xs" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
+								  </span>
 								</div>
 							</div>  
 						</div>
@@ -256,7 +228,7 @@
     </div>
   </div>
 </div>
-<span ng-include="'resource/views/Common/meal_common.tpl.html'"></span>
+<span ng-include="'resource/views/Common/meal_common.tpl.html?{{app.version}}'"></span>
 <script type="text/ng-template" id="/app/book_message.html">
 <div class="list-group-item">
   <a href class="w-thumb-md pull-left m-r"><img src="/data/images/userimg/user_m.png" class="img-responsive"></a>

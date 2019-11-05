@@ -60,6 +60,7 @@ class DiscountCouponPromotionAction extends \BaseAction {
             $arrayResult['allLayoutList'] = ChannelServiceImpl::instance()->getChannelItemLayout($objRequest);
         }
         if ($thisChannel['channel'] == 'Meal') {
+            $objRequest->order             = ['cuisine_category_id' => 'ASC'];
             $arrayResult['allCuisineList'] = CuisineServiceImpl::instance()->getCuisineList($objRequest, $objResponse);
         }
         //客源市场
@@ -87,6 +88,7 @@ class DiscountCouponPromotionAction extends \BaseAction {
         $arrayInput     = $objRequest->getInput();
         unset($arrayInput['tableState']);
 
+        $arrayInput['market_ids'] = '';
         $arraySelectMarket = $objRequest->getInput('selectMarket');
         unset($arrayInput['selectMarket']);
         if (!empty($arraySelectMarket)) {
@@ -96,14 +98,15 @@ class DiscountCouponPromotionAction extends \BaseAction {
             }
             $arrayInput['market_ids'] = implode(',', $arrayMarketPromotion);
         }
+        $arrayInput['discount_item_list'] = '';
         if ($module_channel == 'Hotel') {
             $arrayLayout = $objRequest->getInput('layout');
             if (!empty($arrayLayout)) {
                 $arrayyLayoutPromotion = [];
                 foreach ($arrayLayout as $item => $value) {
-                    if ($value) $arrayyLayoutPromotion[] = $item;
+                    if ($value) $arrayLayoutPromotion[] = $item;
                 }
-                $arrayInput['discount_item_list'] = implode(',', $arrayyLayoutPromotion);
+                $arrayInput['discount_item_list'] = implode(',', $arrayLayoutPromotion);
             }
             unset($arrayInput['layout']);
         }
@@ -132,6 +135,10 @@ class DiscountCouponPromotionAction extends \BaseAction {
             $arrayInput['company_id'] = $company_id;
             $arrayInput['channel_id'] = $channel_id;
             $discount_id              = DiscountServiceImpl::instance()->saveDiscount($arrayInput);
+            //发卷
+            if($objRequest->getInput('discount_category') == 'coupon' && $objRequest->getInput('coupon_issue') > 0) {
+                //发卷用户领的时候即时发卷 所以无必要插入数据和修改
+            }
         } else {
             unset($arrayInput['cd_id']);
             unset($arrayInput['use_condition']);
@@ -140,8 +147,8 @@ class DiscountCouponPromotionAction extends \BaseAction {
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('discount_id', $cd_id);
             DiscountServiceImpl::instance()->updateDiscount($whereCriteria, $arrayInput);
             $discount_id = $cd_id;
+            //更新卷
         }
-
 
         $objSuccessService = new \SuccessService();
         $objSuccessService->setData(['discount_id' => $discount_id, 'cd_id' => encode($discount_id)]);

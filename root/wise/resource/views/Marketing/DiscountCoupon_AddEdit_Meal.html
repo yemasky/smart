@@ -13,12 +13,20 @@
 		</div>
 	</div>
 	<div class="list-group no-radius clearfix">
-		<div class="list-group-item col-sm-1 col-xs-4 no-padding m-r-xs" ng-repeat="(i, cuisine) in itemList">
-		  <div class="clear p-xs">
-			<div>{{cuisine.cuisine_name}}
+		<div class="list-group-item col-sm-2 col-xs-6 no-padding" ng-repeat="(i, cuisine) in itemList">
+		    <div class="clear p-xs">{{cuisine.cuisine_name}}<code ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idCoupon" data-template-url="/app/complete_dinner.html" data-trigger="click" bs-popover>套<i class="fa fa-caret-down"></i></code>
 				<label class="pull-right ui-checks"><input type="checkbox" name="cuisine[{{cuisine.cuisine_id}}]" ng-model="param.cuisine[cuisine.cuisine_id]" value="{{cuisine.cuisine_id}}"><i></i></label>
+				<small class="clearfix">￥{{cuisine.cuisine_price}} <small class="ti-server" title="库存"></small>
+				  <span ng-if="cuisine.cuisine_inventory==-999">无限</span>
+				  <span ng-if="cuisine.cuisine_inventory==-9999">-</span>
+				  <span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span>
+				</small>
+				<span class="clear text-ellipsis small text-dark">
+					<span ng-if="cuisine.sku_attr1!=''">{{cuisine.sku_attr1}}:{{cuisine.sku_attr1_value}}</span> 
+					<span ng-if="cuisine.sku_attr2!=''">{{cuisine.sku_attr2}}:{{cuisine.sku_attr2_value}}</span>
+					<span ng-if="cuisine.sku_attr3!=''">{{cuisine.sku_attr3}}:{{cuisine.sku_attr3_value}}</span>　
+				</span>
 			</div>
-		  </div>
 		</div>
 	</div>  
   </div>

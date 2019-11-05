@@ -30,6 +30,7 @@
 								<th>图片</th>
 								<th st-ratio="40" st-sort="cuisine_name">菜式名字</th>
 								<th st-ratio="10" st-sort="cuisine_category_id">类别</th>
+								<th st-ratio="10">规格</th>
 								<th st-ratio="15" st-sort="cuisine_price">￥售价</th>
 								<th st-ratio="15" st-sort="cuisine_inventory"><small class="ti-server" title="库存"></small> 库存</th>
 								<th st-ratio="15" st-sort="cuisine_sell_clear">沽清</th>
@@ -39,7 +40,7 @@
 							</thead>
 							<tbody>
 							<tr>
-								<td colspan="8">
+								<td colspan="9">
 									<div class="input-group col-xs-3">
 									  <span class="input-group-btn">
 										<button class="btn btn-default" type="button">搜索菜名</button>
@@ -52,16 +53,17 @@
 								<td><img class="img-responsive" width="45" height="45" ng-src="{{cuisine.image_src}}"></td>
 								<td title="{{cuisine.cuisine_specialty}}">{{cuisine.cuisine_name}}<button type="button" class="btn btn-xs" data-html="true" data-placement="bottom" title="套菜" data-container="body" data-template-url="/app/complete_dinner.html" data-trigger="click" bs-popover ng-if="cuisine.sku_complete_dinner==1">套菜<i class="fa fa-caret-down"></i></button></td>
 								<td>{{hashCategoryList[cuisine.cuisine_category_id].cuisine_name}}</td>
+								<td><span class="label">{{cuisine.sku_attr1}}</span> {{cuisine.sku_attr1_value}}/<span class="label">{{cuisine.sku_attr2}}</span> {{cuisine.sku_attr2_value}}/<span class="label">{{cuisine.sku_attr3}}</span> {{cuisine.sku_attr3_value}}</td>
 								<td>{{cuisine.cuisine_price}}</td>
 								<td><span ng-if="cuisine.cuisine_inventory==-999">无限</span><span ng-if="cuisine.cuisine_inventory==-9999">-</span><span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span></td>
 								<td>{{cuisine.cuisine_sell_clear==1?'沽清':''}}</td>
 								<td>{{cuisine.valid==0?'无效':'有效'}}</td>
-								<td><a><i class="glyphicon glyphicon-edit" ng-click="editItem(cuisine)"></i></a></td>
+								<td><a><i class="glyphicon glyphicon-edit" ng-click="editItem(cuisine)" ng-if="cuisine.sku_cuisine_id==cuisine.cuisine_id"></i></a></td>
 							</tr>
 							</tbody>
 							<tfoot>
 							<tr>
-								<td colspan="6" class="text-center">
+								<td colspan="9" class="text-center">
 									<div st-pagination st-items-by-page="10" st-displayed-pages="5" class="no-margin"></div>
 								</td>
 							</tr>
@@ -221,16 +223,16 @@
 				//$scope.safeItemList = result.data.item.itemList;
 				var itemList = [], j = 0, cuisineSKU = {},hashCuisineSKU = {},hashCategoryList = {};
 				for(var i in $scope.itemList) {
-					itemList[j] = $scope.itemList[i][i];
 					cuisineSKU[i] = $scope.itemList[i];
 					for(var k in $scope.itemList[i]) {
 						hashCuisineSKU[k] = $scope.itemList[i][k];
+						itemList[j] = $scope.itemList[i][k];
+						if(itemList[j].sku_complete_dinner == 1) {//套菜
+							var complete_ids = itemList[j].sku_complete_dinner_ids.split(',');
+							itemList[j].complete_ids = complete_ids;
+						}
+						j++;
 					}
-					if(itemList[j].sku_complete_dinner == 1) {//套菜
-					    var complete_ids = itemList[j].sku_complete_dinner_ids.split(',');
-						itemList[j].complete_ids = complete_ids;
-					}
-					j++;
 				}
 				for(var i in $scope.itemCategoryList) {
 					hashCategoryList[$scope.itemCategoryList[i].cuisine_id] = $scope.itemCategoryList[i];

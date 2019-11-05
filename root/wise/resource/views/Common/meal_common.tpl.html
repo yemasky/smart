@@ -1,4 +1,42 @@
 <script type="text/ng-template" id="/app/complete_dinner.html">
-<div class="col-sm-4">
+<div class="col-sm-5">
 <div class="list-group no-radius"><div class="list-group-item p-xs col-sm-6 col-xs-6" ng-repeat="(_i, id) in cuisine.complete_ids">{{hashCuisineSKU[id].cuisine_name}} <div class="clear">￥ {{hashCuisineSKU[id].cuisine_price}}<span class="pull-right"><small class="ti-server" title="库存"></small> <span ng-if="hashCuisineSKU[id].cuisine_inventory==-999">无限</span><span ng-if="hashCuisineSKU[id].cuisine_inventory==-9999">-</span><span ng-if="hashCuisineSKU[id].cuisine_inventory!=-999&&hashCuisineSKU[id].cuisine_inventory!=-9999">{{hashCuisineSKU[id].cuisine_inventory}}</span></span></div></div></div></div>
+</script>
+<script type="text/ng-template" id="/app/dscount_dinner.html">
+<div class="col-sm-6">
+<div class="list-group no-radius">
+<div class="list-group-item p-xs no-padding no-border"> 
+	<div class="table-responsive no-padding no-border">
+		<table class="table table-bordered table-striped bg-white" id="print_content">
+			<thead>
+				<tr class="text-nowrap">
+					<th>名称</th>
+					<th>客源市场</th>
+					<th>优惠类型</th>
+					<th>有效时间</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="(_i, discount) in cuisine.discount">
+				<td>{{discount.discount_name}}</td>
+				<td><span ng-repeat="(i, market) in discount.market_ids">{{hashMarket[market].market_name}} </span></td>
+				<td><span ng-if="discount.discount_category=='discount'">折扣</span>
+					<span ng-if="discount.discount_category=='coupon'">优惠劵</span>
+					<span ng-if="discount.discount_category=='new_member'">新用户</span>
+					<span ng-if="discount.discount_type=='1'">打{{discount.discount}}折</span>
+					<span ng-if="discount.discount_type=='2'">直减{{discount.discount}}</span>
+					<span ng-if="discount.discount_type=='3'">满{{discount.discount_consume_money}}减{{discount.discount}}</span>
+					<span ng-if="discount.discount_type=='5'">优惠卷 {{discount.discount}}</span>
+					<span ng-if="discount.discount_type=='6'">现金红包 {{discount.discount}}</span>
+					<span ng-if="discount.discount_type=='7'">现金卷 {{discount.discount}}</span>
+					<span ng-if="discount.discount_category=='coupon'">({{discount.coupon_issue}}/{{discount.coupon_receive}})</span>
+				</td>
+				<td>{{discount.begin_date}}~{{discount.end_date}}(<span ng-repeat="(i, week) in discount.use_week track by $index">{{weekday[week]}} </span>)</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</div>
+</div>
+</div>
 </script>

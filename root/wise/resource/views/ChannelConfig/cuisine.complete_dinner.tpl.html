@@ -43,10 +43,10 @@
 							</div>
 						</td>
 					</tr>
-					<tr ng-repeat="(i, item) in itemList" ng-if="item.cuisine_id!=param.cuisine_id">
+					<tr ng-repeat="(i, item) in itemList" ng-if="item.cuisine_id!=param.cuisine_id&&item.sku_complete_dinner=='0'">
 						<td><img class="img-responsive" width="25" height="25" ng-src="{{item.image_src}}"></td>
 						<td title="{{item.cuisine_specialty}}">{{item.cuisine_name}}</td>
-						<td>{{itemCategoryList[item.cuisine_category_id].cuisine_name}}</td>
+						<td>{{hashCategoryList[item.cuisine_category_id].cuisine_name}}</td>
 						<td>{{item.cuisine_price}}</td>
 						<td>{{item.sku_attr1}}:{{item.sku_attr1_value}}</td>
 						<td>{{item.sku_attr2}}:{{item.sku_attr2_value}}</td>

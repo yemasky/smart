@@ -38,6 +38,7 @@ class MealOrderAction extends \BaseAction {
         return $objResponse->successServiceResponse($successService);
     }
 
+    //餐饮预订
     protected function doRestaurantReservation(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $method = $objRequest->method;
         if (!empty($method)) {
@@ -57,9 +58,7 @@ class MealOrderAction extends \BaseAction {
         $objRequest->toHashArray    = true;
         $arrayResult['roomList']    = ChannelServiceImpl::instance()->getChannelItemHash($objRequest, $objResponse);
         //取出折扣
-        $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->ArrayIN('channel_id', ['0', $channel_id])->GE('end_date', getDay());
-        $arrayResult['channelDiscountList'] = DiscountServiceImpl::instance()->getDiscount($whereCriteria);
+        $arrayResult['channelDiscountList'] = DiscountServiceImpl::instance()->getBookingDiscount($company_id, $channel_id);
         //
         $successService = new \SuccessService();
         $successService->setData($arrayResult);
@@ -68,7 +67,7 @@ class MealOrderAction extends \BaseAction {
 
     //
     protected function doMethodCuisineList(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $objRequest->order = ['cuisine_category_id'=>'ASC'];
+        $objRequest->order             = ['cuisine_category_id' => 'ASC'];
         $arrayResult['allCuisineList'] = CuisineServiceImpl::instance()->getCuisineList($objRequest, $objResponse);
         $successService                = new \SuccessService();
         $successService->setData($arrayResult);

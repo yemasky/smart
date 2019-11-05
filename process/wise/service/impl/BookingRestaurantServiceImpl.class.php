@@ -42,7 +42,7 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         $arrayInput                        = $objRequest->getInput();
         $check_in                          = $objRequest->validInput('check_in');
         $in_time                           = $objRequest->validInput('in_time');
-        $arrayCommonData['booking_number'] = 0;
+        $arrayCommonData['booking_number'] = 0;//新订单
         if (!empty($booking_number) && is_numeric($booking_number)) {
             $arrayCommonData['booking_number'] = $booking_number;
         }
