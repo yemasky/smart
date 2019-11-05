@@ -118,9 +118,9 @@
 								  </div>
 								  <span class="clear text-ellipsis small">
 									  <a class="label label-xs bg-danger" ng-if="cuisine.discount!=''" data-html="true" data-placement="bottom" title="折扣" data-container="#idRestaurantBook" data-template-url="/app/dscount_dinner.html" data-trigger="hover" bs-popover>折<i class="fa fa-caret-down"></i></a>
-									  <span class="badge badge-xs" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
-									  <span class="badge badge-xs" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
-									  <span class="badge badge-xs" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
+									  <span class="badge badge-xs" title="{{cuisine.sku_attr1}}" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
+									  <span class="badge badge-xs" title="{{cuisine.sku_attr2}}" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
+									  <span class="badge badge-xs" title="{{cuisine.sku_attr3}}" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
 								  </span>
 								</div>
 							</div>  

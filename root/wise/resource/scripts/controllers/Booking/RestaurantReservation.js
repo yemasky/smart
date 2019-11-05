@@ -162,10 +162,10 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 							discount_item_list = discount.discount_item_list.split(','),
 							market_ids = discount.market_ids.split(',');
 						for(var j in discount_item_list) {
-							if(discount_item_list[j] > 0) {
+							if(discount_item_list[j] > 0) {//菜式ID>0
 								if(angular.isUndefined(hashDiscountItem[discount_item_list[j]])) 
 									hashDiscountItem[discount_item_list[j]] = {};
-								hashDiscountItem[discount_item_list[j]][k] = discount;
+								hashDiscountItem[discount_item_list[j]][k] = discount;//菜式有几个折扣
 								hashDiscountItem[discount_item_list[j]][k]['week'] = week;
 								hashDiscountItem[discount_item_list[j]][k]['market_ids'] = market_ids;
 								k++;
@@ -189,9 +189,20 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 							} else {
 								cuisineList[j].categoryKey = '';
 							}
-							cuisineList[j].discount = '';
+							cuisineList[j].discount = '';cuisineList[j]['discount_price'] = '';
 							if(angular.isDefined(hashDiscountItem[cuisine_id])) {
 								cuisineList[j].discount = hashDiscountItem[cuisine_id];
+								for(var k in cuisineList[j].discount) {
+									var discount = cuisineList[j].discount[k];
+									if(discount.discount_category == 'discount') {//1打折 2直减 3满减 4积分 5优惠卷 6现金红包 7现金卷
+									  if(discount.discount_type == '1') {
+										cuisineList[j]['discount_price']=$scope.arithmetic(cuisineList[j].cuisine_price,'*',discount.discount,2); 
+									  }
+									  if(discount.discount_type == '2') {
+									    cuisineList[j]['discount_price']=$scope.arithmetic(cuisineList[j].cuisine_price,'-',discount.discount,2); 
+									  }
+									}
+								}
 							}
 							j++;
 							if(allCuisineList[i].sku == '1') {
@@ -226,6 +237,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	}
 	$scope.addBookCuisine = function(cuisine, table_id) {
 		//计算折扣
+		
 		table_id = getBookTableId(table_id);
 		if(table_id === false) return;
 		if(angular.isUndefined($scope.haveBookCuisine[table_id])) $scope.haveBookCuisine[table_id] = {};
@@ -297,6 +309,8 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	$scope.clearBookTable = function() {
 		$scope.haveBookTable = {};$scope.thisBookTable = {};
 	}
+	//计算折扣
+	
     //打印
     $scope.printBill = function(print) {
         var consumePrint = $scope.consumePrint,accountPrint = $scope.accountPrint, borrowingPrint = $scope.borrowingPrint;

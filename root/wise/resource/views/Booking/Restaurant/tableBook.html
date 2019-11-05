@@ -130,16 +130,16 @@
 								  <!--<a href class="pull-left w-thumb m-r-xs"><img ng-src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>-->
 								    <div class="clear">
 										<div><span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:7}}</span><code ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></code></div>
-								  		<small><a class="label label-xs bg-danger" ng-if="cuisine.discount!=''" title="折扣" >折</a>￥{{cuisine.cuisine_price}} <small class="ti-server" title="库存"></small>
+								  		<small>￥{{cuisine.cuisine_price}}<a class="label label-xs bg-danger" ng-if="cuisine.discount!=''" title="折扣" >折 {{cuisine.discount_price}}</a> <small class="ti-server" title="库存"></small>
 										  <span ng-if="cuisine.cuisine_inventory==-999">无限</span>
 										  <span ng-if="cuisine.cuisine_inventory==-9999">-</span>
 										  <span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span></small>
 								  		<span class="pull-right"><a class="text-color" ng-click="reduceBookCuisine(cuisine, table_id)"><i class="glyphicon glyphicon-minus-sign"></i></a>{{cuisine.bookNumber}}<a class="text-warning" ng-click="addBookCuisine(cuisine, table_id)"><i class="glyphicon glyphicon-plus-sign"></i></a></span>
 									</div>
 									<span class="clear text-ellipsis small">
-									  <span class="badge badge-xs" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
-									  <span class="badge badge-xs" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
-									  <span class="badge badge-xs" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
+									  <span class="badge badge-xs" title="{{cuisine.sku_attr1}}" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
+									  <span class="badge badge-xs" title="{{cuisine.sku_attr2}}" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
+									  <span class="badge badge-xs" title="{{cuisine.sku_attr3}}" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
 								    </span>
 								</div>
 							</div> 
@@ -176,9 +176,9 @@
 											  <span class="pull-right"><a class="text-color" ng-click="reduceBookCuisine(cuisine, 0)" ng-if="thisBookCuisine[cuisine.cuisine_id]>0"><i class="glyphicon glyphicon-minus-sign"></i></a>{{thisBookCuisine[cuisine.cuisine_id]}}<a class="text-warning" ng-click="addBookCuisine(cuisine, 0)"><i class="glyphicon glyphicon-plus-sign"></i></a></span></div>
 											  <span class="clear text-ellipsis small">
 												  <a class="label label-xs bg-danger" ng-if="cuisine.discount!=''" data-html="true" data-placement="bottom" title="折扣" data-container="#idTableBook" data-template-url="/app/dscount_dinner.html" data-trigger="hover" bs-popover>折<i class="fa fa-caret-down"></i></a>
-												  <span class="badge badge-xs" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
-												  <span class="badge badge-xs" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
-												  <span class="badge badge-xs" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
+												  <span class="badge badge-xs" title="{{cuisine.sku_attr1}}" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
+												  <span class="badge badge-xs" title="{{cuisine.sku_attr2}}" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
+												  <span class="badge badge-xs" title="{{cuisine.sku_attr3}}" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
 											  </span>
 											</div>
 										</div>  
