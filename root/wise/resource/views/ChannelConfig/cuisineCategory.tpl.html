@@ -21,6 +21,19 @@
             </ul>
             <div class="tab-content">
                 <div ng-show="activeTab==1">
+					<div class="form-group m-h-n clearfix">
+                      <div class="col-sm-3">
+                        <label>基本属性</label>
+                        <select class="form-control" name="cuisine_category_type" ng-model="param.cuisine_category_type">
+						  <option value="">请选择基本属性</option>
+						  <option value="breakfast">早餐</option>
+						  <option value="cuisine">菜式</option>
+						  <option value="staple_food">主食</option>
+						  <option value="wine">酒水</option>
+						  <option value="goods">商品</option>
+						</select>
+                      </div>
+                    </div>
                     <div class="form-group m-h-n clearfix">
                       <div class="col-sm-3">
                         <label>菜式类别中文名称</label>

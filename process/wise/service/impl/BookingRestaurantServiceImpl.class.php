@@ -32,19 +32,19 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
      * [channel_id => item_category_id => system_id => room_info]
      */
     public function beginBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
-        $objSuccessService = new \SuccessService();
-        $objLoginEmployee  = LoginServiceImpl::instance()->checkLoginEmployee();
-        $objEmployee       = $objLoginEmployee->getEmployeeInfo();
-        $company_id        = $objEmployee->getCompanyId();
-        $channel_id        = $objRequest->channel_id;
-        $booking_number    = decode($objRequest->getInput('book_id'));//是否挂客房的订单号
-        $market_id         = $objRequest->getInput('market_id');//客源
+        $objSuccessService                 = new \SuccessService();
+        $objLoginEmployee                  = LoginServiceImpl::instance()->checkLoginEmployee();
+        $objEmployee                       = $objLoginEmployee->getEmployeeInfo();
+        $company_id                        = $objEmployee->getCompanyId();
+        $channel_id                        = $objRequest->channel_id;
+        $booking_number                    = decode($objRequest->getInput('book_id'));//是否挂客房的订单号
+        $market_id                         = $objRequest->getInput('market_id');//客源
         $arrayInput                        = $objRequest->getInput();
         $check_in                          = $objRequest->validInput('check_in');
         $in_time                           = $objRequest->validInput('in_time');
         $arrayCommonData['booking_number'] = 0;//新订单
         if (!empty($booking_number) && is_numeric($booking_number)) {
-            $arrayCommonData['booking_number'] = $booking_number;
+            $arrayCommonData['booking_number'] = $booking_number;//老订单 或者 合并到酒店等订单
         }
         //mobile_email
         $mobile_email = $objRequest->validInput('mobile_email');
@@ -60,55 +60,62 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
             return $objSuccessService->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '缺失多个参数');
         }
         $arrayCommonData['company_id']    = $company_id;
-        $arrayCommonData['channel']       = ModulesConfig::$channel_value['Hotel'];
+        $arrayCommonData['channel']       = ModulesConfig::$channel_value['Meal'];//channel
         $arrayCommonData['channel_id']    = $channel_id;
         $arrayCommonData['employee_id']   = $objEmployee->getEmployeeId();
         $arrayCommonData['employee_name'] = $objEmployee->getEmployeeName();
-        $arrayCommonData['sales_id']      = 0;
+        $arrayCommonData['sales_id']      = 0;//销售ID
         $arrayCommonData['sales_name']    = '';
         $arrayCommonData['add_datetime']  = getDateTime();
         $arrayAllBookData                 = array_merge($arrayInput, $arrayCommonData);
-        //booking 预订人信息
+        //booking 预订人信息 新订单需要生成第一个主订单
         $BookingEntity = new BookingEntity($arrayAllBookData);
         $BookingEntity->setBookingNumber($arrayCommonData['booking_number']);
-        $BookingEntity->setBookingStatus('0');//初始状态为 0
-        $BookingEntity->setBusinessDay($objResponse->business_day);
-        $BookingEntity->setBookingTotalPrice(0);
-        $BookingEntity->setInTime($in_time);
-        //每一间房
+        if (empty($arrayCommonData['booking_number'])) {
+            $BookingEntity->setBookingStatus('0');//初始状态为 0
+            $BookingEntity->setBusinessDay($objResponse->business_day);
+            $BookingEntity->setBookingTotalPrice(0);
+            $BookingEntity->setInTime($in_time);
+        }
+        //预订的桌台
         $arrayBookDetailList = array();
         $BookingDetailEntity = new Booking_detailEntity($arrayAllBookData);
         $BookingDetailEntity->setBusinessDay($objResponse->business_day);
         $BookingDetailEntity->setBookingDetailStatus('0');
         $BookingDetailEntity->setInTime($in_time);
-        //每一间房消费
+        //每一个消费
         $BookingDetailConsumeList   = array();
         $BookingDetailConsumeEntity = new Booking_consumeEntity($arrayAllBookData);
-        $BookingDetailConsumeEntity->setConsumeTitle('房费');
+        $BookingDetailConsumeEntity->setConsumeTitle(ModulesConfig::$consumeConfig['Meals']['consume_title']);
+        $BookingDetailConsumeEntity->setConsumeId(ModulesConfig::$consumeConfig['Meals']['channel_consume_id']);//12为餐费
+        //菜式
+        $Booking_cuisineEntity = new Booking_cuisineEntity($arrayAllBookData);
+        $Booking_cuisineEntity->setAddDatetime(getDateTime());
+        $Booking_cuisineEntityList = [];
         //判断会员级别
         //
         //预订数据 每个房间1个BookingDetai，每个房间每天1个BookingConsume
         if (!empty($arrayBookingData)) {
             //取得缺少的取消政策
-            $arrayPolicy = ChannelServiceImpl::instance()->getCancellationPolicyCache($company_id);
+            //$arrayPolicy = ChannelServiceImpl::instance()->getCancellationPolicyCache($company_id);
             //取得缺失的市场佣金
-            $arrayCommision = ChannelServiceImpl::instance()->getChannelCommisionCache($company_id, $channel_id, $market_id);
+            //$arrayCommision = ChannelServiceImpl::instance()->getChannelCommisionCache($company_id, $channel_id, $market_id);
+            foreach ($arrayBookingData as $item_id => $arrayCuisineData) {//餐桌 房间 => 订菜数据
+                foreach ($arrayCuisineData as $cuisine_id => $cuisine) {
+                    $Booking_cuisineEntity->setCuisineId($cuisine_id);
+
+                }
+            }
+
+
+
         }
-
-
-
-
-
-
-        $BookingEntity            = new BookingEntity();
-        $arrayBookDetailList      = [];
-        $BookingDetailConsumeList = [];
 
         $BookingData = new BookingDataModel();
         $BookingData->setBookingEntity($BookingEntity);
         $BookingData->setBookDetailList($arrayBookDetailList);
         $BookingData->setBookingDetailConsumeList($BookingDetailConsumeList);
-
+        //
 
 
 

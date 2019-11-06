@@ -8,8 +8,28 @@
 namespace wise;
 
 class MealOrderAction extends \BaseAction {
+    protected $Booking_operationEntity;
+
     protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id       = $objLoginEmployee->getCompanyId();
+        $_self_module     = $objResponse->getResponse('_self_module');
+        //获取channel
+        $channel_id              = $objRequest->channel_id;
+        $Booking_operationEntity = new Booking_operationEntity();
+        $Booking_operationEntity->setAddDatetime(getDateTime());
+        $Booking_operationEntity->setBusinessDay(LoginServiceImpl::getBusinessDay());
+        $Booking_operationEntity->setEmployeeId($objLoginEmployee->getEmployeeId());
+        $Booking_operationEntity->setEmployeeName($objLoginEmployee->getEmployeeName());
+        $Booking_operationEntity->setCompanyId($company_id);
+        $Booking_operationEntity->setChannelId($channel_id);
+        $Booking_operationEntity->setModuleId($_self_module['module_id']);
+        $Booking_operationEntity->setModuleName($_self_module['module_name']);
+        $Booking_operationEntity->setMethod($objRequest->method);
+        $request = json_encode($objRequest->get()) . json_encode($objRequest->getInput()) . json_encode($objRequest->getPost());
+        $Booking_operationEntity->setRequest($request);
+        $this->Booking_operationEntity = $Booking_operationEntity;
     }
 
     protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -65,6 +85,10 @@ class MealOrderAction extends \BaseAction {
         return $objResponse->successServiceResponse($successService);
     }
 
+    protected function doMethodCheckMember(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        BookCommon::instance()->doCheckMember($objRequest, $objResponse);
+    }
+
     //
     protected function doMethodCuisineList(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $objRequest->order             = ['cuisine_category_id' => 'ASC'];
@@ -76,9 +100,7 @@ class MealOrderAction extends \BaseAction {
 
     //查询协议公司数据
     protected function doMethodGetReceivable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $hotelOrderAction = new HotelOrderAction();
-        $objRequest->setAction('RoomOrder');
-        $hotelOrderAction->invoking($objRequest, $objResponse);
+        BookCommon::instance()->doGetReceivable($objRequest, $objResponse);
     }
 
     //保存预订数据

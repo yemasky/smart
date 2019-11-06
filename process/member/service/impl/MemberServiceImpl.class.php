@@ -26,8 +26,8 @@ class MemberServiceImpl extends \BaseServiceImpl implements MemberService {
         $member_idcard_number = $objRequest->getInput('member_idcard_number');
 
         $whereCriteria = new \WhereCriteria();
-        if (!empty($email)) $whereCriteria->EQ('member_email', $member_email);
-        if (!empty($email)) $whereCriteria->EQ('member_mobile', $member_mobile);
+        if (!empty($member_email)) $whereCriteria->EQ('member_email', $member_email);
+        if (!empty($member_mobile)) $whereCriteria->EQ('member_mobile', $member_mobile);
         if (!empty($member_idcard_type)) $whereCriteria->EQ('id_type', $member_idcard_type);
         if (!empty($member_idcard_number)) $whereCriteria->EQ('id_number', $member_idcard_number);
         return MemberDao::instance()->getMember($whereCriteria, $field);

@@ -31,12 +31,17 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
             $arrayItemImages = $objRequest->getInput('item_images');
             CommonServiceImpl::instance()->startTransaction();
             if ($cuisine_is_category) {//类别
-                $arrayCuisineCategory['cuisine_name']         = trim($objRequest->cuisine_name);
-                $arrayCuisineCategory['cuisine_en_name']      = trim($objRequest->cuisine_en_name);
-                $arrayCuisineCategory['cuisine_specialty']    = $objRequest->cuisine_specialty;
-                $arrayCuisineCategory['cuisine_en_specialty'] = $objRequest->cuisine_en_specialty;
-                $arrayCuisineCategory['image_src']            = $objRequest->image_src;
-                $arrayCuisineCategory['valid']                = $objRequest->valid;
+                $cuisine_category_type = $objRequest->cuisine_category_type;
+                if(empty($cuisine_category_type)) {
+                    return $objResponse->successResponse(ErrorCodeConfig::$errorCode['parameter_error'], []);
+                }
+                $arrayCuisineCategory['cuisine_category_type'] = $cuisine_category_type;
+                $arrayCuisineCategory['cuisine_name']          = trim($objRequest->cuisine_name);
+                $arrayCuisineCategory['cuisine_en_name']       = trim($objRequest->cuisine_en_name);
+                $arrayCuisineCategory['cuisine_specialty']     = $objRequest->cuisine_specialty;
+                $arrayCuisineCategory['cuisine_en_specialty']  = $objRequest->cuisine_en_specialty;
+                $arrayCuisineCategory['image_src']             = $objRequest->image_src;
+                $arrayCuisineCategory['valid']                 = $objRequest->valid;
                 if (empty($cuisine_id)) {//新数据
                     $arrayCuisineCategory['company_id']          = $company_id;
                     $arrayCuisineCategory['channel_id']          = $channel_id;
@@ -351,7 +356,7 @@ class CuisineServiceImpl extends \BaseServiceImpl implements \BaseService {
 
     public function getCuisineCategory($company_id, $channel_id, $field = '*', $hashKey = '') {
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->ArrayIN('company_id', [0, $company_id])->ArrayIN('channel_id', [0, $channel_id])->EQ('cuisine_is_category', '1');
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('cuisine_is_category', '1');
         if (!empty($hashKey)) $whereCriteria->setHashKey($hashKey);
         return CuisineServiceImpl::instance()->getCuisine($whereCriteria, $field);
     }

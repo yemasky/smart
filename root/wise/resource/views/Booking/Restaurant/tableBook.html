@@ -48,7 +48,7 @@
 						<span class="input-group-addon no-radius no-padding no-border"></span>
                       	<input type="text" size="10" class="form-control" id="mobile_email" name="mobile_email" ng-model="param.mobile_email" placeholder="手机/Email" >
 					    <span class="input-group-btn">
-						  <button class="btn btn-default" type="button" ng-click="beginBooking('member')"><i class="fa fa-search"> </i> 会员</button>
+						  <button class="btn btn-default" type="button" ng-click="searchMember('member')"><i class="fa fa-search"> </i> 会员</button>
 					    </span>
                   </div>
 				</div>
@@ -132,7 +132,7 @@
 										<div>
 											<span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:11}}</span>
 											<span class="clear text-ellipsis small">
-												<code ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></code>
+												<span class="label" ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></span>
 												<span class="label label-xs" title="{{cuisine.sku_attr1}}" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
 												<span class="label label-xs" title="{{cuisine.sku_attr2}}" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
 												<span class="label label-xs" title="{{cuisine.sku_attr3}}" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
@@ -184,7 +184,7 @@
 												  <div>
 													  <span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:11}}</span>
 													  <span class="clear text-ellipsis small">
-														  <code ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></code>
+														  <span class="label" ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></span>
 														  <span class="label label-xs" title="{{cuisine.sku_attr1}}" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
 														  <span class="label label-xs" title="{{cuisine.sku_attr2}}" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
 														  <span class="label label-xs" title="{{cuisine.sku_attr3}}" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　

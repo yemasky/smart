@@ -36,6 +36,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 			$scope.channelDiscountList = result.data.item.channelDiscountList;//折扣
             $(document).ready(function(){
                 $scope.channel_id = $scope.thisChannel_id;
+				$scope.channel_father_id = $rootScope.employeeChannel[$scope.thisChannel_id].channel_father_id;
 				$scope.id = $rootScope.employeeChannel[$scope.thisChannel_id].id;
                 //$scope.defaultHotel = $scope.thisChannel[$scope.thisChannel_id]["channel_name"];
 				//设置客源市场  
@@ -62,6 +63,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	$scope.changeChannel = function(channel_id) {
 		$scope.id = $rootScope.employeeChannel[channel_id].id;
 		$scope.channel_id = $rootScope.employeeChannel[channel_id].channel_id;
+		$scope.channel_father_id = $rootScope.employeeChannel[channel_id].channel_father_id;
         $scope.channel = $rootScope.employeeChannel[channel_id].channel;
 		$scope.loading.show();
 		$httpService.post('app.do?'+param+'&id='+$scope.id, $scope, function(result){
@@ -221,6 +223,63 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	$scope.setCuisineCategory = function($event, category_id) {
 		$event.target.value = category_id;
 	}
+	//searchMember
+	$scope.searchMember = function(search) {
+        if($scope.market_father_id == '4' || search == 'member') {//判断会员是否正确
+            var mobile_email = $scope.param.mobile_email;var member_mobile = '', member_email = '';
+            if(angular.isUndefined(mobile_email) || mobile_email.indexOf("@") != -1) {
+                var emailRegexp = /^([0-9a-zA-Z\.\-\_]+)@([0-9a-zA-Z\.\-\_]+)\.([a-zA-Z]{2,5})$/i;
+                if(!emailRegexp.test(mobile_email)) {
+                    $alert({title: 'Error', content: '填写的Email不对！', templateUrl: '/modal-warning.html', show: true});
+                    return false;
+                } 
+                member_email = mobile_email;
+            } else {
+               var mobileReg = /^(13|14|15|16|17|18|19)+\d{9}$/;
+                if(!mobileReg.test(mobile_email)) {
+                    $alert({title: 'Error', content: '填写的手机号不对！', templateUrl: '/modal-warning.html', show: true});
+                    return false;
+                } 
+                member_mobile = mobile_email;
+            }
+            $scope.loading.start();
+            $httpService.header('method', 'checkMember');
+            var $checkMember = {};
+            $checkMember.param = {};
+            $checkMember.param['member_email']      = member_email;
+            $checkMember.param['member_mobile']     = member_mobile;
+            $checkMember.param['channel_father_id'] = $scope.channel_father_id;
+            $httpService.post('app.do?'+param, $checkMember, function(result){
+                $scope.loading.percent();$httpService.deleteHeader('method');
+                if(result.data.success == '0') {
+                    var message = $scope.getErrorByCode(result.data.code);
+                    var message_ext = '.没有找到"'+mobile_email+'"的会员记录！';
+                    $alert({title: 'Notice', content: message+message_ext, templateUrl: '/modal-warning.html', show: true});
+                } else {
+                    $scope.market_id = result.data.item.market_id;
+                    $scope.param.member_id = result.data.item.member_id;
+                    if(search == 'member') {
+                        //找出markey
+                        var market = '';
+                        for(var mi in $scope.marketList) {
+                            for(var mii in $scope.marketList[mi]['children']) {
+                                if($scope.market_id == $scope.marketList[mi]['children'][mii].market_id) {
+                                    market = $scope.marketList[mi]['children'][mii];
+                                    break;
+                                }
+                            }
+                        }
+                        if(market != '') {
+                            $scope.selectCustomerMarket(market, true);
+                        } else {
+                            var message_ext = '没有找到"'+mobile_email+'"的会员记录！';
+                            $alert({title: 'Notice', content: message_ext, templateUrl: '/modal-warning.html', show: true});
+                        }
+                    } 
+                }
+            });
+        } 
+	}
 	//已点菜式
 	$scope.haveBookCuisine = {};$scope.thisBookCuisine = {};
 	function getBookTableId(table_id) {
@@ -231,7 +290,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		if(table_id == 0 && angular.isDefined($scope.thisBookTable.item_id)) table_id = $scope.thisBookTable.item_id;
 		return table_id;
 	}
-	function countDiscount(cuisine) {
+	function countDiscount(cuisine) {//计算折扣
 		var create_time = 0; cuisine['is_discount'] = false; cuisine['discount_price'] = '';
 		for(var k in cuisine.discount) {
 			var discount = cuisine.discount[k],week = discount.week, market_ids = discount.market_ids;
@@ -253,8 +312,12 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 						if(thisWeek == week[w]) {
 							for(var m in market_ids) {
 								if($scope.market_id == market_ids[m]) {
-									cuisine.is_discount = true;
-									cuisine.discount_price = discount_price;
+									cuisine.is_discount       = true;
+									cuisine.discount_price    = discount_price;
+									cuisine.discount_type     = discount.discount_type;
+									cuisine.discount_category = discount.discount_category;
+									cuisine.discount          = discount.discount;
+									cuisine.discount_id       = discount.discount_id;
 								}
 								break;
 							}
@@ -269,7 +332,6 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	$scope.addBookCuisine = function(cuisine, table_id) {
 		//计算折扣
 		cuisine = countDiscount(cuisine);
-		/////end 折扣
 		table_id = getBookTableId(table_id);
 		if(table_id === false) return;
 		if(angular.isUndefined($scope.haveBookCuisine[table_id])) $scope.haveBookCuisine[table_id] = {};
@@ -340,9 +402,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	}
 	$scope.clearBookTable = function() {
 		$scope.haveBookTable = {};$scope.thisBookTable = {};
-	}
-	//计算折扣
-	
+	}	
     //打印
     $scope.printBill = function(print) {
         var consumePrint = $scope.consumePrint,accountPrint = $scope.accountPrint, borrowingPrint = $scope.borrowingPrint;
@@ -365,6 +425,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		$scope.param.booking_data = resolutionBookingData();
 		$scope.param.channel_id = $scope.channel_id;
         $scope.param.channel_father_id = $rootScope.employeeChannel[$scope.thisChannel_id].channel_father_id;
+		if($scope.param['in_time'].length > 8) $scope.param['in_time'] = $filter('limitTo')($scope.param['in_time'], 8, 11);
 		$scope.loading.show();
 		$httpService.header('method', 'saveRestaurantBook');
 		$httpService.post('app.do?'+param+'&id='+$scope.id, $scope, function(result){
@@ -388,6 +449,12 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 					booking_data[table_id][cuisine_id].sku_complete_dinner_ids = bookCuisine.sku_complete_dinner_ids;
 					booking_data[table_id][cuisine_id].cuisine_price           = bookCuisine.cuisine_price;
 					booking_data[table_id][cuisine_id].bookNumber              = bookCuisine.bookNumber;
+					booking_data[table_id][cuisine_id].is_discount             = bookCuisine.is_discount;
+					booking_data[table_id][cuisine_id].discount_price          = bookCuisine.discount_price;
+					booking_data[table_id][cuisine_id].discount_type           = bookCuisine.discount_type;
+					booking_data[table_id][cuisine_id].discount_category       = bookCuisine.discount_category;
+					booking_data[table_id][cuisine_id].discount                = bookCuisine.discount;
+					booking_data[table_id][cuisine_id].discount_id             = bookCuisine.discount_id;
 				}
 			}
 			return booking_data;

@@ -362,7 +362,7 @@ class ChannelConfigAction extends \BaseAction {
 
         $objRequest->channel_config = 'cuisine';//菜式
         //类别
-        $field                 = 'cuisine_id,cuisine_name,cuisine_en_name';
+        $field                 = 'cuisine_id,cuisine_category_type,cuisine_name,cuisine_en_name';
         $arrayCategoryDataList = CuisineServiceImpl::instance()->getCuisineCategory($company_id, $channel_id, $field);
         //SKU属性
         $cuisineSkuAttr = ModulesConfig::$cuisineSkuAttr;

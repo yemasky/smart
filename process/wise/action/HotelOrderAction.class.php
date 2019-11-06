@@ -301,14 +301,15 @@ class HotelOrderAction extends \BaseAction {
     //查询协议公司数据
     protected function doMethodGetReceivable(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         $this->setDisplay();
-        $company_id    = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        BookCommon::instance()->doGetReceivable($objRequest, $objResponse);
+        /*$company_id    = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         $channel_id    = $objRequest->channel_id;
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->ArrayIN('channel_id', [0, $channel_id])->EQ('valid', '1');
         $arrayReceivable   = ChannelServiceImpl::instance()->getChannelReceivable($whereCriteria, 'receivable_id,receivable_name');
         $objSuccessService = new \SuccessService();
         $objSuccessService->setData(['receivableData' => $arrayReceivable]);
-        return $objResponse->successServiceResponse($objSuccessService);
+        return $objResponse->successServiceResponse($objSuccessService);*/
     }
 
     //查询订房数据
@@ -360,7 +361,8 @@ class HotelOrderAction extends \BaseAction {
 
     //查询会员数据
     protected function doMethodCheckMember(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $field       = 'member_id';
+        BookCommon::instance()->doCheckMember($objRequest,$objResponse);
+        /*$field       = 'member_id';
         $arrayMember = \member\MemberServiceImpl::instance()->getMember($objRequest, $field);
         if (!empty($arrayMember)) {
             $member_id         = $arrayMember[0]['member_id'];
@@ -371,7 +373,7 @@ class HotelOrderAction extends \BaseAction {
                 return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayMemberLevel[0]);
             }
         }
-        return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_found']);
+        return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['no_data_found']);*/
     }
 
     //预订

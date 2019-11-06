@@ -328,8 +328,10 @@
 				loading.hide();
 			});
 			//sku
-			var skuList = $scope.cuisineSKU[cuisine_id];
-			$scope.skuList = skuList;
+			if($scope.channel_config_key == 'cuisine') {
+				var skuList = $scope.cuisineSKU[cuisine_id];
+				$scope.skuList = skuList;
+			}
 		};
 		$scope.selectSkuAttr = function($select, $attr, $index) {
 			$scope.cuisineSkuAttrList[$index][0].cn = $select;

@@ -66,4 +66,7 @@ class ModulesConfig extends \ModulesConfig {
                                      ['cn'=>'颜色','en'=>'']];
     public static $defaultMarket = [];
 
+    //消费配置
+    public static $consumeConfig = ['Meals'=>['channel_consume_id'=>12,'consume_title'=>'餐费'],'Hotel'=>['channel_consume_id'=>'2','consume_title'=>'房费']];
+
 }
