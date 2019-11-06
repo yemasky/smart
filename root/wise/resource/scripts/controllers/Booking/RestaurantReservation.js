@@ -111,6 +111,12 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 					});
 				}
 			}
+			//重新计算折扣
+			for(var table_id in $scope.haveBookCuisine) {
+				for(var i in $scope.haveBookCuisine[table_id]) {
+					$scope.haveBookCuisine[table_id][i] = countDiscount($scope.haveBookCuisine[table_id][i]);
+				}
+			}
         }
     };
 	$scope.selectReceivable = function(receivable) {
@@ -143,6 +149,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	}
 	//解析菜式
 	var allCuisineList = '',cuisineCategory = {},cuisineSKU = {};$scope.cuisineList = {};
+	var thisWeek = $scope.getDay('w');
 	$scope.getDiningCuisine = function() {
 		if(allCuisineList == '') {
 			$scope.loading.show();$httpService.header('method', 'cuisineList');
@@ -189,20 +196,9 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 							} else {
 								cuisineList[j].categoryKey = '';
 							}
-							cuisineList[j].discount = '';cuisineList[j]['discount_price'] = '';
+							cuisineList[j].discount = '';
 							if(angular.isDefined(hashDiscountItem[cuisine_id])) {
 								cuisineList[j].discount = hashDiscountItem[cuisine_id];
-								for(var k in cuisineList[j].discount) {
-									var discount = cuisineList[j].discount[k];
-									if(discount.discount_category == 'discount') {//1打折 2直减 3满减 4积分 5优惠卷 6现金红包 7现金卷
-									  if(discount.discount_type == '1') {
-										cuisineList[j]['discount_price']=$scope.arithmetic(cuisineList[j].cuisine_price,'*',discount.discount,2); 
-									  }
-									  if(discount.discount_type == '2') {
-									    cuisineList[j]['discount_price']=$scope.arithmetic(cuisineList[j].cuisine_price,'-',discount.discount,2); 
-									  }
-									}
-								}
 							}
 							j++;
 							if(allCuisineList[i].sku == '1') {
@@ -235,9 +231,45 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		if(table_id == 0 && angular.isDefined($scope.thisBookTable.item_id)) table_id = $scope.thisBookTable.item_id;
 		return table_id;
 	}
+	function countDiscount(cuisine) {
+		var create_time = 0; cuisine['is_discount'] = false; cuisine['discount_price'] = '';
+		for(var k in cuisine.discount) {
+			var discount = cuisine.discount[k],week = discount.week, market_ids = discount.market_ids;
+			if(discount.discount_category == 'discount') {//1打折 2直减 3满减 4积分 5优惠卷 6现金红包 7现金卷
+				if(discount.discount_type == '1' || discount.discount_type == '2') {
+					var unix_time =  new Date(discount.add_datetime.replace(/-/g,'/')).getTime() - 0;
+					if(unix_time > create_time) { create_time = unix_time;
+					} else {continue;}//取折扣的最新时间
+				} else {continue;}
+				var discount_price = -1;
+				if(discount.discount_type == '1') {//折扣
+					discount_price = $scope.arithmetic(cuisine.cuisine_price,'*',discount.discount,2); 
+				}
+				if(discount.discount_type == '2') {//直减
+					discount_price = $scope.arithmetic(cuisine.cuisine_price,'-',discount.discount,2);
+				}
+				if(discount_price > -1) {//判断折扣有效性 周比较
+					for(var w in week) {
+						if(thisWeek == week[w]) {
+							for(var m in market_ids) {
+								if($scope.market_id == market_ids[m]) {
+									cuisine.is_discount = true;
+									cuisine.discount_price = discount_price;
+								}
+								break;
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+		return cuisine;
+	}
 	$scope.addBookCuisine = function(cuisine, table_id) {
 		//计算折扣
-		
+		cuisine = countDiscount(cuisine);
+		/////end 折扣
 		table_id = getBookTableId(table_id);
 		if(table_id === false) return;
 		if(angular.isUndefined($scope.haveBookCuisine[table_id])) $scope.haveBookCuisine[table_id] = {};

@@ -89,7 +89,7 @@ class DiscountCouponPromotionAction extends \BaseAction {
         unset($arrayInput['tableState']);
 
         $arrayInput['market_ids'] = '';
-        $arraySelectMarket = $objRequest->getInput('selectMarket');
+        $arraySelectMarket        = $objRequest->getInput('selectMarket');
         unset($arrayInput['selectMarket']);
         if (!empty($arraySelectMarket)) {
             $arrayMarketPromotion = [];
@@ -132,11 +132,12 @@ class DiscountCouponPromotionAction extends \BaseAction {
         }
         $arrayInput['market_father_ids'] = json_encode($arrayInput['market_father_ids']);
         if (empty($cd_id)) {
-            $arrayInput['company_id'] = $company_id;
-            $arrayInput['channel_id'] = $channel_id;
-            $discount_id              = DiscountServiceImpl::instance()->saveDiscount($arrayInput);
+            $arrayInput['company_id']   = $company_id;
+            $arrayInput['channel_id']   = $channel_id;
+            $arrayInput['add_datetime'] = getDateTime();
+            $discount_id                = DiscountServiceImpl::instance()->saveDiscount($arrayInput);
             //发卷
-            if($objRequest->getInput('discount_category') == 'coupon' && $objRequest->getInput('coupon_issue') > 0) {
+            if ($objRequest->getInput('discount_category') == 'coupon' && $objRequest->getInput('coupon_issue') > 0) {
                 //发卷用户领的时候即时发卷 所以无必要插入数据和修改
             }
         } else {

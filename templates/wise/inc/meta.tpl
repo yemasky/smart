@@ -451,6 +451,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		};
         $scope.getDay = function(format) {
             if(angular.isUndefined(format)) format = "yyyy-MM-dd";
+			if(format == 'w') return new Date($scope._baseDateTime()).getDay();
             return $filter("date")($scope._baseDateTime(), format, 'UTC +8');
         }
         $scope.__RESOURCE = __RESOURCE;

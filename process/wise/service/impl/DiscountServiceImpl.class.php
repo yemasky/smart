@@ -22,11 +22,11 @@ class DiscountServiceImpl extends \BaseServiceImpl implements \BaseService {
         return DiscountDao::instance()->getDiscount($whereCriteria, $field);
     }
 
-    public function getBookingDiscount($company_id, $channel_id) {
+    public function getBookingDiscount($company_id, $channel_id) {//取得预订的优惠 字段少些
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->ArrayIN('channel_id', ['0', $channel_id])->GE('end_date', getDay());
         $field = 'discount_id,market_ids,discount_name,discount_category,coupon_issue,coupon_receive,discount_type,discount,discount_consume_money,'
-            .'discount_item_list,use_week,use_condition,begin_date,end_date';
+            .'discount_item_list,use_week,use_condition,begin_date,end_date,add_datetime';
         return $this->getDiscount($whereCriteria, $field);
     }
 
