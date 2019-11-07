@@ -73,6 +73,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         $arrayCommonData['receivable_id'] = $receivable_id;
         $arrayCommonData['sales_id']      = 0;
         $arrayCommonData['sales_name']    = '';
+        $arrayCommonData['client']        = $objRequest->client ? $objRequest->client : 'pms';
         $arrayCommonData['add_datetime']  = getDateTime();
         $arrayAllBookData                 = array_merge($arrayInput, $arrayCommonData);
         //booking 预订人信息
@@ -487,6 +488,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         foreach ($bookDetailList as $k => $bookDetail) {
             $bookDetailList[$k]->setBookingNumber($bookingNumber);
         }
+        //保存客房 detail
         $arrayBookDetailId = BookingDao::instance()->saveBookingDetailList($bookDetailList);
         if (!empty($arrayBookDetailId)) {
             $_max_detail_id = 0;
@@ -497,6 +499,7 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
                 $bookingDetailConsumeList[$k]->setBookingNumber($bookingNumber);
                 $_max_detail_id = $_max_detail_id < $_detail_id ? $_detail_id : $_max_detail_id;
             }
+            //保存消费 consume
             BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
             //超订检查
             $channel_id    = $bookingEntity->getChannelId();

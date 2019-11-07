@@ -70,6 +70,7 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         $arrayCommonData['sales_id']      = 0;//销售ID
         $arrayCommonData['sales_name']    = '';
         $arrayCommonData['business_day']  = $objResponse->business_day;
+        $arrayCommonData['client']        = $objRequest->client ? $objRequest->client : 'pms';
         $arrayCommonData['add_datetime']  = getDateTime();
         //暂时没开发的必填项
         $arrayCommonData['policy_id'] = 0;
@@ -100,6 +101,9 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         $Booking_cuisineEntity = new Booking_cuisineEntity($arrayAllBookData);
         $Booking_cuisineEntity->setAddDatetime(getDateTime());
         $Booking_cuisineEntityList = [];
+        //使用折扣
+        $Booking_discountEntity     = new Booking_discountEntity($arrayAllBookData);
+        $Booking_discountEntityList = [];
         //判断会员级别
         //
         //预订数据 每个房间1个BookingDetai，每个房间每天1个BookingConsume
@@ -109,10 +113,36 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
             //取得缺失的市场佣金
             //$arrayCommision = ChannelServiceImpl::instance()->getChannelCommisionCache($company_id, $channel_id, $market_id);
             foreach ($arrayBookingData as $item_id => $arrayCuisineData) {//餐桌 房间 => 订菜数据
-                $arrayBookDetailList[$item_id]      = clone ($BookingDetailEntity);
+                $BookingDetailEntity->setItemId($item_id);
+                $arrayBookDetailList[$item_id] = clone ($BookingDetailEntity);
+                $BookingDetailConsumeEntity->setItemId($item_id);
                 $BookingDetailConsumeList[$item_id] = clone ($BookingDetailConsumeEntity);
+                if (empty($arrayCuisineData)) continue;
                 foreach ($arrayCuisineData as $cuisine_id => $cuisine) {
                     $Booking_cuisineEntity->setCuisineId($cuisine_id);
+                    $Booking_cuisineEntity->setCuisineName($cuisine['cuisine_name']);
+                    $Booking_cuisineEntity->setItemId($item_id);
+                    $Booking_cuisineEntity->setItemName('');
+                    $Booking_cuisineEntity->setCuisineNumber($cuisine['bookNumber']);
+                    $Booking_cuisineEntity->setCuisinePrice($cuisine['cuisine_price']);
+                    $cuisine['cuisine_sell_price'] = $cuisine['discount_price'];//
+                    if ($cuisine['is_discount'] == false) {
+                        $cuisine['is_discount']        = '0';
+                        $cuisine['cuisine_sell_price'] = $cuisine['cuisine_price'];//
+                    } else {
+                        $cuisine['is_discount'] = '1';
+                        $Booking_discountEntity->setItemId($item_id);
+                        $Booking_discountEntity->setItemExtendId($cuisine_id);
+                        $Booking_discountEntity->setDiscountId($cuisine['discount_id']);
+                        $Booking_discountEntity->setDiscountType($cuisine['discount_type']);
+                        $Booking_discountEntity->setDiscount($cuisine['discount']);
+                        $Booking_discountEntity->setDiscountCategory($cuisine['discount_category']);
+                        $Booking_discountEntityList[$cuisine_id] = clone ($Booking_discountEntity);
+                    }
+                    $Booking_cuisineEntity->setIsDiscount($cuisine['is_discount']);
+                    $Booking_cuisineEntity->setCuisineSellPrice($cuisine['cuisine_sell_price']);
+                    $cuisine_total_price = bcmul($cuisine['cuisine_sell_price'], $cuisine['bookNumber'], 2);
+                    $Booking_cuisineEntity->setCuisineTotalPrice($cuisine_total_price);
                     $Booking_cuisineEntityList[$cuisine_id] = clone ($Booking_cuisineEntity);
                 }
             }
@@ -121,6 +151,7 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         $BookingData->setBookingEntity($BookingEntity);
         $BookingData->setBookDetailList($arrayBookDetailList);
         $BookingData->setBookingDetailConsumeList($BookingDetailConsumeList);
+        $BookingData->setBookingDiscountList($Booking_discountEntityList);
         $BookingData->setBookingExtendDatatList($Booking_cuisineEntityList);
         //
         return $objSuccessService->setSuccessService(true, ErrorCodeConfig::$successCode['success'], '', $BookingData);
@@ -132,6 +163,8 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         $bookingEntity            = $BookingData->getBookingEntity();
         $bookDetailList           = $BookingData->getBookDetailList();//桌态
         $bookingDetailConsumeList = $BookingData->getBookingDetailConsumeList();//消费列表
+        $bookingDiscountList      = $BookingData->getBookingDiscountList();
+        $bookingCuisineList       = $BookingData->getBookingExtendDatatList();//消费菜式列表
         $bookingNumber            = $bookingEntity->getBookingNumber();
         if (empty($bookingNumber)) {
             $booking_id    = BookingDao::instance()->saveBooking($bookingEntity);
@@ -141,6 +174,10 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
             BookingDao::instance()->updateBooking($whereCriteria, ['booking_number' => $bookingNumber]);
         }
         $objSuccessService->setData(['booking_number' => $bookingNumber]);
+        foreach ($bookDetailList as $k => $bookDetail) {
+            $bookDetailList[$k]->setBookingNumber($bookingNumber);
+        }
+        //保存餐桌 消费详细
         $arrayBookDetailId = BookingDao::instance()->saveBookingDetailList($bookDetailList);
         if (!empty($arrayBookDetailId)) {
             foreach ($bookingDetailConsumeList as $k => $bookDetailConsume) {
@@ -148,10 +185,29 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
                 $_detail_id = $arrayBookDetailId[$_item_id];
                 $bookingDetailConsumeList[$k]->setBookingDetailId($_detail_id);
                 $bookingDetailConsumeList[$k]->setBookingNumber($bookingNumber);
-            }
+            }//保存餐桌消费
             BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
+            if (!empty($bookingCuisineList)) {
+                foreach ($bookingCuisineList as $k => $bookCuisine) {
+                    $_item_id   = $bookCuisine->getItemId();
+                    $_detail_id = $arrayBookDetailId[$_item_id];
+                    $bookingCuisineList[$k]->setBookingDetailId($_detail_id);
+                    $bookingCuisineList[$k]->setBookingNumber($bookingNumber);
+                }
+            }
+            BookingDao::instance()->saveBookingCuisineList($bookingCuisineList);
+            if (!empty($bookingDiscountList)) {
+                foreach ($bookingDiscountList as $k => $bookDiscoun) {
+                    $_item_id   = $bookDiscoun->getItemId();
+                    $_detail_id = $arrayBookDetailId[$_item_id];
+                    $bookingDiscountList[$k]->setBookingDetailId($_detail_id);
+                    $bookingDiscountList[$k]->setBookingNumber($bookingNumber);
+                }
+                BookingDao::instance()->saveBookingDiscountList($bookingDiscountList);
+            }
         }
-
+        
+        CommonServiceImpl::instance()->commit();
         return $objSuccessService;
 
     }

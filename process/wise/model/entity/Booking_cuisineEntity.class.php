@@ -21,6 +21,10 @@ class Booking_cuisineEntity extends \Entity {
     protected $cuisine_number;
     protected $cuisine_number_over;
     protected $cuisine_number_return;
+    protected $cuisine_total_price;
+    protected $cuisine_sell_price;
+    protected $cuisine_price;
+    protected $is_discount;
     protected $item_id;
     protected $item_name;
     protected $member_id;
@@ -184,6 +188,62 @@ class Booking_cuisineEntity extends \Entity {
     /**
      * @return mixed
      */
+    public function getCuisineTotalPrice() {
+        return $this->cuisine_total_price;
+    }
+
+    /**
+     * @param mixed $cuisine_total_price
+     */
+    public function setCuisineTotalPrice($cuisine_total_price) {
+        $this->cuisine_total_price = $cuisine_total_price;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCuisineSellPrice() {
+        return $this->cuisine_sell_price;
+    }
+
+    /**
+     * @param mixed $cuisine_sell_price
+     */
+    public function setCuisineSellPrice($cuisine_sell_price) {
+        $this->cuisine_sell_price = $cuisine_sell_price;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCuisinePrice() {
+        return $this->cuisine_price;
+    }
+
+    /**
+     * @param mixed $cuisine_price
+     */
+    public function setCuisinePrice($cuisine_price) {
+        $this->cuisine_price = $cuisine_price;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getisDiscount() {
+        return $this->is_discount;
+    }
+
+    /**
+     * @param mixed $is_discount
+     */
+    public function setIsDiscount($is_discount) {
+        $this->is_discount = $is_discount;
+    }
+
+    /**
+     * @return mixed
+     */
     public function getItemId() {
         return $this->item_id;
     }
@@ -250,8 +310,6 @@ class Booking_cuisineEntity extends \Entity {
     public function setAddDatetime($add_datetime) {
         $this->add_datetime = $add_datetime;
     }
-
-    
 
     
 }

@@ -24,6 +24,7 @@ class BookingEntity extends \Entity {
 	protected $member_email = '';
 	protected $booking_status = '0';
 	protected $cash_pledge = 0.00;
+	protected $number_of_people;
 	protected $employee_id;
 	protected $employee_name = '';
 	protected $check_in = '0000-00-00 00:00:00';
@@ -253,6 +254,20 @@ class BookingEntity extends \Entity {
 	public function setCashPledge(float $cash_pledge) {
 		$this->cash_pledge = $cash_pledge;
 	}
+
+    /**
+     * @return mixed
+     */
+    public function getNumberOfPeople() {
+        return $this->number_of_people;
+    }
+
+    /**
+     * @param mixed $number_of_people
+     */
+    public function setNumberOfPeople($number_of_people) {
+        $this->number_of_people = $number_of_people;
+    }
 
 	/**
 	 * @return mixed

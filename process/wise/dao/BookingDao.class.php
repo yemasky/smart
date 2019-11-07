@@ -47,7 +47,6 @@ class BookingDao extends CommonDao {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('booking_detail')->update($whereCriteria, $arrayUpdateData, $update_type);
     }
     //
-
     public function saveBookingDetailConsumeList($bookingDetailConsumeList) : array {
         return $this->setDsnWrite($this->getDsnWrite())->batchInsertEntity($bookingDetailConsumeList);
     }
@@ -95,13 +94,44 @@ class BookingDao extends CommonDao {
     public function getGuestLiveIn(\WhereCriteria $whereCriteria, $field = null) : array {
         return $this->setDsnRead($this->getDsnRead())->setTable('booking_live_in')->getList($whereCriteria, $field);
     }
-
     //房间操作
     public function saveRoomEven(Booking_evenEntity $booking_evenEntity) {
         return $this->setDsnWrite($this->getDsnWrite())->insertEntity($booking_evenEntity);
     }
-
     public function updateRoomEven($whereCriteria, $arrayUpdateData, $update_type = '') {
         return $this->setDsnWrite($this->getDsnWrite())->setTable('booking_even')->update($whereCriteria, $arrayUpdateData, $update_type);
     }
+    //**MEAL******************************************************************************//
+    public function getBookingCuisine(\WhereCriteria $whereCriteria, $field = null) {
+        return $this->setDsnRead($this->getDsnRead())->setTable('booking_cuisine')->getList($whereCriteria, $field);
+    }
+
+    public function saveBookingCuisineList($bookingCuisineList) {
+        return $this->setDsnWrite($this->getDsnWrite())->batchInsertEntity($bookingCuisineList, 'booking_cuisine_id');
+    }
+
+    public function saveBookingCuisine(Booking_cuisineEntity $bookingCuisineList) : int {
+        return $this->setDsnWrite($this->getDsnWrite())->insertEntity($bookingCuisineList);
+    }
+
+    public function updateBookingCuisine(\WhereCriteria $whereCriteria, $row) : int {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('booking_cuisine')->update($whereCriteria, $row);
+    }
+    //
+    public function getBookingDiscount(\WhereCriteria $whereCriteria, $field = null) {
+        return $this->setDsnRead($this->getDsnRead())->setTable('booking_discount')->getList($whereCriteria, $field);
+    }
+
+    public function saveBookingDiscountList($bookingCuisineList) {
+        return $this->setDsnWrite($this->getDsnWrite())->batchInsertEntity($bookingCuisineList, 'booking_discount_id');
+    }
+
+    public function saveBookingDiscount(Booking_cuisineEntity $bookingCuisineList) : int {
+        return $this->setDsnWrite($this->getDsnWrite())->insertEntity($bookingCuisineList);
+    }
+
+    public function updateBookingDiscount(\WhereCriteria $whereCriteria, $row) : int {
+        return $this->setDsnWrite($this->getDsnWrite())->setTable('booking_discount')->update($whereCriteria, $row);
+    }
+
 }

@@ -110,15 +110,14 @@ class HotelOrderAction extends \BaseAction {
         }
         //获取预订 条件未完结的所有订单 valid = 1 and check_in <= 今天  今天以前的所有未结账订单
         $whereCriteria = new \WhereCriteria();
-        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')->EQ('channel', 'Hotel')
+        $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Hotel')
             ->EQ('valid', '1')->GE('booking_status', '0')->LE('check_in', $in_date)->setHashKey('booking_number');
         $arrayBookList      = BookingHotelServiceImpl::instance()->getBooking($whereCriteria);
         $arrayBookingNumber = [];
-        //加密
         if (!empty($arrayBookList)) {
             $arrayBookingNumber = array_keys($arrayBookList);
             foreach ($arrayBookList as $booking_number => $v) {
-                $arrayBookList[$booking_number]['book_id'] = encode($booking_number);
+                $arrayBookList[$booking_number]['book_id'] = encode($booking_number);//加密
             }
         }
         //查找[今日房态/今天预抵的] 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
