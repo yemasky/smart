@@ -32,7 +32,7 @@
 								</ui-select-choices>
 							</ui-select>
 						</span>
-						<div class="form-control no-padding no-border w-thumb-lg" ng-show="market_father_id==7||market_father_id==8">
+						<div class="form-control no-padding no-border w-thumb-lg" ng-if="market_father_id==7||market_father_id==8">
 						  <input type="text" class="form-control btn-default" id="booking_number_ext" name="booking_number_ext" ng-model="param.booking_number_ext" placeholder="OTA订单号" required>
 						</div>
 						<span class="input-group-addon no-radius no-padding no-border"></span>

@@ -59,15 +59,22 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         if ($channel_father_id === false || $arrayBookingData === false) {
             return $objSuccessService->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '缺失多个参数');
         }
+        $receivable_id = $objRequest->receivable_id;
+        if (empty($receivable_id)) $receivable_id = 0;
         $arrayCommonData['company_id']    = $company_id;
         $arrayCommonData['channel']       = ModulesConfig::$channel_value['Meal'];//channel
         $arrayCommonData['channel_id']    = $channel_id;
         $arrayCommonData['employee_id']   = $objEmployee->getEmployeeId();
         $arrayCommonData['employee_name'] = $objEmployee->getEmployeeName();
+        $arrayCommonData['receivable_id'] = $receivable_id;
         $arrayCommonData['sales_id']      = 0;//销售ID
         $arrayCommonData['sales_name']    = '';
+        $arrayCommonData['business_day']  = $objResponse->business_day;
         $arrayCommonData['add_datetime']  = getDateTime();
-        $arrayAllBookData                 = array_merge($arrayInput, $arrayCommonData);
+        //暂时没开发的必填项
+        $arrayCommonData['policy_id'] = 0;
+
+        $arrayAllBookData = array_merge($arrayInput, $arrayCommonData);
         //booking 预订人信息 新订单需要生成第一个主订单
         $BookingEntity = new BookingEntity($arrayAllBookData);
         $BookingEntity->setBookingNumber($arrayCommonData['booking_number']);
@@ -87,7 +94,8 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         $BookingDetailConsumeList   = array();
         $BookingDetailConsumeEntity = new Booking_consumeEntity($arrayAllBookData);
         $BookingDetailConsumeEntity->setConsumeTitle(ModulesConfig::$consumeConfig['Meals']['consume_title']);
-        $BookingDetailConsumeEntity->setConsumeId(ModulesConfig::$consumeConfig['Meals']['channel_consume_id']);//12为餐费
+        $BookingDetailConsumeEntity->setChannelConsumeFatherId(ModulesConfig::$consumeConfig['Meals']['channel_consume_father_id']);
+        $BookingDetailConsumeEntity->setChannelConsumeId(ModulesConfig::$consumeConfig['Meals']['channel_consume_id']);//12为餐费
         //菜式
         $Booking_cuisineEntity = new Booking_cuisineEntity($arrayAllBookData);
         $Booking_cuisineEntity->setAddDatetime(getDateTime());
@@ -101,24 +109,20 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
             //取得缺失的市场佣金
             //$arrayCommision = ChannelServiceImpl::instance()->getChannelCommisionCache($company_id, $channel_id, $market_id);
             foreach ($arrayBookingData as $item_id => $arrayCuisineData) {//餐桌 房间 => 订菜数据
+                $arrayBookDetailList[$item_id]      = clone ($BookingDetailEntity);
+                $BookingDetailConsumeList[$item_id] = clone ($BookingDetailConsumeEntity);
                 foreach ($arrayCuisineData as $cuisine_id => $cuisine) {
                     $Booking_cuisineEntity->setCuisineId($cuisine_id);
-
+                    $Booking_cuisineEntityList[$cuisine_id] = clone ($Booking_cuisineEntity);
                 }
             }
-
-
-
         }
-
         $BookingData = new BookingDataModel();
         $BookingData->setBookingEntity($BookingEntity);
         $BookingData->setBookDetailList($arrayBookDetailList);
         $BookingData->setBookingDetailConsumeList($BookingDetailConsumeList);
+        $BookingData->setBookingExtendDatatList($Booking_cuisineEntityList);
         //
-
-
-
         return $objSuccessService->setSuccessService(true, ErrorCodeConfig::$successCode['success'], '', $BookingData);
     }
 
@@ -137,6 +141,16 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
             BookingDao::instance()->updateBooking($whereCriteria, ['booking_number' => $bookingNumber]);
         }
         $objSuccessService->setData(['booking_number' => $bookingNumber]);
+        $arrayBookDetailId = BookingDao::instance()->saveBookingDetailList($bookDetailList);
+        if (!empty($arrayBookDetailId)) {
+            foreach ($bookingDetailConsumeList as $k => $bookDetailConsume) {
+                $_item_id   = $bookDetailConsume->getItemId();
+                $_detail_id = $arrayBookDetailId[$_item_id];
+                $bookingDetailConsumeList[$k]->setBookingDetailId($_detail_id);
+                $bookingDetailConsumeList[$k]->setBookingNumber($bookingNumber);
+            }
+            BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
+        }
 
         return $objSuccessService;
 

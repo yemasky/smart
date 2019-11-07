@@ -174,9 +174,10 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 							if(discount_item_list[j] > 0) {//菜式ID>0
 								if(angular.isUndefined(hashDiscountItem[discount_item_list[j]])) 
 									hashDiscountItem[discount_item_list[j]] = {};
-								hashDiscountItem[discount_item_list[j]][k] = discount;//菜式有几个折扣
-								hashDiscountItem[discount_item_list[j]][k]['week'] = week;
-								hashDiscountItem[discount_item_list[j]][k]['market_ids'] = market_ids;
+								var discount_id = discount.discount_id;
+								hashDiscountItem[discount_item_list[j]][discount_id] = discount;//菜式有几个折扣
+								hashDiscountItem[discount_item_list[j]][discount_id]['week'] = week;
+								hashDiscountItem[discount_item_list[j]][discount_id]['market_ids'] = market_ids;
 								k++;
 							}
 						}
@@ -314,9 +315,6 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 								if($scope.market_id == market_ids[m]) {
 									cuisine.is_discount       = true;
 									cuisine.discount_price    = discount_price;
-									cuisine.discount_type     = discount.discount_type;
-									cuisine.discount_category = discount.discount_category;
-									cuisine.discount          = discount.discount;
 									cuisine.discount_id       = discount.discount_id;
 								}
 								break;
@@ -451,10 +449,14 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 					booking_data[table_id][cuisine_id].bookNumber              = bookCuisine.bookNumber;
 					booking_data[table_id][cuisine_id].is_discount             = bookCuisine.is_discount;
 					booking_data[table_id][cuisine_id].discount_price          = bookCuisine.discount_price;
-					booking_data[table_id][cuisine_id].discount_type           = bookCuisine.discount_type;
-					booking_data[table_id][cuisine_id].discount_category       = bookCuisine.discount_category;
-					booking_data[table_id][cuisine_id].discount                = bookCuisine.discount;
-					booking_data[table_id][cuisine_id].discount_id             = bookCuisine.discount_id;
+					if(bookCuisine.is_discount) {
+						var discount_id                                        = bookCuisine.discount_id;
+						booking_data[table_id][cuisine_id].discount_id         = discount_id;
+						booking_data[table_id][cuisine_id].discount_type       = bookCuisine.discount[discount_id].discount_type;
+						booking_data[table_id][cuisine_id].discount_category   = bookCuisine.discount[discount_id].discount_category;
+						booking_data[table_id][cuisine_id].discount            = bookCuisine.discount[discount_id].discount;
+					}
+					
 				}
 			}
 			return booking_data;

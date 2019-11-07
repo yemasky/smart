@@ -63,11 +63,14 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         if ($channel_father_id === false || $arrayBookingData === false) {
             return $objSuccessService->setSuccessService(false, ErrorCodeConfig::$errorCode['parameter_error'], '缺失多个参数');
         }
+        $receivable_id = $objRequest->receivable_id;
+        if (empty($receivable_id)) $receivable_id = 0;
         $arrayCommonData['company_id']    = $company_id;
         $arrayCommonData['channel']       = ModulesConfig::$channel_value['Hotel'];
         $arrayCommonData['channel_id']    = $channel_id;
         $arrayCommonData['employee_id']   = $objEmployee->getEmployeeId();
         $arrayCommonData['employee_name'] = $objEmployee->getEmployeeName();
+        $arrayCommonData['receivable_id'] = $receivable_id;
         $arrayCommonData['sales_id']      = 0;
         $arrayCommonData['sales_name']    = '';
         $arrayCommonData['add_datetime']  = getDateTime();
@@ -90,7 +93,9 @@ class BookingHotelServiceImpl extends \BaseServiceImpl implements BookingService
         //每一间房消费
         $BookingDetailConsumeList   = array();
         $BookingDetailConsumeEntity = new Booking_consumeEntity($arrayAllBookData);
-        $BookingDetailConsumeEntity->setConsumeTitle('房费');
+        $BookingDetailConsumeEntity->setConsumeTitle(ModulesConfig::$consumeConfig['Hotel']['consume_title']);
+        $BookingDetailConsumeEntity->setChannelConsumeFatherId(ModulesConfig::$consumeConfig['Hotel']['channel_consume_father_id']);
+        $BookingDetailConsumeEntity->setChannelConsumeId(ModulesConfig::$consumeConfig['Hotel']['channel_consume_id']);//没有含早之前算餐费
         //判断会员级别
         //
         //预订数据 每个房间1个BookingDetai，每个房间每天1个BookingConsume
