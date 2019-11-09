@@ -43,13 +43,14 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
             	$scope.selectCustomerMarket($scope.marketList[1].children[2], false);
 				$scope.roomList          = result.data.item.roomList;//客房列表
 				$scope.rowRoomList       = result.data.item.roomList;//客房列表
-				//$scope.bookList          = result.data.item.bookList;//预订列表
 				//时间
                 var _thisDay = result.data.item.in_date;
                 var _thisTime = $filter('date')($scope._baseDateTime(), 'HH:mm');
                 $scope.param["check_in"] = _thisDay;
                 $('.check_in').val(_thisDay);
                 $scope.param["in_time"] = _thisDay+'T14:00:00.000Z';
+				//
+				showBookDetail(result.data.item);
 				/*$('.check_date').daterangepicker({singleDatePicker: true, "autoApply": true,"startDate": _thisDay,"locale":{"format" : 'YYYY-MM-DD hh:mm'}
 				}, function(start, label) {
 					var check_in = start.format('YYYY-MM-DD');
@@ -59,6 +60,22 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
             });
         });	
     }
+	$scope.bookingRoomStatus = {};$scope.bookList = {};
+	function showBookDetail(bookData) {
+		$scope.bookList = bookData.bookList;
+		var bookingRoomStatus = {}, bookingDetail = bookData.bookingDetailRoom;
+		//,bookingReserveStatus = {},bookingTakeOutStatus = {};//堂食，预订，外卖
+		for(var detail_id in bookingDetail) {
+			if(bookingDetail[detail_id].booking_type == 'meal_dine_in') {
+				var table_id = bookingDetail[detail_id].item_id;
+				if(angular.isUndefined(bookingRoomStatus[table_id])) {
+					bookingRoomStatus[table_id] = {};
+				}
+				bookingRoomStatus[table_id][detail_id] = bookingDetail[detail_id];
+			}
+		}
+		$scope.bookingRoomStatus = bookingRoomStatus;
+	}
 	//更换餐厅
 	$scope.changeChannel = function(channel_id) {
 		$scope.id = $rootScope.employeeChannel[channel_id].id;
@@ -418,12 +435,16 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
         }
         $scope.isConsumePrint = isConsumePrint;$scope.isAccountPrint = isAccountPrint; $scope.isBorrowingPrint = isBorrowingPrint;
     };
+	$scope.editDiningTable = function(bookingDetail) {
+		$scope.diningTable('open', '');
+	}
 //**SAVE*//*****************************************************************////////////////////////////////////////////////////////////
 	$scope.saveRestaurantBook = function() {
 		$scope.param.booking_data = resolutionBookingData();
 		$scope.param.channel_id = $scope.channel_id;
         $scope.param.channel_father_id = $rootScope.employeeChannel[$scope.thisChannel_id].channel_father_id;
 		if($scope.param['in_time'].length > 8) $scope.param['in_time'] = $filter('limitTo')($scope.param['in_time'], 8, 11);
+		if($scope.param.member_name == '') $scope.param.member_name = '散客';
 		$scope.loading.show();
 		$httpService.header('method', 'saveRestaurantBook');
 		$httpService.post('app.do?'+param+'&id='+$scope.id, $scope, function(result){

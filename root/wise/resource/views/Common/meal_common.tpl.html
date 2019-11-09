@@ -1,6 +1,6 @@
 <script type="text/ng-template" id="/app/complete_dinner.html">
 <div class="col-sm-5">
-<div class="list-group no-radius"><div class="list-group-item p-xs col-sm-6 col-xs-6" ng-repeat="(_i, id) in cuisine.complete_ids">{{hashCuisineSKU[id].cuisine_name}} <div class="clear">￥ {{hashCuisineSKU[id].cuisine_price}}<span class="pull-right"><small class="ti-server" title="库存"></small> <span ng-if="hashCuisineSKU[id].cuisine_inventory==-999">无限</span><span ng-if="hashCuisineSKU[id].cuisine_inventory==-9999">-</span><span ng-if="hashCuisineSKU[id].cuisine_inventory!=-999&&hashCuisineSKU[id].cuisine_inventory!=-9999">{{hashCuisineSKU[id].cuisine_inventory}}</span></span></div></div></div></div>
+<div class="list-group no-radius box-shadow"><div class="list-group-item p-xs col-sm-6 col-xs-6" ng-repeat="(_i, id) in cuisine.complete_ids">{{hashCuisineSKU[id].cuisine_name}} <div class="clear">￥ {{hashCuisineSKU[id].cuisine_price}}<span class="pull-right"><small class="ti-server" title="库存"></small> <span ng-if="hashCuisineSKU[id].cuisine_inventory==-999">无限</span><span ng-if="hashCuisineSKU[id].cuisine_inventory==-9999">-</span><span ng-if="hashCuisineSKU[id].cuisine_inventory!=-999&&hashCuisineSKU[id].cuisine_inventory!=-9999">{{hashCuisineSKU[id].cuisine_inventory}}</span></span></div></div></div></div>
 </script>
 <script type="text/ng-template" id="/app/dscount_dinner.html">
 <div class="col-sm-6">
@@ -39,4 +39,14 @@
 </div>
 </div>
 </div>
+</script>
+<script type="text/ng-template" id="/app/booking_dinner.html">
+<ul class="dropdown-menu">
+  <li class="p-h-xs" ng-repeat="(detail_id, booking) in bookingRoomStatus[room.item_id]">
+  	<a class="no-padding text-ellipsis" data-animation="am-flip-x" data-html="true" data-container="body" data-title="就餐单号:{{booking.booking_number}}<br>就餐时间:{{booking.actual_check_in}}" bs-tooltip ng-click="editDiningTable(booking)">
+		<i ng-class="bookList[booking.booking_number].number_of_people>=2?'fas fa-user-friends':'fas fa-user-tie'"></i>
+		{{bookList[booking.booking_number].member_name}}（{{bookList[booking.booking_number].number_of_people}}人）
+	</a>
+  </li>
+</ul>
 </script>

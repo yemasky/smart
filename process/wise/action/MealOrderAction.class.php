@@ -67,7 +67,7 @@ class MealOrderAction extends \BaseAction {
         //
         $objLoginEmployee = LoginServiceImpl::instance()->getLoginEmployee();
         $company_id       = $objLoginEmployee->getEmployeeInfo()->getCompanyId();
-        $channel_id = $objRequest->channel_id;
+        $channel_id       = $objRequest->channel_id;
         //默认channel
         $arrayEmployeeChannel = $objLoginEmployee->getEmployeeChannel();
         $thisChannel          = $arrayEmployeeChannel[$channel_id];
@@ -88,7 +88,7 @@ class MealOrderAction extends \BaseAction {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Meal')
             ->EQ('valid', '1')->GE('booking_status', '0')->setHashKey('booking_number');
-        $field = 'booking_number,booking_number_ext,receivable_id,receivable_name,member_id,member_name,booking_status,node,remarks';
+        $field              = 'booking_number,booking_number_ext,receivable_id,receivable_name,member_id,member_name,booking_status,number_of_people,node,remarks';
         $arrayBookList      = BookingHotelServiceImpl::instance()->getBooking($whereCriteria, $field);
         $arrayBookingNumber = [];
         if (!empty($arrayBookList)) {
@@ -100,29 +100,40 @@ class MealOrderAction extends \BaseAction {
         $arrayResult['bookList'] = $arrayBookList;
         //查找[今日房态/今天预抵的] 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
         $bookingDetailRoom = [];
+        $arrayConsume      = [];
+        $bookingCuisine    = [];
         if (!empty($arrayBookingNumber)) {
+            //桌态
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Meal')
                 ->EQ('valid', '1')->ArrayIN('booking_number', $arrayBookingNumber)
                 ->setHashKey('booking_detail_id')->ORDER('check_in');
-            $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria);
+            $field             = 'booking_detail_id,booking_number,booking_number_ext,booking_type,market_id,item_id,item_category_id,check_in,'
+                . 'actual_check_in,booking_detail_status,client,valid,add_datetime';
+            $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria, $field);
             if (!empty($bookingDetailRoom)) {
                 foreach ($bookingDetailRoom as $detail_id => $v) {
                     $bookingDetailRoom[$detail_id]['detail_id'] = encode($v['booking_detail_id']);
                     $bookingDetailRoom[$detail_id]['book_id']   = encode($v['booking_number']);
                 }
             }
-
-        }
-        $arrayResult['bookingDetailRoom'] = $bookingDetailRoom;
-        //消费
-        $arrayConsume = [];
-        if (!empty($arrayBookingNumber)) {
+            //消费菜式
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)
+                ->EQ('valid', '1')->ArrayIN('booking_number', $arrayBookingNumber)
+                ->setHashKey('booking_detail_id');
+            $field          = 'booking_detail_id,booking_number,cuisine_id,cuisine_name,cuisine_number,cuisine_number_over,'
+                . 'cuisine_number_return,cuisine_total_price,cuisine_sell_price,cuisine_price,is_discount,item_id,valid,add_datetime';
+            $bookingCuisine = BookingRestaurantServiceImpl::instance()->getBookingCuisine($whereCriteria, $field);
+            //折扣
+            //消费
             $whereCriteria = new \WhereCriteria();//
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Meal')->EQ('valid', '1');
             $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
                 ->setFatherKey('booking_detail_id')->setChildrenKey('consume_id');
-            $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria);
+            $field        = 'consume_id,booking_detail_id,booking_number,booking_number_ext,channel_consume_id,booking_type,market_id,item_id,'
+                . 'valid,add_datetime';
+            $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria, $field);
             if (!empty($arrayConsume)) {
                 foreach ($arrayConsume as $number => $value) {
                     foreach ($value as $detail_id => $consumes) {
@@ -133,9 +144,11 @@ class MealOrderAction extends \BaseAction {
                 }
             }
         }
-        $arrayResult['consumeList'] = $arrayConsume;
+        $arrayResult['bookingDetailRoom']  = $bookingDetailRoom;
+        $arrayResult['bookingCuisineList'] = $bookingCuisine;
+        $arrayResult['consumeList']        = $arrayConsume;
         //消费类别
-        $arrayChannelConsume = ChannelServiceImpl::instance()->getChannelConsume($company_id, $channel_id, $thisChannel['channel']);
+        $arrayChannelConsume               = ChannelServiceImpl::instance()->getChannelConsume($company_id, $channel_id, $thisChannel['channel']);
         $arrayResult['channelConsumeList'] = $arrayChannelConsume;
         //结账方式
         $arrayPaymentType = [];

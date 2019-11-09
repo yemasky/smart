@@ -72,6 +72,9 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         $arrayCommonData['business_day']  = $objResponse->business_day;
         $arrayCommonData['client']        = $objRequest->client ? $objRequest->client : 'pms';
         $arrayCommonData['add_datetime']  = getDateTime();
+        if($objRequest->booking_type == 'meal_dine_in') {
+            $arrayCommonData['actual_check_in']  = getDateTime();//实际用餐时间
+        }
         //暂时没开发的必填项
         $arrayCommonData['policy_id'] = 0;
 
@@ -229,6 +232,10 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         //获取channel
         $channel_id = $objRequest->channel_id;
 
+    }
+
+    public function getBookingCuisine($whereCriteria, $field = '') {
+        return BookingDao::instance()->getBookingCuisine($whereCriteria, $field);
     }
 
 
