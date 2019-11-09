@@ -43,10 +43,22 @@
 <script type="text/ng-template" id="/app/booking_dinner.html">
 <ul class="dropdown-menu">
   <li class="p-h-xs" ng-repeat="(detail_id, booking) in bookingRoomStatus[room.item_id]">
-  	<a class="no-padding text-ellipsis" data-animation="am-flip-x" data-html="true" data-container="body" data-title="就餐单号:{{booking.booking_number}}<br>就餐时间:{{booking.actual_check_in}}" bs-tooltip ng-click="editDiningTable(booking)">
+  	<a class="no-padding text-ellipsis" data-animation="am-flip-x" data-html="true" data-container="body" data-title="就餐单号:{{booking.booking_number}}<br>就餐时间:{{booking.actual_check_in}}（{{bookList[booking.booking_number].number_of_people}}人）" bs-tooltip ng-click="editDiningTable(booking)">
 		<i ng-class="bookList[booking.booking_number].number_of_people>=2?'fas fa-user-friends':'fas fa-user-tie'"></i>
-		{{bookList[booking.booking_number].member_name}}（{{bookList[booking.booking_number].number_of_people}}人）
+		{{bookList[booking.booking_number].member_name|limitTo:3}}
+		<small ng-click="diningTable('cuisine', room)"><i class="fas fa-pizza-slice text-info"></i> +-菜</small>
+		<small ng-click="diningTable('account', room)"><i class="fas fa-credit-card small text-info"></i> 结账</small>
 	</a>
   </li>
 </ul>
 </script>
+<script type="text/ng-template" id="/app/manage_room.html">
+<ul class="dropdown-menu">
+  <li><a style="display:inline;" ng-click="diningTable('open', room)"><i class="ti-check-box"></i> 开台</a>
+      <a style="display:inline;" ng-click="diningTable('book', room)"><i class="fas fa-columns small"></i> 预订</a></li>
+  <li class="divider"></li>
+  <li class="divider" style="height:0;"></li>
+  <li><a style="display:inline;" ng-click="diningTable('lock', room)"><i class="fas fa-lock"></i> 锁台</a>
+      <a style="display:inline;" ng-click="diningTable('unlock', room)"><i class="fas fa-lock-open"></i> 解锁</a></li>
+</ul>
+</script><!-- /app/manage_room.html -->
