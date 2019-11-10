@@ -109,18 +109,20 @@
 						</div>
 					</div>
 					<div class="clear">
-						<div class="col-sm-1 col-xs-3 p-xs">餐台/房间</div>
-						<div class="col-sm-11 col-xs-9 p-xs scroll-x">
-							<div class="list-group no-radius">
-								<div class="list-group-item col-sm-2 col-xs-6 no-padding" ng-repeat="(table_id, table) in haveBookTable">
-								  <div class="clear btn btn-sm p-xs" ng-click="setThisTable(table_id)">
-									<div class="text-left"><i class="fa fa-clipboard" ng-class="thisBookTable.item_id==table_id?'text-info':''"></i> {{table.item_name}}
-										<small class="pull-right" ng-click="reduceBookTable(table)"><a class="text-warning ti-trash"></a></small>
-									</div>
-								  </div>
-								</div>
-							</div> 
-						</div>
+<!--餐桌 ---------------------------------------------->
+<div class="col-sm-1 col-xs-3 p-xs">餐台/房间</div>
+<div class="col-sm-11 col-xs-9 p-xs scroll-x">
+	<div class="list-group no-radius">
+		<div class="list-group-item col-sm-2 col-xs-6 no-padding" ng-repeat="(table_id, table) in haveBookTable">
+		  <div class="clear btn btn-sm p-xs" ng-click="setThisTable(table_id)">
+			<div class="text-left"><i class="fa fa-clipboard" ng-class="thisBookTable.item_id==table_id?'text-info':''"></i> {{table.item_name}}
+				<span class="pull-right" ng-click="reduceBookTable(table)" ng-if="table.detail_id==0" title="删除"><a class="text-warning ti-trash"></a></span>
+				<span class="pull-right" ng-click="changeBookTable(table, table.detail_id)" ng-if="table.detail_id>0" title="换桌"><a class="text-warning fas fa-exchange-alt"></a></span>
+			</div>
+		  </div>
+		</div>
+	</div> 
+</div><!-- end 餐桌 ---------------------------------->
 					</div>
 					<div class="b-t clear">
 						<div class="col-sm-1 col-xs-3 p-xs">已点菜品</div>
@@ -222,10 +224,12 @@
 												<div class="list-group no-radius">
 													<div class="list-group-item col-sm-2 col-xs-6 no-padding" ng-repeat="(i, room) in floor">
 													  <div class="clear p-xs">
-														<div><i class="fa fa-clipboard"></i> {{room.item_name}}
-															<a ng-click="addBookTable(room)" class="pull-right text-warning" ng-if="!haveBookTable[room.item_id]"><i class="glyphicon glyphicon-plus-sign"></i></a>
-															<small class="pull-right" ng-click="reduceBookTable(room)" ng-if="haveBookTable[room.item_id].item_id==room.item_id"><a class="text-warning ti-trash"></a></small>
-														</div>
+<!-- 桌态 -------------------------------------------->
+<div><i class="fa fa-clipboard"></i> {{room.item_name}}
+	<a ng-click="addBookTable(room)" class="pull-right text-warning" ng-if="!haveBookTable[room.item_id]"><i class="glyphicon glyphicon-plus-sign"></i></a>
+	<small class="pull-right" ng-click="reduceBookTable(room)" ng-if="haveBookTable[room.item_id].item_id==room.item_id&&room.detail_id==0"><a class="text-warning ti-trash"></a></small>
+	<span class="pull-right" ng-click="changeBookTable(table, room.detail_id)" ng-if="room.detail_id>0" title="换桌"><a class="text-warning fas fa-exchange-alt"></a></span>
+</div><!-- end桌态 ----------------------------------->
 													  </div>
 													</div>
 												</div> 

@@ -60,21 +60,34 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
             });
         });	
     }
-	$scope.bookingRoomStatus = {};$scope.bookList = {};
+	$scope.bookRoomStatus = {};$scope.bookList = {};
 	function showBookDetail(bookData) {
 		$scope.bookList = bookData.bookList;
-		var bookingRoomStatus = {}, bookingDetail = bookData.bookingDetailRoom;
-		//,bookingReserveStatus = {},bookingTakeOutStatus = {};//堂食，预订，外卖
-		for(var detail_id in bookingDetail) {
-			if(bookingDetail[detail_id].booking_type == 'meal_dine_in') {
-				var table_id = bookingDetail[detail_id].item_id;
-				if(angular.isUndefined(bookingRoomStatus[table_id])) {
-					bookingRoomStatus[table_id] = {};
+		var bookRoomStatus = {}, bookDetail = bookData.bookDetailRoom;
+		//,bookingReserveStatus = {},bookingTakeOutStatus = {};//，预订，外卖
+		for(var detail_id in bookDetail) {
+			if(bookDetail[detail_id].booking_type == 'meal_dine_in') {//堂食
+				var table_id = bookDetail[detail_id].item_id;
+				if(angular.isUndefined(bookRoomStatus[table_id])) {
+					bookRoomStatus[table_id] = {};
 				}
-				bookingRoomStatus[table_id][detail_id] = bookingDetail[detail_id];
+				bookRoomStatus[table_id][detail_id] = bookDetail[detail_id];
 			}
 		}
-		$scope.bookingRoomStatus = bookingRoomStatus;
+		$scope.bookRoomStatus = bookRoomStatus;
+		$scope.bookConsumeList = bookData.bookConsumeList;
+		$scope.bookCuisineList = bookData.bookCuisineList;
+		//hashTable
+		var hashTable = {};
+		for(var building in $scope.roomList) {
+			for(var floor in $scope.roomList[building]) {
+				for(var i in $scope.roomList[building][floor]) {
+					var table = $scope.roomList[building][floor][i];
+					hashTable[table.item_id] = table;
+				}
+			}
+		}
+		$scope.hashTable = hashTable;
 	}
 	//更换餐厅
 	$scope.changeChannel = function(channel_id) {
@@ -146,9 +159,10 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	$scope.diningTable = function(diningType, table) {
 		var diningTypeName = '订单管理';
 		$scope.activeBookAccountsEditTab=1;
-		if(diningType == 'open') {//$scope.param.number_of_people = 1;
+		if(diningType == 'open') {//开台$scope.param.number_of_people = 1;
 			diningTypeName = '堂食';
 			$scope.clearBookTable();$scope.clearBookCuisine();
+			table.detail_id = 0;//新加table
 			$scope.addBookTable(table);
 			$scope.param.booking_type = 'meal_dine_in';
 		}
@@ -389,6 +403,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	//已选桌台
 	$scope.haveBookTable = {};$scope.thisBookTable = {};
 	$scope.addBookTable = function(table) {
+		if(angular.isUndefined(table.detail_id)) table.detail_id = 0;
 		$scope.haveBookTable[table.item_id] = table;$scope.thisBookTable = table;
 		$scope.setHaveBookCuisineTable();
 	}
@@ -417,7 +432,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	}
 	$scope.clearBookTable = function() {
 		$scope.haveBookTable = {};$scope.thisBookTable = {};
-	}	
+	}
     //打印
     $scope.printBill = function(print) {
         var consumePrint = $scope.consumePrint,accountPrint = $scope.accountPrint, borrowingPrint = $scope.borrowingPrint;
@@ -436,7 +451,19 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
         $scope.isConsumePrint = isConsumePrint;$scope.isAccountPrint = isAccountPrint; $scope.isBorrowingPrint = isBorrowingPrint;
     };
 	$scope.editDiningTable = function(bookingDetail) {
-		$scope.diningTable('open', '');
+		//取得已订菜式 已订餐桌
+		var bookCuisine = $scope.bookCuisineList, bookTables = $scope.bookCuisineList;
+		console.log(bookCuisine);
+		var bookRoomStatus = $scope.bookRoomStatus;
+		for(var table_id in bookRoomStatus) {
+			for(var detail_id in bookRoomStatus[table_id]) {
+				if(bookingDetail.booking_number == bookRoomStatus[table_id][detail_id].booking_number) {
+					$scope.hashTable[table_id].detail_id = detail_id;
+					$scope.addBookTable($scope.hashTable[table_id]);
+				}
+			}
+		}
+		$scope.diningTable('editBook', '');
 	}
 //**SAVE*//*****************************************************************////////////////////////////////////////////////////////////
 	$scope.saveRestaurantBook = function() {

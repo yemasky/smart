@@ -131,9 +131,9 @@ class MealOrderAction extends \BaseAction {
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Meal')->EQ('valid', '1');
             $whereCriteria->ArrayIN('booking_number', $arrayBookingNumber)->setHashKey('booking_number')
                 ->setFatherKey('booking_detail_id')->setChildrenKey('consume_id');
-            $field        = 'consume_id,booking_detail_id,booking_number,booking_number_ext,channel_consume_id,booking_type,market_id,item_id,'
+            $field               = 'consume_id,booking_detail_id,booking_number,booking_number_ext,channel_consume_id,booking_type,market_id,item_id,'
                 . 'valid,add_datetime';
-            $arrayConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria, $field);
+            $arrayBookingConsume = BookingHotelServiceImpl::instance()->getBookingConsume($whereCriteria, $field);
             if (!empty($arrayConsume)) {
                 foreach ($arrayConsume as $number => $value) {
                     foreach ($value as $detail_id => $consumes) {
@@ -144,9 +144,9 @@ class MealOrderAction extends \BaseAction {
                 }
             }
         }
-        $arrayResult['bookingDetailRoom']  = $bookingDetailRoom;
-        $arrayResult['bookingCuisineList'] = $bookingCuisine;
-        $arrayResult['consumeList']        = $arrayConsume;
+        $arrayResult['bookDetailRoom']  = $bookingDetailRoom;
+        $arrayResult['bookCuisineList'] = $bookingCuisine;
+        $arrayResult['bookConsumeList']    = $arrayBookingConsume;
         //消费类别
         $arrayChannelConsume               = ChannelServiceImpl::instance()->getChannelConsume($company_id, $channel_id, $thisChannel['channel']);
         $arrayResult['channelConsumeList'] = $arrayChannelConsume;

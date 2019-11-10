@@ -42,19 +42,21 @@
 </script>
 <script type="text/ng-template" id="/app/booking_dinner.html">
 <ul class="dropdown-menu">
-  <li class="p-h-xs" ng-repeat="(detail_id, booking) in bookingRoomStatus[room.item_id]">
-  	<a class="no-padding text-ellipsis" data-animation="am-flip-x" data-html="true" data-container="body" data-title="就餐单号:{{booking.booking_number}}<br>就餐时间:{{booking.actual_check_in}}（{{bookList[booking.booking_number].number_of_people}}人）" bs-tooltip ng-click="editDiningTable(booking)">
-		<i ng-class="bookList[booking.booking_number].number_of_people>=2?'fas fa-user-friends':'fas fa-user-tie'"></i>
-		{{bookList[booking.booking_number].member_name|limitTo:3}}
-		<small ng-click="diningTable('cuisine', room)"><i class="fas fa-pizza-slice text-info"></i> +-菜</small>
-		<small ng-click="diningTable('account', room)"><i class="fas fa-credit-card small text-info"></i> 结账</small>
+  <li class="p-h-xs" ng-repeat="(detail_id, book) in bookRoomStatus[room.item_id]">
+  	<a class="no-padding text-ellipsis" data-animation="am-flip-x" data-html="true" data-container="body" data-title="<div class='text-left'>订单号：{{book.booking_number}}（{{bookList[book.booking_number].number_of_people}}人）<br>就餐时间：{{book.actual_check_in}}<br>消费金额：</div>" bs-tooltip ng-click="editDiningTable(book)">
+		<i class="w-thumb-xs" ng-class="bookList[book.booking_number].number_of_people>=2?'fas fa-user-friends':'fas fa-user-tie'"></i>
+		{{bookList[book.booking_number].member_name|limitTo:3}}
+		<small class="pull-right">
+			<i class="fas fa-pizza-slice small text-warning"></i> +-菜
+		    <i class="fas fa-credit-card small text-warning"></i> 结账
+	    </small>
 	</a>
   </li>
 </ul>
 </script>
 <script type="text/ng-template" id="/app/manage_room.html">
 <ul class="dropdown-menu">
-  <li><a style="display:inline;" ng-click="diningTable('open', room)"><i class="ti-check-box"></i> 开台</a>
+  <li><a style="display:inline;" ng-click="diningTable('open', room)"><i class="ti-check-box"></i> <span ng-if="!bookRoomStatus[room.item_id]">开台</span><span ng-if="bookRoomStatus[room.item_id]">搭台</span></a>
       <a style="display:inline;" ng-click="diningTable('book', room)"><i class="fas fa-columns small"></i> 预订</a></li>
   <li class="divider"></li>
   <li class="divider" style="height:0;"></li>
