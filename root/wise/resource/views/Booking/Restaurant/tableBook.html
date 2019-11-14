@@ -115,7 +115,7 @@
 	<div class="list-group no-radius">
 		<div class="list-group-item col-sm-2 col-xs-6 no-padding" ng-repeat="(table_id, table) in haveBookTable">
 		  <div class="clear btn btn-sm p-xs" ng-click="setThisTable(table_id)">
-			<div class="text-left"><i class="fa fa-clipboard" ng-class="thisBookTable.item_id==table_id?'text-info':''"></i> {{table.item_name}}
+			<div class="text-left"><i class="fa fa-clipboard" ng-class="thisBookTable.item_id==table_id?'text-info':(table.detail_id>0?'text-warning':'')"></i> {{table.item_name}}
 				<span class="pull-right" ng-click="reduceBookTable(table)" ng-if="table.detail_id==0" title="删除"><a class="text-warning ti-trash"></a></span>
 				<span class="pull-right" ng-click="changeBookTable(table, table.detail_id)" ng-if="table.detail_id>0" title="换桌"><a class="text-warning fas fa-exchange-alt"></a></span>
 			</div>
@@ -131,28 +131,27 @@
 								<div class="list-group-item col-sm-2 col-xs-6 p-xs" ng-repeat="(j, cuisine) in tableCuisine">
 								  <!--<a href class="pull-left w-thumb m-r-xs"><img ng-src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>-->
 								    <div class="clear">
-										<div>
-											<span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:11}}</span>
-											<span class="clear text-ellipsis small">
-												<span class="label" ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></span>
-												<span class="label label-xs" title="{{cuisine.sku_attr1}}" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
-												<span class="label label-xs" title="{{cuisine.sku_attr2}}" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
-												<span class="label label-xs" title="{{cuisine.sku_attr3}}" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
-											</span>
-										</div>
-								  		<div class="small">
-											<del ng-if="cuisine.is_discount==true">￥{{cuisine.cuisine_price}}</del>
-											<span ng-if="cuisine.is_discount==false">￥{{cuisine.cuisine_price}}</span>
-											<a class="label label-sm bg-danger" ng-if="cuisine.is_discount==true" title="折扣" >折￥ {{cuisine.discount_price}}</a>
-										</div> 
-										<div>
-											<small class="ti-server" title="库存">
-										  		<span ng-if="cuisine.cuisine_inventory==-999">无限</span>
-										  		<span ng-if="cuisine.cuisine_inventory==-9999">-</span>
-										  		<span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span>
-											</small>
-								  			<span class="pull-right"><a class="text-color" ng-click="reduceBookCuisine(cuisine, table_id)"><i class="glyphicon glyphicon-minus-sign"></i></a>{{cuisine.bookNumber}}<a class="text-warning" ng-click="addBookCuisine(cuisine, table_id)"><i class="glyphicon glyphicon-plus-sign"></i></a></span>
-										</div>
+<div><!-- 已点菜品 ------------------------------------->
+	<span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:11}}</span>
+	<span class="clear text-ellipsis small">
+		<span class="label" ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></span>
+		<span class="label label-xs" title="{{cuisine.sku_attr1}}" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
+		<span class="label label-xs" title="{{cuisine.sku_attr2}}" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
+		<span class="label label-xs" title="{{cuisine.sku_attr3}}" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
+	</span>
+</div>
+<div class="small">
+	<del ng-if="cuisine.is_discount==1">￥{{cuisine.cuisine_price}}</del>
+	<span ng-if="cuisine.is_discount==0">￥{{cuisine.cuisine_price}}</span>
+	<a class="label label-sm bg-danger" ng-if="cuisine.is_discount==1" title="折扣" >折￥ {{cuisine.discount_price}}</a>
+</div> 
+<div>
+	<span class="pull-right">
+		<code class="small">上菜 {{cuisine.cuisine_number_over}}</code>
+		<a class="text-black" ng-click="reduceBookCuisine(cuisine, table_id)" ng-if="cuisine.cuisine_number" title="退菜"><i class="glyphicon glyphicon-minus-sign"></i> {{cuisine.cuisine_number}}</a>
+		<a class="text-color" ng-click="reduceBookCuisine(cuisine, table_id)"><i class="glyphicon glyphicon-minus-sign"></i></a>{{cuisine.bookNumber}}<a class="text-warning" ng-click="addBookCuisine(cuisine, table_id)" title="加菜"><i class="glyphicon glyphicon-plus-sign"></i></a>
+	</span>
+</div><!-- end已点菜品 ------------------------------------->
 									</div>
 								</div>
 							</div> 

@@ -88,7 +88,7 @@ class MealOrderAction extends \BaseAction {
         $whereCriteria = new \WhereCriteria();
         $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Meal')
             ->EQ('valid', '1')->GE('booking_status', '0')->setHashKey('booking_number');
-        $field              = 'booking_number,booking_number_ext,receivable_id,receivable_name,member_id,member_name,booking_status,number_of_people,node,remarks';
+        $field              = 'booking_number,booking_number_ext,booking_type,receivable_id,receivable_name,member_id,member_name,booking_status,check_in,number_of_people,node,remarks';
         $arrayBookList      = BookingHotelServiceImpl::instance()->getBooking($whereCriteria, $field);
         $arrayBookingNumber = [];
         if (!empty($arrayBookList)) {
@@ -108,8 +108,8 @@ class MealOrderAction extends \BaseAction {
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)->EQ('channel', 'Meal')
                 ->EQ('valid', '1')->ArrayIN('booking_number', $arrayBookingNumber)
                 ->setHashKey('booking_detail_id')->ORDER('check_in');
-            $field             = 'booking_detail_id,booking_number,booking_number_ext,booking_type,market_id,item_id,item_category_id,check_in,'
-                . 'actual_check_in,booking_detail_status,client,valid,add_datetime';
+            $field             = 'booking_detail_id,booking_number,booking_number_ext,booking_type,market_father_id,market_id,market_name,'
+                .'item_id,item_category_id,check_in,actual_check_in,booking_detail_status,client,valid,add_datetime';
             $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria, $field);
             if (!empty($bookingDetailRoom)) {
                 foreach ($bookingDetailRoom as $detail_id => $v) {
@@ -121,7 +121,7 @@ class MealOrderAction extends \BaseAction {
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)
                 ->EQ('valid', '1')->ArrayIN('booking_number', $arrayBookingNumber)
-                ->setHashKey('booking_detail_id');
+                ->setHashKey('booking_detail_id')->setChildrenKey('cuisine_id');
             $field          = 'booking_detail_id,booking_number,cuisine_id,cuisine_name,cuisine_number,cuisine_number_over,'
                 . 'cuisine_number_return,cuisine_total_price,cuisine_sell_price,cuisine_price,is_discount,item_id,valid,add_datetime';
             $bookingCuisine = BookingRestaurantServiceImpl::instance()->getBookingCuisine($whereCriteria, $field);
