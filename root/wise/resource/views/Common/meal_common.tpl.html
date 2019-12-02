@@ -3,10 +3,10 @@
 <div class="list-group no-radius box-shadow"><div class="list-group-item p-xs col-sm-6 col-xs-6" ng-repeat="(_i, id) in cuisine.complete_ids">{{hashCuisineSKU[id].cuisine_name}} <div class="clear">￥ {{hashCuisineSKU[id].cuisine_price}}<span class="pull-right"><small class="ti-server" title="库存"></small> <span ng-if="hashCuisineSKU[id].cuisine_inventory==-999">无限</span><span ng-if="hashCuisineSKU[id].cuisine_inventory==-9999">-</span><span ng-if="hashCuisineSKU[id].cuisine_inventory!=-999&&hashCuisineSKU[id].cuisine_inventory!=-9999">{{hashCuisineSKU[id].cuisine_inventory}}</span></span></div></div></div></div>
 </script>
 <script type="text/ng-template" id="/app/dscount_dinner.html">
-<div class="col-sm-6">
-<div class="list-group no-radius">
+<div class="col-sm-10 col-xs-12">
+<div class="list-group no-radius box-shadow">
 <div class="list-group-item p-xs no-padding no-border"> 
-	<div class="table-responsive no-padding no-border">
+	<div class="table-responsive no-padding no-border box-shadow">
 		<table class="table table-bordered table-striped bg-white" id="print_content">
 			<thead>
 				<tr class="text-nowrap">
@@ -58,9 +58,8 @@
 <ul class="dropdown-menu">
   <li><a style="display:inline;" ng-click="diningTable('open', room)"><i class="ti-check-box"></i> <span ng-if="!bookRoomStatus[room.item_id]">开台</span><span ng-if="bookRoomStatus[room.item_id]">搭台</span></a>
       <a style="display:inline;" ng-click="diningTable('book', room)"><i class="fas fa-columns small"></i> 预订</a></li>
-  <li class="divider"></li>
-  <li class="divider" style="height:0;"></li>
-  <li><a style="display:inline;" ng-click="diningTable('lock', room)"><i class="fas fa-lock"></i> 锁台</a>
+  <li class="divider" ng-if="!bookRoomStatus[room.item_id]"></li>
+  <li ng-if="!bookRoomStatus[room.item_id]"><a style="display:inline;" ng-click="diningTable('lock', room)"><i class="fas fa-lock"></i> 锁台</a>
       <a style="display:inline;" ng-click="diningTable('unlock', room)"><i class="fas fa-lock-open"></i> 解锁</a></li>
 </ul>
 </script><!-- /app/manage_room.html -->

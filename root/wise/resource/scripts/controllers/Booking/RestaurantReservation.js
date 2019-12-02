@@ -11,6 +11,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
     $scope.market_name = '散客步入';$scope.market_id = '2';$scope.customer_name = '预订人';
 	$scope.bookingTypeList = [{'name':'堂食','booking_type':'meal_dine_in'},{'name':'预订','booking_type':'meal_reserve'},
 							  {'name':'外卖','booking_type':'meal_take_out'}];
+	$scope.bookingTypeHash = {'booking_type':'堂食','meal_reserve':'预订','meal_take_out':'外卖'};
 	$scope.param.booking_type = 'meal_dine_in';$scope.booking_type = 'meal_dine_in';//堂食
 	//设置酒店餐饮频道 首次进入设置
     $scope.setThisChannel('Meal');//酒店频道
@@ -159,6 +160,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	//开台 预订 结账 加减菜
 	$scope.diningTable = function(diningType, table) {
 		var diningTypeName = '订单管理';
+		$scope.diningSaveButton = '下单';
 		$scope.activeBookAccountsEditTab=1;
 		if(diningType == 'open') {//开台$scope.param.number_of_people = 1;
 			diningTypeName = '堂食';
@@ -170,6 +172,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		if(diningType == 'book') {diningTypeName = '预订';$scope.param.booking_type = 'meal_reserve';}
 		if(diningType == 'cuisine') diningTypeName = '加减菜';
 		if(diningType == 'account') diningTypeName = '结账';
+		if(diningType == 'editBook') $scope.diningSaveButton = '保存';
 		$scope.diningTypeName = diningTypeName;$scope.diningType = diningType;
 		var asideRestaurantBook = $aside({scope : $scope, title: $scope.action_nav_name, placement:'top',animation:'am-fade-and-slide-top',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Booking/Restaurant/tableBook.html',show: false});
 		asideRestaurantBook.$promise.then(function() {
@@ -180,6 +183,9 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 				//$('a.print-contents').printPreview('print_content');
 			});
 		});
+	}
+	$scope.activeBookAccountsEdit = function(active) {
+		$scope.activeBookAccountsEditTab=active;
 	}
 	//解析菜式
 	var allCuisineList = '',cuisineCategory = {},cuisineSKU = {};$scope.cuisineList = {};
@@ -457,9 +463,10 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
         }
         $scope.isConsumePrint = isConsumePrint;$scope.isAccountPrint = isAccountPrint; $scope.isBorrowingPrint = isBorrowingPrint;
     };
+	$scope.setEdit = function(is_edit) {$scope.isEdit = is_edit;}
 	$scope.editDiningTable = function(bookingDetail) {
 		var bookCuisine = $scope.bookCuisineList, thisBook = $scope.bookList[bookingDetail.booking_number];
-		$scope.param = thisBook;
+		$scope.param = thisBook;$scope.bookingDetail = bookingDetail;$scope.isEdit = 0;
 		$scope.market_name = bookingDetail.market_name;$scope.market_id = bookingDetail.market_id;
         $scope.market_father_id =  bookingDetail.market_father_id;
 		var bookRoomStatus = $scope.bookRoomStatus;//取得已订菜式 已订餐桌
@@ -478,7 +485,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 					editBookCuisine(bookCuisine[detail_id][cuisine_id], bookCuisine[detail_id][cuisine_id].item_id);
 				}
 			}
-		}console.log($scope.haveBookCuisine);
+		}//console.log($scope.haveBookCuisine);
 		//
 		function editBookCuisine (bookCuisine, table_id) {
 			var cuisine = $scope.hashCuisineSKU[bookCuisine.cuisine_id];
@@ -501,10 +508,11 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
         $scope.param.channel_father_id = $rootScope.employeeChannel[$scope.thisChannel_id].channel_father_id;
 		$scope.param.market_id = $scope.market_id;$scope.param.market_father_id = $scope.market_father_id;
 		$scope.param.market_name = $scope.market_name;
-		if($scope.param['in_time'].length > 8) $scope.param['in_time'] = $filter('limitTo')($scope.param['in_time'], 8, 11);
+		if(angular.isDefined($scope.param.in_time) && $scope.param['in_time'].length > 8) $scope.param['in_time'] = $filter('limitTo')($scope.param['in_time'], 8, 11);
 		if(angular.isUndefined($scope.param.member_name) || $scope.param.member_name == '') $scope.param.member_name = '散客';
 		$scope.loading.show();
 		$httpService.header('method', 'saveRestaurantBook');
+		if($scope.diningType == 'editBook') $httpService.header('method', 'editRestaurantBook');
 		$httpService.post('app.do?'+param+'&id='+$scope.id, $scope, function(result){
 			$scope.loading.percent();
 			if(result.data.success == '0') {//$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});

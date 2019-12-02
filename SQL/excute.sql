@@ -1,7 +1,9 @@
+GRANT ALL PRIVILEGES ON `wecenter_work`.* TO 'hotel_work_beta'@'localhost' IDENTIFIED BY 'hotelbrain!wvd1275'
+
 SET PASSWORD FOR root@localhost = PASSWORD('root'); 
 ALTER USER 'root'@'localhost' IDENTIFIED BY 'mySql22582!'
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'mySql22582!';
-create user rpl_user@'%' identified WITH mysql_native_password by 'rpl_Pass123!';
+CREATE USER rpl_user@'%' IDENTIFIED WITH mysql_native_password BY 'rpl_Pass123!';
 
 ALTER TABLE `channel_consume` AUTO_INCREMENT=12;
 SHOW PROCESSLIST;
