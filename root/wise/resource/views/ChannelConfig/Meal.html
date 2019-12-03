@@ -1,4 +1,4 @@
-<span ng-include="'resource/views/Common/nav.tpl.html'"></span>
+p-h-smp-h-smp-h-smp-h-sm<span ng-include="'resource/views/Common/nav.tpl.html'"></span>
 <div class="p-md">
   <div class="box b-a bg-white m-b" ng-controller="MealController">
     <div class="col-md-10">
@@ -53,7 +53,7 @@
 								<td><img class="img-responsive" width="45" height="45" ng-src="{{cuisine.image_src}}"></td>
 								<td title="{{cuisine.cuisine_specialty}}">{{cuisine.cuisine_name}}<button type="button" class="btn btn-xs" data-html="true" data-placement="bottom" title="套菜" data-container="body" data-template-url="/app/complete_dinner.html" data-trigger="click" bs-popover ng-if="cuisine.sku_complete_dinner==1">套菜<i class="fa fa-caret-down"></i></button></td>
 								<td>{{hashCategoryList[cuisine.cuisine_category_id].cuisine_name}}</td>
-								<td><span class="label">{{cuisine.sku_attr1}}</span> {{cuisine.sku_attr1_value}}/<span class="label">{{cuisine.sku_attr2}}</span> {{cuisine.sku_attr2_value}}/<span class="label">{{cuisine.sku_attr3}}</span> {{cuisine.sku_attr3_value}}</td>
+								<td><span class="label">{{cuisine.sku_attr1_value}}</span> <span class="label">{{cuisine.sku_attr2_value}}</span> <span class="label">{{cuisine.sku_attr3_value}}</span> </td>
 								<td>{{cuisine.cuisine_price}}</td>
 								<td><span ng-if="cuisine.cuisine_inventory==-999">无限</span><span ng-if="cuisine.cuisine_inventory==-9999">-</span><span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span></td>
 								<td>{{cuisine.cuisine_sell_clear==1?'沽清':''}}</td>

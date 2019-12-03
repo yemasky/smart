@@ -96,21 +96,14 @@
 					<div class="form-group m-b-xs has-feedback">
                   		<div class="input-group">
 							<div class="btn-group m-xs">
-								<div class="btn-group dropdown">
-								  <button type="button" class="btn btn-sm btn-default" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top"><i class="fas fa-cash-register"></i> 
-									消费 <span class="caret"></span>
-								  </button>
-								  <ul class="dropdown-menu">
-									  <li><a href ng-click="activeBookAccountsEdit(1);bookingConsume('consume');"><i class="fas fa-yen-sign"></i> 消费</a></li>
-								  </ul>
-								</div>
+								<label class="btn btn-rounded btn-default p-h-sm" ng-click="activeBookAccountsEdit(3)"><i class="ti-wallet"></i> 消费</label>
 								<div class="btn-group dropdown" ng-click="activeBookAccountsEdit(3)" ng-class="{active:activeBookAccountsEditTab==3}">
-								  <button type="button" class="btn btn-sm btn-default" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top" data-template-url="/app/checkOutMenu.html" ng-class="{active:activeBookAccountsEditTab==3}"><i class="fas fa-cash-register"></i> 
+								  <button type="button" class="btn btn-rounded btn-default p-h-sm" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top" data-template-url="/app/checkOutMenu.html" ng-class="{active:activeBookAccountsEditTab==3}"><i class="fas fa-cash-register"></i> 
 									账务 <span class="caret"></span>
 								  </button>          
 								</div>
-								<label class="btn btn-sm btn-default" ng-class="{active:activeBookAccountsEditTab==1}" ng-click="activeBookAccountsEdit(1)"><i class="fas fa-pizza-slice"></i> 加/减菜</label>
-								<label class="btn btn-sm btn-default" ng-class="{active:activeBookAccountsEditTab==2}" ng-click="activeBookAccountsEdit(2)"><i class="fas fa-user-plus"></i> 加/换台</label>
+								<label class="btn btn-rounded btn-default p-h-sm" ng-class="{active:activeBookAccountsEditTab==1}" ng-click="activeBookAccountsEdit(1)"><i class="fas fa-pizza-slice"></i> 加/减菜</label>
+								<label class="btn btn-rounded btn-default p-h-sm" ng-class="{active:activeBookAccountsEditTab==2}" ng-click="activeBookAccountsEdit(2)"><i class="fas fa-user-plus"></i> 加/换台</label>
 							</div>
 						</div>
 					</div>
@@ -175,7 +168,8 @@
 					<div class="b-t clear">
 						<div class="col-sm-1 col-xs-3 p-xs">已点菜品</div>
 						<div class="col-sm-11 col-xs-9 p-xs scroll-x text-nowrap">
-<div class="list-group clearfix no-radius no-margin" ng-repeat="(table_id, tableCuisine) in haveBookCuisine">
+<!-- 订单菜 -->	
+<div class="list-group clearfix no-radius no-margin" ng-repeat="(table_id, tableCuisine) in bookEditCuisine">
 	<div class="list-group-item col-sm-2 col-xs-6 p-xs" ng-repeat="(j, cuisine) in tableCuisine">
 	  <!--<a href class="pull-left w-thumb m-r-xs"><img ng-src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>-->
 		<div class="clear">
@@ -197,6 +191,37 @@
 				<span class="pull-right">
 					<code class="small">上菜 {{cuisine.cuisine_number_over}}</code>
 					<a class="text-black" ng-click="reduceBookCuisine(cuisine, table_id)" ng-if="cuisine.cuisine_number" title="退菜"><i class="glyphicon glyphicon-minus-sign"></i> {{cuisine.cuisine_number}}</a>
+				</span>
+			</div><!-- end已点菜品 ------------------------------------->
+		</div>
+	</div>
+</div>	
+						</div>
+					</div>			
+<!-- 新加菜-->
+					<div class="b-t clear" ng-if="haveBookCuisine">
+						<div class="col-sm-1 col-xs-3 p-xs">新点菜品</div>
+						<div class="col-sm-11 col-xs-9 p-xs scroll-x text-nowrap">		
+<div class="list-group clearfix no-radius no-margin" ng-repeat="(table_id, tableCuisine) in haveBookCuisine">
+	<div class="list-group-item col-sm-2 col-xs-6 p-xs" ng-repeat="(j, cuisine) in tableCuisine">
+	  <!--<a href class="pull-left w-thumb m-r-xs"><img ng-src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>-->
+		<div class="clear">
+			<div><!-- 已点菜品 ------------------------------------->
+				<span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:11}}</span>
+				<span class="clear text-ellipsis small">
+					<span class="label" ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></span>
+					<span class="label label-xs" title="{{cuisine.sku_attr1}}" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
+					<span class="label label-xs" title="{{cuisine.sku_attr2}}" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
+					<span class="label label-xs" title="{{cuisine.sku_attr3}}" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>
+				</span>
+			</div>
+			<div class="small">
+				<del ng-if="cuisine.is_discount==1">￥{{cuisine.cuisine_price}}</del>
+				<span ng-if="cuisine.is_discount==0">￥{{cuisine.cuisine_price}}</span>
+				<a class="label label-sm bg-danger" ng-if="cuisine.is_discount==1" title="折扣" >折￥ {{cuisine.discount_price}}</a>
+			</div> 
+			<div>
+				<span class="pull-right">
 					<a class="text-color" ng-click="reduceBookCuisine(cuisine, table_id)"><i class="glyphicon glyphicon-minus-sign"></i></a>{{cuisine.bookNumber}}<a class="text-warning" ng-click="addBookCuisine(cuisine, table_id)" title="加菜"><i class="glyphicon glyphicon-plus-sign"></i></a>
 				</span>
 			</div><!-- end已点菜品 ------------------------------------->

@@ -22,9 +22,9 @@
 				  <span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span>
 				</small>
 				<span class="clear text-ellipsis small text-dark">
-					<span ng-if="cuisine.sku_attr1!=''">{{cuisine.sku_attr1}}:{{cuisine.sku_attr1_value}}</span> 
-					<span ng-if="cuisine.sku_attr2!=''">{{cuisine.sku_attr2}}:{{cuisine.sku_attr2_value}}</span>
-					<span ng-if="cuisine.sku_attr3!=''">{{cuisine.sku_attr3}}:{{cuisine.sku_attr3_value}}</span>　
+					<span ng-if="cuisine.sku_attr1!=''" class="label">{{cuisine.sku_attr1_value}}</span> 
+					<span ng-if="cuisine.sku_attr2!=''" class="label">{{cuisine.sku_attr2_value}}</span>
+					<span ng-if="cuisine.sku_attr3!=''" class="label">{{cuisine.sku_attr3_value}}</span>　
 				</span>
 			</div>
 		</div>
