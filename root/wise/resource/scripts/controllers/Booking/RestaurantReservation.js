@@ -386,9 +386,9 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		$scope.haveBookCuisine[table_id][cuisine.cuisine_id].bookNumber--;//已订桌子已订菜--
 		if($scope.haveBookCuisine[table_id][cuisine.cuisine_id].bookNumber <= 0) {
 			$scope.haveBookCuisine[table_id][cuisine.cuisine_id].bookNumber = 0;
-			//if($scope.haveBookCuisine[table_id][cuisine.cuisine_id].detail_id == 0) {
+			if($scope.haveBookCuisine[table_id][cuisine.cuisine_id].detail_id == 0) {
 				delete $scope.haveBookCuisine[table_id][cuisine.cuisine_id];
-			//} 
+			} 
 		}
 		if(angular.isUndefined($scope.thisBookCuisine[cuisine.cuisine_id])) return;
 		$scope.thisBookCuisine[cuisine.cuisine_id]--;//已订菜--
