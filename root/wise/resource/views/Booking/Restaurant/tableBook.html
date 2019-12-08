@@ -83,8 +83,8 @@
                 <div ng-show="activeBookEditTab==1" id="idTableBook">
 					<script type="text/ng-template" id="/app/checkOutMenu.html">
                         <ul class="dropdown-menu">
-                          <li><a href ng-click="bookingClose(bookDetail, 'part')"><i class="fas fa-coins"></i> 收款</a></li>
-                          <li><a href ng-click="bookingClose(bookDetail, 'refund')"><i class="fas fa-coins"></i> 退款</a></li>
+                          <li><a href ng-click="bookingAccounts(bookDetail, 'part')"><i class="fas fa-coins"></i> 收款</a></li>
+                          <li><a href ng-click="bookingAccounts(bookDetail, 'refund')"><i class="fas fa-coins"></i> 退款</a></li>
 						  <li class="divider"></li>
 						  <li><a href ng-click="bookingClose(bookDetail, 'escape')"><i class="fas fa-grimace"></i> 结账</a></li>
                           <li ng-if="bookDetail.receivable_id>0"><a href ng-click="bookingClose(bookDetail, 'hanging')"><i class="fas fa-tasks"></i> 挂账</a></li>
@@ -96,7 +96,7 @@
 					<div class="form-group m-b-xs has-feedback">
                   		<div class="input-group">
 							<div class="btn-group m-xs">
-								<label class="btn btn-rounded btn-default p-h-sm" ng-click="activeBookAccountsEdit(3)"><i class="ti-wallet"></i> 消费</label>
+								<label class="btn btn-rounded btn-default p-h-sm" ng-click="activeBookAccountsEdit(3);restaurantConsume('');"><i class="ti-wallet"></i> 消费</label>
 								<div class="btn-group dropdown" ng-click="activeBookAccountsEdit(3)" ng-class="{active:activeBookAccountsEditTab==3}">
 								  <button type="button" class="btn btn-rounded btn-default p-h-sm" bs-dropdown="dropdown" data-animation="am-fade-and-slide-top" data-template-url="/app/checkOutMenu.html" ng-class="{active:activeBookAccountsEditTab==3}"><i class="fas fa-cash-register"></i> 
 									账务 <span class="caret"></span>
@@ -190,7 +190,7 @@
 			<div>
 				<span class="pull-right">
 					<code class="small">上菜 {{cuisine.cuisine_number_over}}</code>
-					<a class="text-black" ng-click="reduceBookCuisine(cuisine, table_id)" ng-if="cuisine.cuisine_number" title="退菜"><i class="glyphicon glyphicon-minus-sign"></i> {{cuisine.cuisine_number}}</a>
+					<a class="text-black" ng-click="reduceBookEditCuisine(cuisine, table_id)" ng-if="cuisine.cuisine_number" title="退菜"><i class="glyphicon glyphicon-minus-sign"></i> {{cuisine.cuisine_number}}</a>
 				</span>
 			</div><!-- end已点菜品 ------------------------------------->
 		</div>
@@ -479,4 +479,44 @@
     </div>
 </div>
 -->
-
+<script language="javascript">
+app.controller('TableBookExtendController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert, $filter, $modal) {
+    //获取数据
+	var _channel = $scope.$stateParams.channel;
+	var _view = $scope.$stateParams.view,common = '';
+	var param = 'channel='+_channel+'&view='+_view;
+    //////Consume
+    $scope.saveConsume = function() {
+        $scope.param.booking_number = $scope.bookDetail.booking_number;
+        $scope.param.channel = $scope.bookDetail.channel;
+        $scope.param.consume_title = $scope.consume_title;
+        $scope.param.booking_type = $scope.thisConsume.consume_code;
+        $scope.param.channel_consume_id = $scope.thisConsume.channel_consume_id;
+        $scope.param.channel_consume_father_id = $scope.thisConsume.channel_consume_father_id;
+        $scope.param.book_id = $scope.bookDetail.book_id;
+        $scope.loading.show();$httpService.header('method', 'saveConsume');
+        $httpService.post('app.do?'+param, $scope, function(result){
+            $httpService.deleteHeader('method');
+            $scope.loading.percent();
+            if(result.data.success == '0') {
+                var message = $scope.getErrorByCode(result.data.code);
+                //$alert({title: 'Error', content: message, templateUrl: '/modal-warning.html', show: true});
+                return;//错误返回
+            }
+            var consume_id = result.data.item.consume_id, c_id = result.data.item.bc_id,business_day=result.data.item.business_day;
+            if(angular.isUndefined($scope.consumeDetail[$scope.param.booking_detail_id][consume_id])) { 
+                consume_price_total = result.data.item.consume_price_total;
+                $scope.param.consume_id = consume_id;$scope.param.c_id = c_id;
+                $scope.param.business_day = business_day;
+            } 
+            $scope.param.consume_price_total = $scope.param.money;$scope.param.consume_price = $scope.param.money;
+            $scope.param.original_price = $scope.param.money;$scope.param.item_amount = 1;
+            $scope.consumeDetail[$scope.param.booking_detail_id][consume_id] = angular.copy($scope.param);
+            $scope.param.c_id = '';
+            $scope.asideConsume.hide();
+        });
+    }
+    //////end Consume
+});  
+    
+</script>

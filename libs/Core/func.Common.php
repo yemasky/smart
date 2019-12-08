@@ -159,7 +159,7 @@ if(!defined("INC_FUNC_COMMON")) {
 	function getKey($param = '') {
 		static $key = '';
 		if(!empty($param)) $key = $param;
-		if(empty($key)) return getDay();
+		if(empty($key)) return getDay();//默认是按天加密
 
 		return $key;
 	}
@@ -191,14 +191,14 @@ if(!defined("INC_FUNC_COMMON")) {
 			$ctr++;
 		}
 		//str_replace(array('+', '/', '='), array('-', '_', ''), base64_encode(xxxx));
-		$key = $key . getKey();
+		$key = $key . getKey();//默认是按天加密
 
 		return str_replace(array('+', '/', '='), array('_', '~', ''), base64_encode(keyED($tmp, $key)));
 	}
 
 	function decode($txt, $key = __KEY) {
 		//str_replace(array('-', '_'), array('+', '/'), $string);
-		$key = $key . getKey();
+		$key = $key . getKey();//默认是按天加密
 		$txt = keyED(base64_decode(str_replace(array('_', '~'), array('+', '/'), $txt)), $key);
 		$tmp = "";
 		for($i = 0; $i < strlen($txt); $i++) {

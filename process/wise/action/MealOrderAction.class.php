@@ -94,7 +94,7 @@ class MealOrderAction extends \BaseAction {
         if (!empty($arrayBookList)) {
             $arrayBookingNumber = array_keys($arrayBookList);
             foreach ($arrayBookList as $booking_number => $v) {
-                $arrayBookList[$booking_number]['book_id'] = encode($booking_number);//加密
+                $arrayBookList[$booking_number]['book_id'] = encode($booking_number);//加密//默认按天加密
             }
         }
         $arrayResult['bookList'] = $arrayBookList;
@@ -109,12 +109,12 @@ class MealOrderAction extends \BaseAction {
                 ->EQ('valid', '1')->ArrayIN('booking_number', $arrayBookingNumber)
                 ->setHashKey('booking_detail_id')->ORDER('check_in');
             $field             = 'booking_detail_id,booking_number,booking_number_ext,booking_type,market_father_id,market_id,market_name,'
-                .'item_id,item_category_id,check_in,actual_check_in,booking_detail_status,client,valid,add_datetime';
+                . 'item_id,item_category_id,check_in,actual_check_in,booking_detail_status,client,valid,add_datetime';
             $bookingDetailRoom = BookingHotelServiceImpl::instance()->getBookingDetailList($whereCriteria, $field);
             if (!empty($bookingDetailRoom)) {
                 foreach ($bookingDetailRoom as $detail_id => $v) {
-                    $bookingDetailRoom[$detail_id]['detail_id'] = encode($v['booking_detail_id']);
-                    $bookingDetailRoom[$detail_id]['book_id']   = encode($v['booking_number']);
+                    $bookingDetailRoom[$detail_id]['ec_detail_id'] = encode($v['booking_detail_id']);
+                    $bookingDetailRoom[$detail_id]['book_id']      = encode($v['booking_number']);
                 }
             }
             //消费菜式
@@ -146,7 +146,7 @@ class MealOrderAction extends \BaseAction {
         }
         $arrayResult['bookDetailRoom']  = $bookingDetailRoom;
         $arrayResult['bookCuisineList'] = $bookingCuisine;
-        $arrayResult['bookConsumeList']    = $arrayBookingConsume;
+        $arrayResult['bookConsumeList'] = $arrayBookingConsume;
         //消费类别
         $arrayChannelConsume               = ChannelServiceImpl::instance()->getChannelConsume($company_id, $channel_id, $thisChannel['channel']);
         $arrayResult['channelConsumeList'] = $arrayChannelConsume;
@@ -188,6 +188,25 @@ class MealOrderAction extends \BaseAction {
             if ($objSuccessService->isSuccess()) {
 
                 return $objResponse->successServiceResponse($objSuccessService);
+            }
+        }
+        return $objResponse->successServiceResponse($objSuccessService);
+    }
+
+    protected function doMethodEditBookEditCuisine(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objSuccessService = new \SuccessService();
+        //
+        $edit_type      = $objRequest->type;
+        $booking_number = decode($objRequest->book_id);
+        $detail_id      = $objRequest->detail_id;
+        if (!empty($booking_number)) {
+            if ($edit_type == 'Add') {
+                if ($detail_id == 0) {//新增
+
+                } else if ($detail_id > 0) {//update
+
+                }
+
             }
         }
         return $objResponse->successServiceResponse($objSuccessService);
