@@ -1,4 +1,4 @@
-<div class="aside col-sm-5 b-r box-shadow no-padding" tabindex="-1" role="dialog" ng-controller="TableBookExtendController">
+<div class="aside col-sm-5 b-r box-shadow no-padding" tabindex="-1" role="dialog">
   <div class="aside-dialog aside-lg">
     <div class="aside-content">
       <div class="aside-header">
@@ -8,7 +8,7 @@
       <form name="form-layout" class="form-validation" id="bookExtendForm" ng-submit="saveBookExtendForm()">
 		  <div class="aside-body no-padding"> 
 			  <div class="clearfix p">
-				<div class="form-inline">
+				<div class="form-inline" ng-if="bookExtend!='changeTable'">
 					<div class="form-group p-v-xs" ng-if="bookExtend=='consume'">
 						 <aside class="app-aside bg-white lt w-sm">
 							<nav>
@@ -93,6 +93,19 @@
 							</span>
 						</div>
 					</div>
+				</div>
+				<div class="form-inline" ng-if="bookExtend=='changeTable'">
+					<select class="form-control" name="item_id" ng-model="bulidingTable">
+						<option value="">选择楼栋</option>
+						<option ng-repeat="(buliding_key, bulidingTable) in roomList" ng-value="bulidingTable">{{buliding_key}}</option>
+					</select>
+			  		<select class="form-control" id="changeTableId" name="item_id" ng-model="param.item_id">
+						<option value="">选择桌台</option>
+						<optgroup class="small" label="{{floor_key}}楼层" ng-repeat="(floor_key, floor) in bulidingTable">
+							<option ng-repeat="(i, table) in floor" value="{{table.item_id}}" ng-if="!table.detail_id&&bookRoomStatus[table.item_id]">{{table.item_name}} <span >[搭台]</span></option>
+							<option ng-repeat="(i, table) in floor" value="{{table.item_id}}" ng-if="!table.detail_id&&!bookRoomStatus[table.item_id]">{{table.item_name}} </option>
+						</optgroup>
+					</select>
 				</div>
 			  </div>
 		  </div>

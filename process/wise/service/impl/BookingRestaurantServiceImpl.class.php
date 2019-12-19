@@ -72,8 +72,8 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         $arrayCommonData['business_day']  = $objResponse->business_day;
         $arrayCommonData['client']        = $objRequest->client ? $objRequest->client : 'pms';
         $arrayCommonData['add_datetime']  = getDateTime();
-        if($objRequest->booking_type == 'meal_dine_in') {
-            $arrayCommonData['actual_check_in']  = getDateTime();//实际用餐时间
+        if ($objRequest->booking_type == 'meal_dine_in') {
+            $arrayCommonData['actual_check_in'] = getDateTime();//实际用餐时间
         }
         //暂时没开发的必填项
         $arrayCommonData['policy_id'] = 0;
@@ -209,7 +209,7 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
                 BookingDao::instance()->saveBookingDiscountList($bookingDiscountList);
             }
         }
-        
+
         CommonServiceImpl::instance()->commit();
         return $objSuccessService;
 
@@ -236,6 +236,39 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
 
     public function getBookingCuisine($whereCriteria, $field = '') {
         return BookingDao::instance()->getBookingCuisine($whereCriteria, $field);
+    }
+
+    public function doEditBookEditCuisine(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
+        $objSuccessService = new \SuccessService();
+        //
+        $edit_type      = $objRequest->type;
+        $booking_number = decode($objRequest->book_id);
+        $detail_id      = $objRequest->detail_id;
+        if (!empty($booking_number)) {
+            $arrayInput = $objRequest->getInput();
+            if ($edit_type == 'Add') {
+                if ($detail_id > 0) {//增菜
+                    //菜式
+                    $Booking_cuisineEntity = new Booking_cuisineEntity($arrayInput);
+                    $Booking_cuisineEntity->setAddDatetime(getDateTime());
+                    $Booking_cuisineEntity->setBookingNumber($booking_number);
+                    $Booking_cuisineEntity->setBookingDetailId($detail_id);
+                    $booking_cuisine_id = BookingDao::instance()->saveBookingCuisine($Booking_cuisineEntity);
+                    //使用折扣
+                    if ($objRequest->is_discount) {
+                        $Booking_discountEntity = new Booking_discountEntity($arrayInput);
+                        $Booking_discountEntity->setBookingNumber($booking_number);
+                        $Booking_discountEntity->setItemExtendId($objRequest->cuisine_id);
+                        $Booking_discountEntity->setBookingExtendId($booking_cuisine_id);
+                        BookingDao::instance()->saveBookingDiscount($Booking_discountEntity);
+                    }
+
+                }
+
+            }
+        }
+        $objSuccessService->setData($arrayInput);
+        return $objSuccessService;
     }
 
 

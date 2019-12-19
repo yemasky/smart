@@ -18,6 +18,7 @@ class Booking_cuisineEntity extends \Entity {
     protected $cuisine_category_id;
     protected $cuisine_id;
     protected $cuisine_name;
+    protected $image_src;
     protected $cuisine_number;
     protected $cuisine_number_over;
     protected $cuisine_number_return;
@@ -148,6 +149,20 @@ class Booking_cuisineEntity extends \Entity {
      */
     public function getCuisineNumber() {
         return $this->cuisine_number;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageSrc() {
+        return $this->image_src;
+    }
+
+    /**
+     * @param mixed $image_src
+     */
+    public function setImageSrc($image_src) {
+        $this->image_src = $image_src;
     }
 
     /**

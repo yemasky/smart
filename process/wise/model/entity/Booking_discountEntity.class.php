@@ -15,6 +15,7 @@ class Booking_discountEntity extends \Entity {
     protected $channel_id;
     protected $booking_number;
     protected $booking_detail_id;
+    protected $booking_extend_id;
     protected $item_id;
     protected $item_extend_id;
     protected $consume_id;
@@ -99,6 +100,20 @@ class Booking_discountEntity extends \Entity {
      */
     public function setBookingDetailId($booking_detail_id) {
         $this->booking_detail_id = $booking_detail_id;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBookingExtendId() {
+        return $this->booking_extend_id;
+    }
+
+    /**
+     * @param mixed $booking_extend_id
+     */
+    public function setBookingExtendId($booking_extend_id) {
+        $this->booking_extend_id = $booking_extend_id;
     }
 
     /**

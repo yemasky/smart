@@ -194,21 +194,8 @@ class MealOrderAction extends \BaseAction {
     }
 
     protected function doMethodEditBookEditCuisine(\HttpRequest $objRequest, \HttpResponse $objResponse) {
-        $objSuccessService = new \SuccessService();
         //
-        $edit_type      = $objRequest->type;
-        $booking_number = decode($objRequest->book_id);
-        $detail_id      = $objRequest->detail_id;
-        if (!empty($booking_number)) {
-            if ($edit_type == 'Add') {
-                if ($detail_id == 0) {//新增
-
-                } else if ($detail_id > 0) {//update
-
-                }
-
-            }
-        }
+        $objSuccessService = BookingRestaurantServiceImpl::instance()->doEditBookEditCuisine($objRequest, $objResponse);
         return $objResponse->successServiceResponse($objSuccessService);
     }
 }

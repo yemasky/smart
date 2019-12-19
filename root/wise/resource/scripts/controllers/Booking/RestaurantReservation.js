@@ -527,6 +527,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		$scope.market_name = bookingDetail.market_name;$scope.market_id = bookingDetail.market_id;
         $scope.market_father_id =  bookingDetail.market_father_id;
 		var bookRoomStatus = $scope.bookRoomStatus;//计算已订菜式 已订餐桌
+		$scope.haveBookTable = {};$scope.thisBookTable = {};//初始化已订餐桌和本次餐桌thisBookTable
 		for(var table_id in bookRoomStatus) {
 			for(var detail_id in bookRoomStatus[table_id]) {
 				if(bookingDetail.booking_number == bookRoomStatus[table_id][detail_id].booking_number) {
@@ -601,7 +602,6 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 						booking_data[table_id][cuisine_id].discount_category   = bookCuisine.discount[discount_id].discount_category;
 						booking_data[table_id][cuisine_id].discount            = bookCuisine.discount[discount_id].discount;
 					}
-					
 				}
 			}
 			return booking_data;
@@ -769,6 +769,16 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
             });
         }
 	};
+	$scope.changeBookTable = function(table, detail_id) {
+		$scope.bookExtend = 'changeTable';$scope.bulidingTable = '';
+        var title = '换桌';
+        $scope.asideConsume = $aside({scope : $scope, title: title, placement:'left',animation:'am-fade-and-slide-left',backdrop:"static",container:'#MainController', templateUrl: 'resource/views/Booking/Restaurant/tableBookExtend.html?'+__VERSION,show: false});
+        $scope.asideConsume.$promise.then(function() {
+			$scope.asideConsume.show();
+			$(document).ready(function(){
+			});
+		});
+	}
 //************//打印
     $scope.printBill = function(print) {
         
