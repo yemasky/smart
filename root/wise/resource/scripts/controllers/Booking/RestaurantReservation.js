@@ -389,10 +389,20 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		return cuisine;
 	}
 	$scope.addBookCuisine = function(cuisine, table_id) {//新加菜品
+		table_id = getBookTableId(table_id);//先计算桌子
 		//计算折扣 
 		cuisine = countDiscount(cuisine);
-		if(angular.isUndefined(cuisine.detail_id)) cuisine.detail_id = 0;//未下单
-		table_id = getBookTableId(table_id);
+		if(angular.isUndefined(cuisine.detail_id)) {
+			cuisine.detail_id = 0;//未下单
+		}
+		console.log(cuisine.detail_id);console.log(table_id);console.log($scope.thisBookTable);
+		if(table_id > 0) {
+			cuisine.detail_id = $scope.thisBookTable.detail_id;
+			cuisine.ec_detail_id = $scope.thisBookTable.ec_detail_id;
+			cuisine.item_id = $scope.thisBookTable.item_id;
+			cuisine.item_name = $scope.thisBookTable.item_name;
+		}
+		console.log(cuisine.detail_id);
 		if(table_id === false) return;
 		if($scope.diningType == 'editBook') {
 			var editCuisine = {};editCuisine.param = {};

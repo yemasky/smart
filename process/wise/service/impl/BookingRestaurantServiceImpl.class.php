@@ -239,20 +239,42 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
     }
 
     public function doEditBookEditCuisine(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
+        $objLoginEmployee  = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id        = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        //获取channel
+        $channel_id = $objRequest->channel_id;
         $objSuccessService = new \SuccessService();
         //
         $edit_type      = $objRequest->type;
         $booking_number = decode($objRequest->book_id);
         $detail_id      = $objRequest->detail_id;
+        $ec_detail_id   = $objRequest->ec_detail_id;
+        if(!empty($ec_detail_id)) {
+            $detail_id = decode($ec_detail_id);
+        }
+        $returnData = [];
         if (!empty($booking_number)) {
             $arrayInput = $objRequest->getInput();
             if ($edit_type == 'Add') {
                 if ($detail_id > 0) {//增菜
+                    $cuisine_total_price = $objRequest->cuisine_price;
+                    $cuisine_sell_price = $objRequest->cuisine_price;
                     //菜式
                     $Booking_cuisineEntity = new Booking_cuisineEntity($arrayInput);
+                    $Booking_cuisineEntity->setIsDiscount('0');
+                    if($objRequest->is_discount == true) {
+                        $Booking_cuisineEntity->setIsDiscount('1');
+                        $cuisine_total_price = $objRequest->discount_price;
+                        $cuisine_sell_price = $objRequest->discount_price;
+                    }
                     $Booking_cuisineEntity->setAddDatetime(getDateTime());
                     $Booking_cuisineEntity->setBookingNumber($booking_number);
+                    $Booking_cuisineEntity->setCuisineNumber(1);
                     $Booking_cuisineEntity->setBookingDetailId($detail_id);
+                    $Booking_cuisineEntity->setCompanyId($company_id);
+                    $Booking_cuisineEntity->setChannelId($channel_id);
+                    $Booking_cuisineEntity->setCuisineTotalPrice($cuisine_total_price);
+                    $Booking_cuisineEntity->setCuisineSellPrice($cuisine_sell_price);
                     $booking_cuisine_id = BookingDao::instance()->saveBookingCuisine($Booking_cuisineEntity);
                     //使用折扣
                     if ($objRequest->is_discount) {
@@ -262,12 +284,19 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
                         $Booking_discountEntity->setBookingExtendId($booking_cuisine_id);
                         BookingDao::instance()->saveBookingDiscount($Booking_discountEntity);
                     }
+                    $returnData['booking_cuisine_id'] = $booking_cuisine_id;
 
                 }
+            }
+            if ($edit_type == 'Reduce') {//减少菜
 
             }
+            if ($edit_type == 'ReduceBook') {//退菜
+
+            }
+
         }
-        $objSuccessService->setData($arrayInput);
+        $objSuccessService->setData($returnData);
         return $objSuccessService;
     }
 
