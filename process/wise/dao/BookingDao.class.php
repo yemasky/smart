@@ -126,8 +126,8 @@ class BookingDao extends CommonDao {
         return $this->setDsnWrite($this->getDsnWrite())->batchInsertEntity($bookingCuisineList, 'booking_discount_id');
     }
 
-    public function saveBookingDiscount(Booking_cuisineEntity $bookingCuisineList) : int {
-        return $this->setDsnWrite($this->getDsnWrite())->insertEntity($bookingCuisineList);
+    public function saveBookingDiscount(Booking_discountEntity $Booking_discountEntity) : int {
+        return $this->setDsnWrite($this->getDsnWrite())->insertEntity($Booking_discountEntity);
     }
 
     public function updateBookingDiscount(\WhereCriteria $whereCriteria, $row) : int {

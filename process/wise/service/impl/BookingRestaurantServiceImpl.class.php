@@ -221,7 +221,28 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         //获取channel
         $channel_id = $objRequest->channel_id;
         //
-
+        $booking_number = decode($objRequest->book_id);
+        //booking 预订人信息 新订单需要生成第一个主订单
+        if (!empty($booking_number) && is_numeric($booking_number)) {
+            $updateData['booking_number_ext'] = $objRequest->booking_number_ext;
+            $updateData['market_father_id']   = $objRequest->market_father_id;
+            $updateData['market_id']          = $objRequest->market_id;
+            $updateData['market_name']        = $objRequest->market_name;
+            $updateData['member_id']          = $objRequest->member_id;
+            $updateData['member_name']        = $objRequest->member_name;
+            $updateData['node']               = $objRequest->node;
+            $updateData['number_of_people']   = $objRequest->number_of_people;
+            $updateData['receivable_id']      = $objRequest->receivable_id;
+            $updateData['receivable_name']    = $objRequest->receivable_name;
+            $updateData['remarks']            = $objRequest->remarks;
+            $whereCriteria = new \WhereCriteria();
+            $whereCriteria->EQ('booking_number', $booking_number)->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
+            BookingDao::instance()->updateBooking($whereCriteria, $updateData);
+            return $objSuccessService;
+        }
+        $objSuccessService->setSuccess(false);
+        $objSuccessService->setCode(ErrorCodeConfig::$errorCode['no_data_update']);
+        return $objSuccessService;
     }
 
     public function closeBooking(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
@@ -239,37 +260,38 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
     }
 
     public function doEditBookEditCuisine(\HttpRequest $objRequest, \HttpResponse $objResponse): \SuccessService {
-        $objLoginEmployee  = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
-        $company_id        = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
+        $objLoginEmployee = LoginServiceImpl::instance()->checkLoginEmployee()->getEmployeeInfo();
+        $company_id       = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         //获取channel
-        $channel_id = $objRequest->channel_id;
+        $channel_id        = $objRequest->channel_id;
         $objSuccessService = new \SuccessService();
         //
         $edit_type      = $objRequest->type;
         $booking_number = decode($objRequest->book_id);
         $detail_id      = $objRequest->detail_id;
-        $ec_detail_id   = $objRequest->ec_detail_id;
-        if(!empty($ec_detail_id)) {
+        $ec_detail_id   = $objRequest->ec_detail_id;//ec 开头代表encode
+        if (!empty($ec_detail_id)) {
             $detail_id = decode($ec_detail_id);
         }
         $returnData = [];
         if (!empty($booking_number)) {
             $arrayInput = $objRequest->getInput();
+            CommonServiceImpl::instance()->startTransaction();
             if ($edit_type == 'Add') {
                 if ($detail_id > 0) {//增菜
                     $cuisine_total_price = $objRequest->cuisine_price;
-                    $cuisine_sell_price = $objRequest->cuisine_price;
+                    $cuisine_sell_price  = $objRequest->cuisine_price;
                     //菜式
                     $Booking_cuisineEntity = new Booking_cuisineEntity($arrayInput);
                     $Booking_cuisineEntity->setIsDiscount('0');
-                    if($objRequest->is_discount == true) {
+                    if ($objRequest->is_discount == true) {
                         $Booking_cuisineEntity->setIsDiscount('1');
                         $cuisine_total_price = $objRequest->discount_price;
-                        $cuisine_sell_price = $objRequest->discount_price;
+                        $cuisine_sell_price  = $objRequest->discount_price;
                     }
                     $Booking_cuisineEntity->setAddDatetime(getDateTime());
                     $Booking_cuisineEntity->setBookingNumber($booking_number);
-                    $Booking_cuisineEntity->setCuisineNumber(1);
+                    $Booking_cuisineEntity->setCuisineNumber($objRequest->_cuisine_number);
                     $Booking_cuisineEntity->setBookingDetailId($detail_id);
                     $Booking_cuisineEntity->setCompanyId($company_id);
                     $Booking_cuisineEntity->setChannelId($channel_id);
@@ -279,12 +301,19 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
                     //使用折扣
                     if ($objRequest->is_discount) {
                         $Booking_discountEntity = new Booking_discountEntity($arrayInput);
+                        $Booking_discountEntity->setCompanyId($company_id);
+                        $Booking_discountEntity->setChannelId($channel_id);
                         $Booking_discountEntity->setBookingNumber($booking_number);
+                        $Booking_discountEntity->setBookingDetailId($detail_id);
                         $Booking_discountEntity->setItemExtendId($objRequest->cuisine_id);
+                        $Booking_discountEntity->setDiscount($objRequest->_discount);
+                        $Booking_discountEntity->setBusinessDay(LoginServiceImpl::getBusinessDay());
                         $Booking_discountEntity->setBookingExtendId($booking_cuisine_id);
+                        $Booking_discountEntity->setAddDatetime(getDateTime());
                         BookingDao::instance()->saveBookingDiscount($Booking_discountEntity);
                     }
                     $returnData['booking_cuisine_id'] = $booking_cuisine_id;
+                    $returnData['ec_b_c_id']          = encode($booking_cuisine_id);
 
                 }
             }
@@ -294,6 +323,7 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
             if ($edit_type == 'ReduceBook') {//退菜
 
             }
+            CommonServiceImpl::instance()->commit();
 
         }
         $objSuccessService->setData($returnData);

@@ -41,6 +41,7 @@
 		"000010":"No Data Update.",
 		"000011":"Login OverTime,Please Re-logon.",
 		"000012":"Beyond reasonable time.",
+		"000013":"Page Request Error.",
         "100001":"no price!",
 		"100002":"over booking.",
 		"100003":"lock room.",

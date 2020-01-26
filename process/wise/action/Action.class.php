@@ -25,7 +25,7 @@ class Action {
         //
         $channel_id = $objRequest->id;
         $channel_id = !empty($channel_id) ? decode($channel_id, getDay()) : null;
-        if (!empty($channel_id)) $objRequest->channel_id = $channel_id;//如果没有传递channl_id 系统会在下面默认为用户登录的第一个channel_id
+        if (!empty($channel_id) && is_numeric($channel_id)) $objRequest->channel_id = $channel_id;//如果没有传递channl_id 系统会在下面默认为用户登录的第一个channel_id
 
         $objResponse->__nav_name = '';
         $objLoginEmployee        = LoginServiceImpl::instance()->checkLoginEmployee();
@@ -96,6 +96,9 @@ class Action {
                 } else {//无权限
                     return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['no_permission']['code']);
                 }
+            } else {
+                //本页无效 跳转？
+                //return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['page_error']['code'], '', ErrorCodeConfig::$errorCode['common']['page_error']['message']);
             }
             //默认值 channel_id 预订模块默认值
             if (empty($channel_id)) {

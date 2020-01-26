@@ -353,7 +353,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		return table_id;
 	}
 	function countDiscount(cuisine) {//计算折扣
-		var create_time = 0; cuisine['is_discount'] = false; cuisine['discount_price'] = '';
+		var create_time = 0; cuisine['is_discount'] = false; cuisine['discount_price'] = '';cuisine['discount_category'] = '',cuisine._discount = '';
 		for(var k in cuisine.discount) {
 			var discount = cuisine.discount[k],week = discount.week, market_ids = discount.market_ids;
 			if(discount.discount_category == 'discount') {//1打折 2直减 3满减 4积分 5优惠卷 6现金红包 7现金卷
@@ -377,6 +377,8 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 									cuisine.is_discount       = true;
 									cuisine.discount_price    = discount_price;
 									cuisine.discount_id       = discount.discount_id;
+									cuisine._discount         = discount.discount;//折扣
+									cuisine.discount_category = discount.discount_category;
 								}
 								break;
 							}
@@ -387,6 +389,10 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 			}
 		}
 		return cuisine;
+	}
+	$scope.add_cuisine_number = {};
+	$scope.setBookDefaultCuisine = function(cuisine) {
+		$scope.add_cuisine_number[cuisine.cuisine_id] = 1 - 0;
 	}
 	$scope.addBookCuisine = function(cuisine, table_id) {//新加菜品
 		table_id = getBookTableId(table_id);//先计算桌子
@@ -402,12 +408,18 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 			cuisine.item_id = $scope.thisBookTable.item_id;
 			cuisine.item_name = $scope.thisBookTable.item_name;
 		}
-		console.log(cuisine.detail_id);
+		console.log($scope.add_cuisine_number);
+		var add_cuisine_number = 1;
+		if(angular.isDefined($scope.add_cuisine_number[cuisine.cuisine_id])) {
+			add_cuisine_number = $scope.add_cuisine_number[cuisine.cuisine_id] - 0;
+			delete $scope.add_cuisine_number[cuisine.cuisine_id];
+		}
 		if(table_id === false) return;
 		if($scope.diningType == 'editBook') {
 			var editCuisine = {};editCuisine.param = {};
 			editCuisine.param = cuisine;
 			editCuisine.param.type = 'Add';
+			editCuisine.param._cuisine_number = add_cuisine_number;
 			var message = cuisine.cuisine_name+'加菜成功！';
 			editThisBookCuisine(editCuisine, addCuisine, message);
 		} else {addCuisine();}
@@ -417,7 +429,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 				$scope.haveBookCuisine[table_id][cuisine.cuisine_id] = angular.copy(cuisine);
 				$scope.haveBookCuisine[table_id][cuisine.cuisine_id].bookNumber = 0;//
 			}
-			$scope.haveBookCuisine[table_id][cuisine.cuisine_id].bookNumber++;//已订桌子已订菜++
+			$scope.haveBookCuisine[table_id][cuisine.cuisine_id].bookNumber += add_cuisine_number;//已订桌子已订菜++
 			if(angular.isUndefined($scope.thisBookCuisine[cuisine.cuisine_id])) {$scope.thisBookCuisine[cuisine.cuisine_id] = 0;}
 			$scope.thisBookCuisine[cuisine.cuisine_id]++;//已订菜++
 		}
@@ -429,6 +441,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 			var editCuisine = {};editCuisine.param = {};
 			editCuisine.param = cuisine;
 			editCuisine.param.type = 'Reduce';
+			editCuisine.param.ec_b_c_id = $scope.editBookCuisineList[cuisine.cuisine_id].ec_b_c_id;
 			var message = cuisine.cuisine_name+'减菜成功！';
 			editThisBookCuisine(editCuisine, reduceCuisine, message);
 		} else {reduceCuisine();};
@@ -446,6 +459,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 				delete $scope.thisBookCuisine[cuisine.cuisine_id];
 		}
 	}
+	$scope.editBookCuisineList = {};
 	function editThisBookCuisine(editParam, callback, message) {
 		editParam.param.book_id = $scope.thisBook.book_id;
 		$httpService.header('method', 'editBookEditCuisine');
@@ -457,6 +471,12 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 			}
 			$scope.successAlert.startProgressBar(message);
 			callback();
+			$scope.editBookCuisineList[editParam.param.cuisine_id] = {};
+			$scope.editBookCuisineList[editParam.param.cuisine_id].booking_cuisine_id = result.data.item.booking_cuisine_id;
+			$scope.editBookCuisineList[editParam.param.cuisine_id].ec_b_c_id = result.data.item.ec_b_c_id;
+			if(editParam.param.type == 'Add') {//加菜
+				delete editCuisine.param._cuisine_number;
+			}
 		})
 	}
 	$scope.clearBookCuisine = function() {//清除已订菜
@@ -551,22 +571,22 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		$scope.thisBookCuisine = {};$scope.bookEditCuisine = {};//本次已订的菜品数据
 		for(var detail_id in bookCuisine) {//取得已订菜
 			if(detail_id == bookingDetail.booking_detail_id) {//取出这次的订菜数据
-				for(var cuisine_id in bookCuisine[detail_id]) {
-					editBookCuisine(bookCuisine[detail_id][cuisine_id], bookCuisine[detail_id][cuisine_id].item_id);
+				for(var b_cuisine_id in bookCuisine[detail_id]) {
+					editBookCuisine(bookCuisine[detail_id][b_cuisine_id], bookCuisine[detail_id][b_cuisine_id].item_id);
 				}
 			}
 		}//console.log($scope.haveBookCuisine);
 		function editBookCuisine (bookCuisine, table_id) {
-			var cuisine = $scope.hashCuisineSKU[bookCuisine.cuisine_id];
+			var cuisine = $scope.hashCuisineSKU[bookCuisine.cuisine_id], b_cuisine_id = bookCuisine.booking_cuisine_id;
 			if(angular.isUndefined($scope.bookEditCuisine[table_id])) $scope.bookEditCuisine[table_id] = {};
-			$scope.bookEditCuisine[table_id][cuisine.cuisine_id] = angular.copy(cuisine);
-			$scope.bookEditCuisine[table_id][cuisine.cuisine_id].is_discount = bookCuisine.is_discount;
-			$scope.bookEditCuisine[table_id][cuisine.cuisine_id].bookNumber = 0;
-			$scope.bookEditCuisine[table_id][cuisine.cuisine_id].detail_id = bookCuisine.booking_detail_id;
-			$scope.bookEditCuisine[table_id][cuisine.cuisine_id].cuisine_number = bookCuisine.cuisine_number;//
-			$scope.bookEditCuisine[table_id][cuisine.cuisine_id].cuisine_number_over = bookCuisine.cuisine_number_over;//
-			$scope.bookEditCuisine[table_id][cuisine.cuisine_id].cuisine_number_return = bookCuisine.cuisine_number_return;//
-			$scope.bookEditCuisine[table_id][cuisine.cuisine_id].discount_price = bookCuisine.cuisine_sell_price;//
+			$scope.bookEditCuisine[table_id][b_cuisine_id] = angular.copy(cuisine);
+			$scope.bookEditCuisine[table_id][b_cuisine_id].is_discount = bookCuisine.is_discount;
+			$scope.bookEditCuisine[table_id][b_cuisine_id].bookNumber = 0;
+			$scope.bookEditCuisine[table_id][b_cuisine_id].detail_id = bookCuisine.booking_detail_id;
+			$scope.bookEditCuisine[table_id][b_cuisine_id].cuisine_number = bookCuisine.cuisine_number;//
+			$scope.bookEditCuisine[table_id][b_cuisine_id].cuisine_number_over = bookCuisine.cuisine_number_over;//
+			$scope.bookEditCuisine[table_id][b_cuisine_id].cuisine_number_return = bookCuisine.cuisine_number_return;//
+			$scope.bookEditCuisine[table_id][b_cuisine_id].discount_price = bookCuisine.cuisine_sell_price;//
 		}
 		$scope.diningTable('editBook', '');
 	}

@@ -257,29 +257,29 @@
 										<div class="list-group no-radius text-nowrap">
 											<div class="list-group-item col-sm-2 col-xs-6 p-xs" ng-repeat="(i, cuisine) in cuisineList">
 											  <a href class="pull-left w-thumb m-r-xs"><img ng-src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>
-												
-											  <div class="clear">
-												  <div>
-													  <span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:11}}</span>
-													  <span class="clear text-ellipsis small">
-														  <span class="label" ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></span>
-														  <span class="label label-xs" title="{{cuisine.sku_attr1}}" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
-														  <span class="label label-xs" title="{{cuisine.sku_attr2}}" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
-														  <span class="label label-xs" title="{{cuisine.sku_attr3}}" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
-													  </span>
-												  </div>
-												  <div>
-													  <small>￥{{cuisine.cuisine_price}}</small>
-													  <a class="label label-xs bg-danger" ng-if="cuisine.discount!=''" data-html="true" data-placement="bottom" title="折扣" data-container="#idTableBook" data-template-url="/app/dscount_dinner.html" data-trigger="hover" bs-popover>折<i class="fa fa-caret-down"></i></a>
-												  </div>
-												  <div>
-												  	  <small class="ti-server" title="库存">
-													  <span ng-if="cuisine.cuisine_inventory==-999">无限</span>
-													  <span ng-if="cuisine.cuisine_inventory==-9999">-</span>
-													  <span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span></small>
-													  <span class="pull-right"><a class="text-color" ng-click="reduceBookCuisine(cuisine, 0)" ng-if="thisBookCuisine[cuisine.cuisine_id]>0"><i class="glyphicon glyphicon-minus-sign"></i></a>{{thisBookCuisine[cuisine.cuisine_id]}}<a class="text-warning" ng-click="addBookCuisine(cuisine, 0)"><i class="glyphicon glyphicon-plus-sign"></i></a></span>
-												  </div>
-											  </div>
+<!-- 菜式 -->												
+<div class="clear" id="cuisine_{{cuisine.cuisine_id}}">
+  <div>
+	  <span title="{{cuisine.cuisine_name}}">{{cuisine.cuisine_name|limitTo:11}}</span>
+	  <span class="clear text-ellipsis small">
+		  <span class="label" ng-if="cuisine.sku_complete_dinner=='1'" data-html="true" data-placement="bottom" title="套菜" data-container="#idTableBook" data-template-url="/app/complete_dinner.html" data-trigger="hover" bs-popover>套<i class="fa fa-caret-down"></i></span>
+		  <span class="label label-xs" title="{{cuisine.sku_attr1}}" ng-if="cuisine.sku_attr1_value!=''">{{cuisine.sku_attr1_value}}</span> 
+		  <span class="label label-xs" title="{{cuisine.sku_attr2}}" ng-if="cuisine.sku_attr2_value!=''">{{cuisine.sku_attr2_value}}</span>
+		  <span class="label label-xs" title="{{cuisine.sku_attr3}}" ng-if="cuisine.sku_attr3_value!=''">{{cuisine.sku_attr3_value}}</span>　
+	  </span>
+  </div>
+  <div>
+	  <small>￥{{cuisine.cuisine_price}}</small>
+	  <a class="label label-xs bg-danger" ng-if="cuisine.discount!=''" data-html="true" data-placement="bottom" title="折扣" data-container="#idTableBook" data-template-url="/app/dscount_dinner.html" data-trigger="hover" bs-popover>折<i class="fa fa-caret-down"></i></a>
+  </div>
+  <div>
+	  <small class="ti-server" title="库存">
+	  <span ng-if="cuisine.cuisine_inventory==-999">无限</span>
+	  <span ng-if="cuisine.cuisine_inventory==-9999">-</span>
+	  <span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span></small>
+	  <span class="pull-right"><a class="text-color" ng-click="reduceBookCuisine(cuisine, 0)" ng-if="thisBookCuisine[cuisine.cuisine_id]>0"><i class="glyphicon glyphicon-minus-sign"></i></a>{{thisBookCuisine[cuisine.cuisine_id]}}<a class="text-warning" bs-aside="aside" data-html="true" data-placement="top" data-animation="am-fade-and-slide-right" data-backdrop="false" data-container="#cuisine_{{cuisine.cuisine_id}}" data-template-url="/app/book_cuisine.html" ng-click="setBookDefaultCuisine(cuisine);"><i class="glyphicon glyphicon-plus-sign"></i></a></span>
+  </div>
+</div><!-- end 菜式 -->
 											</div>
 										</div>  
 									  </div>  

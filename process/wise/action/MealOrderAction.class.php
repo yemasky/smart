@@ -101,7 +101,7 @@ class MealOrderAction extends \BaseAction {
         //查找[今日房态/今天预抵的] 条件未完结的今天预抵的所有订单 valid = 1 and check_in <= 今天
         $bookingDetailRoom = [];
         $arrayConsume      = [];
-        $bookingCuisine    = [];
+        $bookingCuisine    = $arrayBookingConsume = [];
         if (!empty($arrayBookingNumber)) {
             //桌态
             $whereCriteria = new \WhereCriteria();
@@ -121,8 +121,8 @@ class MealOrderAction extends \BaseAction {
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('company_id', $company_id)->EQ('channel_id', $channel_id)
                 ->EQ('valid', '1')->ArrayIN('booking_number', $arrayBookingNumber)
-                ->setHashKey('booking_detail_id')->setChildrenKey('cuisine_id');
-            $field          = 'booking_detail_id,booking_number,cuisine_id,cuisine_name,cuisine_number,cuisine_number_over,'
+                ->setHashKey('booking_detail_id')->setChildrenKey('booking_cuisine_id');
+            $field          = 'booking_cuisine_id,booking_detail_id,booking_number,cuisine_id,cuisine_name,cuisine_number,cuisine_number_over,'
                 . 'cuisine_number_return,cuisine_total_price,cuisine_sell_price,cuisine_price,is_discount,item_id,valid,add_datetime';
             $bookingCuisine = BookingRestaurantServiceImpl::instance()->getBookingCuisine($whereCriteria, $field);
             //折扣
@@ -164,6 +164,12 @@ class MealOrderAction extends \BaseAction {
 
     protected function doMethodCheckMember(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         BookCommon::instance()->doCheckMember($objRequest, $objResponse);
+    }
+
+    //
+    protected function doMethodEditRestaurantBook(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $objSuccessService = BookingRestaurantServiceImpl::instance()->editBooking($objRequest, $objResponse);
+        return $objResponse->successServiceResponse($objSuccessService);
     }
 
     //

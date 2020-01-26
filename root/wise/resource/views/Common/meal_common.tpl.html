@@ -63,3 +63,18 @@
       <a style="display:inline;" ng-click="diningTable('unlock', room)"><i class="fas fa-lock-open"></i> 解锁</a></li>
 </ul>
 </script><!-- /app/manage_room.html -->
+<script type="text/ng-template" id="/app/book_cuisine.html">
+<ul class="dropdown-menu p-xs" role="dialog">
+  <li>
+	<div class="input-group">
+		<span class="input-group-btn">
+			<span class="btn btn-default">数量</span>
+		</span>
+		<input size="9" class="form-control w-sm" type="number" string-to-number="" step="1" min="1" value=""ng-model="add_cuisine_number[cuisine.cuisine_id]" required>
+		<span class="input-group-btn">
+			<button class="btn btn-default" type="button" ng-click="addBookCuisine(cuisine, 0);$hide();">确定</button>
+		</span>
+	</div>
+  </li>
+</ul>
+</script><!-- /app/book_cuisine.html -->
