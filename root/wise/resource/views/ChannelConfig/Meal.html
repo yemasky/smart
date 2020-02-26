@@ -168,7 +168,7 @@
     <!--右边添加属性结束-->
   </div>
 </div>
-<span ng-include="'resource/views/Common/meal_common.tpl.html'"></span>
+<span ng-include="'resource/views/Common/meal_common.tpl.html?{{app.version}}'"></span>
 <script language="JavaScript">
     app.controller('MealController', function($rootScope, $scope, $httpService, $location, $translate, $aside, $ocLazyLoad, $alert) {
 		$scope.param = {};
