@@ -475,7 +475,8 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 			$scope.editBookCuisineList[editParam.param.cuisine_id].booking_cuisine_id = result.data.item.booking_cuisine_id;
 			$scope.editBookCuisineList[editParam.param.cuisine_id].ec_b_c_id = result.data.item.ec_b_c_id;
 			if(editParam.param.type == 'Add') {//加菜
-				delete editCuisine.param._cuisine_number;
+				if(angular.isDefined(editParam.param._cuisine_number)) 
+					delete editParam.param._cuisine_number;
 			}
 		})
 	}
