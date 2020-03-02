@@ -202,6 +202,7 @@
 					<div class="b-t clear" ng-if="haveBookCuisine">
 						<div class="col-sm-1 col-xs-3 p-xs">新点菜品</div>
 						<div class="col-sm-11 col-xs-9 p-xs scroll-x text-nowrap">		
+<!-- 根据table id 排序 -->
 <div class="list-group clearfix no-radius no-margin" ng-repeat="(table_id, tableCuisine) in haveBookCuisine">
 	<div class="list-group-item col-sm-2 col-xs-6 p-xs" ng-repeat="(j, cuisine) in tableCuisine">
 	  <!--<a href class="pull-left w-thumb m-r-xs"><img ng-src="{{cuisine.image_src}}" class="img-circle img-responsive"></a>-->
@@ -231,7 +232,9 @@
 <div class="m-t-xs">						
 	<label class="ui-checks m-r">
 		<input type="checkbox" value="1" ng-model="set_account_print" ng-init="set_account_print=''" ng-click="setPrintBill('all_account', '', '', $event)" class="ng-pristine ng-untouched ng-valid ng-empty"><i></i>全选 <a class="ti-printer print-contents" ng-click="printBill('account')">厨房联</a>
-	</label> <a class="ti-printer print-contents" ng-click="printBill('account')">客人联</a>
+	    <a class="ti-printer print-contents" ng-click="printBill('account')">客人联</a>
+		<button ng-if="diningType=='editBook'" class="btn btn-sm btn-default" type="submit" btn-loading-text="正在保存..." trigger-loading="beginLoading"><i class="fa fa-save"> </i> <span ng-bind-html="diningSaveButton" class="ng-binding">保存</span></button>
+    </label>
 </div>									
 						</div>
 					</div>				
@@ -277,7 +280,7 @@
 	  <span ng-if="cuisine.cuisine_inventory==-999">无限</span>
 	  <span ng-if="cuisine.cuisine_inventory==-9999">-</span>
 	  <span ng-if="cuisine.cuisine_inventory!=-999&&cuisine.cuisine_inventory!=-9999">{{cuisine.cuisine_inventory}}</span></small>
-	  <span class="pull-right"><a class="text-color" ng-click="reduceBookCuisine(cuisine, 0)" ng-if="thisBookCuisine[cuisine.cuisine_id]>0"><i class="glyphicon glyphicon-minus-sign"></i></a>{{thisBookCuisine[cuisine.cuisine_id]}}<a class="text-warning" bs-aside="aside" data-html="true" data-placement="top" data-animation="am-fade-and-slide-right" data-backdrop="false" data-container="#cuisine_{{cuisine.cuisine_id}}" data-template-url="/app/book_cuisine.html" ng-click="setBookDefaultCuisine(cuisine);"><i class="glyphicon glyphicon-plus-sign"></i></a></span>
+	  <span class="pull-right"><a class="text-warning" bs-aside="aside" data-html="true" data-placement="top" data-animation="am-fade-and-slide-right" data-backdrop="false" data-container="#cuisine_{{cuisine.cuisine_id}}" data-template-url="/app/book_cuisine.html" ng-click="setBookDefaultCuisine(cuisine);"><i class="glyphicon glyphicon-plus-sign"></i></a></span>
   </div>
 </div><!-- end 菜式 -->
 											</div>

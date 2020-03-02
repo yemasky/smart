@@ -396,8 +396,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	}
 	$scope.addBookCuisine = function(cuisine, table_id) {//新加菜品
 		table_id = getBookTableId(table_id);//先计算桌子
-		//计算折扣 
-		cuisine = countDiscount(cuisine);
+		cuisine = countDiscount(cuisine);//计算折扣 
 		if(angular.isUndefined(cuisine.detail_id)) {
 			cuisine.detail_id = 0;//未下单
 		}
@@ -462,23 +461,23 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	$scope.editBookCuisineList = {};
 	function editThisBookCuisine(editParam, callback, message) {
 		editParam.param.book_id = $scope.thisBook.book_id;
-		$httpService.header('method', 'editBookEditCuisine');
+		/*$httpService.header('method', 'editBookEditCuisine');
 		$scope.loading.start();
 		$httpService.post('app.do?'+param+'&id='+$scope.id, editParam, function(result){
 			$scope.loading.percent();
 			if(result.data.success == '0') {
 				return;//错误返回
 			}
-			$scope.successAlert.startProgressBar(message);
+			$scope.successAlert.startProgressBar(message);*/
 			callback();
 			$scope.editBookCuisineList[editParam.param.cuisine_id] = {};
-			$scope.editBookCuisineList[editParam.param.cuisine_id].booking_cuisine_id = result.data.item.booking_cuisine_id;
-			$scope.editBookCuisineList[editParam.param.cuisine_id].ec_b_c_id = result.data.item.ec_b_c_id;
+			//$scope.editBookCuisineList[editParam.param.cuisine_id].booking_cuisine_id = result.data.item.booking_cuisine_id;
+			//$scope.editBookCuisineList[editParam.param.cuisine_id].ec_b_c_id = result.data.item.ec_b_c_id;
 			if(editParam.param.type == 'Add') {//加菜
 				if(angular.isDefined(editParam.param._cuisine_number)) 
 					delete editParam.param._cuisine_number;
 			}
-		})
+		//})
 	}
 	$scope.clearBookCuisine = function() {//清除已订菜
 		$scope.haveBookCuisine = {};$scope.thisBookCuisine = {};
