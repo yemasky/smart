@@ -7,6 +7,9 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
     var billAccount={};
     $scope.bookAta = '0';//预抵人数
     $scope.dueOut = '0';//预离人数
+	//初始化全局变量
+	$scope.thisBook = {};//当前的预订详情
+	$scope.bookingDetail = {};//当前预订详情
 	//选择客源市场
     $scope.market_name = '散客步入';$scope.market_id = '2';$scope.customer_name = '预订人';
 	$scope.bookingTypeList = [{'name':'堂食','booking_type':'meal_dine_in'},{'name':'预订','booking_type':'meal_reserve'},
@@ -183,17 +186,20 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		$scope.param.receivable_id = receivable.receivable_id;
 		$scope.param.receivable_name = receivable.receivable_name;
 	}
-	//开台 预订 结账 加减菜
+	//新开台、预订、结账、（编辑）加减菜
 	$scope.diningTable = function(diningType, table) {
 		var diningTypeName = '订单管理';
 		$scope.diningSaveButton = '下单';
 		$scope.activeBookAccountsEditTab=1;
-		if(diningType == 'open') {//开台$scope.param.number_of_people = 1;
+		if(diningType == 'open') {//开台 $scope.param.number_of_people = 1;
 			diningTypeName = '堂食';
 			$scope.clearBookTable();$scope.clearBookCuisine();
 			table.detail_id = 0;//新加table
 			$scope.addBookTable(table);
 			$scope.param.booking_type = 'meal_dine_in';
+			//新开台 清空全局数据
+			$scope.thisBook = {};//当前的预订详情
+			$scope.bookingDetail = {};//当前预订详情
 		}
 		if(diningType == 'book') {diningTypeName = '预订';$scope.param.booking_type = 'meal_reserve';}
 		if(diningType == 'cuisine') diningTypeName = '加减菜';
@@ -417,7 +423,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 		if($scope.diningType == 'editBook') {
 			var editCuisine = {};editCuisine.param = {};
 			editCuisine.param = cuisine;
-			editCuisine.param.type = 'Add';
+			editCuisine.param.type = 'Add';//加菜
 			editCuisine.param._cuisine_number = add_cuisine_number;
 			var message = cuisine.cuisine_name+'加菜成功！';
 			editThisBookCuisine(editCuisine, addCuisine, message);
@@ -460,7 +466,7 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	}
 	$scope.editBookCuisineList = {};
 	function editThisBookCuisine(editParam, callback, message) {
-		editParam.param.book_id = $scope.thisBook.book_id;
+		editParam.param.book_id = $scope.thisBook.book_id;//book_id
 		/*$httpService.header('method', 'editBookEditCuisine');
 		$scope.loading.start();
 		$httpService.post('app.do?'+param+'&id='+$scope.id, editParam, function(result){
@@ -478,6 +484,25 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 					delete editParam.param._cuisine_number;
 			}
 		//})
+	}
+	$scope.saveNewAddCuisine = function() {
+		$httpService.header('method', 'editBookEditCuisine');
+		$scope.loading.start();
+		$httpService.post('app.do?'+param+'&id='+$scope.id, editParam, function(result){
+			$scope.loading.percent();
+			if(result.data.success == '0') {
+				return;//错误返回
+			}
+			$scope.successAlert.startProgressBar(message);
+			callback();
+			$scope.editBookCuisineList[editParam.param.cuisine_id] = {};
+			$scope.editBookCuisineList[editParam.param.cuisine_id].booking_cuisine_id = result.data.item.booking_cuisine_id;
+			$scope.editBookCuisineList[editParam.param.cuisine_id].ec_b_c_id = result.data.item.ec_b_c_id;
+			if(editParam.param.type == 'Add') {//加菜
+				if(angular.isDefined(editParam.param._cuisine_number)) 
+					delete editParam.param._cuisine_number;
+			}
+		})
 	}
 	$scope.clearBookCuisine = function() {//清除已订菜
 		$scope.haveBookCuisine = {};$scope.thisBookCuisine = {};
@@ -550,8 +575,8 @@ app.controller('RestaurantReservationController', function($rootScope, $scope, $
 	//编辑 结算 结账 取消订单操作
 	$scope.bookEditCuisine = {};//本次已订的菜品数据
 	$scope.setEdit = function(is_edit) {$scope.isEdit = is_edit;}
-	$scope.thisBook = {};
-	$scope.editDiningTable = function(bookingDetail) {
+	//开始定义的全局变量 $scope.thisBook = {};当前预订// $scope.bookingDetail = {};//当前预订详情
+	$scope.editDiningTable = function(bookingDetail) {//编辑预订
 		var bookCuisine = $scope.bookCuisineList, thisBook = $scope.bookList[bookingDetail.booking_number];
 		$scope.thisBook = thisBook;$scope.param = thisBook; $scope.bookingDetail = bookingDetail;$scope.isEdit = 0;
 		$scope.market_name = bookingDetail.market_name;$scope.market_id = bookingDetail.market_id;

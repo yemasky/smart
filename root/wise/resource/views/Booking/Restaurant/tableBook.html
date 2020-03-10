@@ -233,7 +233,7 @@
 	<label class="ui-checks m-r">
 		<input type="checkbox" value="1" ng-model="set_account_print" ng-init="set_account_print=''" ng-click="setPrintBill('all_account', '', '', $event)" class="ng-pristine ng-untouched ng-valid ng-empty"><i></i>全选 <a class="ti-printer print-contents" ng-click="printBill('account')">厨房联</a>
 	    <a class="ti-printer print-contents" ng-click="printBill('account')">客人联</a>
-		<button ng-if="diningType=='editBook'" class="btn btn-sm btn-default" type="submit" btn-loading-text="正在保存..." trigger-loading="beginLoading"><i class="fa fa-save"> </i> <span ng-bind-html="diningSaveButton" class="ng-binding">保存</span></button>
+		<button ng-if="diningType=='editBook'" class="btn btn-sm btn-default" type="button" btn-loading-text="正在保存..." trigger-loading="beginLoading" ng-click="saveNewAddCuisine()"><i class="fa fa-save"> </i> <span ng-bind-html="diningSaveButton" class="ng-binding">保存</span></button>
     </label>
 </div>									
 						</div>
