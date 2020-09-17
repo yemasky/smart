@@ -48,6 +48,34 @@
     </form>
   </div>
 </div>
+<ons-page>
+  <ons-toolbar>
+    <div class="center">{{title}}</div>
+  </ons-toolbar>
+
+  <ons-tabbar swipeable position="auto" ons-prechange="updateTitle($event)">
+    <ons-tab page="tab1.html" label="Tab 1" icon="ion-home, material:md-home" badge="7" active>
+    </ons-tab>
+    <ons-tab page="tab2.html" label="Tab 2" icon="md-settings" active-icon="md-face">
+    </ons-tab>
+  </ons-tabbar>
+</ons-page>
+
+<template id="tab1.html">
+  <ons-page id="Tab1">
+    <p style="text-align: center;">
+      This is the first page.
+    </p>
+  </ons-page>
+</template>
+
+<template id="tab2.html">
+  <ons-page id="Tab2">
+    <p style="text-align: center;">
+      This is the second page.
+    </p>
+  </ons-page>
+</template>
 </script><!-- /login.html -->
 <script type="text/ng-template" id="/modal-warning.html">
 <div class="modal" style="z-index: 104000;" tabindex="-1" role="dialog" id="modal-warning">

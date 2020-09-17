@@ -9,6 +9,7 @@ namespace wise;
 
 class PriceSettingAction extends \BaseAction {
 	protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $this->setDisplay();
 	}
 
 	protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -25,6 +26,9 @@ class PriceSettingAction extends \BaseAction {
 			case 'RoomPriceSystemAddEdit':
 				$this->doRoomPriceSystemAddEdit($objRequest, $objResponse);
 			break;
+            case 'RoomPackagePriceItems':
+                $this->doRoomPackagePriceItems($objRequest, $objResponse);
+                break;
 			default:
 				$this->doDefault($objRequest, $objResponse);
 			break;
@@ -64,6 +68,10 @@ class PriceSettingAction extends \BaseAction {
 		$arrayResult['roomPriceSystemUrl']['url']     = ModuleServiceImpl::instance()->getEncodeModuleId('PriceSetting', 'RoomPriceSystem');
 		$arrayResult['roomPriceSystemUrl']['view']    = 'RoomPriceSystem';
 		$arrayResult['roomPriceSystemUrl']['channel'] = 'Setting';
+		//
+        $arrayResult['packagePriceItemsUrl']['url']     = ModuleServiceImpl::instance()->getEncodeModuleId('PriceSetting', 'RoomPackagePriceItems');
+        $arrayResult['packagePriceItemsUrl']['view']    = 'RoomPackagePriceItems';
+        $arrayResult['packagePriceItemsUrl']['channel'] = 'Setting';
 		//客源市场
 		$arrayResult['marketHash'] = ChannelServiceImpl::instance()->getCustomerMarketHash($company_id);
 		//房型
@@ -224,6 +232,10 @@ class PriceSettingAction extends \BaseAction {
 		$arrayResult['roomPriceListUrl']['url']     = ModuleServiceImpl::instance()->getEncodeModuleId('PriceSetting', 'RoomPriceList');
 		$arrayResult['roomPriceListUrl']['view']    = 'RoomPriceList';
 		$arrayResult['roomPriceListUrl']['channel'] = 'Setting';
+		//
+        $arrayResult['packagePriceItemsUrl']['url']     = ModuleServiceImpl::instance()->getEncodeModuleId('PriceSetting', 'RoomPackagePriceItems');
+        $arrayResult['packagePriceItemsUrl']['view']    = 'RoomPackagePriceItems';
+        $arrayResult['packagePriceItemsUrl']['channel'] = 'Setting';
 
 		return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
 	}
@@ -336,5 +348,17 @@ class PriceSettingAction extends \BaseAction {
 
 		$objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
 	}
+
+	protected function doRoomPackagePriceItems(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $arrayResult['roomPriceListUrl']['url']     = ModuleServiceImpl::instance()->getEncodeModuleId('PriceSetting', 'RoomPriceList');
+        $arrayResult['roomPriceListUrl']['view']    = 'RoomPriceList';
+        $arrayResult['roomPriceListUrl']['channel'] = 'Setting';
+        //
+        $arrayResult['roomPriceSystemUrl']['url']     = ModuleServiceImpl::instance()->getEncodeModuleId('PriceSetting', 'RoomPriceSystem');
+        $arrayResult['roomPriceSystemUrl']['view']    = 'RoomPriceSystem';
+        $arrayResult['roomPriceSystemUrl']['channel'] = 'Setting';
+
+        return $objResponse->successResponse(ErrorCodeConfig::$successCode['success'], $arrayResult);
+    }
 
 }

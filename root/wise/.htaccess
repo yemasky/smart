@@ -2,7 +2,7 @@ RewriteEngine On
 #RewriteRule ^module=(.*)$ index.php?module=$1 [L]
 #RewriteRule ^module/(.*)$ index.php?module=$1 [L]
 #RewriteRule ^([a-z]+)/([a-z]+)\.html$ scripts/index.php?module=$1&action=$2 [L]
-RewriteRule ^app.do$ app.php [NC,L]
+RewriteRule ^app.do app.php [NC,L]
 #RewriteRule ^([a-z0-9~_]+)\.do$ app.php?channel=$1 [NC,L]
 #RewriteRule ^([a-z]+)-([a-z]+)\.do$ app.php?$1=$2 [NC,L]
 #RewriteRule ^([a-z0-9~_]+)/(.*)\.do$ app.php?module=$1&param=$2 [NC,L]

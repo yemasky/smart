@@ -1,11 +1,8 @@
 <div class="p-md" ng-controller="RoomPriceListController">
 	<ul class="nav nav-tabs" ui-nav>
-        <li class="active">
-          <a href>{{_self_module.module_name}}</a>
-        </li>
-        <li>
-          <a href="#!/app/Setting/{{roomPriceSystemUrl.view}}/{{roomPriceSystemUrl.url}}">价格类型</a>
-        </li>
+        <li class="active"><a href>{{_self_module.module_name}}</a></li>
+        <li><a href="#!/app/Setting/{{roomPriceSystemUrl.view}}/{{roomPriceSystemUrl.url}}">价格类型</a></li>
+		<li><a href="#!/app/Setting/{{packagePriceItemsUrl.view}}/{{packagePriceItemsUrl.url}}">包价项目</a></li>
         <button class="btn btn-addon btn-default pull-right" ng-click="addRoomPrice(0)"><i class="fa fa-plus"></i>价格放盘</button>
     </ul>
     <div class="p b-a no-b-t bg-white m-b table-responsive">
@@ -107,6 +104,7 @@ app.controller('RoomPriceListController', function($rootScope, $scope, $httpServ
 		common = result.data.common;
 		$scope.setCommonSetting(common);
 		$scope.roomPriceSystemUrl = result.data.item.roomPriceSystemUrl;
+		$scope.packagePriceItemsUrl = result.data.item.packagePriceItemsUrl;
 	});
 	//
 	$scope._beginDay = '';$scope._nextDay = '';	

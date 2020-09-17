@@ -2,10 +2,9 @@
 
     <form name="RoomPriceSystemForm" class="form-inline" role="form">
         <ul class="nav nav-tabs" ui-nav>
-            <li>
-                <a href="#!/app/Setting/{{roomPriceListUrl.view}}/{{roomPriceListUrl.url}}">客房价格</a>
-            </li>
+            <li><a href="#!/app/Setting/{{roomPriceListUrl.view}}/{{roomPriceListUrl.url}}">客房价格</a></li>
             <li class="active"><a href>{{_self_module.module_name}}</a></li>
+			<li><a href="#!/app/Setting/{{packagePriceItemsUrl.view}}/{{packagePriceItemsUrl.url}}">包价项目</a></li>
             <button class="btn btn-addon btn-default pull-right m-l" ng-click="addRoomPriceSystem(0)"><i class="fa fa-plus"></i>新建价格类型</button>
             <button type="button" class="btn btn-default pull-right" ng-model="param.channel_id" data-html="1" data-toggle="true" bs-options="channel.channel_id as channel.channel_name for channel in thisChannel" bs-select placeholder="<i class='icon fa fa-building text-lt'></i> 选择酒店">
               Action <span class="caret"></span>
@@ -101,6 +100,7 @@
             $scope.setCommonSetting(common);
             $scope.setThisChannel('Hotel');
             $scope.roomPriceListUrl = result.data.item.roomPriceListUrl;
+			$scope.packagePriceItemsUrl = result.data.item.packagePriceItemsUrl;
         });
 
         $scope.market_name = $scope.reconvertChinese($translate.instant("module.channel.market_name"));

@@ -29,7 +29,7 @@ class ErrorCodeConfig extends \ModulesConfig {
         'no_room_id_found'=>'100007'
     ];
     public static $notice  = ['no_equal_account'=>'200001'];
-	public static $successCode = ['success'=>'000001'];
+	public static $successCode = ['success'=>'000001', 'no_module'=>'000006'];
 
 
 }
