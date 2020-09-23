@@ -17,9 +17,6 @@
                     <li ng-class="{active:activeTab==1}" ng-click="activeTab=1">
                         <a>桌态</a>
                     </li>
-                    <li ng-class="{active:activeTab==2}" ng-click="activeTab=2">
-                        <a>外卖<span class="badge bg-info badge-xs m-l-xs ng-binding">0</span></a>
-                    </li>
                     <li ng-class="{active:activeTab==3}" ng-click="activeTab=3;getDiningCuisine();">
                         <a>菜品</a>
                     </li>
@@ -41,12 +38,16 @@
 								  <input type="radio" class="btn btbtn-default" value="1">堂食
 								  <span class="badge bg-info badge-xs m-l-xs ng-binding">0</span>
 							  </label>
+                              <label class="btn btn-default">
+                                  <input type="radio" class="btn btn-default" value="2">预订
+                                  <span class="badge bg-info badge-xs m-l-xs ng-binding">0</span>
+                              </label>
 							  <label class="btn btn-default">
-								  <input type="radio" class="btn btn-default" value="2">预订
+								  <input type="radio" class="btn btn-default" value="3">外卖
 								  <span class="badge bg-info badge-xs m-l-xs ng-binding">0</span>
 							  </label>
 							  <label class="btn btn-default">
-								  <input type="radio" class="btn btn-default" value="3">排号
+								  <input type="radio" class="btn btn-default" value="4">排号
 								  <span class="badge bg-info badge-xs m-l-xs ng-binding">0</span>
 							  </label>
 							</div>
