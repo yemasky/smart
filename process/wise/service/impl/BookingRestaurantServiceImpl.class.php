@@ -181,32 +181,34 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
             $bookDetailList[$k]->setBookingNumber($bookingNumber);
         }
         //保存餐桌 消费详细
-        $arrayBookDetailId = BookingDao::instance()->saveBookingDetailList($bookDetailList);
-        if (!empty($arrayBookDetailId)) {
-            foreach ($bookingDetailConsumeList as $k => $bookDetailConsume) {
-                $_item_id   = $bookDetailConsume->getItemId();
-                $_detail_id = $arrayBookDetailId[$_item_id];
-                $bookingDetailConsumeList[$k]->setBookingDetailId($_detail_id);
-                $bookingDetailConsumeList[$k]->setBookingNumber($bookingNumber);
-            }//保存餐桌消费
-            BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
-            if (!empty($bookingCuisineList)) {
-                foreach ($bookingCuisineList as $k => $bookCuisine) {
-                    $_item_id   = $bookCuisine->getItemId();
+        if(!empty($bookDetailList)) {
+            $arrayBookDetailId = BookingDao::instance()->saveBookingDetailList($bookDetailList);
+            if (!empty($arrayBookDetailId)) {
+                foreach ($bookingDetailConsumeList as $k => $bookDetailConsume) {
+                    $_item_id   = $bookDetailConsume->getItemId();
                     $_detail_id = $arrayBookDetailId[$_item_id];
-                    $bookingCuisineList[$k]->setBookingDetailId($_detail_id);
-                    $bookingCuisineList[$k]->setBookingNumber($bookingNumber);
+                    $bookingDetailConsumeList[$k]->setBookingDetailId($_detail_id);
+                    $bookingDetailConsumeList[$k]->setBookingNumber($bookingNumber);
+                }//保存餐桌消费
+                BookingDao::instance()->saveBookingDetailConsumeList($bookingDetailConsumeList);
+                if (!empty($bookingCuisineList)) {
+                    foreach ($bookingCuisineList as $k => $bookCuisine) {
+                        $_item_id   = $bookCuisine->getItemId();
+                        $_detail_id = $arrayBookDetailId[$_item_id];
+                        $bookingCuisineList[$k]->setBookingDetailId($_detail_id);
+                        $bookingCuisineList[$k]->setBookingNumber($bookingNumber);
+                    }
                 }
-            }
-            BookingDao::instance()->saveBookingCuisineList($bookingCuisineList);
-            if (!empty($bookingDiscountList)) {
-                foreach ($bookingDiscountList as $k => $bookDiscoun) {
-                    $_item_id   = $bookDiscoun->getItemId();
-                    $_detail_id = $arrayBookDetailId[$_item_id];
-                    $bookingDiscountList[$k]->setBookingDetailId($_detail_id);
-                    $bookingDiscountList[$k]->setBookingNumber($bookingNumber);
+                BookingDao::instance()->saveBookingCuisineList($bookingCuisineList);
+                if (!empty($bookingDiscountList)) {
+                    foreach ($bookingDiscountList as $k => $bookDiscoun) {
+                        $_item_id   = $bookDiscoun->getItemId();
+                        $_detail_id = $arrayBookDetailId[$_item_id];
+                        $bookingDiscountList[$k]->setBookingDetailId($_detail_id);
+                        $bookingDiscountList[$k]->setBookingNumber($bookingNumber);
+                    }
+                    BookingDao::instance()->saveBookingDiscountList($bookingDiscountList);
                 }
-                BookingDao::instance()->saveBookingDiscountList($bookingDiscountList);
             }
         }
 
@@ -238,6 +240,9 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
             $whereCriteria = new \WhereCriteria();
             $whereCriteria->EQ('booking_number', $booking_number)->EQ('company_id', $company_id)->EQ('channel_id', $channel_id);
             BookingDao::instance()->updateBooking($whereCriteria, $updateData);
+            //更新detail
+
+
             return $objSuccessService;
         }
         $objSuccessService->setSuccess(false);

@@ -171,21 +171,21 @@
 							</tr>
 						  </thead>
 						  <tbody><!-- bookingDetail -->
-							<tr ng-repeat="(detail_id, detail) in bookingSearchList">
-							  <td>{{detail.booking_number}}</td>
+							<tr ng-repeat="(booking_number, bookingList) in bookList">
+							  <td>{{booking_number}}</td>
 							  <td class="text-nowrap">
-								  <span ng-if="detail.receivable_id==0">{{detail.market_name}}</span>
-								  <span ng-if="detail.receivable_id>0">{{detail.receivable_name}}</span>
+								  <span ng-if="bookingList.receivable_id==0">{{bookingList.market_name}}</span>
+								  <span ng-if="bookingList.receivable_id>0">{{bookingList.receivable_name}}</span>
 							  </td>
-							  <td><span>{{detail.item_category_name}}</span></td>
-							  <td><span>{{detail.price_system_name}}</span></td>
-							  <td>{{detail.item_name==''?'未排房':detail.item_name}}</td>
-							  <td>{{bookList[detail.booking_number].member_name}}</td>
-							  <td>{{bookList[detail.booking_number].member_mobile==''?bookList[detail.booking_number].member_email:bookList[detail.booking_number].member_mobile}}</td>
-							  <td>{{detail.check_in | limitTo:10}}</td>
-							  <td>{{detail.check_out | limitTo:10}}</td>
+							  <td><span>{{bookingList.item_category_name}}</span></td>
+							  <td><span>{{bookingList.price_system_name}}</span></td>
+							  <td>{{bookingList.item_name==''?'未排房':detail.item_name}}</td>
+							  <td>{{bookingList.member_name}}</td>
+							  <td>{{bookingList.member_mobile==''?bookingList.member_email:bookingList.member_mobile}}</td>
+							  <td>{{bookingList.check_in | limitTo:10}}</td>
+							  <td>{{bookingList.check_out | limitTo:10}}</td>
 							  <td>
-								  <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editRoomBook(detail, 1)">
+								  <a class="btn btn-xs btn-rounded btn-stroke btn-primary" ng-click="editDiningTable(bookingList)">
 									<span>查看</span>
 								  </a>
 							  </td>

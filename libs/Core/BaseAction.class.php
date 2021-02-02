@@ -1011,8 +1011,12 @@ class DBQuery {
     }
 
     public function batchInsertEntity($arrayEntityValues, $field_key = '', $insert_type = 'INSERT') : array {
-        if (!is_array($arrayEntityValues)) return false;
-        if (empty($arrayEntityValues)) return false;
+        if (!is_array($arrayEntityValues)) {
+            throw new Exception("not value");
+        };
+        if (empty($arrayEntityValues)) {
+            throw new Exception("empty value");
+        };
         $insertId = [];
         foreach ($arrayEntityValues as $i => $objEntity) {
             $field_vaule = $i;
