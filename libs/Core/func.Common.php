@@ -179,7 +179,7 @@ if(!defined("INC_FUNC_COMMON")) {
 	}
 
 	function encode($txt, $key = __KEY) {
-		srand((double)microtime() * 1000000);
+		//srand((double)microtime() * 1000000);
 		$encrypt_key = md5(rand(0, 32000));
 		$ctr         = 0;
 		$tmp         = "";

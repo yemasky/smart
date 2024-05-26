@@ -127,7 +127,8 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 	}
 	if(typeof($http.defaults.headers.common['refresh']) != 'undefined') delete $http.defaults.headers.common['refresh'];//删除刷新
     return factory;
-}).service("$httpService", function($httpFactory){
+});
+app.service("$httpService", function($httpFactory){
     this.post = function($url, $scope, callBack) {return $httpFactory.post($url, $scope, callBack);}
 	this.get = function($url, $scope, callBack) {return $httpFactory.get($url, $scope, callBack);}
 	this.header = function($key, $value) {return $httpFactory.header($key, $value);}
@@ -149,15 +150,15 @@ var app = angular.module("app").config(["$controllerProvider","$compileProvider"
 	}
 }).directive('stringToNumber', function() {
   	return {
-    require: 'ngModel',
-    link: function($scope, $element, $attrs, ngModel) {
-		ngModel.$parsers.push(function(value) {
-        	return '' + value;
-		});
-		ngModel.$formatters.push(function(value) {
-			return parseFloat(value);
-		});
-    }
+        require: 'ngModel',
+        link: function($scope, $element, $attrs, ngModel) {
+            ngModel.$parsers.push(function(value) {
+                return '' + value;
+            });
+            ngModel.$formatters.push(function(value) {
+                return parseFloat(value);
+            });
+        }
   };
 }).directive('toggleClass', function(){
     return {
@@ -415,7 +416,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		isIE && angular.element($window.document.body).addClass("ie"); 
 		matchNavigator($window) && angular.element($window.document.body).addClass("smart");
 		$scope.app = {
-			name: "iHotel.Work", version: "<%$__VERSION%>",
+			name: "Hotel.Work", version: "<%$__VERSION%>",
 			color: {
 				primary: "#155abb",info: "#2772ee",success: "#4bb622",warning: "#f88311",danger: "#e11144",
 				inverse: "#a66bee",light: "#f1f2f3",dark: "#202a3a"
@@ -527,6 +528,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 		};
 		$scope.setChannelMenu = function($module_channel) {
 			$scope.setMenu($rootScope.employeeMenu, $module_channel);
+            $location.path('/app/home');
 		};
 		$rootScope._self_module = '';
 		$scope.setActionNavName = function(module_id, nav) {

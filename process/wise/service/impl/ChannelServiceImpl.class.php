@@ -442,7 +442,7 @@ class ChannelServiceImpl extends \BaseServiceImpl implements ChannelService {
         return ChannelDao::instance()->getLayoutPrice($whereCriteria, $field);
     }
 
-    public function getLayoutPrice($company_id, $channel_id, $arraySystemId = array(), $item_category_id = null, $in_date, $out_date, $sql = '',
+    public function getLayoutPrice($company_id, $channel_id, $arraySystemId, $item_category_id, $in_date, $out_date, $sql = '',
         $arrayHashKey = array(), $field = null) {
         $whereCriteria = new \WhereCriteria();
         if ($company_id > 0) $whereCriteria->EQ('company_id', $company_id);

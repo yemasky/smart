@@ -157,7 +157,7 @@ class HttpRequest {
         return null;
     }
 
-    public function setPost($pname = null, $arrayPost) {
+    public function setPost($pname, $arrayPost) {
         if (!empty($pname)) {
             $_POST[$pname] = $arrayPost;
         } else {
@@ -342,8 +342,7 @@ class HttpResponse {
         header("X-Powered-By: ASP.NET/20.3.6");
         $arrayResult = array('success' => 1, 'code' => $code, 'item' => $arrayData, 'common' => $this->getResponse(), 'redirect' => $url, 'time' => getDateTime());
         echo str_replace('null', '""', json_encode($arrayResult));
-
-        return '';
+        //echo str_replace(['null','\/'], ['""','\\'], json_encode($arrayResult));
     }
 
     public function tablePageResponse($arrayDate) {
@@ -820,7 +819,8 @@ class DBQuery {
         if (isset(self::$instances[$dsn])) {
             $instance = self::$instances[$dsn];
             if (!empty($instance) && is_object($instance)) {
-                $instance->join_table = $instance->table_name = null;
+                //$instance->join_table =
+                $instance->table_name = null;
 
                 return $instance;
             }
@@ -892,7 +892,7 @@ class DBQuery {
      *            limit 返回的结果数量限制，等同于"LIMIT "，如$limit = " 3, 5"，即是从第3条记录（从0开始计算）开始获取，共获取5条记录
      *            如果limit值只有一个数字，则是指代从0条记录开始。
      */
-    public function getList($fields = '*', WhereCriteria $whereCriteria) {
+    public function getList($fields, WhereCriteria $whereCriteria) {
         if ($this->table_key != '*' && !empty($this->table_key) && empty($whereCriteria->getOrder()))
             $whereCriteria->ORDER($this->table_key);
         //if($fields != '*' && strpos($fields, '`') === false) {
@@ -905,7 +905,7 @@ class DBQuery {
         return $this->conn->getQueryArrayResult($sql, $whereCriteria);
     }
 
-    public function getEntityList($fields = '*', WhereCriteria $whereCriteria) {
+    public function getEntityList($fields, WhereCriteria $whereCriteria) {
         if ($this->table_key != '*' && !empty($this->table_key) && empty($whereCriteria->getOrder()))
             $whereCriteria->ORDER($this->table_key);
 
@@ -922,7 +922,7 @@ class DBQuery {
         return $this->conn->getEntityArrayResult($sql, $this->getEntityClass(), $whereCriteria);
     }
 
-    public function getEntity($fields = '*', WhereCriteria $whereCriteria) {
+    public function getEntity($fields, WhereCriteria $whereCriteria) {
         $result = $this->getEntityList($fields, $whereCriteria);
         if (!empty($result)) {
             return $result[0];
@@ -1063,7 +1063,7 @@ class DBQuery {
      *            conditions 查找条件，数组array("字段名"=>"查找值")或字符串，
      *            请注意在使用字符串时将需要开发者自行使用escape来对输入值进行过滤
      */
-    public function getCount($fields = null, WhereCriteria $whereCriteria) {
+    public function getCount($fields, WhereCriteria $whereCriteria) {
         $fields = empty($fields) ? $this->table_key : $fields;
         $sql    = "SELECT COUNT({$fields}) AS count_num FROM {$this->table_name} " . $whereCriteria->getWhere();
         $result = $this->conn->getQueryArrayResult($sql, $whereCriteria);
@@ -1678,7 +1678,7 @@ class Session {
 
     private function sesstionStar() {
         if (!session_id()) {
-            session_start();
+            //session_start();
         }
         // if(function_exists(session_cache_limiter)) {
         // session_cache_limiter("private, must-revalidate");
@@ -1726,11 +1726,12 @@ class Cookie {
         }
     }
 
-    public function setCookie($name, $value = null, $time = null, $path = "/", $domain = "", $secure = false, $httponly = true) {
+    public function setCookie($name, $value = "", $time = 0, $path = "/", $domain = "", $secure = false, $httponly = true) {
         if (!is_object(self::$objEncrypt)) self::$objEncrypt = new Encrypt();
-        if ($time != null) {
+        if ($time != 0 && $time != null) {
             $time = time() + $time;
         }
+        if($time == null) $time = 0;
         $name = isset($this->arrHash[md5(__WEB . $name)]) ? $this->arrHash[md5(__WEB . $name)] : self::$objEncrypt->encode(md5(__WEB . $name));
         setcookie($name, self::$objEncrypt->encode($value), $time, $path, $domain, $secure, $httponly);
     }

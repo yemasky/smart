@@ -147,8 +147,10 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
             $arrayEmployee['photo']             = $arrayCookieEmployee[4];
             $objSession                         = new \Session();
             $arrayLoginEmployee['employeeInfo'] = $arrayEmployee;
-            $employeeMenu                       = json_decode($objSession->employeeMenu, true);
-            $employeeChannel                    = json_decode($objSession->employeeChannel, true);
+            $employeeMenu                       = null;
+            if($objSession->employeeMenu!=null) $employeeMenu = json_decode($objSession->employeeMenu, true);
+            $employeeChannel                    = null;
+            if($objSession->employeeChannel!=null) $employeeChannel = json_decode($objSession->employeeChannel, true);
             $channelSettingList                 = $objSession->channelSettingList;
             $setCookie = false;
             if (empty($employeeMenu) || empty($channelSettingList)) {

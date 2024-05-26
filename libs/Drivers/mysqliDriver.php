@@ -353,7 +353,7 @@ class mysqliDriver {
         //关闭结果集
         $objStatement->free_result();
         /* 获取查询结果值 */
-        $objStatement->fetch();
+        //$objStatement->fetch();
         /* 关于语句对象 */
         $objStatement->close();
 
