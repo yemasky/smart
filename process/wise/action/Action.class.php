@@ -8,7 +8,7 @@
 namespace wise;
 
 class Action {
-    protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+    protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse): void {
         //common setting//变量:index_url arrayXxxXxx; function : doXxxx getXxxx
         $objResponse->thisDateTime = getDateTime();
         $objResponse->__VERSION    = ModulesConfig::$__VERSION;
@@ -34,12 +34,14 @@ class Action {
             $action               = empty($action) ? 'login' : $action;
             $objResponse->noLogin = 1;
             if ((isset($_SERVER['HTTP_AJAXREQUEST']) && $_SERVER['HTTP_AJAXREQUEST'] == true) || $objRequest->view != '') {
-                return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['login_over_time']['code']);
+                $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['login_over_time']['code']);
+                return;
             } else {
                 //$action = 'login_over_time';
                 if (isset($_SERVER['CONTENT_TYPE']) && stripos($_SERVER['CONTENT_TYPE'], 'application/json') !== false
                     && $objRequest->method != 'checkLogin') {
-                    return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['login_over_time']['code']);
+                    $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['login_over_time']['code']);
+                    return;
                 }
             }
         } else {
@@ -89,12 +91,14 @@ class Action {
                         $action         = !empty($arrayEmployeeModule[$module_id]['action']) ? $arrayEmployeeModule[$module_id]['action'] : $action;
                         $module_channel = $arrayEmployeeModule[$module_id]['module_channel'];
                     } else {
-                        return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['no_module']['code']);
+                        $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['no_module']['code']);
+                        return;
                     }
                     $objResponse->__module = $arrayEmployeeModule[$module_id]['module'];
                     $_self_module          = $arrayEmployeeModule[$module_id];
                 } else {//无权限
-                    return $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['no_permission']['code']);
+                    $objResponse->errorResponse(ErrorCodeConfig::$errorCode['common']['no_permission']['code']);
+                    return;
                 }
             } else {
                 //本页无效 跳转？
@@ -145,7 +149,7 @@ class Action {
         $objAction->execute($action, $objRequest, $objResponse);//
     }
 
-    public function execute() {
+    public function execute(): void {
         try {
             set_error_handler("ErrorHandler");//$error_handler =
             $objRequest  = new \HttpRequest();

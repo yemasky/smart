@@ -10,11 +10,11 @@ namespace wise;
 //Channel 管理
 */
 class ChannelAction extends \BaseAction {
-    protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+    protected function check(\HttpRequest $objRequest, \HttpResponse $objResponse): void {
         $objResponse->nav = '';
     }
 
-    protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+    protected function service(\HttpRequest $objRequest, \HttpResponse $objResponse): void {
 
         switch ($objRequest->getAction()) {
             case "AddEdit":
@@ -85,7 +85,7 @@ class ChannelAction extends \BaseAction {
         $objResponse->channel_type = ModulesConfig::$channel_type;
     }
 
-    protected function doMethodAdd(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+    protected function doMethodAdd(\HttpRequest $objRequest, \HttpResponse $objResponse): void {
         $this->setDisplay();
         $arrayInput = $objRequest->getInput();
         unset($arrayInput['channel_id']);
@@ -98,7 +98,7 @@ class ChannelAction extends \BaseAction {
             ChannelServiceImpl::instance()->updateChannel($whereCriteria, ['channel_father_id' => $channel_id]);
         }
 
-        return $objResponse->successResponse('000001', $channel_id);
+        $objResponse->successResponse('000001', $channel_id);
     }
 
     protected function doMethodUpdate(\HttpRequest $objRequest, \HttpResponse $objResponse) {
@@ -114,7 +114,7 @@ class ChannelAction extends \BaseAction {
         $whereCriteria->EQ('company_id', $arrayInput['company_id'])->EQ('channel_id', $channel_id);
         ChannelServiceImpl::instance()->updateChannel($whereCriteria, $arrayInput);
 
-        return $objResponse->successResponse('000001', $channel_id);
+        $objResponse->successResponse('000001', $channel_id);
     }
 
     protected function doConfig(\HttpRequest $objRequest, \HttpResponse $objResponse) {
