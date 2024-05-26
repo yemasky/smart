@@ -16,6 +16,9 @@ class IndexAction extends \BaseAction {
             case 'login':
                 $this->doLogin($objRequest, $objResponse);
                 break;
+            case 'wxUserLogin':
+                $this->doWxUserLogin($objRequest, $objResponse);
+                break;
             case 'logout':
                 $this->doLogout($objRequest, $objResponse);
                 break;
@@ -76,6 +79,25 @@ class IndexAction extends \BaseAction {
         $objResponse->setTplName("wise/Index/default");
     }
 
+    protected function doWxUserLogin(\HttpRequest $objRequest, \HttpResponse $objResponse) {
+        $method = $objRequest->method;
+        $code = $objRequest->code;
+		$wx_url = "https://api.weixin.qq.com/sns/jscode2session?appid=" . ModulesConfig::$WX_APPID . "&secret=" . ModulesConfig::$WX_SECRET . "&js_code=" . $code . "&grant_type=authorization_code";
+		$result = \GetContent::instance()->getCurl($wx_url);
+        $json_result = json_decode($result, true);
+        echo($json_result);
+        if (!empty($method)) {
+            $method = 'doMethod' . ucfirst($method);
+            if (method_exists($this, $method))
+                return $this->$method($objRequest, $objResponse);
+        }
+        if ($objRequest->_ != '') {
+            $objResponse->setTplName("wise/Index/nologin");
+            return false;
+        }
+        //
+        $objResponse->setTplName("wise/Index/default");
+    }
     protected function doLogout(\HttpRequest $objRequest, \HttpResponse $objResponse) {
         LoginServiceImpl::instance()->logout();
         $this->setDisplay();

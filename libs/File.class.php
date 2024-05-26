@@ -7,13 +7,14 @@
 */
 
 class File {
-    public static function deleteFile($file, $pathfile = __CACHE) {
+    public static function deleteFile($file, $pathfile = __CACHE):bool {
         if (!file_exists($pathfile . $file)) {
             return true;
         }
         if (!unlink($pathfile . $file)) {
             throw new Exception(".error: can't delete file:" . $pathfile . $file);
         }
+        return false;
     }
 
     public static function moveFile($srcFile, $dstFile, $mode = 0777, $destExistIngore = false) {
@@ -30,9 +31,9 @@ class File {
         return self::deleteFile($srcFile);
     }
 
-    public static function createDir($dir = __CACHE, $mode = 0777) {
+    public static function createDir($dir = __CACHE, $mode = 0777):bool {
         if (is_dir($dir)) {
-            return;
+            return true;
         }
         if (mkdir($dir) == false) {
             throw new Exception(".error: can't create dir[ $dir ]");

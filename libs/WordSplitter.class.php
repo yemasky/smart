@@ -41,10 +41,10 @@ class WordSplitter {
 		if (127 < ord($this->mKeywords[0])) {
 			$mode_old = __CHAR_CHINESE;
 		}
-		elseif (ereg("[a-zA-Z_\.\'0-9\+\-]", $this->mKeywords[0])) {
+		elseif (preg_match("[a-zA-Z_\.\'0-9\+\-]", $this->mKeywords[0])) {
 			$mode_old = __CHAR_ENGLISH;
 		}
-		elseif (ereg("[0-9]", $this->mKeywords[0])) {
+		elseif (preg_match("[0-9]", $this->mKeywords[0])) {
 			$mode_old = __CHAR_DIGITAL;
 		}
 		else {
@@ -55,10 +55,10 @@ class WordSplitter {
 			if (127 < ord($this->mKeywords[$i])) {
 				$mode_new = __CHAR_CHINESE;
 			}
-			elseif (ereg("[a-zA-Z_\.\'0-9\+\-]", $this->mKeywords[$i])) {
+			elseif (preg_match("[a-zA-Z_\.\'0-9\+\-]", $this->mKeywords[$i])) {
 				$mode_new = __CHAR_ENGLISH;
 			}
-			elseif (ereg("[0-9]", $this->mKeywords[$i])) {
+			elseif (preg_match("[0-9]", $this->mKeywords[$i])) {
 				$mode_new = __CHAR_DIGITAL;
 			}
 			else {

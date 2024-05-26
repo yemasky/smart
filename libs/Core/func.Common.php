@@ -196,7 +196,8 @@ if(!defined("INC_FUNC_COMMON")) {
 		return str_replace(array('+', '/', '='), array('_', '~', ''), base64_encode(keyED($tmp, $key)));
 	}
 
-	function decode($txt, $key = __KEY) {
+	function decode($txt, $key = __KEY):string {
+		if(empty($txt)) return "";
 		//str_replace(array('-', '_'), array('+', '/'), $string);
 		$key = $key . getKey();//默认是按天加密
 		$txt = keyED(base64_decode(str_replace(array('_', '~'), array('+', '/'), $txt)), $key);

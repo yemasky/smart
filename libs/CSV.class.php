@@ -119,7 +119,7 @@ class CSV {
 	/**
 	 * 按行读取CSV文件
 	 */
-	public function &streamRead($filename = "") {
+	public function streamRead($filename = "") {
 		if($this->streamReadHandle == NULL) {
 			if(($this->streamReadHandle = fopen($filename, "r")) == false) {
 				$this->streamReadHandle = NULL;
@@ -259,7 +259,7 @@ class CSV {
 		return $str;
 	}
 
-	protected function &decode(&$str) {
+	protected function &decode($str) {
 		$str = str_replace($this->enclosure.$this->enclosure, $this->enclosure, $str);
 		$str = str_replace("\\\\", "\\", $str);
 		$str = str_replace("\\r", "\r", $str);

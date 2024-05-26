@@ -257,7 +257,7 @@ class BookingRestaurantServiceImpl extends \BaseServiceImpl implements BookingSe
         $company_id        = LoginServiceImpl::instance()->getLoginInfo()->getCompanyId();
         //获取channel
         $channel_id = $objRequest->channel_id;
-
+        return $objSuccessService;
     }
 
     public function getBookingCuisine($whereCriteria, $field = '') {

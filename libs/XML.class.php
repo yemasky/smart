@@ -86,7 +86,7 @@ class XML {
 	 * @param Int
 	 * @return Array
 	 */
-	public function storeFromArray($pathfile, $data) {
+	public function storeFromArray($pathfile, $data):bool {
 		$doc = new DOMDocument("1.0", "UTF-8");
 		$doc->formatOutput = true; 
 
@@ -109,6 +109,7 @@ class XML {
 			fclose($fp);
 		}
 		fclose($fp);
+        return true;
 	}
 
 	/**

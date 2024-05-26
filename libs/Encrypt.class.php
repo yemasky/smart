@@ -198,7 +198,7 @@ class Encrypt {
 	 * @param	string
 	 * @return	string
 	 */
-	function encode_from_legacy($string, $legacy_mode = MCRYPT_MODE_ECB, $key = '')
+	function encode_from_legacy($string, $legacy_mode = "ecb", $key = '')
 	{
 		if ($this->_mcrypt_exists === FALSE)
 		{
@@ -439,8 +439,7 @@ class Encrypt {
 	 * @param	constant
 	 * @return	string
 	 */
-	function set_cipher($cipher)
-	{
+	function set_cipher($cipher): void {
 		$this->_mcrypt_cipher = $cipher;
 	}
 
@@ -453,8 +452,7 @@ class Encrypt {
 	 * @param	constant
 	 * @return	string
 	 */
-	function set_mode($mode)
-	{
+	function set_mode($mode): void {
 		$this->_mcrypt_mode = $mode;
 	}
 
@@ -503,8 +501,7 @@ class Encrypt {
 	 * @param	string
 	 * @return	string
 	 */
-	function set_hash($type = 'sha1')
-	{
+	function set_hash($type = 'sha1'): void {
 		$this->_hash_type = ($type != 'sha1' and $type != 'md5') ? 'sha1' : $type;
 	}
 

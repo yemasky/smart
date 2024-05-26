@@ -133,7 +133,7 @@
                                 $text=@fread($h,512);
                                 @fclose($h);
 
-                                if(eregi("<RSS",$text))
+                                if(preg_match("<RSS",$text))
                                         return true;
                                 else
                                         return false;

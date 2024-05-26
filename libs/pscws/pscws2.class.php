@@ -199,7 +199,7 @@ class PSCWS2
 	}
 
 	// 将中英文混编的字符串切割成词
-	function &segment($str, $cb = '')
+	function segment($str, $cb = '')
 	{
 		$len = strlen($str);
 		$ret = array();

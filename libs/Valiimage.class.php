@@ -83,7 +83,7 @@ class Valiimage {
 	}
 	
 	//缩放图片
-	public static function resizeImages($image, $type = NULL, $o_w, $o_h, $p_percent, $p_height = NULL, $setimgtype = 'jpg') {
+	public static function resizeImages($image, $type = NULL, $o_w, $o_h, $p_percent, $p_height = NULL, $setimgtype = 'jpg') :bool {
 		$percent_w = '';
 		$arrImg = explode('.', $image);
 		$filenotype = str_replace($arrImg[count($arrImg) - 1], '', $image);
@@ -122,7 +122,8 @@ class Valiimage {
 		if($setimgtype == 'png') {
 			imagepng($tempic, $filenotype.'png', 100);
 		}
-		imagedestroy($tempic); 
+		imagedestroy($tempic);
+        return true;
 	}
 	
 	//$groundImage 原图像，$waterPos 水印位置，$baseImage 水印透明图片，$waterImage 水印图片，$tagetImage 目标图像

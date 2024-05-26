@@ -3,6 +3,7 @@
  * auther: cooc
  * email:yemasky@msn.com
  */
+declare(strict_types=1);
 try {
 	require_once ("config.php");
 	$objAction = new \wise\Action();
