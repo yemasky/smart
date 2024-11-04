@@ -510,6 +510,7 @@ app.controller('MainController',["$rootScope","$scope","$translate","$localStora
 					}
 				}
 			}
+			console.log("========>",menus,hashEmployeeModule,channels);
 			return {'menus':menus,'hashEmployeeModule':hashEmployeeModule,'channels':channels};
 		}
 		$scope.checkMenuData = function($common) {

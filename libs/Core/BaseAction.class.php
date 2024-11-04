@@ -16,17 +16,17 @@ class HttpRequest {
     /**
      * 分支KEY,即$_REQUEST['action'] *
      */
-    private static string $ACTION_KEY = "action";
-    private string $module = '';
+    private static $ACTION_KEY = "action";
+    private $module = '';
     /**
      * 保存从浏览器提交变量,即$_REQUEST.不可修改 *
      */
-    private array $parameters = array();
-    private string|int|array|null $php_input = null;
+    private $parameters = array();
+    private $php_input = null;
     /**
      * 分支 *
      */
-    private string $actionValue = "";
+    private $actionValue = "";
 
     public function __construct() {
         $this->parameters = $_REQUEST;
@@ -40,15 +40,15 @@ class HttpRequest {
         }
     }
 
-    protected function analysisInput(): void {
+    protected function analysisInput() {
         $param = file_get_contents("php://input");
-        if (isset($_SERVER['CONTENT_TYPE']) && str_contains(strtolower($_SERVER['CONTENT_TYPE']), 'application/json')) {
+        if (isset($_SERVER['CONTENT_TYPE']) && strpos(strtolower($_SERVER['CONTENT_TYPE']), 'application/json') !== false) {
             $param = json_decode($param, true);
         }
         $this->php_input = $param;
     }
 
-    public function getInput($name = '') : string|array|null {
+    public function getInput($name = '') {
         $param = null;
         if (!empty($name)) {
             if (isset($this->php_input[$name])) {
@@ -70,7 +70,7 @@ class HttpRequest {
         return $param;
     }
 
-    public function setInput($name, $arrayInput): void {
+    public function setInput($name, $arrayInput) {
         if (!empty($name)) {
             $this->php_input[$name] = $arrayInput;
         } else {
@@ -94,7 +94,7 @@ class HttpRequest {
         return false;
     }
 
-    public function unsetInput($name): void {
+    public function unsetInput($name) {
         if (!empty($name)) {
             unset($this->php_input[$name]);
         } else {
@@ -122,7 +122,7 @@ class HttpRequest {
         return $param;
     }
 
-    public function get($name = ''): string|array|null {
+    public function get($name = '') {
         if (empty($name)) return $this->parameters;
         if (isset($this->parameters[$name])) {
             /*if (get_magic_quotes_gpc()) {
@@ -139,7 +139,7 @@ class HttpRequest {
         }
     }
 
-    public function getPost($name = null):string|array|null {
+    public function getPost($name = null) {
         if (!empty($name)) {
             if (isset($_POST[$name])) {
                 return $this->__get($name);
@@ -156,7 +156,7 @@ class HttpRequest {
         return null;
     }
 
-    public function setPost($name, $arrayPost): void {
+    public function setPost($name, $arrayPost) {
         if (!empty($name)) {
             $_POST[$name] = $arrayPost;
         } else {
@@ -164,7 +164,7 @@ class HttpRequest {
         }
     }
 
-    public function addArraySlashes($arrRs) :string|array|null {
+    public function addArraySlashes($arrRs) {
         if (empty($arrRs)) return null;
         foreach ($arrRs as $k => $v) {
             if (is_array($v)) {
@@ -205,7 +205,7 @@ class HttpRequest {
     /**
      * 设置内部分支
      */
-    public function setAction($actionValue): void {
+    public function setAction($actionValue) {
         $this->actionValue = $actionValue;
     }
     /**
@@ -224,14 +224,14 @@ class HttpRequest {
     /**
      * @return string
      */
-    public function getModule(): string {
+    public function getModule() {
         return $this->module;
     }
 
     /**
      * @param string $module
      */
-    public function setModule(string $module): void {
+    public function setModule(string $module) {
         $this->module = $module;
     }
 
@@ -247,13 +247,13 @@ class HttpResponse {
     /**
      * 模板文件名 *
      */
-    private string|null $tplName = null;
+    private $tplName = null;
     /**
      * 模板参数 *
      */
-    private array|null $tplValues = null;
+    private $tplValues = null;
 
-    private array $arrayResponse = array();
+    private $arrayResponse = array();
 
     /**
      * 构造函数
@@ -273,27 +273,26 @@ class HttpResponse {
     /**
      * 设定模板名
      */
-    public function setTplName($tplName): void {
+    public function setTplName($tplName) {
         $this->tplName = $tplName;
     }
 
     /**
      * 设定(添加)模板参数
      */
-    public function setTplValue($name, $value): void {
+    public function setTplValue($name, $value) {
         if (empty($name)) {
             throw new Exception("tpl value's name cann't empty.");
         }
         $this->tplValues[$name] = $value;
     }
 
-    public function setResponse($key, $value): true {
+    public function setResponse($key, $value) {
         $this->arrayResponse[$key] = $value;
 
-        return true;
     }
 
-    public function getResponse($key = ''):string|array|null {
+    public function getResponse($key = '') {
         if (empty($key)) return $this->arrayResponse;
         if (isset($this->arrayResponse[$key])) return $this->arrayResponse[$key];
 
@@ -313,7 +312,7 @@ class HttpResponse {
     /**
      * 取得模板中的值(返回数组)
      */
-    public function getTplValues($name = null) :string|array|null {
+    public function getTplValues($name = null)  {
         if (!empty($name)) {
             if (!isset($this->tplValues[$name])) return null;
 
@@ -323,7 +322,7 @@ class HttpResponse {
         return $this->tplValues;
     }
 
-    public function __get($name = null):string|array|null {
+    public function __get($name = null) {
         if (!empty($name)) {
             if (!isset($this->tplValues[$name])) return null;
 
@@ -333,7 +332,7 @@ class HttpResponse {
         return $this->tplValues;
     }
 
-    public function successResponse($code, $arrayData = '', $url = ''): void {
+    public function successResponse($code, $arrayData = '', $url = '') {
         header('HTTP/1.1 200 OK');
         header("Content-type: application/json; charset=" . __CHARSET);
         header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
@@ -343,7 +342,7 @@ class HttpResponse {
         //echo str_replace(['null','\/'], ['""','\\'], json_encode($arrayResult));
     }
 
-    public function tablePageResponse($arrayDate): void {
+    public function tablePageResponse($arrayDate) {
         header('HTTP/1.1 200 OK');
         header("Content-type: application/json; charset=" . __CHARSET);
         header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
@@ -352,7 +351,7 @@ class HttpResponse {
         echo $arrayDate;
     }
 
-    public function errorResponse($code, $arrayData = '', $message = '', $url = ''): void {
+    public function errorResponse($code, $arrayData = '', $message = '', $url = '') {
         header('HTTP/1.1 200 OK');
         header("Content-type: application/json; charset=" . __CHARSET);
         header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
@@ -361,7 +360,7 @@ class HttpResponse {
         echo json_encode($arrayResult);
     }
 
-    public function noticeResponse($code, $arrayData = '', $message = '', $url = ''): void {
+    public function noticeResponse($code, $arrayData = '', $message = '', $url = '') {
         header('HTTP/1.1 200 OK');
         header("Content-type: application/json; charset=" . __CHARSET);
         header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
@@ -370,7 +369,7 @@ class HttpResponse {
         echo json_encode($arrayResult);
     }
 
-    public function successServiceResponse(\SuccessService $successService): void {
+    public function successServiceResponse(\SuccessService $successService) {
         header('HTTP/1.1 200 OK');
         header("Content-type: application/json; charset=" . __CHARSET);
         header("Server: IIS/16.0 (Win64) OpenSSL/1.0.2h ASP.NET/20.3.6");
@@ -391,20 +390,20 @@ class HttpResponse {
  * @date 2006-06-17
  */
 abstract class BaseAction {
-    private bool $displayDisabled = false;
-    private bool $showErrorPage = true;
-    private bool $isHeader = false;
-    private bool $compiler = false;
-    private bool $_cache = false;
-    private string $_cache_id = '';
-    private int $_cache_time = 7200;
-    private string $_cache_dir = __CACHE;
-    private bool $_renew_cachedir = true;
-    private bool $_create_html = false;
-    private string $_html_name = '';
-    private string $_html_dir = __HTML;
-    private array $redirect_url = array();
-    private array $__commonResponse = array();
+    private $displayDisabled = false;
+    private $showErrorPage = true;
+    private $isHeader = false;
+    private $compiler = false;
+    private $_cache = false;
+    private $_cache_id = '';
+    private $_cache_time = 7200;
+    private $_cache_dir = __CACHE;
+    private $_renew_cachedir = true;
+    private $_create_html = false;
+    private $_html_name = '';
+    private $_html_dir = __HTML;
+    private $redirect_url = array();
+    private $__commonResponse = array();
 
     /**
      * 检查入力参数,若是系统错误(严重错误,则抛出异常)
@@ -451,21 +450,21 @@ abstract class BaseAction {
     /**
      * 错误页面
      */
-    protected function setErrorPage($flag = false): void {
+    protected function setErrorPage($flag = false) {
         $this->showErrorPage = $flag;
     }
 
     /**
      * 禁用显示
      */
-    protected function setDisplay($flag = true): void {
+    protected function setDisplay($flag = true) {
         $this->displayDisabled = $flag;
     }
 
     /**
      * 缓存页面
      */
-    protected function setCache($_cache_id = null, $_cache_time = 7200, $flag = true, $_cache_dir = __CACHE, $_renew_cachedir = true): void {
+    protected function setCache($_cache_id = null, $_cache_time = 7200, $flag = true, $_cache_dir = __CACHE, $_renew_cachedir = true) {
         if (empty($_cache_id)) {
             throw new Exception("_cache_id cann't empty.");
         }
@@ -476,7 +475,7 @@ abstract class BaseAction {
         $this->_renew_cachedir = $_renew_cachedir;
     }
 
-    protected function setCreateHtml($_html_name, $_html_dir = __HTML, $flag = true): void {
+    protected function setCreateHtml($_html_name, $_html_dir = __HTML, $flag = true) {
         $this->_create_html = $flag;
         $this->_html_name   = $_html_name;
         $this->_html_dir    = $_html_dir;
@@ -485,7 +484,7 @@ abstract class BaseAction {
     /**
      * 是否Header
      */
-    protected function sendHeader($flag = true): void {
+    protected function sendHeader($flag = true) {
         $this->isHeader = $flag;
     }
 
@@ -517,7 +516,7 @@ abstract class BaseAction {
         }
     }
 
-    protected function check_numeric($numeric, $key = null): float|int|string {
+    protected function check_numeric($numeric, $key = null) {
         $this->check_null($numeric, $key);
         if (!is_numeric($numeric)) {
             throw new Exception("parameter not numeric:" . $key . '=>' . $numeric);
@@ -526,14 +525,14 @@ abstract class BaseAction {
         return $numeric;
     }
 
-    protected function setRedirect($url, $status = '302', $time = 0): void {
+    protected function setRedirect($url, $status = '302', $time = 0) {
         $this->setDisplay();
         $this->redirect_url['url']    = $url;
         $this->redirect_url['status'] = $status;
         $this->redirect_url['time']   = $time;
     }
 
-    private function redirect($url, $status = '302', $time = 0): void {
+    private function redirect($url, $status = '302', $time = 0) {
         if (is_numeric($url)) {
             header("Content-type: text/html; charset=" . __CHARSET);
             echo "<script>history.go('$url')</script>";
@@ -561,7 +560,7 @@ abstract class BaseAction {
     /**
      * Controller层的调用入口函数,在scripts中调用
      */
-    public function execute($action = null, HttpRequest $objRequest = null, HttpResponse $objResponse = null): void {
+    public function execute($action = null, HttpRequest $objRequest = null, HttpResponse $objResponse = null) {
         $startTime = getMicrotime();
         try {
             $error_handler = set_error_handler("ErrorHandler");
@@ -756,13 +755,13 @@ class NotFound extends BaseAction {
 }
 
 class DBQuery {
-    private string $dsn = "";
-    private ?mysqliDriver $conn = null;
-    private static array $instances = array();
-    private static string $defaultDsn = __DEFAULT_DSN;
-    private string $table_name = '';
-    private string $entity_class = '';
-    private string $table_key = '*';
+    private $dsn = "";
+    private $conn = null;
+    private static $instances = array();
+    private static $defaultDsn = __DEFAULT_DSN;
+    private $table_name = '';
+    private $entity_class = '';
+    private $table_key = '*';
 
     /**
      * 构造函数
@@ -817,44 +816,44 @@ class DBQuery {
         return $instance;
     }
 
-    public function setTable($table): static {
+    public function setTable($table) {
         $this->table_name = '`' . $table . '`';
 
         return $this;
     }
 
-    public function getTable(): string {
+    public function getTable() {
         $table = $this->table_name;
         if (empty($table)) throw new Exception("table is empty.");
         return $table;
     }
 
-    public function setEntityClass($entity_class): static {
+    public function setEntityClass($entity_class) {
         $this->entity_class = $entity_class;
 
         return $this;
     }
 
-    public function getEntityClass(): string {
+    public function getEntityClass() {
         $entity_class = $this->entity_class;
         if (empty($entity_class)) throw new Exception("entity_class is empty.");
         return $entity_class;
     }
 
-    public function getEntityTable($entity_class = null): string {
+    public function getEntityTable($entity_class = null) {
         if(empty($entity_class)) $entity_class = $this->entity_class;
         if (empty($entity_class)) throw new Exception("entity_class is empty.");
 
         return strtolower(str_replace('Model', '',str_replace('Entity', '', substr($entity_class, strrpos($entity_class, '\\') + 1))));
     }
 
-    public function setKey($table_key): static {
+    public function setKey($table_key) {
         $this->table_key = $table_key;
 
         return $this;
     }
 
-    private function getEntityField($entytyClass): string {
+    private function getEntityField($entytyClass) {
         $reflect = new ReflectionClass($entytyClass);
         $props   = $reflect->getProperties();
         $field = '';
@@ -923,7 +922,7 @@ class DBQuery {
      * @param
      *            row 数组形式，数组的键是数据表中的字段名，键对应的值是需要新增的数据。
      */
-    public function insert($row, $insert_type = 'INSERT'): false|static {
+    public function insert($row, $insert_type = 'INSERT') {
         if (!is_array($row)) return FALSE;
         if (empty($row)) return FALSE;
         $cols = $statement = $vals = '';
@@ -949,7 +948,7 @@ class DBQuery {
      * //批量插入 insert into(key) values(val),(val) ......
      * //array(0=>array('key1'=>'val1','key2'=>'val2' ...), 1=>array('key1'=>'val1','key2'=>'val2' ...),.....);
      */
-    public function batchInsert($arrayValues, $insert_type = 'INSERT'): false|static {
+    public function batchInsert($arrayValues, $insert_type = 'INSERT') {
         if (!is_array($arrayValues)) return false;
         if (empty($arrayValues)) return false;
         $cols  = $vals = $field = $statement = '';
@@ -975,7 +974,7 @@ class DBQuery {
         return $this;
     }
 
-    public function insertSelect($field = '', $secondField = '*', $secondTable = '', $insert_type = 'INSERT'): static {
+    public function insertSelect($field = '', $secondField = '*', $secondTable = '', $insert_type = 'INSERT') {
         if (empty($secondTable)) $secondTable = $this->table_name;
         if (!empty($field)) $field = '(' . $field . ')';
         $sql = $insert_type . " INTO {$this->table_name} $field SELECT $secondField FROM {$secondTable} {$this->where};";
@@ -984,7 +983,7 @@ class DBQuery {
         return $this;
     }
 
-    public function insertEntity($objEntity, $insert_type = 'INSERT'): false|static {
+    public function insertEntity($objEntity, $insert_type = 'INSERT') {
         //
         $arrayInsertData = [];
         foreach ($objEntity->getPrototype() as $key => $value) {
@@ -1018,7 +1017,7 @@ class DBQuery {
         return $this->conn->getInsertid();
     }
 
-    public function execute($sql): static {
+    public function execute($sql) {
         $this->conn->execute($sql);
 
         return $this;
@@ -1039,7 +1038,7 @@ class DBQuery {
     /**
      * 返回上次执行update,insertData,delete,exec的影响行数
      */
-    public function affectedRows(): int|string {
+    public function affectedRows() {
         return $this->conn->affected_rows();
     }
 
@@ -1151,23 +1150,23 @@ class DBQuery {
     }
 
     //事务
-    public function startTransaction(): mysqli_result|bool {
+    public function startTransaction() {
         return $this->conn->startTransaction();
     }
 
-    public function enableAutocommit(): mysqli_result|bool {
+    public function enableAutocommit() {
         return $this->conn->enableAutocommit();
     }
 
-    public function disableAutocommit(): mysqli_result|bool {
+    public function disableAutocommit() {
         return $this->conn->disableAutocommit();
     }
 
-    public function commit(): mysqli_result|bool {
+    public function commit() {
         return $this->conn->commit();
     }
 
-    public function rollback(): mysqli_result|bool {
+    public function rollback() {
         return $this->conn->rollback();
     }
     //
@@ -1187,19 +1186,19 @@ class DBQuery {
 }
 
 class WhereCriteria {
-    private static array $instanceKey = array();
+    private static $instanceKey = array();
     //
-    private string $where = '';
-    private string $order = '';
-    private string $group = '';
-    private string $limit = '';
-    private string $AND = '';
-    private array $param = array();
-    private string $hashKey = '';
-    private bool $multiple = false;
-    private string $fatherKey = '';
-    private string $childrenKey = '';
-    private string $statement = '';
+    private $where = '';
+    private $order = '';
+    private $group = '';
+    private $limit = '';
+    private $AND = '';
+    private $param = array();
+    private $hashKey = '';
+    private $multiple = false;
+    private $fatherKey = '';
+    private $childrenKey = '';
+    private $statement = '';
 
     public function __construct() {
     }
@@ -1232,7 +1231,7 @@ class WhereCriteria {
      * @return string
      *  EQ =
      */
-    public function getWhere(): string {
+    public function getWhere() {
         $where = $this->where == '' ? '' : ' WHERE ';
 
         return $where . $this->where . $this->order . $this->group;
@@ -1248,7 +1247,7 @@ class WhereCriteria {
     /**
      * @return string
      */
-    public function getStatement(): string {
+    public function getStatement() {
         return $this->statement;
     }
 
@@ -1449,7 +1448,7 @@ class WhereCriteria {
     /**
      * @return string
      */
-    public function getLimit(): string {
+    public function getLimit() {
         return $this->limit;
     }
 
@@ -1466,7 +1465,7 @@ class WhereCriteria {
     /**
      * @return string
      */
-    public function getOrder(): string {
+    public function getOrder() {
         return $this->order;
     }
 
@@ -1492,7 +1491,7 @@ class WhereCriteria {
     /**
      * @return string
      */
-    public function getHashKey(): string {
+    public function getHashKey() {
         return $this->hashKey;
     }
 
@@ -1524,7 +1523,7 @@ class WhereCriteria {
     /**
      * @return string
      */
-    public function getFatherKey(): string {
+    public function getFatherKey() {
         return $this->fatherKey;
     }
 
@@ -1540,7 +1539,7 @@ class WhereCriteria {
     /**
      * @return string
      */
-    public function getChildrenKey(): string {
+    public function getChildrenKey() {
         return $this->childrenKey;
     }
 
@@ -1631,7 +1630,7 @@ class DBCache {
     /**
      * @throws Exception
      */
-    public function fetch($cacheID, $renew_cache_dir = true) : string|int|array|null {
+    public function fetch($cacheID, $renew_cache_dir = true) {
         $filepath  = PathManager::getCacheDir($cacheID, $this->cache_dir, $renew_cache_dir);
         $_contents = File::readFile($cacheID, $filepath);
         return json_decode($_contents, true);

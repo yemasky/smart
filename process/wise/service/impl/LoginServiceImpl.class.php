@@ -46,7 +46,6 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
     public function doLoginEmployee(\HttpRequest $objRequest, \HttpResponse $objResponse): LoginEmployeeModel {
         $password = $objRequest->password;
         $username = $objRequest->email;
-
         $whereCriteria           = new \WhereCriteria();
         $field                   = 'employee_id,company_id,employee_name,photo,`password`,password_salt,default_channel_id';
         $arrayEmployeeList       = array();
@@ -60,8 +59,9 @@ class LoginServiceImpl extends \BaseServiceImpl implements LoginService {
         $loginEmployeeModel = new LoginEmployeeModel();
         $lenght             = count($arrayEmployeeList);
         for ($i = 0; $i < $lenght; $i++) {
-            //md5(1 . '`　-   `' . md5('14e1b600b1fd579f47433b88e8d85291') . md5('5483116858d36bd6d1f6c'))
-            if (md5($arrayEmployeeList[$i]['company_id'] . '`　-   `' . md5($password) . md5($arrayEmployeeList[$i]['password_salt'])) == $arrayEmployeeList[$i]['password']) {//找到登录者
+            $password_salt     = $arrayEmployeeList[$i]['password_salt'];
+            $employee_password = md5($arrayEmployeeList[$i]['company_id'] . '`　-   `' . md5($password) . md5($password_salt));
+            if ($employee_password == $arrayEmployeeList[$i]['password']) {//找到登录者
                 $loginEmployeeModel = $this->addEmployeeCookie($arrayEmployeeList[$i], $loginEmployeeModel);
                 break;
             }

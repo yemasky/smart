@@ -11,8 +11,8 @@ namespace wise;
 class DbConfig extends \DbConfig {
     protected static $objConfig = null;
 	const page_rows = 15;
-	private static $hotel_dsn_read  = "mysqli:mysql://127.0.0.1:3306/wise?user=root&password=root&characterEncoding=UTF8";
-	private static $hotel_dsn_write = "mysqli:mysql://127.0.0.1:3306/wise?user=root&password=root&characterEncoding=UTF8";
+	private static $hotel_dsn_read  = "mysqli:mysql://127.0.0.1:3306/wise_dev?user=root&password=root&characterEncoding=UTF8";
+	private static $hotel_dsn_write = "mysqli:mysql://127.0.0.1:3306/wise_dev?user=root&password=root&characterEncoding=UTF8";
 
 	private static $wxBook_dsn_read  = "mysqli:mysql://127.0.0.1:3306/weixin_book?user=root&password=root&characterEncoding=UTF8";
 	private static $wxBook_dsn_write = "mysqli:mysql://127.0.0.1:3306/weixin_book?user=root&password=root&characterEncoding=UTF8";

@@ -1,5 +1,7 @@
 <?php
 
+echo phpinfo();
+
 var_dump(md5(1 . '`　-   `' . md5('14e1b600b1fd579f47433b88e8d85291') . md5('5483116858d36bd6d1f6c')));
 
 //echo  json_encode($arr);
